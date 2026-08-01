@@ -1,14 +1,14 @@
 export type BookingStatus =
-  | 'Pending'
-  | 'Confirmed'
-  | 'PaymentPending'
-  | 'Paid'
-  | 'Cancelled'
-  | 'Completed';
+  | "Pending"
+  | "Confirmed"
+  | "PaymentPending"
+  | "Paid"
+  | "Cancelled"
+  | "Completed";
 
-export type PaymentMethod = 'Cash' | 'BankTransfer' | 'VNPay' | 'MoMo';
+export type PaymentMethod = "Cash" | "BankTransfer" | "VNPay" | "MoMo";
 
-export type BookingType = 'Registered' | 'Guest';
+export type BookingType = "Registered" | "Guest";
 
 export interface BookingSlot {
   courtId: string;
@@ -74,4 +74,12 @@ export interface ConfirmPaymentRequest {
   method: PaymentMethod;
   amount: number;
   transactionRef?: string;
+}
+
+export interface CartItem {
+  courtId: string;
+  courtName: string;
+  date: string;
+  timeSlot: string;
+  pricePerHour: number;
 }

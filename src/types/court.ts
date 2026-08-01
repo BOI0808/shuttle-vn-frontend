@@ -1,6 +1,6 @@
-export type CourtStatus = 'Available' | 'Booked' | 'Maintenance' | 'Closed';
+export type CourtStatus = "Available" | "Booked" | "Maintenance" | "Closed";
 
-export type CourtType = 'Standard' | 'Premium' | 'VIP';
+export type CourtType = "Standard" | "Premium" | "VIP";
 
 export interface Court {
   id: string;
@@ -32,4 +32,10 @@ export interface CourtGridResponse {
 export interface CourtGridItem {
   court: Court;
   slots: CourtSlot[];
+}
+
+export interface TimeSlot {
+  value: string; // "07:00"
+  label: string; // "07:00 - 08:00"
+  hour: number; // 7
 }
