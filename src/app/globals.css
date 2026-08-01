@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --primary: 142 76% 36%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 210 40% 96.1%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --border: 214.3 31.8% 91.4%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+}
+
+@layer components {
+  .court-slot-available {
+    @apply bg-green-100 border-green-300 hover:bg-green-200 cursor-pointer transition-colors;
+  }
+
+  .court-slot-booked {
+    @apply bg-red-100 border-red-300 cursor-not-allowed;
+  }
+
+  .court-slot-selected {
+    @apply bg-green-500 border-green-600 text-white;
+  }
+
+  .court-slot-maintenance {
+    @apply bg-yellow-100 border-yellow-300 cursor-not-allowed;
+  }
+}
