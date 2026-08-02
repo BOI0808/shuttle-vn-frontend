@@ -75,7 +75,7 @@ src/
 │   ├── (auth)/                 # login, register – AuthLayout (centered card)
 │   ├── (customer)/             # courts, booking, booking/guest, my-bookings
 │   └── (admin)/                # dashboard, schedule, payments, courts, customers, staff
-├── types/                      # Strict TypeScript types (api, auth, court, booking, dashboard, chat)
+├── types/                      # Strict TypeScript types (api, auth, court, booking, dashboard, chat, index)
 ├── config/app.ts               # TIME_SLOTS, QUERY_KEYS, label maps
 ├── lib/
 │   ├── axios.ts                # Instance + JWT bearer + 401 auto-refresh
