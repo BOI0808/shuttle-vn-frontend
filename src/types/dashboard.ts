@@ -1,15 +1,15 @@
 export interface RevenueStats {
-  date: string;
+  date: string; // ISO yyyy-MM-dd
   revenue: number;
   bookingCount: number;
 }
 
-export interface OccupancyStats {
-  courtId: string;
+export interface CourtOccupancyStats {
+  courtId: number;
   courtName: string;
   totalSlots: number;
   bookedSlots: number;
-  occupancyRate: number; // 0-100
+  occupancyRate: number; // 0–100
 }
 
 export interface DashboardSummary {
@@ -17,8 +17,9 @@ export interface DashboardSummary {
   todayBookings: number;
   monthRevenue: number;
   monthBookings: number;
-  occupancyRateToday: number;
-  pendingPayments: number;
+  pendingBookings: number; // trạng thái PENDING cần xử lý
+  unpaidInvoices: number; // hoá đơn UNPAID
+  occupancyRateToday: number; // % tổng sân hôm nay
   revenueChart: RevenueStats[];
-  occupancyByCourtToday: OccupancyStats[];
+  occupancyByCourtToday: CourtOccupancyStats[];
 }

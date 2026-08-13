@@ -1,85 +1,109 @@
-export type BookingStatus =
-  | "Pending"
-  | "Confirmed"
-  | "PaymentPending"
-  | "Paid"
-  | "Cancelled"
-  | "Completed";
+export type BookingStatus = "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
 
-export type PaymentMethod = "Cash" | "BankTransfer" | "VNPay" | "MoMo";
+export type InvoiceStatus = "UNPAID" | "PAID" | "CANCELLED";
 
-export type BookingType = "Registered" | "Guest";
+/** BANKING = chuyển khoản, MONEY = tiền mặt */
+export type PaymentMethod = "BANKING" | "MONEY";
 
-export interface BookingSlot {
-  courtId: string;
+// ── Core entities ──────────────────────────────────────────────────────────────
+
+export interface Booking {
+  bookingId: string;
+  bookingCode: string; // DS-{5+ ký tự}
+  customerId: string; // luôn có (BR-03)
+  courtId: number;
   date: string; // ISO yyyy-MM-dd
   startTime: string; // HH:mm
   endTime: string; // HH:mm
-}
-
-export interface CreateBookingRequest {
-  slots: BookingSlot[];
-  note?: string;
-}
-
-export interface CreateGuestBookingRequest {
-  guestName: string;
-  guestPhone: string;
-  guestEmail?: string;
-  slots: BookingSlot[];
-  note?: string;
-}
-
-export interface Booking {
-  id: string;
-  bookingCode: string;
-  type: BookingType;
   status: BookingStatus;
-  customerId: string | null;
-  customerName: string;
-  customerPhone: string;
-  customerEmail: string | null;
-  slots: BookedSlot[];
-  totalAmount: number;
-  paidAmount: number;
-  note: string | null;
+  totalCost: number; // snapshot tại thời điểm tạo (BR-11)
   createdAt: string;
   updatedAt: string;
 }
 
-export interface BookedSlot {
+export interface BookingStatusHistory {
   id: string;
-  courtId: string;
+  bookingId: string;
+  oldStatus: BookingStatus;
+  newStatus: BookingStatus;
+  changedBy: string | null; // Employee.employeeId hoặc NULL nếu hệ thống
+  changedAt: string;
+  reason: string;
+}
+
+export interface Invoice {
+  invoiceId: string;
+  invoiceCode: string; // HD-{yyyyMMdd}-{STT}
+  bookingId: string;
+  totalCost: number;
+  status: InvoiceStatus;
+  issuedBy: string; // Employee.employeeId
+  issuedAt: string;
+  paidAt: string | null;
+  paymentMethod: PaymentMethod | null;
+  note: string | null;
+}
+
+// ── Aggregated view (dùng cho danh sách / chi tiết FE) ────────────────────────
+
+export interface BookingDetail extends Booking {
+  customerName: string;
+  customerPhone: string;
+  courtName: string;
+  invoice: Invoice | null;
+  statusHistory: BookingStatusHistory[];
+}
+
+// ── Requests ──────────────────────────────────────────────────────────────────
+
+export interface CreateBookingRequest {
+  customerId: string;
+  courtId: number;
+  date: string; // yyyy-MM-dd
+  startTime: string; // HH:mm
+  endTime: string; // HH:mm
+  note?: string;
+}
+
+/**
+ * Khi khách chưa có tài khoản (BR-03):
+ * BE tự tạo Customer với accountId = NULL, rồi tạo Booking.
+ */
+export interface CreateWalkInBookingRequest {
+  guestFullName: string;
+  guestPhone: string;
+  guestEmail?: string;
+  courtId: number;
+  date: string;
+  startTime: string;
+  endTime: string;
+  note?: string;
+}
+
+export interface UpdateBookingStatusRequest {
+  newStatus: BookingStatus;
+  reason: string;
+}
+
+export interface CreateInvoiceRequest {
+  bookingId: string;
+  paymentMethod: PaymentMethod;
+  note?: string;
+}
+
+export interface ConfirmPaymentRequest {
+  invoiceId: string;
+  paymentMethod: PaymentMethod;
+}
+
+// ── Cart (client-side only) ───────────────────────────────────────────────────
+
+export interface CartSlot {
+  courtId: number;
   courtName: string;
   date: string;
   startTime: string;
   endTime: string;
   pricePerHour: number;
-  totalPrice: number;
-}
-
-export interface Payment {
-  id: string;
-  bookingId: string;
-  method: PaymentMethod;
-  amount: number;
-  transactionRef: string | null;
-  confirmedAt: string | null;
-  confirmedBy: string | null;
-  createdAt: string;
-}
-
-export interface ConfirmPaymentRequest {
-  bookingId: string;
-  method: PaymentMethod;
-  amount: number;
-  transactionRef?: string;
-}
-
-export interface CartItem {
-  courtId: string;
-  courtName: string;
-  date: string;
-  timeSlot: string;
-  pricePerHour: number;
+  estimatedCost: number;
 }
