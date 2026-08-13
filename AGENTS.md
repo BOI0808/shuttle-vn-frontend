@@ -44,7 +44,7 @@ Khắc phục toàn bộ lỗi trước khi hoàn thành task.
 | Role                      | Chức năng chính                                                                        |
 | ------------------------- | -------------------------------------------------------------------------------------- |
 | **Customer**              | Xem lưới sân real-time, đặt sân (có/không tài khoản), xem lịch sử đặt, dùng AI chatbot |
-| **Staff (Nhân viên)**     | Tiếp nhận & xác nhận đặt sân, quản lý lịch sân, lập hóa đơn, hỗ trợ khách hàng         |
+| **Employee (Nhân viên)**  | Tiếp nhận & xác nhận đặt sân, quản lý lịch sân, lập hóa đơn, hỗ trợ khách hàng         |
 | **Admin (Quản trị viên)** | Dashboard doanh thu, quản lý sân/nhân viên/khách hàng, phân quyền, thống kê báo cáo    |
 
 **Tech Stack:**
@@ -73,10 +73,10 @@ src/
 │   ├── globals.css             # Tailwind + court-slot utility classes
 │   ├── api/chat/route.ts       # AI chatbot API route (Anthropic, server-side)
 │   ├── (auth)/                 # login, register – AuthLayout (centered card)
-│   ├── (customer)/             # courts, booking, booking/guest, my-bookings
+│   ├── (customer)/             # courts, booking, booking/walk-in, my-bookings
 │   └── (admin)/                # dashboard, schedule, payments, courts, customers, staff
-├── types/                      # Strict TypeScript types (api, auth, court, booking, dashboard, chat, index)
-├── config/app.ts               # TIME_SLOTS, QUERY_KEYS, label maps
+├── types/                      # Strict TypeScript types (api, auth, court, booking, dashboard, chat, audit, index)
+├── config/app.ts               # Label maps, BOOKING_STATUS_COLOR, QUERY_KEYS
 ├── lib/
 │   ├── axios.ts                # Instance + JWT bearer + 401 auto-refresh
 │   └── query-client.ts        # staleTime 2m, gcTime 10m, retry 1
@@ -88,7 +88,7 @@ src/
     ├── layout/                 # CustomerNav, AdminSidebar, AdminHeader
     ├── ui/                     # Shared primitives (Button, Input, Modal, Badge...)
     ├── court/                  # CourtGrid, CourtSlotCell
-    ├── booking/                # BookingCart, BookingForm, GuestBookingForm
+    ├── booking/                # BookingCart, BookingForm, WalkInBookingForm
     ├── admin/                  # DashboardStats, RevenueChart, ScheduleTimeline, PaymentConfirmation
     └── chatbot/                # ChatWidget, ChatMessage
 ```
@@ -100,8 +100,11 @@ src/
 ### TypeScript
 
 - **Không dùng `any`** – dùng `unknown` + type guard hoặc proper generic.
-- Mọi type/interface đều export từ `src/types/`.
-- API responses wrap trong `ApiResponse<T>` – luôn destructure `data.data`.
+- Mọi type/interface đều export từ `src/types/` và re-export qua `src/types/index.ts`.
+- API responses wrap trong `ApiResponse<T>` – luôn destructure `response.data.data`.
+- Enum-like literals dùng **SCREAMING_SNAKE_CASE**: `"PENDING"`, `"CONFIRMED"`, `"ACTIVE"`, `"BANKING"`, `"BOOKED"`, v.v.
+- `UserRole` dùng **PascalCase**: `"Admin" | "Employee" | "Customer"` — suy ra từ `AuthResponse`, không phải từ server enum.
+- `PaymentMethod`: `"BANKING" | "MONEY"` (không phải `Cash` hay `BankTransfer`).
 
 ### Next.js App Router
 
@@ -132,6 +135,7 @@ const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
 - Hooks (`src/hooks/`) dùng TanStack Query, gọi services.
 - Zustand stores chỉ cho client-side persistent state (auth, cart).
 - Invalidate query sau mutation: `queryClient.invalidateQueries({ queryKey: QUERY_KEYS.xxx })`.
+- Luôn destructure đúng cấp: `const { data } = await axiosInstance.get<ApiResponse<T>>(...)` → dùng `data.data`.
 
 ### Error Handling
 
@@ -150,72 +154,111 @@ onError: (error) => toast.error(getErrorMessage(error));
 ### Real-time Court Grid
 
 - `useCourtGrid(date)` – refetch interval **30 giây**.
-- Slot status: `Available` | `Booked` | `Maintenance` | `Closed`.
-- Click slot `Available` → add vào `useBookingCartStore`.
+- `SlotDisplayStatus`: `"AVAILABLE" | "BOOKED" | "CLOSED"` — tính toán phía FE, không phải từ server.
+- `CourtStatus`: `"ACTIVE" | "MAINTENANCE"` — trạng thái vật lý của sân.
+- Click slot `AVAILABLE` → add vào `useBookingCartStore`.
 
 ### Booking Flow (Registered)
 
 1. Customer chọn slot → `BookingCart` sidebar.
-2. Submit → `useCreateBooking()` với payload `{ slots: BookingSlot[], note? }`.
+2. Submit → `useCreateBooking()` với `CreateBookingRequest { customerId, courtId, date, startTime, endTime, note? }`.
 3. Redirect sau khi booking thành công.
 
-### Guest Booking Flow
+### Walk-in Booking Flow (Khách vãng lai)
 
-1. Customer điền `guestName`, `guestPhone`, `guestEmail?` + chọn slot.
-2. Submit → `useCreateGuestBooking()` với `CreateGuestBookingRequest`.
-3. Hiển thị `bookingCode` để tra cứu sau.
+1. Nhân viên/khách điền `guestFullName`, `guestPhone`, `guestEmail?` + chọn slot.
+2. Submit → `useCreateWalkInBooking()` với `CreateWalkInBookingRequest`.
+3. BE tự tạo `Customer` với `accountId = null`, rồi tạo `Booking`.
+4. Hiển thị `bookingCode` (format `DS-{5+ ký tự}`) để tra cứu sau.
 
 ### Booking Status Flow
 
 ```
-Pending → Confirmed → PaymentPending → Paid → Completed
-                   ↘ Cancelled
+PENDING → CONFIRMED → COMPLETED
+       ↘ CANCELLED
 ```
 
-### Admin/Staff Payment Confirmation
+### Invoice & Payment Flow
 
-- `useConfirmPayment()` với `{ bookingId, method, amount, transactionRef? }`.
-- Sau khi confirm: invalidate `bookings` + `dashboard`.
+```
+(Admin/Staff tạo invoice)
+CreateInvoiceRequest { bookingId, paymentMethod, note? }
+    → Invoice: UNPAID
+
+(Confirm payment)
+ConfirmPaymentRequest { invoiceId, paymentMethod }
+    → Invoice: PAID
+
+Invoice status: UNPAID → PAID | CANCELLED
+Invoice code format: HD-{yyyyMMdd}-{STT}
+```
 
 ### Auth Flow
 
 - Login → `setAuth(user, accessToken, refreshToken)` → persist localStorage.
 - 401 response → auto-refresh token → retry original request.
 - Logout → `clearAuth()` → `queryClient.clear()` → redirect `/login`.
-- **Phân quyền 3 role:** `Customer` | `Staff` | `Admin` – middleware redirect theo role.
+- **Phân quyền 3 role** suy ra từ `AuthResponse`:
+  - `employee !== null && employee.isAdmin === true` → `"Admin"`
+  - `employee !== null && employee.isAdmin === false` → `"Employee"`
+  - `customer !== null` → `"Customer"`
+- Middleware redirect theo `UserRole`: `Customer` → `/courts`, `Employee`/`Admin` → `/admin/dashboard`.
 
 ### AI Chatbot – Function Calling
 
 - Route `/api/chat` nhận message từ client, gọi Anthropic API với **System Prompt** chứa thông tin tĩnh (quy định, hướng dẫn, dịch vụ).
 - AI dùng **Function Calling (Tool Use)** để truy xuất dữ liệu động: lịch sân trống, giá sân, trạng thái đặt sân.
 - Backend cung cấp các endpoint riêng cho AI tool calls; FE route handler đóng vai trò proxy + orchestrator.
+- `ChatMessage` type: `{ id, role: "user" | "assistant", content, createdAt }`.
 
 ---
 
 ## 5. Constants & Labels
 
+Tất cả export từ `src/config/app.ts`:
+
 ```typescript
-// src/config/app.ts
-TIME_SLOTS; // ['06:00', '07:00', ..., '22:00']
-BOOKING_STATUS_LABEL; // { Pending: 'Chờ xác nhận', ... }
-PAYMENT_METHOD_LABEL; // { Cash: 'Tiền mặt', BankTransfer: 'Chuyển khoản', ... }
-COURT_STATUS_LABEL; // { Available: 'Còn trống', ... }
-COURT_TYPE_LABEL; // { Standard: 'Tiêu chuẩn', Premium: 'Cao cấp', VIP: 'VIP' }
-USER_ROLE_LABEL; // { Customer: 'Khách hàng', Staff: 'Nhân viên', Admin: 'Quản trị viên' }
-QUERY_KEYS; // typed query key factory
+// Booking
+BOOKING_STATUS_LABEL;    // { PENDING: 'Chờ xác nhận', CONFIRMED: 'Đã xác nhận', COMPLETED: 'Hoàn thành', CANCELLED: 'Đã huỷ' }
+BOOKING_STATUS_COLOR;    // { PENDING: 'yellow', CONFIRMED: 'blue', COMPLETED: 'green', CANCELLED: 'red' }
+
+// Invoice
+INVOICE_STATUS_LABEL;    // { UNPAID: 'Chưa thanh toán', PAID: 'Đã thanh toán', CANCELLED: 'Đã huỷ' }
+PAYMENT_METHOD_LABEL;    // { BANKING: 'Chuyển khoản', MONEY: 'Tiền mặt' }
+
+// Court
+COURT_STATUS_LABEL;          // { ACTIVE: 'Đang hoạt động', MAINTENANCE: 'Bảo trì' }
+SLOT_DISPLAY_STATUS_LABEL;   // { AVAILABLE: 'Còn trống', BOOKED: 'Đã đặt', CLOSED: 'Đóng cửa' }
+
+// Account
+ACCOUNT_STATUS_LABEL;    // { ACTIVE: 'Hoạt động', LOCKED: 'Bị khoá', DISABLED: 'Vô hiệu hoá' }
+USER_ROLE_LABEL;         // { Admin: 'Quản trị viên', Employee: 'Nhân viên', Customer: 'Khách hàng' }
+
+// Misc
+DAY_OF_WEEK_LABEL;       // { 0: 'Chủ nhật', 1: 'Thứ 2', ..., 6: 'Thứ 7' }
+
+// Query Keys (typed factory)
+QUERY_KEYS = {
+  courts, court(id), courtSchedules(courtId), pricingRules(courtId), courtGrid(date),
+  bookings, booking(id), bookingByCode(code), myBookings,
+  invoices, invoice(id), bookingInvoice(bookingId),
+  customers, customer(id), employees, employee(id),
+  dashboard, revenueStats(from, to),
+  auditLogs,
+}
 ```
 
 ---
 
 ## 6. Development Phases
 
-| Phase | Priority     | Scope                                                                                                                                                              |
-| ----- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **1** | Critical     | Auth UI: LoginForm, RegisterForm, middleware route guard (3 roles)                                                                                                 |
-| **2** | Critical     | Customer: CourtGrid, BookingCart, BookingForm, GuestBookingForm, MyBookings                                                                                        |
-| **3** | High         | Admin/Staff: DashboardStats, RevenueChart (Recharts), ScheduleTimeline, PaymentConfirmation, Court CRUD, Customer management, Staff management, Invoice management |
-| **4** | High         | AI ChatWidget với Function Calling (System Prompt + Tool Use), tích hợp tra cứu lịch sân trống                                                                     |
-| **5** | Nice-to-have | Loading skeletons, empty states, error boundaries, tối ưu UX                                                                                                       |
+| Phase | Priority     | Scope                                                                                                                                                            |
+| ----- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | Critical     | Auth UI: LoginForm, RegisterForm, middleware route guard (3 roles)                                                                                               |
+| **2** | Critical     | Customer: CourtGrid, BookingCart, BookingForm, WalkInBookingForm, MyBookings                                                                                     |
+| **3** | High         | Admin/Staff: DashboardStats, RevenueChart (Recharts), ScheduleTimeline, PaymentConfirmation (invoice flow), Court CRUD, Customer management, Employee management |
+| **4** | High         | AI ChatWidget với Function Calling (System Prompt + Tool Use), tích hợp tra cứu lịch sân trống                                                                   |
+| **5** | Nice-to-have | Loading skeletons, empty states, error boundaries, tối ưu UX                                                                                                     |
 
 ---
 
@@ -230,6 +273,7 @@ Khi Claude sinh code cho project này:
 5. **Import từ barrel** – dùng `@/types`, `@/utils`, `@/services`, `@/hooks`, không import sâu.
 6. **Không viết code C# / backend** – chỉ tập trung frontend.
 7. **Không dùng `any`** – TypeScript strict mode.
+8. **Literal types đúng casing** – SCREAMING_SNAKE_CASE cho status/method, PascalCase cho `UserRole`.
 
 ---
 
