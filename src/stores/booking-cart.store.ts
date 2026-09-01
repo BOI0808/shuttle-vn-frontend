@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { create } from 'zustand';
-import { BookingSlot } from '@/types';
+import { create } from "zustand";
+import { Booking } from "@/types";
 
-interface CartItem extends BookingSlot {
+interface CartItem extends Booking {
   courtName: string;
   pricePerHour: number;
 }
@@ -15,51 +15,55 @@ interface BookingCartState {
 
 interface BookingCartActions {
   addItem: (item: CartItem) => void;
-  removeItem: (courtId: string, date: string, startTime: string) => void;
+  removeItem: (courtId: number, date: string, startTime: string) => void;
   clearCart: () => void;
-  isInCart: (courtId: string, date: string, startTime: string) => boolean;
+  isInCart: (courtId: number, date: string, startTime: string) => boolean;
 }
 
-export const useBookingCartStore = create<BookingCartState & BookingCartActions>()(
-  (set, get) => ({
-    items: [],
-    totalAmount: 0,
+export const useBookingCartStore = create<
+  BookingCartState & BookingCartActions
+>()((set, get) => ({
+  items: [],
+  totalAmount: 0,
 
-    addItem: (item) =>
-      set((state) => {
-        const exists = state.items.some(
-          (i) =>
-            i.courtId === item.courtId &&
-            i.date === item.date &&
-            i.startTime === item.startTime,
-        );
-        if (exists) return state;
-
-        const newItems = [...state.items, item];
-        return {
-          items: newItems,
-          totalAmount: newItems.reduce((sum, i) => sum + i.pricePerHour, 0),
-        };
-      }),
-
-    removeItem: (courtId, date, startTime) =>
-      set((state) => {
-        const newItems = state.items.filter(
-          (i) =>
-            !(i.courtId === courtId && i.date === date && i.startTime === startTime),
-        );
-        return {
-          items: newItems,
-          totalAmount: newItems.reduce((sum, i) => sum + i.pricePerHour, 0),
-        };
-      }),
-
-    clearCart: () => set({ items: [], totalAmount: 0 }),
-
-    isInCart: (courtId, date, startTime) =>
-      get().items.some(
+  addItem: (item) =>
+    set((state) => {
+      const exists = state.items.some(
         (i) =>
-          i.courtId === courtId && i.date === date && i.startTime === startTime,
-      ),
-  }),
-);
+          i.courtId === item.courtId &&
+          i.date === item.date &&
+          i.startTime === item.startTime
+      );
+      if (exists) return state;
+
+      const newItems = [...state.items, item];
+      return {
+        items: newItems,
+        totalAmount: newItems.reduce((sum, i) => sum + i.pricePerHour, 0),
+      };
+    }),
+
+  removeItem: (courtId, date, startTime) =>
+    set((state) => {
+      const newItems = state.items.filter(
+        (i) =>
+          !(
+            i.courtId === courtId &&
+            i.date === date &&
+            i.startTime === startTime
+          )
+      );
+      return {
+        items: newItems,
+        totalAmount: newItems.reduce((sum, i) => sum + i.pricePerHour, 0),
+      };
+    }),
+
+  clearCart: () => set({ items: [], totalAmount: 0 }),
+
+  isInCart: (courtId, date, startTime) =>
+    get().items.some(
+      (i) =>
+        i.courtId === courtId && i.date === date && i.startTime === startTime
+    ),
+}));

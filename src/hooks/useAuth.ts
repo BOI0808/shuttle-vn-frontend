@@ -1,10 +1,35 @@
-'use client';
+"use client";
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { authService } from '@/services';
-import { useAuthStore } from '@/stores/auth.store';
-import { LoginRequest, RegisterRequest } from '@/types';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { authService } from "@/services";
+import { useAuthStore } from "@/stores/auth.store";
+import { AuthResponse, LoginRequest, RegisterRequest } from "@/types";
+import { UserRole } from "@/types";
+
+function resolveUserRole(data: AuthResponse) {
+  let role: UserRole = "Customer";
+  let name = data.account.username;
+  let id = data.account.accountId;
+
+  if (data.employee) {
+    role = data.employee.isAdmin ? "Admin" : "Employee";
+    name = data.employee.fullName;
+    id = data.employee.employeeId;
+  } else if (data.customer) {
+    name = data.customer.fullName;
+    id = data.customer.customerId;
+  }
+
+  return {
+    ...data.account,
+    id,
+    name,
+    role,
+    employee: data.employee,
+    customer: data.customer,
+  };
+}
 
 export function useAuth() {
   const router = useRouter();
@@ -14,11 +39,12 @@ export function useAuth() {
   const loginMutation = useMutation({
     mutationFn: (payload: LoginRequest) => authService.login(payload),
     onSuccess: (data) => {
-      setAuth(data.user, data.accessToken, data.refreshToken);
-      if (data.user.role === 'Admin') {
-        router.push('/dashboard');
+      const user = resolveUserRole(data);
+      setAuth(user, data.accessToken, data.refreshToken);
+      if (user.role === "Admin") {
+        router.push("/dashboard");
       } else {
-        router.push('/courts');
+        router.push("/courts");
       }
     },
   });
@@ -26,7 +52,7 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: (payload: RegisterRequest) => authService.register(payload),
     onSuccess: () => {
-      router.push('/login');
+      router.push("/login");
     },
   });
 
@@ -35,12 +61,12 @@ export function useAuth() {
     onSettled: () => {
       clearAuth();
       queryClient.clear();
-      router.push('/login');
+      router.push("/login");
     },
   });
 
   const profileQuery = useQuery({
-    queryKey: ['profile'],
+    queryKey: ["profile"],
     queryFn: () => authService.getProfile(),
     enabled: isAuthenticated,
     staleTime: 1000 * 60 * 5,

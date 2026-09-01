@@ -1,11 +1,20 @@
-'use client';
+"use client";
 
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { User } from '@/types';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { UserAccount, UserRole, Employee, Customer } from "@/types";
+
+// 1. Định nghĩa kiểu User đầy đủ cho Store
+export interface AuthUser extends UserAccount {
+  id?: string;
+  name?: string;
+  role: UserRole;
+  employee?: Employee | null;
+  customer?: Customer | null;
+}
 
 interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
@@ -13,9 +22,9 @@ interface AuthState {
 }
 
 interface AuthActions {
-  setAuth: (user: User, accessToken: string, refreshToken: string) => void;
+  setAuth: (user: AuthUser, accessToken: string, refreshToken: string) => void;
   clearAuth: () => void;
-  setUser: (user: User) => void;
+  setUser: (user: AuthUser) => void;
 }
 
 const initialState: AuthState = {
@@ -32,20 +41,20 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       ...initialState,
 
       setAuth: (user, accessToken, refreshToken) => {
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
         set({
           user,
           accessToken,
           refreshToken,
           isAuthenticated: true,
-          isAdmin: user.role === 'Admin',
+          isAdmin: user.role === "Admin",
         });
       },
 
       clearAuth: () => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         set(initialState);
       },
 
@@ -53,11 +62,11 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         set((state) => ({
           ...state,
           user,
-          isAdmin: user.role === 'Admin',
+          isAdmin: user.role === "Admin",
         })),
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
@@ -66,6 +75,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         isAuthenticated: state.isAuthenticated,
         isAdmin: state.isAdmin,
       }),
-    },
-  ),
+    }
+  )
 );

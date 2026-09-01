@@ -1,46 +1,54 @@
-import axiosInstance from '@/lib/axios';
+import axiosInstance from "@/lib/axios";
 import {
   ApiResponse,
   Booking,
   ConfirmPaymentRequest,
   CreateBookingRequest,
-  CreateGuestBookingRequest,
+  CreateWalkInBookingRequest,
   PaginatedResponse,
   PaginationParams,
-  Payment,
-} from '@/types';
+  Invoice,
+} from "@/types";
 
 export const bookingService = {
   // Customer
   async createBooking(payload: CreateBookingRequest): Promise<Booking> {
-    const { data } = await axiosInstance.post<ApiResponse<Booking>>('/bookings', payload);
-    return data.data;
-  },
-
-  async createGuestBooking(payload: CreateGuestBookingRequest): Promise<Booking> {
     const { data } = await axiosInstance.post<ApiResponse<Booking>>(
-      '/bookings/guest',
-      payload,
+      "/bookings",
+      payload
     );
     return data.data;
   },
 
-  async getMyBookings(params?: PaginationParams): Promise<PaginatedResponse<Booking>> {
-    const { data } = await axiosInstance.get<ApiResponse<PaginatedResponse<Booking>>>(
-      '/bookings/my',
-      { params },
+  async createWalkInBooking(
+    payload: CreateWalkInBookingRequest
+  ): Promise<Booking> {
+    const { data } = await axiosInstance.post<ApiResponse<Booking>>(
+      "/bookings/guest",
+      payload
     );
+    return data.data;
+  },
+
+  async getMyBookings(
+    params?: PaginationParams
+  ): Promise<PaginatedResponse<Booking>> {
+    const { data } = await axiosInstance.get<
+      ApiResponse<PaginatedResponse<Booking>>
+    >("/bookings/my", { params });
     return data.data;
   },
 
   async getBookingById(id: string): Promise<Booking> {
-    const { data } = await axiosInstance.get<ApiResponse<Booking>>(`/bookings/${id}`);
+    const { data } = await axiosInstance.get<ApiResponse<Booking>>(
+      `/bookings/${id}`
+    );
     return data.data;
   },
 
   async getBookingByCode(code: string): Promise<Booking> {
     const { data } = await axiosInstance.get<ApiResponse<Booking>>(
-      `/bookings/code/${code}`,
+      `/bookings/code/${code}`
     );
     return data.data;
   },
@@ -50,18 +58,19 @@ export const bookingService = {
   },
 
   // Admin
-  async getAllBookings(params?: PaginationParams & { date?: string; status?: string }): Promise<PaginatedResponse<Booking>> {
-    const { data } = await axiosInstance.get<ApiResponse<PaginatedResponse<Booking>>>(
-      '/admin/bookings',
-      { params },
-    );
+  async getAllBookings(
+    params?: PaginationParams & { date?: string; status?: string }
+  ): Promise<PaginatedResponse<Booking>> {
+    const { data } = await axiosInstance.get<
+      ApiResponse<PaginatedResponse<Booking>>
+    >("/admin/bookings", { params });
     return data.data;
   },
 
-  async confirmPayment(payload: ConfirmPaymentRequest): Promise<Payment> {
-    const { data } = await axiosInstance.post<ApiResponse<Payment>>(
-      '/admin/payments/confirm',
-      payload,
+  async confirmPayment(payload: ConfirmPaymentRequest): Promise<Invoice> {
+    const { data } = await axiosInstance.post<ApiResponse<Invoice>>(
+      "/admin/payments/confirm",
+      payload
     );
     return data.data;
   },
