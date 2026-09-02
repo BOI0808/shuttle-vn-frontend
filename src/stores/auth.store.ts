@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { UserAccount, UserRole, Employee, Customer } from "@/types";
+import Cookies from "js-cookie";
 
 // 1. Định nghĩa kiểu User đầy đủ cho Store
 export interface AuthUser extends UserAccount {
@@ -50,20 +51,28 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           isAuthenticated: true,
           isAdmin: user.role === "Admin",
         });
+
+        Cookies.set("accessToken", accessToken, { sameSite: "strict" });
+        Cookies.set("userRole", user.role, { sameSite: "strict" });
       },
 
       clearAuth: () => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         set(initialState);
+
+        Cookies.remove("accessToken");
+        Cookies.remove("userRole");
       },
 
-      setUser: (user) =>
+      setUser: (user) => {
+        Cookies.set("userRole", user.role, { sameSite: "strict" });
         set((state) => ({
           ...state,
           user,
           isAdmin: user.role === "Admin",
-        })),
+        }));
+      },
     }),
     {
       name: "auth-storage",
