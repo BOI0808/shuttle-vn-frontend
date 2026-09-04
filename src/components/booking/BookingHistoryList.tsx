@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useMyBookings } from "@/hooks/useBooking";
 import { BookingListToolbar } from "./BookingListToolBar";
 import { BookingCard } from "./BookingCard";
-import type { BookingStatus, Booking } from "@/types";
+import type { BookingStatus, Booking, BookingDetail } from "@/types";
 
 type TabValue = "all" | BookingStatus;
 
@@ -15,7 +15,7 @@ export function BookingHistoryList() {
   const { data: response, isLoading, isError } = useMyBookings();
   const bookings = response?.items ?? [];
 
-  const filtered: Booking[] = useMemo(() => {
+  const filtered: BookingDetail[] = useMemo(() => {
     return bookings.filter((b) => {
       const matchTab = activeTab === "all" || b.status === activeTab;
       const matchSearch = b.bookingCode

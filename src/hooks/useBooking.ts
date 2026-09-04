@@ -25,6 +25,17 @@ export function useBooking(id: string) {
   });
 }
 
+/**
+ * Tra cứu đơn theo mã (public, khách vãng lai).
+ * Dùng mutation vì đây là một hành động "tra cứu" theo yêu cầu người dùng,
+ * không phải dữ liệu cần cache/refetch tự động như query thông thường.
+ */
+export function useBookingLookup() {
+  return useMutation({
+    mutationFn: (code: string) => bookingService.getBookingByCode(code),
+  });
+}
+
 export function useAllBookings(
   params?: PaginationParams & { date?: string; status?: string }
 ) {

@@ -3,10 +3,10 @@
 import { Badge } from "@/components/ui/Badge";
 import { cn, formatCurrency } from "@/utils";
 import { BOOKING_STATUS_LABEL } from "@/config/app";
-import type { Booking } from "@/types";
+import type { BookingDetail } from "@/types";
 
 interface BookingCardProps {
-  booking: Booking;
+  booking: BookingDetail;
   onViewDetail: (id: string) => void;
   onReschedule: (id: string) => void;
   onCancel: (id: string) => void;
@@ -61,7 +61,7 @@ export function BookingCard({
                   muted && "text-gray-400"
                 )}
               >
-                Sân {booking.courtId}
+                {booking.courtName}
               </p>
             </div>
             <div>
