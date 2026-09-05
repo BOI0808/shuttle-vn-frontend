@@ -41,7 +41,7 @@ export function useAuth() {
     onSuccess: (data) => {
       const user = resolveUserRole(data);
       setAuth(user, data.accessToken, data.refreshToken);
-      if (user.role === "Admin") {
+      if (user.role === "Admin" || user.role === "Employee") {
         router.push("/dashboard");
       } else {
         router.push("/courts");

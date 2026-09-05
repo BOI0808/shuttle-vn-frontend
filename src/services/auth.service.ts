@@ -45,7 +45,7 @@
 //   },
 // };
 
-//Mock API
+// Mock API
 // src/services/auth.service.ts
 import { AuthResponse, LoginRequest, RegisterRequest } from "@/types";
 
@@ -61,8 +61,11 @@ export const authService = {
       throw new Error("Tài khoản hoặc mật khẩu không chính xác");
     }
 
-    // Giả lập đăng nhập Admin nếu username có chữ 'admin'
-    const isAdmin = payload.username.toLowerCase().includes("admin");
+    const usernameLower = payload.username.toLowerCase();
+    const isAdmin = usernameLower.includes("admin");
+    const isEmployee =
+      usernameLower.includes("employee") || usernameLower.includes("staff");
+    const isStaffOrAdmin = isAdmin || isEmployee;
 
     return {
       accessToken: "mock_access_token_123456",
@@ -75,19 +78,19 @@ export const authService = {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
-      employee: isAdmin
+      employee: isStaffOrAdmin
         ? {
-            employeeId: "EMP-001",
+            employeeId: isAdmin ? "EMP-ADMIN-001" : "EMP-STAFF-002",
             accountId: "ACC-001",
-            fullName: "Quản trị viên Demo",
+            fullName: isAdmin ? "Quản trị viên Demo" : "Nhân viên Lễ tân Demo",
             phone: "0901234567",
-            email: "admin@shuttlevn.com",
-            isAdmin: true,
+            email: isAdmin ? "admin@shuttlevn.com" : "staff@shuttlevn.com",
+            isAdmin: isAdmin, // false nếu là Employee thường
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           }
         : null,
-      customer: !isAdmin
+      customer: !isStaffOrAdmin
         ? {
             customerId: "CUST-001",
             accountId: "ACC-001",

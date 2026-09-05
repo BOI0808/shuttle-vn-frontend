@@ -74,7 +74,7 @@ src/
 │   ├── api/chat/route.ts       # AI chatbot API route (Anthropic, server-side)
 │   ├── (auth)/                 # login, register – AuthLayout (centered card)
 │   ├── (customer)/             # courts, booking, booking/walk-in, my-bookings
-│   └── (admin)/                # dashboard, schedule, payments, courts, customers, staff
+│   └── (admin)/                # dashboard, schedule, payments, manage-courts, customers, staff
 ├── types/                      # Strict TypeScript types (api, auth, court, booking, dashboard, chat, audit, index)
 ├── config/app.ts               # Label maps, BOOKING_STATUS_COLOR, QUERY_KEYS
 ├── lib/
