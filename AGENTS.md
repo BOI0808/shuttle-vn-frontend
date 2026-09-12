@@ -52,7 +52,7 @@ Khắc phục toàn bộ lỗi trước khi hoàn thành task.
 - **Framework:** Next.js 15, App Router, React 19
 - **Language:** TypeScript strict (no `any`)
 - **State:** Zustand v5 + TanStack Query v5
-- **HTTP:** Axios + JWT interceptor + auto-refresh
+- **HTTP:** Axios with browser-managed authentication cookies
 - **Forms:** React Hook Form + Zod
 - **Styling:** Tailwind CSS v3
 - **Charts:** Recharts
@@ -78,7 +78,7 @@ src/
 ├── types/                      # Strict TypeScript types (api, auth, court, booking, dashboard, chat, audit, index)
 ├── config/app.ts               # Label maps, BOOKING_STATUS_COLOR, QUERY_KEYS
 ├── lib/
-│   ├── axios.ts                # Instance + JWT bearer + 401 auto-refresh
+│   ├── axios.ts                # Instance + credentials + CSRF/401 handling
 │   └── query-client.ts        # staleTime 2m, gcTime 10m, retry 1
 ├── services/                   # auth, court, booking, dashboard – thin API wrappers
 ├── hooks/                      # useAuth, useCourt, useBooking, useDashboard
@@ -132,6 +132,13 @@ const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
 ### API & State
 
 - Services (`src/services/`) chỉ gọi `axiosInstance` – không có logic UI.
+- `axiosInstance` phải gửi cookie phiên với `withCredentials: true`; không đọc,
+  gắn, refresh, hoặc lưu access/refresh token ở `localStorage`, Zustand hay URL.
+- Không thêm `Authorization: Bearer ...` interceptor. Cookie được trình duyệt gửi
+  tự động; lỗi `401` chỉ cần xóa phiên client và chuyển về `/login` khi phù hợp.
+- Các request thay đổi dữ liệu (`POST`, `PUT`, `PATCH`, `DELETE`) phải gửi CSRF
+  token theo contract của backend (thường là header `X-CSRF-TOKEN`). Không tắt
+  kiểm tra CSRF để làm cho request chạy được.
 - Hooks (`src/hooks/`) dùng TanStack Query, gọi services.
 - Zustand stores chỉ cho client-side persistent state (auth, cart).
 - Invalidate query sau mutation: `queryClient.invalidateQueries({ queryKey: QUERY_KEYS.xxx })`.
@@ -195,9 +202,14 @@ Invoice code format: HD-{yyyyMMdd}-{STT}
 
 ### Auth Flow
 
-- Login → `setAuth(user, accessToken, refreshToken)` → persist localStorage.
-- 401 response → auto-refresh token → retry original request.
-- Logout → `clearAuth()` → `queryClient.clear()` → redirect `/login`.
+- Login → gọi `/auth/login` với `withCredentials: true`; backend tạo cookie
+  HttpOnly. Lưu thông tin hiển thị tối thiểu (user/role), không lưu credential.
+- Khi khởi động app, gọi endpoint hồ sơ phiên (`/auth/me` hoặc contract tương
+  đương) để khôi phục người dùng; không suy ra trạng thái đăng nhập từ token phía client.
+- 401 response → xóa user state, clear query cache, và redirect `/login` khi
+  request yêu cầu đăng nhập. Không refresh bearer token ở frontend.
+- Logout → gọi `/auth/logout` với credentials → `clearAuth()` →
+  `queryClient.clear()` → redirect `/login`.
 - **Phân quyền 3 role** suy ra từ `AuthResponse`:
   - `employee !== null && employee.isAdmin === true` → `"Admin"`
   - `employee !== null && employee.isAdmin === false` → `"Employee"`
