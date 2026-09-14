@@ -45,7 +45,7 @@
 //   },
 // };
 
-// Mock API
+// Mock Data
 // src/services/auth.service.ts
 import { AuthResponse, LoginRequest, RegisterRequest } from "@/types";
 
