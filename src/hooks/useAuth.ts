@@ -1,47 +1,25 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { authService } from "@/services";
 import { useAuthStore } from "@/stores/auth.store";
-import { AuthResponse, LoginRequest, RegisterRequest } from "@/types";
-import { UserRole } from "@/types";
-
-function resolveUserRole(data: AuthResponse) {
-  let role: UserRole = "Customer";
-  let name = data.account.username;
-  let id = data.account.accountId;
-
-  if (data.employee) {
-    role = data.employee.isAdmin ? "Admin" : "Employee";
-    name = data.employee.fullName;
-    id = data.employee.employeeId;
-  } else if (data.customer) {
-    name = data.customer.fullName;
-    id = data.customer.customerId;
-  }
-
-  return {
-    ...data.account,
-    id,
-    name,
-    role,
-    employee: data.employee,
-    customer: data.customer,
-  };
-}
+import { LoginRequest, RegisterRequest } from "@/types";
 
 export function useAuth() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { setAuth, clearAuth, isAuthenticated, isAdmin, user } = useAuthStore();
+  const { user, isAuthenticated, isAdmin, isLoading, setUser, clearAuth } =
+    useAuthStore();
 
   const loginMutation = useMutation({
-    mutationFn: (payload: LoginRequest) => authService.login(payload),
-    onSuccess: (data) => {
-      const user = resolveUserRole(data);
-      setAuth(user, data.accessToken, data.refreshToken);
-      if (user.role === "Admin" || user.role === "Employee") {
+    mutationFn: async (payload: LoginRequest) => {
+      await authService.login(payload);
+      return authService.getProfile();
+    },
+    onSuccess: (profile) => {
+      setUser(profile);
+      if (profile.role === "Admin" || profile.role === "Employee") {
         router.push("/dashboard");
       } else {
         router.push("/courts");
@@ -65,18 +43,11 @@ export function useAuth() {
     },
   });
 
-  const profileQuery = useQuery({
-    queryKey: ["profile"],
-    queryFn: () => authService.getProfile(),
-    enabled: isAuthenticated,
-    staleTime: 1000 * 60 * 5,
-  });
-
   return {
     user,
     isAuthenticated,
     isAdmin,
-    profile: profileQuery.data,
+    isLoading,
     login: loginMutation.mutate,
     loginAsync: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
