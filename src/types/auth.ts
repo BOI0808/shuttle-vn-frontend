@@ -63,17 +63,5 @@ export interface RefreshTokenRequest {
   refreshToken: string;
 }
 
-// ── Response ──────────────────────────────────────────────────────────────────
-
-/** Trả về sau login / refresh */
-export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-  account: UserAccount;
-  employee: Employee | null;
-  customer: Customer | null;
-}
-
 /** Vai trò được suy ra từ dữ liệu (không phải enum từ server) */
 export type UserRole = "Admin" | "Employee" | "Customer";
