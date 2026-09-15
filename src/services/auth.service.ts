@@ -27,7 +27,7 @@ export const authService = {
 
   async getProfile(): Promise<MyProfile> {
     const { data } = await axiosInstance.get<ApiResponse<MyProfile>>(
-      "/auth/profile"
+      "/profile"
     );
     return data.data;
   },
