@@ -15,17 +15,20 @@ interface AuthState {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isLoading: boolean;
 }
 
 interface AuthActions {
   setUser: (user: AuthUser) => void;
   clearAuth: () => void;
+  setLoading: (loading: boolean) => void;
 }
 
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   isAdmin: false,
+  isLoading: true,
 };
 
 export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
@@ -38,5 +41,7 @@ export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
       isAdmin: user.role === "Admin",
     }),
 
-  clearAuth: () => set(initialState),
+  clearAuth: () => set({ ...initialState, isLoading: false }),
+
+  setLoading: (isLoading) => set({ isLoading }),
 }));

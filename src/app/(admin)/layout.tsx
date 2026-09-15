@@ -1,7 +1,27 @@
-import { AdminSidebar } from '@/components/layout/AdminSidebar';
-import { AdminHeader } from '@/components/layout/AdminHeader';
+"use client";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/stores/auth.store";
+import { AdminSidebar } from "@/components/layout/AdminSidebar";
+import { AdminHeader } from "@/components/layout/AdminHeader";
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const { user, isLoading } = useAuthStore();
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!user || user.role === "Customer") {
+      router.replace("/courts");
+    }
+  }, [user, isLoading, router]);
+
+  if (isLoading || !user || user.role === "Customer") return null;
   return (
     <div className="min-h-screen bg-gray-100 flex">
       <AdminSidebar />
