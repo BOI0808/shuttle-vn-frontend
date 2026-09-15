@@ -31,7 +31,7 @@ export function LoginForm() {
   const onSubmit = (data: LoginFormData) => {
     login(
       {
-        username: data.email,
+        email: data.email,
         password: data.password,
       },
       {
