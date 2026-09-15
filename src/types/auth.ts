@@ -1,8 +1,10 @@
 export type AccountStatus = "ACTIVE" | "LOCKED" | "DISABLED";
+export type AccountTypeEnum = "CUSTOMER" | "EMPLOYEE";
 
 export interface UserAccount {
   accountId: string;
-  username: string;
+  loginEmail: string;
+  accountType: AccountTypeEnum;
   status: AccountStatus;
   createdAt: string;
   updatedAt: string;
@@ -21,7 +23,7 @@ export interface Employee {
 
 export interface Customer {
   customerId: string;
-  accountId: string | null; // NULL nếu là khách vãng lai
+  accountId: string | null;
   fullName: string;
   phone: string;
   email: string;
@@ -32,20 +34,20 @@ export interface Customer {
 // ── Requests ──────────────────────────────────────────────────────────────────
 
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
 export interface RegisterRequest {
-  username: string;
-  password: string;
   fullName: string;
   phone: string;
   email: string;
+  code: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export interface CreateEmployeeRequest {
-  username: string;
   password: string;
   fullName: string;
   phone: string;
@@ -59,21 +61,23 @@ export interface CreateCustomerRequest {
   email: string;
 }
 
-export interface RefreshTokenRequest {
-  refreshToken: string;
-}
-
 // ── Response ──────────────────────────────────────────────────────────────────
 
-/** Trả về sau login / refresh */
-export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-  account: UserAccount;
-  employee: Employee | null;
-  customer: Customer | null;
+export interface RegisterResponse {
+  accountId: string;
 }
 
-/** Vai trò được suy ra từ dữ liệu (không phải enum từ server) */
+export interface MyProfile {
+  accountId: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  role: UserRole;
+}
+
+export interface UpdateProfileRequest {
+  fullName: string;
+  phone: string;
+}
+
 export type UserRole = "Admin" | "Employee" | "Customer";
