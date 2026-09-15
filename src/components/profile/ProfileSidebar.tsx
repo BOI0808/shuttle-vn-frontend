@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useAuthStore } from "@/stores/auth.store";
 import { useMyBookings } from "@/hooks/useBooking";
 import { formatCurrency } from "@/utils";
-import { ACCOUNT_STATUS_LABEL } from "@/config/app";
+import { USER_ROLE_LABEL } from "@/config/app";
 
 interface ProfileSidebarProps {
   onRequestDeactivate: () => void;
@@ -29,17 +29,9 @@ export function ProfileSidebar({ onRequestDeactivate }: ProfileSidebarProps) {
     .filter((b) => b.status === "COMPLETED")
     .reduce((sum, b) => sum + b.totalCost, 0);
 
-  const fullName =
-    user?.customer?.fullName ?? user?.employee?.fullName ?? "Người dùng";
+  const fullName = user?.fullName ?? "Người dùng";
   const initials = fullName.trim().charAt(0).toUpperCase();
-  const accountStatus = user?.status ?? "ACTIVE";
-  const createdAt = user?.customer?.createdAt ?? user?.createdAt;
-  const memberSinceLabel = createdAt
-    ? new Date(createdAt).toLocaleDateString("vi-VN", {
-        month: "2-digit",
-        year: "numeric",
-      })
-    : "--";
+  const roleLabel = user ? USER_ROLE_LABEL[user.role] : "Khách hàng";
 
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -83,18 +75,7 @@ export function ProfileSidebar({ onRequestDeactivate }: ProfileSidebarProps) {
         </div>
 
         <p className="text-base font-bold text-gray-900 mb-0.5">{fullName}</p>
-        <p className="font-mono text-xs text-gray-400 mb-3.5">Khách hàng</p>
-
-        <div className="inline-flex items-center gap-1.5 bg-green-50 border border-green-200 rounded-full px-2.5 py-[3px]">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-          <span className="font-mono text-[11px] text-green-700">
-            {ACCOUNT_STATUS_LABEL[accountStatus]}
-          </span>
-        </div>
-
-        <p className="font-mono text-[11px] text-gray-400 mt-3">
-          Thành viên từ {memberSinceLabel}
-        </p>
+        <p className="font-mono text-xs text-gray-400 mb-3.5">{roleLabel}</p>
       </div>
 
       {/* Stats */}
