@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 const PUBLIC_PATHS = ["/login", "/register"];
 const AUTH_COOKIE_NAME = "shuttlevn.auth";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAuthenticated = Boolean(request.cookies.get(AUTH_COOKIE_NAME)?.value);
