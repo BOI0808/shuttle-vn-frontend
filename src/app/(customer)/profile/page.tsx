@@ -8,8 +8,6 @@ import { useAuthStore } from "@/stores/auth.store";
 import { ProfileSidebar } from "@/components/profile/ProfileSidebar";
 import { ProfileInfoForm } from "@/components/profile/ProfileInfoForm";
 import { ChangePasswordForm } from "@/components/profile/ChangePasswordForm";
-import { SessionList } from "@/components/profile/SessionList";
-import { DeactivateAccountModal } from "@/components/profile/DeactivateAccountModal";
 
 type Tab = "info" | "password";
 
@@ -32,9 +30,7 @@ export default function ProfilePage() {
       <div className="max-w-[960px] mx-auto px-7 py-7">
         <div className="grid grid-cols-[280px_1fr] gap-6 items-start">
           {/* Left column */}
-          <ProfileSidebar
-            onRequestDeactivate={() => setShowDeactivateModal(true)}
-          />
+          <ProfileSidebar />
 
           {/* Right column: tabs */}
           <div>
@@ -73,18 +69,11 @@ export default function ProfilePage() {
             {activeTab === "password" && (
               <>
                 <ChangePasswordForm />
-                <SessionList />
               </>
             )}
           </div>
         </div>
       </div>
-
-      <DeactivateAccountModal
-        open={showDeactivateModal}
-        onClose={() => setShowDeactivateModal(false)}
-        onConfirm={handleConfirmDeactivate}
-      />
     </>
   );
 }
