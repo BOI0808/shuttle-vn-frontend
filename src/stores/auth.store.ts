@@ -16,22 +16,18 @@ export interface AuthUser extends UserAccount {
 
 interface AuthState {
   user: AuthUser | null;
-  accessToken: string | null;
-  refreshToken: string | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
 }
 
 interface AuthActions {
-  setAuth: (user: AuthUser, accessToken: string, refreshToken: string) => void;
+  setAuth: (user: AuthUser) => void;
   clearAuth: () => void;
   setUser: (user: AuthUser) => void;
 }
 
 const initialState: AuthState = {
   user: null,
-  accessToken: null,
-  refreshToken: null,
   isAuthenticated: false,
   isAdmin: false,
 };
@@ -41,27 +37,18 @@ export const useAuthStore = create<AuthState & AuthActions>()(
     (set) => ({
       ...initialState,
 
-      setAuth: (user, accessToken, refreshToken) => {
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
+      setAuth: (user) => {
         set({
           user,
-          accessToken,
-          refreshToken,
           isAuthenticated: true,
           isAdmin: user.role === "Admin",
         });
 
-        Cookies.set("accessToken", accessToken, { sameSite: "strict" });
         Cookies.set("userRole", user.role, { sameSite: "strict" });
       },
 
       clearAuth: () => {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
         set(initialState);
-
-        Cookies.remove("accessToken");
         Cookies.remove("userRole");
       },
 
@@ -79,8 +66,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
         isAdmin: state.isAdmin,
       }),
