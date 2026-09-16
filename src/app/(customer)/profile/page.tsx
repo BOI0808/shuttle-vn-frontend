@@ -8,7 +8,6 @@ import { useAuthStore } from "@/stores/auth.store";
 import { ProfileSidebar } from "@/components/profile/ProfileSidebar";
 import { ProfileInfoForm } from "@/components/profile/ProfileInfoForm";
 import { ChangePasswordForm } from "@/components/profile/ChangePasswordForm";
-import { SessionList } from "@/components/profile/SessionList";
 
 type Tab = "info" | "password";
 
@@ -70,7 +69,6 @@ export default function ProfilePage() {
             {activeTab === "password" && (
               <>
                 <ChangePasswordForm />
-                <SessionList />
               </>
             )}
           </div>
