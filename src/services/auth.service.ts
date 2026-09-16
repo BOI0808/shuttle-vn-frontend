@@ -4,7 +4,8 @@ import {
     LoginRequest,
     RegisterRequest,
     IssueCodeRequest,
-    UpdateProfileRequest, UserAccount, Profile,
+    UpdateProfileRequest,
+    UserAccount,
 } from "@/types";
 import {AuthUser} from "@/stores/auth.store";
 

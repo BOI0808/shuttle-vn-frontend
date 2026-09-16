@@ -1,30 +1,56 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { authService } from "@/services";
-import { useAuthStore } from "@/stores/auth.store";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useRouter} from "next/navigation";
+import {toast} from "sonner";
+import {authService} from "@/services";
+import {AuthUser, useAuthStore} from "@/stores/auth.store";
 import {CodeType, LoginRequest, RegisterRequest} from "@/types";
-import {customerService} from "@/services/customer.service";
 
 export function useAuth() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user, isAuthenticated, isAdmin, isLoading, setUser, clearAuth } =
-    useAuthStore();
+  const {user, isAuthenticated, isAdmin, isLoading, setUser, clearAuth} =
+      useAuthStore();
 
   const loginMutation = useMutation({
     mutationFn: async (payload: LoginRequest) => {
-      await authService.login(payload);
-      return customerService.getProfile();
+      const userAccount = await authService.login(payload);
+      if (userAccount.accountType == "Customer") {
+        if (userAccount.customer === null)
+          throw new Error("Customer profile is null");
+
+        const authUser: AuthUser = {
+          accountId: userAccount.accountId,
+          fullName: userAccount.customer.email,
+          phone: userAccount.customer.phone,
+          email: userAccount.customer.email,
+          role: "Customer",
+        };
+        return authUser;
+      }
+      else {
+        if (userAccount.employee === null)
+          throw new Error("Employee profile is null");
+
+        const authUser: AuthUser = {
+          accountId: userAccount.accountId,
+          fullName: userAccount.employee.email,
+          phone: userAccount.employee.phone,
+          email: userAccount.employee.email,
+          role: userAccount.employee.isAdmin ? "Admin" : "Employee",
+        };
+        return authUser;
+      }
     },
-    onSuccess: (profile) => {
-      setUser(profile);
-      if (profile.role === "Admin" || profile.role === "Employee") {
-        router.push("/dashboard");
-      } else {
+
+    onSuccess: (authUser) => {
+      setUser(authUser);
+
+      if (authUser.role === "Customer") {
         router.push("/courts");
+      } else {
+        router.push("/dashboard");
       }
     },
   });

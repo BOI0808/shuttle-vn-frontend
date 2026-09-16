@@ -38,8 +38,8 @@ export function ProfileInfoForm() {
 
   const updateMutation = useMutation({
     mutationFn: (data: FormData) => authService.updateProfile(data),
-    onSuccess: (profile) => {
-      setUser(profile);
+    onSuccess: (authUser) => {
+      setUser(authUser);
       setIsEditing(false);
       toast.success("Thông tin đã được cập nhật");
     },
