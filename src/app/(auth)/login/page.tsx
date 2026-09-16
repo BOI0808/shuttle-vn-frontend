@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { LoginForm } from "@/components/auth/LoginForm";
+import {Metadata} from "next";
 
-export const metadata = { title: "Đăng nhập – ShuttleVN" };
+export const metadata: Metadata = { title: "Đăng nhập" };
 
 export default function LoginPage() {
   return (

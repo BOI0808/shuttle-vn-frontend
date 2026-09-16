@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { RegisterForm } from "@/components/auth/RegisterForm";
+import {Metadata} from "next";
 
-export const metadata = { title: "Đăng ký – ShuttleVN" };
+export const metadata: Metadata = { title: "Đăng ký" };
 
 export default function RegisterPage() {
   return (
