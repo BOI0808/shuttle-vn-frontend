@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuthStore } from "@/stores/auth.store";
+import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/utils";
 
 const NAV_LINKS = [
@@ -14,19 +15,19 @@ const NAV_LINKS = [
 
 export function CustomerNav() {
   const pathname = usePathname();
-  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, clearAuth } = useAuthStore();
+  const { user } = useAuthStore();
+  const { logout, isLoggingOut } = useAuth();
 
-  const initials = user?.name
-    ? user.name.trim().split(" ").pop()?.charAt(0).toUpperCase() ?? "K"
+  const initials = user?.fullName
+    ? user.fullName.trim().split(" ").pop()?.charAt(0).toUpperCase() ?? "K"
     : "K";
 
-  const displayName = user?.name?.trim().split(" ").pop() ?? "Khách";
+  const displayName = user?.fullName?.trim().split(" ").pop() ?? "Khách";
 
   function handleLogout() {
-    clearAuth();
-    router.push("/login");
+    setMenuOpen(false);
+    logout();
   }
 
   return (
@@ -117,13 +118,14 @@ export function CustomerNav() {
               </Link>
               <div className="border-t border-gray-100 my-1" />
               <button
+                disabled={isLoggingOut}
                 onClick={handleLogout}
-                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-md text-[13px] font-medium text-red-500 hover:bg-red-50 transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-md text-[13px] font-medium text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
               >
                 <span className="material-symbols-outlined text-[16px]">
                   logout
                 </span>
-                Đăng xuất
+                {isLoggingOut ? "Đang đăng xuất..." : "Đăng xuất"}
               </button>
             </div>
           )}

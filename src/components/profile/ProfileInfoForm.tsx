@@ -4,13 +4,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuthStore } from "@/stores/auth.store";
+import { authService } from "@/services";
 import { getErrorMessage } from "@/utils";
 
 const schema = z.object({
   fullName: z.string().min(2, "Họ tên không được để trống"),
-  email: z.string().email("Email không hợp lệ"),
   phone: z.string().regex(/^0\d{9}$/, "Số điện thoại không hợp lệ"),
 });
 
@@ -24,9 +25,8 @@ export function ProfileInfoForm() {
   const [isEditing, setIsEditing] = useState(false);
 
   const defaultValues: FormData = {
-    fullName: user?.customer?.fullName ?? "",
-    email: user?.customer?.email ?? "",
-    phone: user?.customer?.phone ?? "",
+    fullName: user?.fullName ?? "",
+    phone: user?.phone ?? "",
   };
 
   const {
@@ -35,6 +35,16 @@ export function ProfileInfoForm() {
     reset,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema), defaultValues });
+
+  const updateMutation = useMutation({
+    mutationFn: (data: FormData) => authService.updateProfile(data),
+    onSuccess: (profile) => {
+      setUser(profile);
+      setIsEditing(false);
+      toast.success("Thông tin đã được cập nhật");
+    },
+    onError: (error) => toast.error(getErrorMessage(error)),
+  });
 
   function handleEdit() {
     reset(defaultValues);
@@ -46,28 +56,7 @@ export function ProfileInfoForm() {
     setIsEditing(false);
   }
 
-  const onSubmit = (data: FormData) => {
-    try {
-      if (user) {
-        setUser({
-          ...user,
-          customer: user.customer
-            ? {
-                ...user.customer,
-                fullName: data.fullName,
-                email: data.email,
-                phone: data.phone,
-              }
-            : user.customer,
-        });
-      }
-      // TODO: gọi useUpdateCustomerProfile() mutation khi có endpoint
-      setIsEditing(false);
-      toast.success("Thông tin đã được cập nhật");
-    } catch (error) {
-      toast.error(getErrorMessage(error));
-    }
-  };
+  const onSubmit = (data: FormData) => updateMutation.mutate(data);
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
@@ -134,20 +123,13 @@ export function ProfileInfoForm() {
               mail
             </span>
             <input
-              disabled={!isEditing}
+              disabled
               className={inputClass}
               type="email"
-              {...register("email")}
+              value={user?.email ?? ""}
+              readOnly
             />
           </div>
-          {errors.email && (
-            <p className="flex items-center gap-1 text-xs text-red-500 mt-1">
-              <span className="material-symbols-outlined text-[14px]">
-                error
-              </span>
-              {errors.email.message}
-            </p>
-          )}
         </div>
 
         {/* Số điện thoại */}
@@ -180,12 +162,13 @@ export function ProfileInfoForm() {
           <div className="flex gap-2.5 pt-1">
             <button
               type="submit"
-              className="inline-flex items-center gap-1.5 bg-emerald-500 text-white rounded-[7px] px-5 py-[10px] text-[13px] font-mono font-medium tracking-[0.04em] transition-colors duration-150 hover:bg-emerald-600"
+              disabled={updateMutation.isPending}
+              className="inline-flex items-center gap-1.5 bg-emerald-500 text-white rounded-[7px] px-5 py-[10px] text-[13px] font-mono font-medium tracking-[0.04em] transition-colors duration-150 hover:bg-emerald-600 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <span className="material-symbols-outlined text-[16px]">
                 save
               </span>
-              Lưu thay đổi
+              {updateMutation.isPending ? "Đang lưu..." : "Lưu thay đổi"}
             </button>
             <button
               type="button"

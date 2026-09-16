@@ -1,10 +1,11 @@
 export type AccountStatus = "Active" | "Disabled";
-
 export type CodeType = "VerifyEmail" | "ResetPassword";
+export type AccountTypeEnum = "Customer" | "Employee"
 
 export interface UserAccount {
   accountId: string;
-  username: string;
+  loginEmail: string;
+  accountType: AccountTypeEnum;
   status: AccountStatus;
   createdAt: string;
   updatedAt: string;
@@ -23,7 +24,7 @@ export interface Employee {
 
 export interface Customer {
   customerId: string;
-  accountId: string | null; // NULL nếu là khách vãng lai
+  accountId: string | null;
   fullName: string;
   phone: string;
   email: string;
@@ -31,10 +32,12 @@ export interface Customer {
   updatedAt: string;
 }
 
-export interface CustomerProfile {
+export interface Profile {
+  accountId: string;
   fullName: string;
   phone: string;
   email: string;
+  role: UserRole;
 }
 
 export interface AuthResponse {
@@ -78,9 +81,15 @@ export interface CreateCustomerRequest {
   email: string;
 }
 
-export interface RefreshTokenRequest {
-  refreshToken: string;
+// ── Response ──────────────────────────────────────────────────────────────────
+
+export interface RegisterResponse {
+  accountId: string;
 }
 
-/** Vai trò được suy ra từ dữ liệu (không phải enum từ server) */
+export interface UpdateProfileRequest {
+  fullName: string;
+  phone: string;
+}
+
 export type UserRole = "Admin" | "Employee" | "Customer";

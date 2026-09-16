@@ -1,14 +1,14 @@
 import axiosInstance from "@/lib/axios";
 import {
     ApiResponse,
-    AuthResponse,
-    IssueCodeRequest,
     LoginRequest,
     RegisterRequest,
+    IssueCodeRequest,
+    AuthResponse,
 } from "@/types";
 
 export const authService = {
-    async login(payload: LoginRequest): Promise<AuthResponse> {
+  async login(payload: LoginRequest): Promise<AuthResponse> {
         const {data} = await axiosInstance.post<ApiResponse<AuthResponse>>(
             "/auth/login",
             payload
@@ -16,8 +16,8 @@ export const authService = {
         return data.data;
     },
 
-    async register(payload: RegisterRequest): Promise<AuthResponse> {
-        const {data} = await axiosInstance.post<ApiResponse<AuthResponse>>(
+    async register(payload: RegisterRequest): Promise<string> {
+        const {data} = await axiosInstance.post<ApiResponse<string>>(
             "/auth/register",
             payload
         );
@@ -31,12 +31,5 @@ export const authService = {
 
     async logout(): Promise<void> {
         await axiosInstance.post("/auth/logout");
-    },
-
-    async getProfile(): Promise<AuthResponse["account"]> {
-        const {data} = await axiosInstance.get<ApiResponse<AuthResponse["account"]>>(
-            "/auth/profile"
-        );
-        return data.data;
     },
 };
