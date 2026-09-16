@@ -2,9 +2,10 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { authService } from "@/services";
 import { useAuthStore } from "@/stores/auth.store";
-import { AuthResponse, LoginRequest, RegisterRequest } from "@/types";
+import {AuthResponse, CodeType, LoginRequest, RegisterRequest} from "@/types";
 import { UserRole } from "@/types";
 
 function resolveUserRole(data: AuthResponse) {
@@ -40,7 +41,7 @@ export function useAuth() {
     mutationFn: (payload: LoginRequest) => authService.login(payload),
     onSuccess: (data) => {
       const user = resolveUserRole(data);
-      setAuth(user, data.accessToken, data.refreshToken);
+      setAuth(user);
       if (user.role === "Admin" || user.role === "Employee") {
         router.push("/dashboard");
       } else {
@@ -52,7 +53,10 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: (payload: RegisterRequest) => authService.register(payload),
     onSuccess: () => {
-      router.push("/login");
+      toast.success("Đăng kí thành công, đang chuyển hướng về trang đăng nhập");
+      setTimeout(() => {
+        router.push("/login");
+      }, 1000);
     },
   });
 
@@ -84,6 +88,7 @@ export function useAuth() {
     register: registerMutation.mutate,
     isRegistering: registerMutation.isPending,
     registerError: registerMutation.error,
+    sendVerificationCode: (email: string, type: CodeType) => authService.sendVerificationCode({email, type}),
     logout: logoutMutation.mutate,
     isLoggingOut: logoutMutation.isPending,
   };
