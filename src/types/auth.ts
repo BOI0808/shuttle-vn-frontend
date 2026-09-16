@@ -1,4 +1,6 @@
-export type AccountStatus = "ACTIVE" | "LOCKED" | "DISABLED";
+export type AccountStatus = "Active" | "Disabled";
+
+export type CodeType = "VerifyEmail" | "ResetPassword";
 
 export interface UserAccount {
   accountId: string;
@@ -29,23 +31,40 @@ export interface Customer {
   updatedAt: string;
 }
 
-// ── Requests ──────────────────────────────────────────────────────────────────
-
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  username: string;
-  password: string;
+export interface CustomerProfile {
   fullName: string;
   phone: string;
   email: string;
 }
 
+export interface AuthResponse {
+  account: UserAccount;
+  employee: Employee | null;
+  customer: Customer | null;
+}
+
+// ── Requests ──────────────────────────────────────────────────────────────────
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  fullName: string;
+  phone: string;
+  email: string;
+  code: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface IssueCodeRequest {
+  email: string;
+  type: CodeType;
+}
+
 export interface CreateEmployeeRequest {
-  username: string;
   password: string;
   fullName: string;
   phone: string;
