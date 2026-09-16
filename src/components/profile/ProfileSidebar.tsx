@@ -6,11 +6,7 @@ import { useMyBookings } from "@/hooks/useBooking";
 import { formatCurrency } from "@/utils";
 import { USER_ROLE_LABEL } from "@/config/app";
 
-interface ProfileSidebarProps {
-  onRequestDeactivate: () => void;
-}
-
-export function ProfileSidebar({ onRequestDeactivate }: ProfileSidebarProps) {
+export function ProfileSidebar() {
   const { user } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -129,22 +125,6 @@ export function ProfileSidebar({ onRequestDeactivate }: ProfileSidebarProps) {
             </span>
           </div>
         </div>
-      </div>
-
-      {/* Danger zone */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-[18px] py-[18px]">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-red-600 font-mono mb-3">
-          Vùng nguy hiểm
-        </p>
-        <button
-          onClick={onRequestDeactivate}
-          className="w-full flex items-center justify-center gap-1.5 bg-white border border-red-200 text-red-600 rounded-[7px] py-[9px] text-xs font-mono font-medium transition-colors duration-150 hover:bg-red-50"
-        >
-          <span className="material-symbols-outlined text-[15px]">
-            no_accounts
-          </span>
-          Vô hiệu hóa tài khoản
-        </button>
       </div>
     </div>
   );
