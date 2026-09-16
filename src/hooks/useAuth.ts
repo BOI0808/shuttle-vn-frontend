@@ -22,7 +22,7 @@ export function useAuth() {
 
         const authUser: AuthUser = {
           accountId: userAccount.accountId,
-          fullName: userAccount.customer.email,
+          fullName: userAccount.customer.fullName,
           phone: userAccount.customer.phone,
           email: userAccount.customer.email,
           role: "Customer",
@@ -35,7 +35,7 @@ export function useAuth() {
 
         const authUser: AuthUser = {
           accountId: userAccount.accountId,
-          fullName: userAccount.employee.email,
+          fullName: userAccount.employee.fullName,
           phone: userAccount.employee.phone,
           email: userAccount.employee.email,
           role: userAccount.employee.isAdmin ? "Admin" : "Employee",
