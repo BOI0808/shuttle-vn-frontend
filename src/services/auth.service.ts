@@ -4,12 +4,13 @@ import {
     LoginRequest,
     RegisterRequest,
     IssueCodeRequest,
-    AuthResponse,
+    UpdateProfileRequest, UserAccount, Profile,
 } from "@/types";
+import {AuthUser} from "@/stores/auth.store";
 
 export const authService = {
-  async login(payload: LoginRequest): Promise<AuthResponse> {
-        const {data} = await axiosInstance.post<ApiResponse<AuthResponse>>(
+  async login(payload: LoginRequest): Promise<UserAccount> {
+        const {data} = await axiosInstance.post<ApiResponse<UserAccount>>(
             "/auth/login",
             payload
         );
@@ -31,5 +32,23 @@ export const authService = {
 
     async logout(): Promise<void> {
         await axiosInstance.post("/auth/logout");
+    },
+
+    async getProfile(): Promise<AuthUser> {
+        return {
+            accountId: "AccountABC",
+            fullName: "Nguyen Van A",
+            phone: "0123456789",
+            email: "nva123@gmail.com",
+            role: "Customer",
+        };
+    },
+
+    async updateProfile(payload: UpdateProfileRequest): Promise<AuthUser> {
+        const {data} = await axiosInstance.put<ApiResponse<AuthUser>>(
+            "/profile",
+            payload
+        );
+        return data.data;
     },
 };
