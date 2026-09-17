@@ -10,7 +10,7 @@ import {
 import {AuthUser} from "@/stores/auth.store";
 
 export const authService = {
-  async login(payload: LoginRequest): Promise<UserAccount> {
+    async login(payload: LoginRequest): Promise<UserAccount> {
         const {data} = await axiosInstance.post<ApiResponse<UserAccount>>(
             "/auth/login",
             payload
