@@ -1,6 +1,7 @@
 import { BookingHistoryList } from "@/components/booking/BookingHistoryList";
+import {Metadata} from "next";
 
-export const metadata = { title: "Lịch sử đặt sân – ShuttleVN" };
+export const metadata: Metadata = { title: "Lịch sử đặt sân" };
 
 export default function MyBookingsPage() {
   return (

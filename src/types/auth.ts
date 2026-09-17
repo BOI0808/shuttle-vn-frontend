@@ -1,18 +1,20 @@
-export type AccountStatus = "ACTIVE" | "LOCKED" | "DISABLED";
-export type AccountTypeEnum = "CUSTOMER" | "EMPLOYEE";
+export type AccountStatus = "Active" | "Disabled";
+export type CodeType = "VerifyEmail" | "ResetPassword";
+export type AccountType = "Customer" | "Employee"
+export type UserRole = "Admin" | "Employee" | "Customer";
 
 export interface UserAccount {
   accountId: string;
-  loginEmail: string;
-  accountType: AccountTypeEnum;
+  accountType: AccountType;
   status: AccountStatus;
   createdAt: string;
   updatedAt: string;
+  customer: Customer | null;
+  employee: Employee | null;
 }
 
 export interface Employee {
   employeeId: string;
-  accountId: string;
   fullName: string;
   phone: string;
   email: string;
@@ -47,11 +49,16 @@ export interface RegisterRequest {
   confirmPassword: string;
 }
 
+export interface IssueCodeRequest {
+  email: string;
+  type: CodeType;
+}
+
 export interface CreateEmployeeRequest {
-  password: string;
   fullName: string;
   phone: string;
   email: string;
+  password: string;
   isAdmin: boolean;
 }
 
@@ -61,23 +68,13 @@ export interface CreateCustomerRequest {
   email: string;
 }
 
-// ── Response ──────────────────────────────────────────────────────────────────
-
-export interface RegisterResponse {
-  accountId: string;
-}
-
-export interface MyProfile {
-  accountId: string;
-  fullName: string;
-  phone: string;
-  email: string;
-  role: UserRole;
-}
-
 export interface UpdateProfileRequest {
   fullName: string;
   phone: string;
 }
 
-export type UserRole = "Admin" | "Employee" | "Customer";
+// ── Response ──────────────────────────────────────────────────────────────────
+
+export interface RegisterResponse {
+  accountId: string;
+}

@@ -6,10 +6,10 @@ import axios, {
 import { APP_CONFIG } from "@/config/app";
 import { useAuthStore } from "@/stores/auth.store";
 
-const BASE_URL = `${APP_CONFIG.apiBaseUrl}/${APP_CONFIG.apiVersion}`;
+const BASE_URL = `${APP_CONFIG.apiBaseUrl}`;
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: "/api",
   timeout: 15000,
   withCredentials: true,
   headers: {

@@ -1,28 +1,56 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { authService } from "@/services";
-import { useAuthStore } from "@/stores/auth.store";
-import { LoginRequest, RegisterRequest } from "@/types";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useRouter} from "next/navigation";
+import {toast} from "sonner";
+import {authService} from "@/services";
+import {AuthUser, useAuthStore} from "@/stores/auth.store";
+import {CodeType, LoginRequest, RegisterRequest} from "@/types";
 
 export function useAuth() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user, isAuthenticated, isAdmin, isLoading, setUser, clearAuth } =
-    useAuthStore();
+  const {user, isAuthenticated, isAdmin, isLoading, setUser, clearAuth} =
+      useAuthStore();
 
   const loginMutation = useMutation({
     mutationFn: async (payload: LoginRequest) => {
-      await authService.login(payload);
-      return authService.getProfile();
+      const userAccount = await authService.login(payload);
+      if (userAccount.accountType == "Customer") {
+        if (userAccount.customer === null)
+          throw new Error("Customer profile is null");
+
+        const authUser: AuthUser = {
+          accountId: userAccount.accountId,
+          fullName: userAccount.customer.fullName,
+          phone: userAccount.customer.phone,
+          email: userAccount.customer.email,
+          role: "Customer",
+        };
+        return authUser;
+      }
+      else {
+        if (userAccount.employee === null)
+          throw new Error("Employee profile is null");
+
+        const authUser: AuthUser = {
+          accountId: userAccount.accountId,
+          fullName: userAccount.employee.fullName,
+          phone: userAccount.employee.phone,
+          email: userAccount.employee.email,
+          role: userAccount.employee.isAdmin ? "Admin" : "Employee",
+        };
+        return authUser;
+      }
     },
-    onSuccess: (profile) => {
-      setUser(profile);
-      if (profile.role === "Admin" || profile.role === "Employee") {
-        router.push("/dashboard");
-      } else {
+
+    onSuccess: (authUser) => {
+      setUser(authUser);
+
+      if (authUser.role === "Customer") {
         router.push("/courts");
+      } else {
+        router.push("/dashboard");
       }
     },
   });
@@ -30,7 +58,10 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: (payload: RegisterRequest) => authService.register(payload),
     onSuccess: () => {
-      router.push("/login");
+      toast.success("Đăng kí thành công, đang chuyển hướng về trang đăng nhập");
+      setTimeout(() => {
+        router.push("/login");
+      }, 1000);
     },
   });
 
@@ -55,6 +86,7 @@ export function useAuth() {
     register: registerMutation.mutate,
     isRegistering: registerMutation.isPending,
     registerError: registerMutation.error,
+    sendVerificationCode: (email: string, type: CodeType) => authService.sendVerificationCode({email, type}),
     logout: logoutMutation.mutate,
     isLoggingOut: logoutMutation.isPending,
   };

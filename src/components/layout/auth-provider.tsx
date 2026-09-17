@@ -14,8 +14,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     authService
       .getProfile()
-      .then((profile) => {
-        if (active) setUser(profile);
+      .then((authUser) => {
+        if (active) setUser(authUser);
       })
       .catch(() => {
         if (active) clearAuth();

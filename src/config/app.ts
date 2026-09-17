@@ -1,8 +1,8 @@
 export const APP_CONFIG = {
   name: "ShuttleVN",
   description: "Hệ thống quản lý sân cầu lông",
-  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5062",
-  apiVersion: "api",
+  apiBaseUrl:
+    process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000/api",
 } as const;
 
 // ── Booking ───────────────────────────────────────────────────────────────────

@@ -6,15 +6,23 @@ import { cn } from "@/utils";
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: ReactNode;
   error?: string;
+  containerClassName?: string;
 }
 
-export function Input({ icon, error, className, type, ...props }: InputProps) {
+export function Input({
+  icon,
+  error,
+  className,
+  containerClassName,
+  type,
+  ...props
+}: InputProps) {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
   const resolvedType = isPassword ? (showPassword ? "text" : "password") : type;
 
   return (
-    <div className="w-full">
+    <div className={cn("w-full", containerClassName)}>
       <div className="relative">
         {icon && (
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none flex items-center">
