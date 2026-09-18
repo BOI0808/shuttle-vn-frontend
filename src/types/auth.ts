@@ -1,6 +1,6 @@
 export type AccountStatus = "Active" | "Disabled";
 export type CodeType = "VerifyEmail" | "ResetPassword";
-export type AccountType = "Customer" | "Employee"
+export type AccountType = "Customer" | "Employee";
 export type UserRole = "Admin" | "Employee" | "Customer";
 
 export interface UserAccount {
@@ -66,6 +66,12 @@ export interface CreateCustomerRequest {
   fullName: string;
   phone: string;
   email: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }
 
 export interface UpdateProfileRequest {

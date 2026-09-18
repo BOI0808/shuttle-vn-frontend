@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import { authService } from "@/services";
 import { Input } from "@/components/ui/Input";
 import { getErrorMessage } from "@/utils";
 
@@ -45,16 +47,21 @@ export function ChangePasswordForm() {
   const newPassword = watch("newPassword") ?? "";
   const strength = useMemo(() => calcStrength(newPassword), [newPassword]);
 
-  const onSubmit = (data: FormData) => {
-    try {
-      // TODO: gọi useChangePassword() mutation khi có endpoint
-      console.log("Đổi mật khẩu", data);
+  const changePasswordMutation = useMutation({
+    mutationFn: (data: FormData) =>
+      authService.changePassword({
+        currentPassword: data.oldPassword,
+        newPassword: data.newPassword,
+        confirmNewPassword: data.confirmPassword,
+      }),
+    onSuccess: () => {
       reset();
       toast.success("Mật khẩu đã được cập nhật");
-    } catch (error) {
-      toast.error(getErrorMessage(error));
-    }
-  };
+    },
+    onError: (error) => toast.error(getErrorMessage(error)),
+  });
+
+  const onSubmit = (data: FormData) => changePasswordMutation.mutate(data);
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
@@ -150,12 +157,15 @@ export function ChangePasswordForm() {
         <div className="pt-1">
           <button
             type="submit"
+            disabled={changePasswordMutation.isPending}
             className="inline-flex items-center gap-1.5 bg-emerald-500 text-white rounded-[7px] px-5 py-[10px] text-[13px] font-mono font-medium tracking-[0.04em] transition-colors duration-150 hover:bg-emerald-600"
           >
             <span className="material-symbols-outlined text-[16px]">
               lock_reset
             </span>
-            Cập nhật mật khẩu
+            {changePasswordMutation.isPending
+              ? "Đang cập nhật..."
+              : "Cập nhật mật khẩu"}
           </button>
         </div>
       </form>

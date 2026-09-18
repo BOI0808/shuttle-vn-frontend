@@ -5,9 +5,11 @@ import {
   RegisterRequest,
   IssueCodeRequest,
   UpdateProfileRequest,
+  ChangePasswordRequest,
   UserAccount,
 } from "@/types";
 import { AuthUser } from "@/stores/auth.store";
+import { mapAccountToAuthUser } from "@/utils";
 
 export const authService = {
   async login(payload: LoginRequest): Promise<UserAccount> {
@@ -46,10 +48,17 @@ export const authService = {
   },
 
   async updateProfile(payload: UpdateProfileRequest): Promise<AuthUser> {
-    const { data } = await axiosInstance.put<ApiResponse<AuthUser>>(
+    const { data } = await axiosInstance.put<ApiResponse<UserAccount>>(
       "/profile",
       payload
     );
-    return data.data;
+    return mapAccountToAuthUser(data.data);
+  },
+
+  async changePassword(payload: ChangePasswordRequest): Promise<void> {
+    await axiosInstance.put<ApiResponse<{ message: string }>>(
+      "/profile/change-password",
+      payload
+    );
   },
 };
