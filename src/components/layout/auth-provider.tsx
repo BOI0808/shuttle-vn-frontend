@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { authService } from "@/services";
 import { useAuthStore } from "@/stores/auth.store";
+import { mapAccountToAuthUser } from "@/utils";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const setUser = useAuthStore((state) => state.setUser);
@@ -14,8 +15,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     authService
       .getProfile()
-      .then((authUser) => {
-        if (active) setUser(authUser);
+      .then((userAccount) => {
+        if (active) setUser(mapAccountToAuthUser(userAccount));
       })
       .catch(() => {
         if (active) clearAuth();
