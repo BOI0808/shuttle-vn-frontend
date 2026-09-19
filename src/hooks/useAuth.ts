@@ -10,8 +10,10 @@ import {CodeType, LoginRequest, RegisterRequest} from "@/types";
 export function useAuth() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const {user, isAuthenticated, isAdmin, isLoading, setUser, clearAuth} =
+  const {user, isAuthenticated, isLoading, setUser, clearAuth} =
       useAuthStore();
+
+  const isAdmin = user?.role === "Admin";
 
   const loginMutation = useMutation({
     mutationFn: async (payload: LoginRequest) => {
