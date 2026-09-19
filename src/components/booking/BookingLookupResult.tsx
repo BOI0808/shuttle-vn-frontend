@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/Badge";
 import { BOOKING_STATUS_LABEL } from "@/config/app";
-import { formatCurrency } from "@/utils";
+import { formatCurrency, formatDate, formatDateTime } from "@/utils";
 import type { BookingDetail } from "@/types";
 
 interface InfoRowProps {
@@ -82,7 +82,7 @@ export function BookingLookupResult({
               </Badge>
             </div>
             <p className="text-xs text-gray-400 m-0">
-              Tạo lúc {booking.createdAt}
+              Tạo lúc {formatDateTime(booking.createdAt)}
             </p>
           </div>
         </div>
@@ -90,7 +90,7 @@ export function BookingLookupResult({
         {/* Detail rows */}
         <div className="mb-[18px]">
           <InfoRow icon="sports_tennis" label="Sân" value={booking.courtName} />
-          <InfoRow icon="calendar_today" label="Ngày" value={booking.date} />
+          <InfoRow icon="calendar_today" label="Ngày" value={formatDate(booking.date)} />
           <InfoRow
             icon="schedule"
             label="Khung giờ"
