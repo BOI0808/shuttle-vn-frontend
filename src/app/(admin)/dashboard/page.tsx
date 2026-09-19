@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
+import DashboardClient from './DashboardClient';
 
-export const metadata: Metadata = { title: 'Dashboard' };
+export const metadata: Metadata = { title: 'Bảng điều khiển' };
 
 export default function DashboardPage() {
-  return <div>{/* DashboardStats + RevenueChart components sẽ được implement ở đây */}</div>;
+  return <DashboardClient />;
 }
