@@ -9,6 +9,9 @@ export const mockDashboardSummary: DashboardSummary = {
   pendingBookings: 8,
   unpaidInvoices: 12,
   occupancyRateToday: 82,
+  revenueTrend: "+12% so hôm qua",
+  bookingsTrend: "+5 so hôm qua",
+  occupancyTrend: "+8% tuần này",
   revenueChart: [
     { date: "2026-09-13", revenue: 4200000, bookingCount: 30 },
     { date: "2026-09-14", revenue: 5800000, bookingCount: 42 },
