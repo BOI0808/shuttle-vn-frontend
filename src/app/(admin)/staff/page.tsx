@@ -12,6 +12,7 @@ import { EmployeeFormModal } from "@/components/admin/EmployeeFormModal";
 import { Button } from "@/components/ui/Button";
 import { UserAccount } from "@/types";
 import { getErrorMessage } from "@/utils";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const STATUS_LABEL: Record<string, string> = {
   Active: "Hoạt động",
@@ -39,6 +40,9 @@ export default function StaffPage() {
   const { data, isLoading } = useEmployees({ pageNumber: 1, pageSize: 100 });
   const employees = (data?.items ?? []).filter((e) => e.employee !== null);
 
+  const [grantAdminTarget, setGrantAdminTarget] = useState<UserAccount | null>(
+    null
+  );
   const grantAdminMutation = useGrantAdminRole();
   const lockMutation = useLockEmployee();
   const unlockMutation = useUnlockEmployee();
@@ -67,10 +71,21 @@ export default function StaffPage() {
     [employees]
   );
 
-  function handleGrantAdmin(id: string) {
-    grantAdminMutation.mutate(id, {
-      onSuccess: () => toast.success("Đã cấp quyền Quản trị viên"),
-      onError: (error) => toast.error(getErrorMessage(error)),
+  function handleGrantAdmin(account: UserAccount) {
+    if (!grantAdminMutation.isPending) setGrantAdminTarget(account);
+  }
+
+  function confirmGrantAdmin() {
+    if (!grantAdminTarget?.employee) return;
+    grantAdminMutation.mutate(grantAdminTarget.employee.employeeId, {
+      onSuccess: () => {
+        toast.success("Đã cấp quyền Quản trị viên");
+        setGrantAdminTarget(null);
+      },
+      onError: (error) => {
+        toast.error(getErrorMessage(error));
+        setGrantAdminTarget(null);
+      },
     });
   }
 
@@ -250,7 +265,7 @@ export default function StaffPage() {
                       <button
                         title="Cấp quyền Admin"
                         className="border border-purple-200 rounded-[6px] p-1.5 text-purple-500 hover:bg-purple-50"
-                        onClick={() => handleGrantAdmin(e.employee!.employeeId)}
+                        onClick={() => handleGrantAdmin(e)}
                       >
                         <span className="material-symbols-outlined text-[14px]">
                           admin_panel_settings
@@ -284,6 +299,18 @@ export default function StaffPage() {
         <EmployeeFormModal
           employee={editingEmployee}
           onClose={() => setEditingEmployee(undefined)}
+        />
+      )}
+
+      {grantAdminTarget && (
+        <ConfirmDialog
+          title="Cấp quyền Quản trị viên"
+          description={`Bạn sắp cấp quyền Admin cho "${grantAdminTarget.employee?.fullName}". Hành động này không thể hoàn tác (chưa có chức năng thu hồi quyền Admin).`}
+          confirmLabel="Cấp quyền Admin"
+          variant="danger"
+          isLoading={grantAdminMutation.isPending}
+          onConfirm={confirmGrantAdmin}
+          onCancel={() => setGrantAdminTarget(null)}
         />
       )}
     </div>
