@@ -5,9 +5,15 @@ import {
   DateRangeParams,
   RevenueStats,
 } from "@/types";
+import { IS_MOCK, mockDelay } from "@/mocks/config";
+import { mockDashboardSummary } from "@/mocks/data";
 
 export const dashboardService = {
   async getSummary(): Promise<DashboardSummary> {
+    if (IS_MOCK) {
+      await mockDelay();
+      return mockDashboardSummary;
+    }
     const { data } = await axiosInstance.get<ApiResponse<DashboardSummary>>(
       "/admin/dashboard/summary"
     );
@@ -15,6 +21,10 @@ export const dashboardService = {
   },
 
   async getRevenueStats(params: DateRangeParams): Promise<RevenueStats[]> {
+    if (IS_MOCK) {
+      await mockDelay();
+      return mockDashboardSummary.revenueChart;
+    }
     const { data } = await axiosInstance.get<ApiResponse<RevenueStats[]>>(
       "/admin/dashboard/revenue",
       { params }
