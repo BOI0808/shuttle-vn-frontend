@@ -4,10 +4,10 @@ import {RoleGuard} from "@/components/auth/RoleGuard";
 
 export const metadata: Metadata = { title: 'Quản lý khách hàng '};
 
-export function CustomersPage() {
+export default function CustomersPage() {
   return (
       <RoleGuard allowedRoles={['Admin', 'Employee']}>
-        <CustomersClient/>;
+        <CustomersClient/>
       </RoleGuard>
   )
 }
