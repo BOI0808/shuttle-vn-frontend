@@ -78,7 +78,6 @@ export interface UpdateProfileRequest {
   fullName: string;
   phone: string;
 }
-
 // ── Response ──────────────────────────────────────────────────────────────────
 
 export interface RegisterResponse {
