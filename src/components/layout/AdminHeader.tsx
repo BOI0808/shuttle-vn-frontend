@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 // Component sẽ được implement chi tiết trong sprint UI
 export function AdminHeader() {
