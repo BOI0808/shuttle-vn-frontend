@@ -27,7 +27,7 @@ export function ConfirmDialog({
       : "bg-amber-500 hover:bg-amber-600";
 
   return (
-    <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-[2px] flex items-center justify-center z-[110]">
+    <div className="fixed inset-0 bg-gray-900/60 flex items-center justify-center z-[110]">
       <div className="bg-white border border-gray-200 rounded-xl w-[420px] max-w-[95vw] shadow-2xl">
         <div className="p-6">
           <div className="flex items-start gap-3 mb-4">

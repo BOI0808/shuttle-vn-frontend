@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   useEmployees,
@@ -36,6 +36,13 @@ export default function StaffPage() {
   const [editingEmployee, setEditingEmployee] = useState<
     UserAccount | null | undefined
   >(undefined);
+
+  useEffect(() => {
+    const handleOpenModal = () => setEditingEmployee(null);
+    window.addEventListener("open-add-employee", handleOpenModal);
+    return () =>
+      window.removeEventListener("open-add-employee", handleOpenModal);
+  }, []);
 
   const { data, isLoading } = useEmployees({ pageNumber: 1, pageSize: 100 });
   const employees = (data?.items ?? []).filter((e) => e.employee !== null);
@@ -105,35 +112,28 @@ export default function StaffPage() {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-[22px]">
-        <h1 className="font-bold text-[16px] text-gray-900">
-          Quản lý nhân viên
-        </h1>
-        <Button
-          className="w-auto px-4"
-          onClick={() => setEditingEmployee(null)}
-        >
-          <span className="material-symbols-outlined text-[16px]">add</span>
-          Thêm nhân viên
-        </Button>
-      </div>
-
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3.5 mb-[22px]">
         <StatCard
           label="Tổng nhân viên"
           value={stats.total}
           color="text-blue-600"
+          icon="badge"
+          iconBg="bg-blue-50"
         />
         <StatCard
           label="Đang hoạt động"
           value={stats.active}
           color="text-green-600"
+          icon="check_circle"
+          iconBg="bg-green-50"
         />
         <StatCard
           label="Quản trị viên"
           value={stats.admin}
           color="text-purple-500"
+          icon="admin_panel_settings"
+          iconBg="bg-purple-50"
         />
       </div>
 
@@ -321,17 +321,35 @@ function StatCard({
   label,
   value,
   color,
+  icon,
+  iconBg,
 }: {
   label: string;
   value: number;
   color: string;
+  icon: string;
+  iconBg: string;
 }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm px-5 py-4">
-      <p className="font-mono text-[10px] uppercase text-gray-500 mb-1">
-        {label}
-      </p>
-      <p className={`font-bold text-[22px] ${color}`}>{value}</p>
+    <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex items-center gap-3.5">
+      <div
+        className={`w-10 h-10 rounded-[9px] flex items-center justify-center flex-shrink-0 ${iconBg}`}
+      >
+        <span
+          className={`material-symbols-outlined text-[20px] ${color}`}
+          style={{ fontVariationSettings: "'FILL' 1" }}
+        >
+          {icon}
+        </span>
+      </div>
+      <div>
+        <p className="font-mono text-[10px] uppercase text-gray-500 mb-0.5 tracking-wider">
+          {label}
+        </p>
+        <p className={`font-bold text-[22px] leading-tight ${color}`}>
+          {value}
+        </p>
+      </div>
     </div>
   );
 }

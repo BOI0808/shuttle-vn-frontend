@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { useCreateEmployee, useUpdateEmployee } from "@/hooks/useEmployee";
 import { UserAccount } from "@/types";
 import { getErrorMessage } from "@/utils";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const createSchema = z.object({
   fullName: z.string().min(2, "Họ tên tối thiểu 2 ký tự"),
@@ -41,6 +42,8 @@ export function EmployeeFormModal({
     register,
     handleSubmit,
     reset,
+    watch, // <-- Thêm watch
+    setValue, // <-- Thêm setValue
     formState: { errors },
   } = useForm<CreateFormData>({
     resolver: zodResolver(schema),
@@ -53,6 +56,26 @@ export function EmployeeFormModal({
         }
       : { isAdmin: false },
   });
+
+  const isAdmin = watch("isAdmin");
+  const [showAdminConfirm, setShowAdminConfirm] = useState(false);
+  const fullName = watch("fullName");
+
+  function handleSelectAdmin() {
+    if (!isAdmin) {
+      setShowAdminConfirm(true);
+    }
+  }
+
+  function onConfirmAdmin() {
+    setValue("isAdmin", true);
+    setShowAdminConfirm(false);
+  }
+
+  function onCancelAdmin() {
+    setValue("isAdmin", false);
+    setShowAdminConfirm(false);
+  }
 
   useEffect(() => {
     reset(
@@ -166,22 +189,78 @@ export function EmployeeFormModal({
               </div>
             )}
             {!isEditing && (
-              <label className="flex items-center gap-2 text-sm text-gray-700">
-                <input type="checkbox" {...register("isAdmin")} />
-                Cấp quyền Quản trị viên ngay khi tạo
-              </label>
+              <div className="flex flex-col gap-2 pt-1">
+                <Label>Vai trò tài khoản</Label>
+
+                {/* Nút công tắc 2 bên */}
+                <div className="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => setValue("isAdmin", false)}
+                    className={`flex-1 py-2 text-xs font-medium rounded-md flex items-center justify-center gap-1.5 transition-all ${
+                      !isAdmin
+                        ? "bg-white text-blue-600 shadow-sm font-semibold"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[16px]">
+                      badge
+                    </span>
+                    Nhân viên
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSelectAdmin}
+                    className={`flex-1 py-2 text-xs font-medium rounded-md flex items-center justify-center gap-1.5 transition-all ${
+                      isAdmin
+                        ? "bg-purple-600 text-white shadow-sm font-semibold"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[16px]">
+                      admin_panel_settings
+                    </span>
+                    Quản trị viên
+                  </button>
+                </div>
+              </div>
             )}
           </div>
 
-          <div className="px-6 py-[14px] border-t border-gray-200 bg-gray-50 flex justify-end gap-2.5">
-            <Button type="button" variant="ghost" onClick={onClose}>
+          <div className="px-6 py-[14px] border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="w-36 whitespace-nowrap"
+            >
               Huỷ
             </Button>
-            <Button type="submit" loading={isPending} className="w-auto px-5">
+            <Button
+              type="submit"
+              loading={isPending}
+              className="w-36 whitespace-nowrap"
+            >
               {isEditing ? "Lưu thay đổi" : "Thêm nhân viên"}
             </Button>
           </div>
         </form>
+        {/* Popup cảnh báo khi chọn Quản trị viên */}
+        {showAdminConfirm && (
+          <ConfirmDialog
+            title="Cấp quyền Quản trị viên"
+            description={
+              fullName
+                ? `Bạn sắp cấp quyền Admin cho "${fullName}". Hành động này không thể hoàn tác (chưa có chức năng thu hồi quyền Admin).`
+                : "Bạn sắp cấp quyền Admin cho nhân viên này. Hành động này không thể hoàn tác (chưa có chức năng thu hồi quyền Admin)."
+            }
+            confirmLabel="Cấp quyền Admin"
+            variant="danger"
+            onConfirm={onConfirmAdmin}
+            onCancel={onCancelAdmin}
+          />
+        )}
       </div>
     </div>
   );
