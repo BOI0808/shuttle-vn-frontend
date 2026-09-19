@@ -5,11 +5,12 @@ import { employeeService } from "@/services";
 import { QUERY_KEYS } from "@/config/app";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { UserAccount } from "@/types";
 
 export default function EmployeesClient() {
   const { data, isLoading } = useQuery({
     queryKey: QUERY_KEYS.employees,
-    queryFn: () => employeeService.getEmployees(),
+    queryFn: () => employeeService.getAllEmployees(),
   });
 
   return (
@@ -17,7 +18,9 @@ export default function EmployeesClient() {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold text-slate-900">Quản lý nhân viên</h2>
         <Button size="sm" className="w-auto">
-          <span className="material-symbols-outlined text-[16px] mr-1">person_add</span>
+          <span className="material-symbols-outlined text-[16px] mr-1">
+            person_add
+          </span>
           Thêm nhân viên
         </Button>
       </div>
@@ -36,28 +39,40 @@ export default function EmployeesClient() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {isLoading ? (
-                <tr><td colSpan={5} className="px-5 py-8 text-center text-slate-500 font-mono">Đang tải...</td></tr>
-              ) : data?.items.map((emp) => (
-                <tr key={emp.employeeId} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-5 py-4">
-                    <p className="text-[13px] font-bold text-slate-900">{emp.fullName}</p>
-                    <p className="text-[11px] text-slate-500 font-mono">{emp.employeeId}</p>
-                  </td>
-                  <td className="px-5 py-4">
-                    <p className="text-[13px] text-slate-700">{emp.phone}</p>
-                    <p className="text-[11px] text-slate-400">{emp.email}</p>
-                  </td>
-                  <td className="px-5 py-4">
-                    <Badge status={emp.isAdmin ? "CONFIRMED" : "PENDING"}>
-                      {emp.isAdmin ? "Quản trị viên" : "Nhân viên"}
-                    </Badge>
-                  </td>
-                  <td className="px-5 py-4 text-[11px] font-mono text-slate-500">{new Date(emp.createdAt).toLocaleDateString("vi-VN")}</td>
-                  <td className="px-5 py-4 text-right">
-                    <Button variant="outline" size="sm" className="w-auto inline-flex">Sửa</Button>
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="px-5 py-8 text-center text-slate-500 font-mono"
+                  >
+                    Đang tải...
                   </td>
                 </tr>
-              ))}
+              ): (data?.items.map((acc: UserAccount) => {
+                  const emp = acc.employee;
+                  if (!emp) return null;
+                  return (
+                    <tr key={emp.employeeId} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-5 py-4">
+                        <p className="text-[13px] font-bold text-slate-900">{emp.fullName}</p>
+                        <p className="text-[11px] text-slate-500 font-mono">{emp.employeeId}</p>
+                      </td>
+                      <td className="px-5 py-4">
+                        <p className="text-[13px] text-slate-700">{emp.phone}</p>
+                        <p className="text-[11px] text-slate-400">{emp.email}</p>
+                      </td>
+                      <td className="px-5 py-4">
+                        <Badge status={emp.isAdmin ? "CONFIRMED" : "PENDING"}>
+                          {emp.isAdmin ? "Quản trị viên" : "Nhân viên"}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-4 text-[11px] font-mono text-slate-500">{new Date(emp.createdAt).toLocaleDateString("vi-VN")}</td>
+                      <td className="px-5 py-4 text-right">
+                        <Button variant="outline" size="sm" className="w-auto inline-flex">Sửa</Button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

@@ -66,7 +66,7 @@ export function ProfileInfoForm() {
             Thông tin cá nhân
           </h2>
           <p className="text-xs text-gray-500">
-            Cập nhật họ tên, email và số điện thoại
+            Cập nhật họ tên và số điện thoại
           </p>
         </div>
         {!isEditing && (

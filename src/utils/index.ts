@@ -8,9 +8,9 @@ export function cn(...inputs: ClassValue[]): string {
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
   }).format(amount);
 }
 
@@ -23,7 +23,7 @@ export function formatDateTime(dateStr: string): string {
 }
 
 export function toISODate(date: Date): string {
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 }
 
 export function getTodayISO(): string {
@@ -32,12 +32,14 @@ export function getTodayISO(): string {
 
 export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
-  if (typeof error === 'string') return error;
-  return 'Đã có lỗi xảy ra, vui lòng thử lại.';
+  if (typeof error === "string") return error;
+  return "Đã có lỗi xảy ra, vui lòng thử lại.";
 }
 
 export function calcHourDiff(startTime: string, endTime: string): number {
-  const [sh, sm] = startTime.split(':').map(Number);
-  const [eh, em] = endTime.split(':').map(Number);
+  const [sh, sm] = startTime.split(":").map(Number);
+  const [eh, em] = endTime.split(":").map(Number);
   return (eh * 60 + em - (sh * 60 + sm)) / 60;
 }
+
+export * from "./auth-mapper";

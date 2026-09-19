@@ -23,7 +23,7 @@ export function CustomerNav() {
     ? user.fullName.trim().split(" ").pop()?.charAt(0).toUpperCase() ?? "K"
     : "K";
 
-  const displayName = user?.fullName?.trim().split(" ").pop() ?? "Khách";
+  const displayName = user?.fullName?.trim() ?? "Khách";
 
   function handleLogout() {
     setMenuOpen(false);
