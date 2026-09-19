@@ -35,7 +35,7 @@ export const employeeService = {
 
   async updateEmployee(
     id: string,
-    payload: UpdateProfileRequest // đổi type
+    payload: UpdateProfileRequest
   ): Promise<UserAccount> {
     const { data } = await axiosInstance.put<ApiResponse<UserAccount>>(
       `/employees/${id}`,
