@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: 'Quản lý lịch sân' };
 export default function SchedulePage() {
   return (
       <RoleGuard allowedRoles={['Admin', 'Employee']}>
-        <ScheduleClient />;
+        <ScheduleClient />
       </RoleGuard>
   )
 }

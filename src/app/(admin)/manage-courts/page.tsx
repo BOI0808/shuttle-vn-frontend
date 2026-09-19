@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: 'Quản lý sân' };
 export default function ManageCourtsPage() {
   return (
       <RoleGuard allowedRoles={['Admin', 'Employee']}>
-        <ManageCourtsClient />;
+        <ManageCourtsClient />
       </RoleGuard>
   )
 }

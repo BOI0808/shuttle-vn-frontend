@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: 'Xác nhận thanh toán' };
 export default function PaymentsPage() {
   return (
       <RoleGuard allowedRoles={['Admin', 'Employee']}>
-        <div>{/* PaymentConfirmation component sẽ được implement ở đây */}</div>;
+        <div>{/* PaymentConfirmation component sẽ được implement ở đây */}</div>
       </RoleGuard>
   )
 }
