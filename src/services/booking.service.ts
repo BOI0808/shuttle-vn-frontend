@@ -80,7 +80,7 @@ export const bookingService = {
     return data.data;
   },
 
-  async getBookingById(id: string): Promise<Booking> {
+  async getBookingById(id: string): Promise<BookingDetail> {
     if (IS_MOCK) {
       await mockDelay();
       const booking = mockBookings.find((b) => b.bookingId === id);
