@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   useEmployees,
@@ -9,7 +9,6 @@ import {
   useUnlockEmployee,
 } from "@/hooks/useEmployee";
 import { EmployeeFormModal } from "@/components/admin/EmployeeFormModal";
-import { Button } from "@/components/ui/Button";
 import { UserAccount } from "@/types";
 import { getErrorMessage } from "@/utils";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -36,6 +35,14 @@ export default function EmployeesClient() {
   const [editingEmployee, setEditingEmployee] = useState<
     UserAccount | null | undefined
   >(undefined);
+
+  // Lắng nghe sự kiện click "Thêm nhân viên" từ AdminHeader
+  useEffect(() => {
+    const handleOpenModal = () => setEditingEmployee(null);
+    window.addEventListener("open-add-employee", handleOpenModal);
+    return () =>
+      window.removeEventListener("open-add-employee", handleOpenModal);
+  }, []);
 
   const { data, isLoading } = useEmployees({ pageNumber: 1, pageSize: 100 });
   const employees = (data?.items ?? []).filter((e) => e.employee !== null);
@@ -104,49 +111,42 @@ export default function EmployeesClient() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-slate-900">
-          Quản lý nhân viên
-        </h2>
-        <Button
-          className="w-auto px-4"
-          onClick={() => setEditingEmployee(null)}
-        >
-          <span className="material-symbols-outlined text-[16px] mr-1">person_add</span>
-          Thêm nhân viên
-        </Button>
-      </div>
-
+    <div className="p-6">
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3.5 mb-[22px]">
         <StatCard
           label="Tổng nhân viên"
           value={stats.total}
           color="text-blue-600"
+          icon="badge"
+          iconBg="bg-blue-50"
         />
         <StatCard
           label="Đang hoạt động"
           value={stats.active}
-          color="text-emerald-600"
+          color="text-green-600"
+          icon="check_circle"
+          iconBg="bg-green-50"
         />
         <StatCard
           label="Quản trị viên"
           value={stats.admin}
           color="text-purple-500"
+          icon="admin_panel_settings"
+          iconBg="bg-purple-50"
         />
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex items-center gap-2.5 mb-4">
         <input
-          className="flex-1 min-w-[280px] border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+          className="flex-1 max-w-[320px] border border-gray-300 rounded-[7px] px-3 py-2 text-sm outline-none focus:border-emerald-500"
           placeholder="Tìm theo tên, email, SĐT..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <select
-          className="border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white"
+          className="border border-gray-300 rounded-[7px] px-3 py-2 text-xs font-mono w-40"
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
         >
@@ -155,7 +155,7 @@ export default function EmployeesClient() {
           <option value="Employee">Nhân viên</option>
         </select>
         <select
-          className="border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white"
+          className="border border-gray-300 rounded-[7px] px-3 py-2 text-xs font-mono w-40"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >
@@ -163,128 +163,126 @@ export default function EmployeesClient() {
           <option value="Active">Hoạt động</option>
           <option value="Disabled">Đã khoá</option>
         </select>
-        <span className="ml-auto text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
+        <span className="ml-auto font-mono text-xs text-gray-500">
           {filtered.length} nhân viên
         </span>
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50/50 text-[10px] font-mono text-slate-400 uppercase tracking-wider border-b border-slate-100">
-                <th className="px-5 py-3 font-semibold">Nhân viên</th>
-                <th className="px-5 py-3 font-semibold">Vai trò</th>
-                <th className="px-5 py-3 font-semibold">Liên hệ</th>
-                <th className="px-5 py-3 font-semibold">Trạng thái</th>
-                <th className="px-5 py-3 font-semibold text-center">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {isLoading && (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-5 py-8 text-center text-slate-500 font-mono"
-                  >
-                    Đang tải...
-                  </td>
-                </tr>
-              )}
-              {!isLoading && filtered.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-5 py-8 text-center text-slate-500 font-mono"
-                  >
-                    Không tìm thấy nhân viên
-                  </td>
-                </tr>
-              )}
-              {filtered.map((e) => (
-                <tr
-                  key={e.employee!.employeeId}
-                  className="hover:bg-slate-50 transition-colors"
+      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b border-gray-200 bg-gray-50 text-[11px] font-mono text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-2.5 font-medium">Nhân viên</th>
+              <th className="px-4 py-2.5 font-medium">Vai trò</th>
+              <th className="px-4 py-2.5 font-medium">Liên hệ</th>
+              <th className="px-4 py-2.5 font-medium">Trạng thái</th>
+              <th className="px-4 py-2.5 font-medium text-center">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading && (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="text-center py-8 text-gray-400 text-sm"
                 >
-                  <td className="px-5 py-4">
-                    <p className="text-[13px] font-bold text-slate-900">
-                      {e.employee!.fullName}
-                    </p>
-                    <p className="font-mono text-[11px] text-slate-400">
-                      {e.employee!.employeeId}
-                    </p>
-                  </td>
-                  <td className="px-5 py-4">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border ${ROLE_CLASS(
-                        e.employee!.isAdmin
-                      )}`}
+                  Đang tải...
+                </td>
+              </tr>
+            )}
+            {!isLoading && filtered.length === 0 && (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="text-center py-8 text-gray-400 text-sm"
+                >
+                  Không tìm thấy nhân viên
+                </td>
+              </tr>
+            )}
+            {filtered.map((e) => (
+              <tr
+                key={e.employee!.employeeId}
+                className="border-b border-gray-100 hover:bg-gray-50"
+              >
+                <td className="px-4 py-2.5">
+                  <p className="text-sm font-medium text-gray-900">
+                    {e.employee!.fullName}
+                  </p>
+                  <p className="font-mono text-[11px] text-gray-400">
+                    {e.employee!.employeeId}
+                  </p>
+                </td>
+                <td className="px-4 py-2.5">
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border ${ROLE_CLASS(
+                      e.employee!.isAdmin
+                    )}`}
+                  >
+                    {ROLE_LABEL(e.employee!.isAdmin)}
+                  </span>
+                </td>
+                <td className="px-4 py-2.5">
+                  <p className="font-mono text-[11px] text-gray-900">
+                    {e.employee!.phone}
+                  </p>
+                  <p className="text-[11px] text-gray-500">
+                    {e.employee!.email}
+                  </p>
+                </td>
+                <td className="px-4 py-2.5">
+                  <span
+                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border ${
+                      STATUS_CLASS[e.status]
+                    }`}
+                  >
+                    {STATUS_LABEL[e.status]}
+                  </span>
+                </td>
+                <td className="px-4 py-2.5">
+                  <div className="flex gap-1.5 justify-center">
+                    <button
+                      title="Chỉnh sửa"
+                      className="border border-gray-300 rounded-[6px] p-1.5 text-gray-500 hover:border-emerald-500 hover:text-emerald-600"
+                      onClick={() => setEditingEmployee(e)}
                     >
-                      {ROLE_LABEL(e.employee!.isAdmin)}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4">
-                    <p className="text-[13px] text-slate-700">
-                      {e.employee!.phone}
-                    </p>
-                    <p className="text-[11px] text-slate-400">
-                      {e.employee!.email}
-                    </p>
-                  </td>
-                  <td className="px-5 py-4">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border ${
-                        STATUS_CLASS[e.status]
+                      <span className="material-symbols-outlined text-[14px]">
+                        edit
+                      </span>
+                    </button>
+                    {!e.employee!.isAdmin && (
+                      <button
+                        title="Cấp quyền Admin"
+                        className="border border-purple-200 rounded-[6px] p-1.5 text-purple-500 hover:bg-purple-50"
+                        onClick={() => handleGrantAdmin(e)}
+                      >
+                        <span className="material-symbols-outlined text-[14px]">
+                          admin_panel_settings
+                        </span>
+                      </button>
+                    )}
+                    <button
+                      title={
+                        e.status === "Active" ? "Khoá tài khoản" : "Mở khoá"
+                      }
+                      className={`border rounded-[6px] p-1.5 ${
+                        e.status === "Active"
+                          ? "border-red-200 text-red-500 hover:bg-red-50"
+                          : "border-green-200 text-green-500 hover:bg-green-50"
                       }`}
+                      onClick={() => handleToggleLock(e)}
                     >
-                      {STATUS_LABEL[e.status]}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4">
-                    <div className="flex gap-2 justify-center">
-                      <button
-                        title="Chỉnh sửa"
-                        className="border border-slate-200 rounded-lg p-1.5 text-slate-500 hover:border-emerald-500 hover:text-emerald-600 transition-colors bg-white shadow-sm"
-                        onClick={() => setEditingEmployee(e)}
-                      >
-                        <span className="material-symbols-outlined text-[18px]">
-                          edit
-                        </span>
-                      </button>
-                      {!e.employee!.isAdmin && (
-                        <button
-                          title="Cấp quyền Admin"
-                          className="border border-purple-100 rounded-lg p-1.5 text-purple-500 hover:bg-purple-50 transition-colors bg-white shadow-sm"
-                          onClick={() => handleGrantAdmin(e)}
-                        >
-                          <span className="material-symbols-outlined text-[18px]">
-                            admin_panel_settings
-                          </span>
-                        </button>
-                      )}
-                      <button
-                        title={
-                          e.status === "Active" ? "Khoá tài khoản" : "Mở khoá"
-                        }
-                        className={`border rounded-lg p-1.5 transition-colors bg-white shadow-sm ${
-                          e.status === "Active"
-                            ? "border-red-100 text-red-500 hover:bg-red-50"
-                            : "border-emerald-100 text-emerald-500 hover:bg-emerald-50"
-                        }`}
-                        onClick={() => handleToggleLock(e)}
-                      >
-                        <span className="material-symbols-outlined text-[18px]">
-                          {e.status === "Active" ? "lock" : "lock_open"}
-                        </span>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                      <span className="material-symbols-outlined text-[14px]">
+                        {e.status === "Active" ? "lock" : "lock_open"}
+                      </span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {editingEmployee !== undefined && (
@@ -297,10 +295,9 @@ export default function EmployeesClient() {
       {grantAdminTarget && (
         <ConfirmDialog
           title="Cấp quyền Quản trị viên"
-          description={`Bạn sắp cấp quyền Admin cho "${grantAdminTarget.employee?.fullName}". Hành động này không thể hoàn tác (chưa có chức năng thu hồi quyền Admin).`}
+          description={`Bạn sắp cấp quyền Admin cho "${grantAdminTarget.employee?.fullName}". Hành động này không thể hoàn tác.`}
           confirmLabel="Cấp quyền Admin"
           variant="danger"
-          isLoading={grantAdminMutation.isPending}
           onConfirm={confirmGrantAdmin}
           onCancel={() => setGrantAdminTarget(null)}
         />
@@ -313,17 +310,35 @@ function StatCard({
   label,
   value,
   color,
+  icon,
+  iconBg,
 }: {
   label: string;
   value: number;
   color: string;
+  icon: string;
+  iconBg: string;
 }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-6 py-5">
-      <p className="font-mono text-[10px] uppercase text-slate-400 tracking-wider mb-1">
-        {label}
-      </p>
-      <p className={`font-bold text-2xl ${color}`}>{value}</p>
+    <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex items-center gap-3.5">
+      <div
+        className={`w-10 h-10 rounded-[9px] flex items-center justify-center flex-shrink-0 ${iconBg}`}
+      >
+        <span
+          className={`material-symbols-outlined text-[20px] ${color}`}
+          style={{ fontVariationSettings: "'FILL' 1" }}
+        >
+          {icon}
+        </span>
+      </div>
+      <div>
+        <p className="font-mono text-[10px] uppercase text-gray-500 mb-0.5 tracking-wider">
+          {label}
+        </p>
+        <p className={`font-bold text-[22px] leading-tight ${color}`}>
+          {value}
+        </p>
+      </div>
     </div>
   );
 }
