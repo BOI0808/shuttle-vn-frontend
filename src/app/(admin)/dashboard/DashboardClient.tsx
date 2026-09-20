@@ -7,6 +7,14 @@ import { DashboardStats } from "@/components/admin/DashboardStats";
 import { RevenueChart } from "@/components/admin/RevenueChart";
 import { Badge } from "@/components/ui/Badge";
 import { formatCurrency } from "@/utils";
+import {BookingStatus} from "@/types";
+
+const STATUS_LABELS: Record<BookingStatus, string> = {
+  PENDING: "Chờ xác nhận",
+  CONFIRMED: "Đã xác nhận",
+  COMPLETED: "Hoàn thành",
+  CANCELLED: "Đã huỷ",
+};
 
 export default function DashboardClient() {
   const { data: summary, isLoading } = useQuery({
@@ -81,7 +89,7 @@ export default function DashboardClient() {
                   </td>
                   <td className="px-5 py-4">
                     <Badge status={booking.status}>
-                      {booking.status === "CONFIRMED" ? "Đã xác nhận" : booking.status === "PENDING" ? "Chờ xác nhận" : booking.status}
+                      {STATUS_LABELS[booking.status]}
                     </Badge>
                   </td>
                   <td className="px-5 py-4 text-[12px] font-mono font-bold text-slate-900 text-right">{formatCurrency(booking.totalCost)}</td>
