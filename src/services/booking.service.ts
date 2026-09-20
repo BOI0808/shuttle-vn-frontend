@@ -19,8 +19,8 @@ export const bookingService = {
     if (IS_MOCK) {
       await mockDelay();
       return {
-        bookingId: `b-${Math.random().toString(36).substr(2, 9)}`,
-        bookingCode: `DS-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
+        bookingId: `b-${Math.random().toString(36).substring(2, 11)}`,
+        bookingCode: `DS-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
         ...payload,
         status: "PENDING",
         totalCost: 150000,
@@ -41,8 +41,8 @@ export const bookingService = {
     if (IS_MOCK) {
       await mockDelay();
       return {
-        bookingId: `b-${Math.random().toString(36).substr(2, 9)}`,
-        bookingCode: `DS-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
+        bookingId: `b-${Math.random().toString(36).substring(2, 11)}`,
+        bookingCode: `DS-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
         customerId: "guest-id",
         courtId: payload.courtId,
         date: payload.date,
@@ -142,7 +142,7 @@ export const bookingService = {
     if (IS_MOCK) {
       await mockDelay();
       return {
-        invoiceId: `inv-${Math.random().toString(36).substr(2, 9)}`,
+        invoiceId: `inv-${Math.random().toString(36).substring(2, 11)}`,
         invoiceCode: `HD-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-001`,
         bookingId: "mock-booking-id",
         totalCost: 150000,
