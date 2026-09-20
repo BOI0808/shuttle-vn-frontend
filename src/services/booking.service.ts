@@ -109,6 +109,22 @@ export const bookingService = {
   async cancelBooking(id: string): Promise<void> {
     if (IS_MOCK) {
       await mockDelay();
+      const booking = mockBookings.find((b) => b.bookingId === id);
+      if (!booking) return;
+
+      const oldStatus = booking.status;
+      booking.status = "CANCELLED";
+      booking.updatedAt = new Date().toISOString();
+      booking.statusHistory.push({
+        id: `h-${Math.random().toString(36).slice(2, 9)}`,
+        bookingId: booking.bookingId,
+        oldStatus,
+        newStatus: "CANCELLED",
+        changedBy: null,
+        changedAt: new Date().toISOString(),
+        reason: "Người dùng yêu cầu hủy trên web",
+      });
+
       return;
     }
     await axiosInstance.put(`/bookings/${id}/cancel`);
