@@ -49,7 +49,7 @@ export const employeeService = {
   async createEmployee(payload: CreateEmployeeRequest): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();
-      return {
+      const newAccount: UserAccount = {
         accountId: `ACC-${Math.floor(Math.random() * 1000)}`,
         accountType: "Employee",
         status: "Active",
@@ -66,6 +66,9 @@ export const employeeService = {
           updatedAt: new Date().toISOString(),
         },
       };
+
+      mockUserAccounts.unshift(newAccount);
+      return newAccount;
     }
     const { data } = await axiosInstance.post<ApiResponse<UserAccount>>(
       `/employees`,
