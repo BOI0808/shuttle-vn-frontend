@@ -297,7 +297,7 @@ export default function StaffPage() {
 
       {editingEmployee !== undefined && (
         <EmployeeFormModal
-          employee={editingEmployee}
+          userAccount={editingEmployee}
           onClose={() => setEditingEmployee(undefined)}
         />
       )}
