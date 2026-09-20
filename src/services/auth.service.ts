@@ -59,13 +59,11 @@ export const authService = {
     async getProfile(): Promise<AuthUser> {
         if (IS_MOCK) {
             await mockDelay(200);
-            return {
-                accountId: mockCustomer.accountId!,
-                fullName: mockCustomer.fullName,
-                phone: mockCustomer.phone,
-                email: mockCustomer.email,
-                role: "Customer",
-            };
+            const account =
+                mockUserAccounts.find((u) => u.employee?.isAdmin) ??
+                mockUserAccounts[0];
+            
+            return mapAccountToAuthUser(account);
         }
         const { data } = await axiosInstance.get<ApiResponse<UserAccount>>(
             "/auth/me"
