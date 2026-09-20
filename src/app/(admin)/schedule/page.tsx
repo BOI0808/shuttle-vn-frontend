@@ -1,7 +1,13 @@
 import type { Metadata } from 'next';
+import ScheduleClient from './ScheduleClient';
+import { RoleGuard } from "@/components/auth/RoleGuard";
 
-export const metadata: Metadata = { title: 'Lịch sân' };
+export const metadata: Metadata = { title: 'Quản lý lịch sân' };
 
 export default function SchedulePage() {
-  return <div>{/* ScheduleTimeline component sẽ được implement ở đây */}</div>;
+  return (
+      <RoleGuard allowedRoles={['Admin', 'Employee']}>
+        <ScheduleClient />
+      </RoleGuard>
+  )
 }

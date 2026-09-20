@@ -1,7 +1,13 @@
 import type { Metadata } from 'next';
+import DashboardClient from './DashboardClient';
+import { RoleGuard } from '@/components/auth/RoleGuard';
 
-export const metadata: Metadata = { title: 'Dashboard' };
+export const metadata: Metadata = { title: 'Bảng điều khiển' };
 
 export default function DashboardPage() {
-  return <div>{/* DashboardStats + RevenueChart components sẽ được implement ở đây */}</div>;
+  return (
+    <RoleGuard allowedRoles={['Admin']}>
+      <DashboardClient />
+    </RoleGuard>
+  );
 }

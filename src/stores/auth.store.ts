@@ -14,7 +14,6 @@ export interface AuthUser {
 interface AuthState {
   user: AuthUser | null;
   isAuthenticated: boolean;
-  isAdmin: boolean;
   isLoading: boolean;
 }
 
@@ -27,7 +26,6 @@ interface AuthActions {
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
-  isAdmin: false,
   isLoading: true,
 };
 
@@ -38,7 +36,6 @@ export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
     set({
       user,
       isAuthenticated: true,
-      isAdmin: user.role === "Admin",
     }),
 
   clearAuth: () => set({ ...initialState, isLoading: false }),

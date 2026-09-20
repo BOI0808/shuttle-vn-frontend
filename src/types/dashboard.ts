@@ -1,3 +1,5 @@
+import { BookingDetail } from "./booking";
+
 export interface RevenueStats {
   date: string; // ISO yyyy-MM-dd
   revenue: number;
@@ -20,6 +22,11 @@ export interface DashboardSummary {
   pendingBookings: number; // trạng thái PENDING cần xử lý
   unpaidInvoices: number; // hoá đơn UNPAID
   occupancyRateToday: number; // % tổng sân hôm nay
+  revenueTrend?: string;
+  bookingsTrend?: string;
+  occupancyTrend?: string;
   revenueChart: RevenueStats[];
   occupancyByCourtToday: CourtOccupancyStats[];
+  recentBookings: BookingDetail[];
+  pendingBookingsList: BookingDetail[];
 }

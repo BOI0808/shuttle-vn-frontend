@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/Label";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useCreateEmployee, useUpdateEmployee } from "@/hooks/useEmployee";
-import { UserAccount } from "@/types";
+import {Employee, UserAccount} from "@/types";
 import { getErrorMessage } from "@/utils";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
@@ -27,14 +27,26 @@ type CreateFormData = z.infer<typeof createSchema>;
 type EditFormData = z.infer<typeof editSchema>;
 
 interface EmployeeFormModalProps {
-  employee: UserAccount | null; // null = tạo mới
+  userAccount: UserAccount | null; // null = tạo mới
   onClose: () => void;
 }
 
+function toFormValues(employee?: Employee | null): Partial<CreateFormData> {
+  return employee
+    ? {
+        fullName: employee.fullName,
+        phone: employee.phone,
+        email: employee.email,
+        isAdmin: employee.isAdmin,
+      }
+    : { isAdmin: false };
+}
+
 export function EmployeeFormModal({
-  employee,
+  userAccount,
   onClose,
 }: EmployeeFormModalProps) {
+  const employee = userAccount?.employee ?? null;
   const isEditing = employee !== null;
   const schema = isEditing ? editSchema : createSchema;
 
@@ -47,14 +59,7 @@ export function EmployeeFormModal({
     formState: { errors },
   } = useForm<CreateFormData>({
     resolver: zodResolver(schema),
-    defaultValues: employee?.employee
-      ? {
-          fullName: employee.employee.fullName,
-          phone: employee.employee.phone,
-          email: employee.employee.email,
-          isAdmin: employee.employee.isAdmin,
-        }
-      : { isAdmin: false },
+    defaultValues: toFormValues(employee)
   });
 
   const isAdmin = watch("isAdmin");
@@ -78,16 +83,7 @@ export function EmployeeFormModal({
   }
 
   useEffect(() => {
-    reset(
-      employee?.employee
-        ? {
-            fullName: employee.employee.fullName,
-            phone: employee.employee.phone,
-            email: employee.employee.email,
-            isAdmin: employee.employee.isAdmin,
-          }
-        : { isAdmin: false }
-    );
+    reset(toFormValues(employee));
   }, [employee, reset]);
 
   const createMutation = useCreateEmployee();
@@ -95,11 +91,11 @@ export function EmployeeFormModal({
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   const onSubmit = (data: CreateFormData) => {
-    if (isEditing && employee?.employee) {
+    if (isEditing) {
       const { fullName, phone } = data as EditFormData;
       updateMutation.mutate(
         {
-          id: employee.employee.employeeId,
+          id: employee.employeeId,
           payload: { fullName, phone },
         },
         {
@@ -129,9 +125,9 @@ export function EmployeeFormModal({
             <p className="font-bold text-[16px] text-gray-900">
               {isEditing ? "Chỉnh sửa hồ sơ nhân viên" : "Thêm nhân viên mới"}
             </p>
-            {isEditing && employee.employee && (
+            {isEditing && employee && (
               <p className="font-mono text-[11px] text-gray-500 mt-0.5">
-                {employee.employee.employeeId}
+                {employee.employeeId}
               </p>
             )}
           </div>
