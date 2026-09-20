@@ -6,21 +6,25 @@ export function AdminHeader() {
   const pathname = usePathname();
 
   const getTitle = () => {
-    if (pathname.startsWith("/staff")) return "Quản lý nhân viên";
-    if (pathname.startsWith("/courts")) return "Quản lý sân";
+    if (pathname.startsWith("/employees") || pathname.startsWith("/staff"))
+      return "Quản lý nhân viên";
+    if (pathname.startsWith("/customers")) return "Quản lý khách hàng";
+    if (pathname.startsWith("/manage-courts") || pathname.startsWith("/courts"))
+      return "Quản lý sân";
     if (pathname.startsWith("/dashboard")) return "Bảng điều khiển";
+    if (pathname.startsWith("/schedule")) return "Lịch sân";
+    if (pathname.startsWith("/payments")) return "Xác nhận thanh toán";
     return "Admin Panel";
   };
 
-  const isStaffPage = pathname.startsWith("/staff");
+  const isEmployeesPage =
+    pathname.startsWith("/employees") || pathname.startsWith("/staff");
 
   return (
     <header className="h-[52px] bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm">
-      {/* Tiêu đề bên trái */}
       <span className="font-bold text-[16px] text-gray-900">{getTitle()}</span>
 
-      {/* Nút Thêm nhân viên bên góc phải (thiết kế theo mẫu) */}
-      {isStaffPage && (
+      {isEmployeesPage && (
         <button
           type="button"
           onClick={() =>
