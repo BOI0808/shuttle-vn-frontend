@@ -36,7 +36,7 @@ export const employeeService = {
   async getEmployeeById(id: string): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();
-      const employee = mockUserAccounts.find((acc) => acc.accountId === id);
+      const employee = mockUserAccounts.find((acc) => acc.employee?.employeeId === id);
       if (!employee) throw new Error("Không tìm thấy nhân viên");
       return employee;
     }
@@ -83,8 +83,8 @@ export const employeeService = {
   ): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();
-      const account = mockUserAccounts.find((acc) => acc.accountId === id);
-      if (!account || !account.employee) throw new Error("Employee not found");
+      const account = mockUserAccounts.find((acc) => acc.employee?.employeeId === id);
+      if (!account || !account.employee) throw new Error("Không tìm thấy nhân viên");
       account.employee.fullName = payload.fullName;
       account.employee.phone = payload.phone;
       account.updatedAt = new Date().toISOString();
@@ -100,8 +100,9 @@ export const employeeService = {
   async grantAdminRole(id: string): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();
-      const account = mockUserAccounts.find((acc) => acc.accountId === id);
-      if (!account || !account.employee) throw new Error("Employee not found");
+      const account =
+          mockUserAccounts.find((acc) => acc.employee?.employeeId === id);
+      if (!account || !account.employee) throw new Error("Không tìm thấy nhân viên");
       account.employee.isAdmin = true;
       account.updatedAt = new Date().toISOString();
       return account;
@@ -115,8 +116,9 @@ export const employeeService = {
   async lockEmployee(id: string): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();
-      const account = mockUserAccounts.find((acc) => acc.accountId === id);
-      if (!account) throw new Error("Account not found");
+      const account =
+          mockUserAccounts.find((acc) => acc.employee?.employeeId === id);
+      if (!account) throw new Error("Không tìm thấy tài khoản");
       account.status = "Disabled";
       account.updatedAt = new Date().toISOString();
       return account;
@@ -130,8 +132,9 @@ export const employeeService = {
   async unlockEmployee(id: string): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();
-      const account = mockUserAccounts.find((acc) => acc.accountId === id);
-      if (!account) throw new Error("Account not found");
+      const account =
+          mockUserAccounts.find((acc) => acc.employee?.employeeId === id);
+      if (!account) throw new Error("Không tìm thấy tài khoản");
       account.status = "Active";
       account.updatedAt = new Date().toISOString();
       return account;
