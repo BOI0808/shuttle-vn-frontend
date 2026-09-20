@@ -37,7 +37,7 @@ export const employeeService = {
     if (IS_MOCK) {
       await mockDelay();
       const employee = mockUserAccounts.find((acc) => acc.accountId === id);
-      if (!employee) throw new Error("Employee not found");
+      if (!employee) throw new Error("Không tìm thấy nhân viên");
       return employee;
     }
     const { data } = await axiosInstance.get<ApiResponse<UserAccount>>(
