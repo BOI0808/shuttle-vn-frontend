@@ -23,7 +23,7 @@ export const authService = {
             if (!user) throw new Error("Email hoặc mật khẩu không chính xác");
             return user;
         }
-        const { data } = await axiosInstance.post<ApiResponse<UserAccount>>(
+        const {data} = await axiosInstance.post<ApiResponse<UserAccount>>(
             "/auth/login",
             payload
         );
@@ -35,7 +35,7 @@ export const authService = {
             await mockDelay();
             return "mock-account-id";
         }
-        const { data } = await axiosInstance.post<ApiResponse<string>>(
+        const {data} = await axiosInstance.post<ApiResponse<string>>(
             "/auth/register",
             payload
         );
@@ -48,13 +48,13 @@ export const authService = {
             console.log("Mock verification code sent to:", payload.email);
             return;
         }
-        const { data } = await axiosInstance.post<ApiResponse<string>>("/auth/issue-code", payload);
+        const {data} = await axiosInstance.post<ApiResponse<string>>("/auth/issue-code", payload);
         console.log(data.data);
     },
 
-  async logout(): Promise<void> {
-    await axiosInstance.post("/auth/logout");
-  },
+    async logout(): Promise<void> {
+        await axiosInstance.post("/auth/logout");
+    },
 
     async getProfile(): Promise<AuthUser> {
         if (IS_MOCK) {
@@ -62,10 +62,10 @@ export const authService = {
             const account =
                 mockUserAccounts.find((u) => u.employee?.isAdmin) ??
                 mockUserAccounts[0];
-            
+
             return mapAccountToAuthUser(account);
         }
-        const { data } = await axiosInstance.get<ApiResponse<UserAccount>>(
+        const {data} = await axiosInstance.get<ApiResponse<UserAccount>>(
             "/auth/me"
         );
         return mapAccountToAuthUser(data.data);
@@ -82,17 +82,17 @@ export const authService = {
                 role: "Customer",
             };
         }
-        const { data } = await axiosInstance.put<ApiResponse<UserAccount>>(
+        const {data} = await axiosInstance.put<ApiResponse<UserAccount>>(
             "/profile",
             payload
         );
         return mapAccountToAuthUser(data.data);
     },
 
-  async changePassword(payload: ChangePasswordRequest): Promise<void> {
-    await axiosInstance.put<ApiResponse<{ message: string }>>(
-      "/profile/change-password",
-      payload
-    );
-  },
+    async changePassword(payload: ChangePasswordRequest): Promise<void> {
+        await axiosInstance.put<ApiResponse<{ message: string }>>(
+            "/profile/change-password",
+            payload
+        );
+    },
 };
