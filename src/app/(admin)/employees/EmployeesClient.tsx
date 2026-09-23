@@ -7,6 +7,7 @@ import {
   useGrantAdminRole,
   useLockEmployee,
   useUnlockEmployee,
+  useDeleteEmployee,
 } from "@/hooks/useEmployee";
 import { EmployeeFormModal } from "@/components/admin/EmployeeFormModal";
 import { UserAccount } from "@/types";
@@ -35,6 +36,8 @@ export default function EmployeesClient() {
   const [editingEmployee, setEditingEmployee] = useState<
     UserAccount | null | undefined
   >(undefined);
+  const [deleteTarget, setDeleteTarget] = useState<UserAccount | null>(null);
+  const deleteMutation = useDeleteEmployee();
 
   // Lắng nghe sự kiện click "Thêm nhân viên" từ AdminHeader
   useEffect(() => {
@@ -107,6 +110,24 @@ export default function EmployeesClient() {
             : "Đã mở khoá tài khoản"
         ),
       onError: (error) => toast.error(getErrorMessage(error)),
+    });
+  }
+
+  function handleDelete(account: UserAccount) {
+    if (!deleteMutation.isPending) setDeleteTarget(account);
+  }
+
+  function confirmDelete() {
+    if (!deleteTarget?.employee) return;
+    deleteMutation.mutate(deleteTarget.employee.employeeId, {
+      onSuccess: () => {
+        toast.success("Đã xoá nhân viên");
+        setDeleteTarget(null);
+      },
+      onError: (error) => {
+        toast.error(getErrorMessage(error));
+        setDeleteTarget(null);
+      },
     });
   }
 
@@ -277,6 +298,17 @@ export default function EmployeesClient() {
                         {e.status === "Active" ? "lock" : "lock_open"}
                       </span>
                     </button>
+                    {!e.employee!.isAdmin && (
+                      <button
+                        title="Xoá nhân viên"
+                        className="border border-red-200 rounded-[6px] p-1.5 text-red-500 hover:bg-red-50"
+                        onClick={() => handleDelete(e)}
+                      >
+                        <span className="material-symbols-outlined text-[14px]">
+                          delete
+                        </span>
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -300,6 +332,18 @@ export default function EmployeesClient() {
           variant="danger"
           onConfirm={confirmGrantAdmin}
           onCancel={() => setGrantAdminTarget(null)}
+        />
+      )}
+
+      {deleteTarget && (
+        <ConfirmDialog
+          title="Xoá nhân viên"
+          description={`Bạn sắp xoá "${deleteTarget.employee?.fullName}". Hành động này không thể hoàn tác.`}
+          confirmLabel="Xoá nhân viên"
+          variant="danger"
+          isLoading={deleteMutation.isPending}
+          onConfirm={confirmDelete}
+          onCancel={() => setDeleteTarget(null)}
         />
       )}
     </div>

@@ -7,8 +7,8 @@ import {
   UpdateProfileRequest,
   UserAccount,
 } from "@/types";
-import {IS_MOCK, mockDelay} from "@/mocks/config";
-import {mockUserAccounts} from "@/mocks/data";
+import { IS_MOCK, mockDelay } from "@/mocks/config";
+import { mockUserAccounts } from "@/mocks/data";
 
 export const employeeService = {
   async getAllEmployees(
@@ -36,7 +36,9 @@ export const employeeService = {
   async getEmployeeById(id: string): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();
-      const employee = mockUserAccounts.find((acc) => acc.employee?.employeeId === id);
+      const employee = mockUserAccounts.find(
+        (acc) => acc.employee?.employeeId === id
+      );
       if (!employee) throw new Error("Không tìm thấy nhân viên");
       return employee;
     }
@@ -83,8 +85,11 @@ export const employeeService = {
   ): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();
-      const account = mockUserAccounts.find((acc) => acc.employee?.employeeId === id);
-      if (!account || !account.employee) throw new Error("Không tìm thấy nhân viên");
+      const account = mockUserAccounts.find(
+        (acc) => acc.employee?.employeeId === id
+      );
+      if (!account || !account.employee)
+        throw new Error("Không tìm thấy nhân viên");
       account.employee.fullName = payload.fullName;
       account.employee.phone = payload.phone;
       account.updatedAt = new Date().toISOString();
@@ -100,9 +105,11 @@ export const employeeService = {
   async grantAdminRole(id: string): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();
-      const account =
-          mockUserAccounts.find((acc) => acc.employee?.employeeId === id);
-      if (!account || !account.employee) throw new Error("Không tìm thấy nhân viên");
+      const account = mockUserAccounts.find(
+        (acc) => acc.employee?.employeeId === id
+      );
+      if (!account || !account.employee)
+        throw new Error("Không tìm thấy nhân viên");
       account.employee.isAdmin = true;
       account.updatedAt = new Date().toISOString();
       return account;
@@ -116,8 +123,9 @@ export const employeeService = {
   async lockEmployee(id: string): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();
-      const account =
-          mockUserAccounts.find((acc) => acc.employee?.employeeId === id);
+      const account = mockUserAccounts.find(
+        (acc) => acc.employee?.employeeId === id
+      );
       if (!account) throw new Error("Không tìm thấy tài khoản");
       account.status = "Disabled";
       account.updatedAt = new Date().toISOString();
@@ -132,8 +140,9 @@ export const employeeService = {
   async unlockEmployee(id: string): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();
-      const account =
-          mockUserAccounts.find((acc) => acc.employee?.employeeId === id);
+      const account = mockUserAccounts.find(
+        (acc) => acc.employee?.employeeId === id
+      );
       if (!account) throw new Error("Không tìm thấy tài khoản");
       account.status = "Active";
       account.updatedAt = new Date().toISOString();
@@ -143,5 +152,18 @@ export const employeeService = {
       `/employees/${id}/unlock`
     );
     return data.data;
+  },
+
+  async deleteEmployee(id: string): Promise<void> {
+    if (IS_MOCK) {
+      await mockDelay();
+      const index = mockUserAccounts.findIndex(
+        (acc) => acc.employee?.employeeId === id
+      );
+      if (index === -1) throw new Error("Không tìm thấy nhân viên");
+      mockUserAccounts.splice(index, 1);
+      return;
+    }
+    await axiosInstance.delete(`/employees/${id}`);
   },
 };

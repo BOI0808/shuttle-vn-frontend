@@ -67,3 +67,12 @@ export function useUnlockEmployee() {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.employees }),
   });
 }
+
+export function useDeleteEmployee() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => employeeService.deleteEmployee(id),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.employees }),
+  });
+}
