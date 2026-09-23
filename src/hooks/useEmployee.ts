@@ -41,15 +41,6 @@ export function useUpdateEmployee() {
   });
 }
 
-export function useGrantAdminRole() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => employeeService.grantAdminRole(id),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.employees }),
-  });
-}
-
 export function useLockEmployee() {
   const queryClient = useQueryClient();
   return useMutation({

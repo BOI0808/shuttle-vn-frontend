@@ -102,24 +102,6 @@ export const employeeService = {
     return data.data;
   },
 
-  async grantAdminRole(id: string): Promise<UserAccount> {
-    if (IS_MOCK) {
-      await mockDelay();
-      const account = mockUserAccounts.find(
-        (acc) => acc.employee?.employeeId === id
-      );
-      if (!account || !account.employee)
-        throw new Error("Không tìm thấy nhân viên");
-      account.employee.isAdmin = true;
-      account.updatedAt = new Date().toISOString();
-      return account;
-    }
-    const { data } = await axiosInstance.post<ApiResponse<UserAccount>>(
-      `/employees/${id}/set-admin`
-    );
-    return data.data;
-  },
-
   async lockEmployee(id: string): Promise<UserAccount> {
     if (IS_MOCK) {
       await mockDelay();

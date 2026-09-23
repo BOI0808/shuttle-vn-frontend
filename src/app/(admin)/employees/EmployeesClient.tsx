@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   useEmployees,
-  useGrantAdminRole,
   useLockEmployee,
   useUnlockEmployee,
   useDeleteEmployee,
@@ -50,10 +49,6 @@ export default function EmployeesClient() {
   const { data, isLoading } = useEmployees({ pageNumber: 1, pageSize: 100 });
   const employees = (data?.items ?? []).filter((e) => e.employee !== null);
 
-  const [grantAdminTarget, setGrantAdminTarget] = useState<UserAccount | null>(
-    null
-  );
-  const grantAdminMutation = useGrantAdminRole();
   const lockMutation = useLockEmployee();
   const unlockMutation = useUnlockEmployee();
 
@@ -80,24 +75,6 @@ export default function EmployeesClient() {
     }),
     [employees]
   );
-
-  function handleGrantAdmin(account: UserAccount) {
-    if (!grantAdminMutation.isPending) setGrantAdminTarget(account);
-  }
-
-  function confirmGrantAdmin() {
-    if (!grantAdminTarget?.employee) return;
-    grantAdminMutation.mutate(grantAdminTarget.employee.employeeId, {
-      onSuccess: () => {
-        toast.success("Đã cấp quyền Quản trị viên");
-        setGrantAdminTarget(null);
-      },
-      onError: (error) => {
-        toast.error(getErrorMessage(error));
-        setGrantAdminTarget(null);
-      },
-    });
-  }
 
   function handleToggleLock(account: UserAccount) {
     const mutation =
@@ -272,17 +249,6 @@ export default function EmployeesClient() {
                         edit
                       </span>
                     </button>
-                    {!e.employee!.isAdmin && (
-                      <button
-                        title="Cấp quyền Admin"
-                        className="border border-purple-200 rounded-[6px] p-1.5 text-purple-500 hover:bg-purple-50"
-                        onClick={() => handleGrantAdmin(e)}
-                      >
-                        <span className="material-symbols-outlined text-[14px]">
-                          admin_panel_settings
-                        </span>
-                      </button>
-                    )}
                     <button
                       title={
                         e.status === "Active" ? "Khoá tài khoản" : "Mở khoá"
@@ -321,17 +287,6 @@ export default function EmployeesClient() {
         <EmployeeFormModal
           userAccount={editingEmployee}
           onClose={() => setEditingEmployee(undefined)}
-        />
-      )}
-
-      {grantAdminTarget && (
-        <ConfirmDialog
-          title="Cấp quyền Quản trị viên"
-          description={`Bạn sắp cấp quyền Admin cho "${grantAdminTarget.employee?.fullName}". Hành động này không thể hoàn tác.`}
-          confirmLabel="Cấp quyền Admin"
-          variant="danger"
-          onConfirm={confirmGrantAdmin}
-          onCancel={() => setGrantAdminTarget(null)}
         />
       )}
 
