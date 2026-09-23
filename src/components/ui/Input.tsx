@@ -38,6 +38,7 @@ export function Input({
             icon ? "pl-10" : "pl-3",
             isPassword && "pr-10",
             "focus:border-emerald-500 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.12)] focus:bg-white",
+            "disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed", // <-- THÊM DÒNG NÀY
             error &&
               "border-red-400 focus:border-red-400 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.12)]",
             className
