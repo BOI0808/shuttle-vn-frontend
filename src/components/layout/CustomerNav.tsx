@@ -9,7 +9,7 @@ import { cn } from "@/utils";
 
 const NAV_LINKS = [
   { href: "/courts", label: "Đặt sân" },
-  { href: "/my-bookings", label: "Lịch sử đặt sân" },
+  { href: "/my-bookings", label: "Lịch sử đặt sân", requiresAuth: true },
   { href: "/lookup", label: "Tra cứu đơn" },
 ];
 
@@ -50,7 +50,8 @@ export function CustomerNav() {
             </span>
           </div>
           <nav className="flex gap-0.5">
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.filter((link) => !link.requiresAuth || user)
+                .map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
