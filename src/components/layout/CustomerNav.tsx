@@ -6,10 +6,12 @@ import { useState } from "react";
 import { useAuthStore } from "@/stores/auth.store";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/utils";
+import { UserMenu } from "@/components/ui/UserMenu";
+import { LoginButton } from "@/components/ui/LoginButton";
 
 const NAV_LINKS = [
   { href: "/courts", label: "Đặt sân" },
-  { href: "/my-bookings", label: "Lịch sử đặt sân" },
+  { href: "/my-bookings", label: "Lịch sử đặt sân", requiresAuth: true },
   { href: "/lookup", label: "Tra cứu đơn" },
 ];
 
@@ -50,7 +52,8 @@ export function CustomerNav() {
             </span>
           </div>
           <nav className="flex gap-0.5">
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.filter((link) => !link.requiresAuth || user)
+                .map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -67,67 +70,17 @@ export function CustomerNav() {
           </nav>
         </div>
 
-        {/* Right: avatar */}
+        {/* Right: avatar / login */}
         <div className="relative">
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all duration-150"
-            style={{
-              background: "rgba(255,255,255,0.08)",
-              borderColor: "rgba(255,255,255,0.12)",
-            }}
-          >
-            <div
-              className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0"
-              style={{ background: "linear-gradient(135deg,#10b981,#059669)" }}
-            >
-              {initials}
-            </div>
-            <span className="text-[13px] font-semibold text-gray-50">
-              {displayName}
-            </span>
-            <span className="material-symbols-outlined text-gray-400 text-[16px]">
-              keyboard_arrow_down
-            </span>
-          </button>
-
-          {menuOpen && (
-            <div
-              className="absolute right-0 top-[calc(100%+8px)] bg-white border border-gray-200 rounded-[10px] p-1.5 min-w-[190px] z-60"
-              style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.12)" }}
-            >
-              <Link
-                href="/profile"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-md text-[13px] font-medium text-emerald-500 hover:bg-gray-50 transition-colors"
-              >
-                <span className="material-symbols-outlined text-[16px]">
-                  person
-                </span>
-                Hồ sơ cá nhân
-              </Link>
-              <Link
-                href="/my-bookings"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-md text-[13px] font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                <span className="material-symbols-outlined text-[16px]">
-                  history
-                </span>
-                Lịch sử đặt sân
-              </Link>
-              <div className="border-t border-gray-100 my-1" />
-              <button
-                disabled={isLoggingOut}
-                onClick={handleLogout}
-                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-md text-[13px] font-medium text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
-              >
-                <span className="material-symbols-outlined text-[16px]">
-                  logout
-                </span>
-                {isLoggingOut ? "Đang đăng xuất..." : "Đăng xuất"}
-              </button>
-            </div>
+          {user ? (
+            <UserMenu
+              initials={ initials }
+              displayName={ displayName }
+              isLoggingOut={ isLoggingOut }
+              onLogout={ handleLogout }
+            />
+          ) : (
+            <LoginButton />
           )}
         </div>
       </header>

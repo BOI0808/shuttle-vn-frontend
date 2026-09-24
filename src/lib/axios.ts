@@ -36,12 +36,6 @@ axiosInstance.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       useAuthStore.getState().clearAuth();
-      if (
-        typeof window !== "undefined" &&
-        window.location.pathname !== "/login"
-      ) {
-        window.location.href = "/login";
-      }
     }
     return Promise.reject(error);
   }
