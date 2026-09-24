@@ -11,7 +11,7 @@ export function proxy(request: NextRequest) {
 
   if (!isAuthenticated) {
     if (isPublicPath) return NextResponse.next();
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/courts", request.url));
   }
 
   return NextResponse.next();
