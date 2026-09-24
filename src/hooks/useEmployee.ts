@@ -41,15 +41,6 @@ export function useUpdateEmployee() {
   });
 }
 
-export function useGrantAdminRole() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => employeeService.grantAdminRole(id),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.employees }),
-  });
-}
-
 export function useLockEmployee() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -63,6 +54,15 @@ export function useUnlockEmployee() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => employeeService.unlockEmployee(id),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.employees }),
+  });
+}
+
+export function useDeleteEmployee() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => employeeService.deleteEmployee(id),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.employees }),
   });

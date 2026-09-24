@@ -4,9 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   useEmployees,
-  useGrantAdminRole,
   useLockEmployee,
   useUnlockEmployee,
+  useDeleteEmployee,
 } from "@/hooks/useEmployee";
 import { EmployeeFormModal } from "@/components/admin/EmployeeFormModal";
 import { UserAccount } from "@/types";
@@ -35,6 +35,8 @@ export default function EmployeesClient() {
   const [editingEmployee, setEditingEmployee] = useState<
     UserAccount | null | undefined
   >(undefined);
+  const [deleteTarget, setDeleteTarget] = useState<UserAccount | null>(null);
+  const deleteMutation = useDeleteEmployee();
 
   // Lắng nghe sự kiện click "Thêm nhân viên" từ AdminHeader
   useEffect(() => {
@@ -47,10 +49,6 @@ export default function EmployeesClient() {
   const { data, isLoading } = useEmployees({ pageNumber: 1, pageSize: 100 });
   const employees = (data?.items ?? []).filter((e) => e.employee !== null);
 
-  const [grantAdminTarget, setGrantAdminTarget] = useState<UserAccount | null>(
-    null
-  );
-  const grantAdminMutation = useGrantAdminRole();
   const lockMutation = useLockEmployee();
   const unlockMutation = useUnlockEmployee();
 
@@ -78,24 +76,6 @@ export default function EmployeesClient() {
     [employees]
   );
 
-  function handleGrantAdmin(account: UserAccount) {
-    if (!grantAdminMutation.isPending) setGrantAdminTarget(account);
-  }
-
-  function confirmGrantAdmin() {
-    if (!grantAdminTarget?.employee) return;
-    grantAdminMutation.mutate(grantAdminTarget.employee.employeeId, {
-      onSuccess: () => {
-        toast.success("Đã cấp quyền Quản trị viên");
-        setGrantAdminTarget(null);
-      },
-      onError: (error) => {
-        toast.error(getErrorMessage(error));
-        setGrantAdminTarget(null);
-      },
-    });
-  }
-
   function handleToggleLock(account: UserAccount) {
     const mutation =
       account.status === "Active" ? lockMutation : unlockMutation;
@@ -107,6 +87,24 @@ export default function EmployeesClient() {
             : "Đã mở khoá tài khoản"
         ),
       onError: (error) => toast.error(getErrorMessage(error)),
+    });
+  }
+
+  function handleDelete(account: UserAccount) {
+    if (!deleteMutation.isPending) setDeleteTarget(account);
+  }
+
+  function confirmDelete() {
+    if (!deleteTarget?.employee) return;
+    deleteMutation.mutate(deleteTarget.employee.employeeId, {
+      onSuccess: () => {
+        toast.success("Đã xoá nhân viên");
+        setDeleteTarget(null);
+      },
+      onError: (error) => {
+        toast.error(getErrorMessage(error));
+        setDeleteTarget(null);
+      },
     });
   }
 
@@ -251,17 +249,6 @@ export default function EmployeesClient() {
                         edit
                       </span>
                     </button>
-                    {!e.employee!.isAdmin && (
-                      <button
-                        title="Cấp quyền Admin"
-                        className="border border-purple-200 rounded-[6px] p-1.5 text-purple-500 hover:bg-purple-50"
-                        onClick={() => handleGrantAdmin(e)}
-                      >
-                        <span className="material-symbols-outlined text-[14px]">
-                          admin_panel_settings
-                        </span>
-                      </button>
-                    )}
                     <button
                       title={
                         e.status === "Active" ? "Khoá tài khoản" : "Mở khoá"
@@ -277,6 +264,17 @@ export default function EmployeesClient() {
                         {e.status === "Active" ? "lock" : "lock_open"}
                       </span>
                     </button>
+                    {!e.employee!.isAdmin && (
+                      <button
+                        title="Xoá nhân viên"
+                        className="border border-red-200 rounded-[6px] p-1.5 text-red-500 hover:bg-red-50"
+                        onClick={() => handleDelete(e)}
+                      >
+                        <span className="material-symbols-outlined text-[14px]">
+                          delete
+                        </span>
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -292,14 +290,15 @@ export default function EmployeesClient() {
         />
       )}
 
-      {grantAdminTarget && (
+      {deleteTarget && (
         <ConfirmDialog
-          title="Cấp quyền Quản trị viên"
-          description={`Bạn sắp cấp quyền Admin cho "${grantAdminTarget.employee?.fullName}". Hành động này không thể hoàn tác.`}
-          confirmLabel="Cấp quyền Admin"
+          title="Xoá nhân viên"
+          description={`Bạn sắp xoá "${deleteTarget.employee?.fullName}". Hành động này không thể hoàn tác.`}
+          confirmLabel="Xoá nhân viên"
           variant="danger"
-          onConfirm={confirmGrantAdmin}
-          onCancel={() => setGrantAdminTarget(null)}
+          isLoading={deleteMutation.isPending}
+          onConfirm={confirmDelete}
+          onCancel={() => setDeleteTarget(null)}
         />
       )}
     </div>

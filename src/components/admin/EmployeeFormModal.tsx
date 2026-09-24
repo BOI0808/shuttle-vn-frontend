@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/Label";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useCreateEmployee, useUpdateEmployee } from "@/hooks/useEmployee";
-import {Employee, UserAccount} from "@/types";
+import { Employee, UserAccount } from "@/types";
 import { getErrorMessage } from "@/utils";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
@@ -18,7 +18,7 @@ const createSchema = z.object({
   phone: z.string().regex(/^0\d{9}$/, "Số điện thoại không hợp lệ"),
   email: z.string().email("Email không hợp lệ"),
   password: z.string().min(8, "Mật khẩu tối thiểu 8 ký tự"),
-  isAdmin: z.boolean(),
+  isAdmin: z.boolean().default(false),
 });
 
 const editSchema = createSchema.omit({ password: true });
@@ -54,33 +54,11 @@ export function EmployeeFormModal({
     register,
     handleSubmit,
     reset,
-    watch, // <-- Thêm watch
-    setValue, // <-- Thêm setValue
     formState: { errors },
   } = useForm<CreateFormData>({
     resolver: zodResolver(schema),
-    defaultValues: toFormValues(employee)
+    defaultValues: toFormValues(employee),
   });
-
-  const isAdmin = watch("isAdmin");
-  const [showAdminConfirm, setShowAdminConfirm] = useState(false);
-  const fullName = watch("fullName");
-
-  function handleSelectAdmin() {
-    if (!isAdmin) {
-      setShowAdminConfirm(true);
-    }
-  }
-
-  function onConfirmAdmin() {
-    setValue("isAdmin", true);
-    setShowAdminConfirm(false);
-  }
-
-  function onCancelAdmin() {
-    setValue("isAdmin", false);
-    setShowAdminConfirm(false);
-  }
 
   useEffect(() => {
     reset(toFormValues(employee));
@@ -184,44 +162,6 @@ export function EmployeeFormModal({
                 />
               </div>
             )}
-            {!isEditing && (
-              <div className="flex flex-col gap-2 pt-1">
-                <Label>Vai trò tài khoản</Label>
-
-                {/* Nút công tắc 2 bên */}
-                <div className="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
-                  <button
-                    type="button"
-                    onClick={() => setValue("isAdmin", false)}
-                    className={`flex-1 py-2 text-xs font-medium rounded-md flex items-center justify-center gap-1.5 transition-all ${
-                      !isAdmin
-                        ? "bg-white text-blue-600 shadow-sm font-semibold"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[16px]">
-                      badge
-                    </span>
-                    Nhân viên
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleSelectAdmin}
-                    className={`flex-1 py-2 text-xs font-medium rounded-md flex items-center justify-center gap-1.5 transition-all ${
-                      isAdmin
-                        ? "bg-purple-600 text-white shadow-sm font-semibold"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[16px]">
-                      admin_panel_settings
-                    </span>
-                    Quản trị viên
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
 
           <div className="px-6 py-[14px] border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
@@ -242,21 +182,6 @@ export function EmployeeFormModal({
             </Button>
           </div>
         </form>
-        {/* Popup cảnh báo khi chọn Quản trị viên */}
-        {showAdminConfirm && (
-          <ConfirmDialog
-            title="Cấp quyền Quản trị viên"
-            description={
-              fullName
-                ? `Bạn sắp cấp quyền Admin cho "${fullName}". Hành động này không thể hoàn tác (chưa có chức năng thu hồi quyền Admin).`
-                : "Bạn sắp cấp quyền Admin cho nhân viên này. Hành động này không thể hoàn tác (chưa có chức năng thu hồi quyền Admin)."
-            }
-            confirmLabel="Cấp quyền Admin"
-            variant="danger"
-            onConfirm={onConfirmAdmin}
-            onCancel={onCancelAdmin}
-          />
-        )}
       </div>
     </div>
   );
