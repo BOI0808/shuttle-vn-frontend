@@ -1,4 +1,13 @@
-import { Court, CourtGridResponse } from "@/types";
+import {
+  Court,
+  CourtGridResponse,
+  CourtSlot,
+  SlotDisplayStatus,
+} from "@/types";
+
+const SLOT_COUNT = 34;
+const pad = (n: number) => String(n).padStart(2, "0");
+const toHHMM = (min: number) => `${pad(Math.floor(min / 60))}:${pad(min % 60)}`;
 
 export const mockCourts: Court[] = [
   {
@@ -27,43 +36,25 @@ export const mockCourts: Court[] = [
   },
 ];
 
-export const getMockCourtGrid = (date: string): CourtGridResponse => {
-  const timeSlots = [
-    "05:00", "06:00", "07:00", "08:00", "09:00", "10:00",
-    "11:00", "12:00", "13:00", "14:00", "15:00", "16:00",
-    "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"
-  ];
-
-  return {
-    date,
-    courts: mockCourts.map(court => ({
-      court,
-      slots: timeSlots.slice(0, -1).map((time, index) => {
-        const startTime = time;
-        const endTime = timeSlots[index + 1];
-        
-        // Randomize status for demo
-        let displayStatus: "AVAILABLE" | "BOOKED" | "CLOSED" = "AVAILABLE";
-        const hour = parseInt(startTime.split(':')[0]);
-        
-        if (court.status === "MAINTENANCE") {
-            displayStatus = "CLOSED";
-        } else if (hour < 6 || hour > 21) {
-            displayStatus = "CLOSED";
-        } else if (Math.random() > 0.7) {
-            displayStatus = "BOOKED";
-        }
-
-        return {
-          courtId: court.courtId,
-          date,
-          startTime,
-          endTime,
-          displayStatus,
-          bookingId: displayStatus === "BOOKED" ? `mock-b-${court.courtId}-${index}` : null,
-          pricePerHour: 150000,
-        };
-      })
-    }))
-  };
-};
+export const getMockCourtGrid = (date: string): CourtGridResponse => ({
+  date,
+  courts: mockCourts.map((court) => ({
+    court,
+    slots: Array.from({ length: SLOT_COUNT }, (_, i): CourtSlot => {
+      const start = 5 * 60 + i * 30;
+      const booked = (Math.floor(i / 3) + court.courtId) % 4 === 0;
+      const displayStatus: SlotDisplayStatus =
+        court.status !== "ACTIVE" ? "CLOSED" : booked ? "BOOKED" : "AVAILABLE";
+      return {
+        courtId: court.courtId,
+        date,
+        startTime: toHHMM(start),
+        endTime: toHHMM(start + 30),
+        displayStatus,
+        bookingId:
+          displayStatus === "BOOKED" ? `mock-b-${court.courtId}-${i}` : null,
+        pricePerHour: start < 17 * 60 ? 60000 : 100000,
+      };
+    }),
+  })),
+});

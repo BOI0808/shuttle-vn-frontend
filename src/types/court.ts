@@ -1,4 +1,4 @@
-export type CourtStatus = "ACTIVE" | "MAINTENANCE";
+export type CourtStatus = "ACTIVE" | "MAINTENANCE" | "CLOSED";
 
 /** Trạng thái hiển thị của một slot trên grid (tính toán phía FE) */
 export type SlotDisplayStatus = "AVAILABLE" | "BOOKED" | "CLOSED";
@@ -8,6 +8,7 @@ export interface Court {
   name: string;
   description: string;
   status: CourtStatus;
+  isInUse?: boolean;
   createdAt: string;
   updatedAt: string;
 }

@@ -39,6 +39,7 @@ export const PAYMENT_METHOD_LABEL: Record<string, string> = {
 export const COURT_STATUS_LABEL: Record<string, string> = {
   ACTIVE: "Đang hoạt động",
   MAINTENANCE: "Bảo trì",
+  CLOSED: "Đóng cửa",
 };
 
 /** Trạng thái hiển thị slot trên grid — tính toán phía FE */

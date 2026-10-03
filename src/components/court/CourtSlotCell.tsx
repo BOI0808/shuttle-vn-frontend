@@ -58,14 +58,7 @@ export function CourtSlotCell({
             ? (e) => onClickAvailable(e, courtName, startMinutes)
             : undefined
         }
-      >
-        {isClosed && isNowSlot && (
-          <div
-            className="now-line-cell"
-            style={{ left: `${nowFrac * 100}%` }}
-          />
-        )}
-      </div>
+      ></div>
     </td>
   );
 }

@@ -40,17 +40,6 @@
     );
     @apply border border-gray-300 cursor-not-allowed;
   }
-
-  /* Now-line inside closed row */
-  .now-line-cell {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: #ef4444;
-    border-radius: 1px;
-    z-index: 3;
-  }
 }
 
 Ẩ/* Scrollbar */

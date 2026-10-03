@@ -4,13 +4,13 @@ import { useState, useCallback } from "react";
 import { useCourtGrid } from "@/hooks/useCourt";
 import { CourtSlotCell } from "./CourtSlotCell";
 import { SlotPopup, SlotPopupState } from "./SlotPopup";
-import { SlotDisplayStatus, CourtGridResponse } from "@/types";
+import { SlotDisplayStatus, CourtGridResponse, CourtSlot } from "@/types";
 import { DAY_OF_WEEK_LABEL } from "@/config/app";
 
 const START_HOUR = 5;
 const END_HOUR = 22;
 const SLOT_MIN = 30;
-const TOTAL_SLOTS = ((END_HOUR - START_HOUR) * 60) / SLOT_MIN; // 34
+const TOTAL_SLOTS = ((END_HOUR - START_HOUR) * 60) / SLOT_MIN;
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -24,7 +24,7 @@ function slotKey(i: number) {
 }
 
 interface CourtGridProps {
-  date: string; // "YYYY-MM-DD"
+  date: string;
 }
 
 export function CourtGrid({ date }: CourtGridProps) {
@@ -43,7 +43,7 @@ export function CourtGrid({ date }: CourtGridProps) {
   const nowSlotIndex = Math.floor(nowSlotOffset);
   const nowFrac = nowSlotOffset - nowSlotIndex;
 
-  const dateObj = new Date(date);
+  const dateObj = new Date(`${date}T00:00:00`);
   const dayLabel =
     DAY_OF_WEEK_LABEL[dateObj.getDay() as keyof typeof DAY_OF_WEEK_LABEL];
   const dateLabel = `${pad(dateObj.getDate())}/${pad(
@@ -51,22 +51,34 @@ export function CourtGrid({ date }: CourtGridProps) {
   )}/${dateObj.getFullYear()}`;
 
   const handleClickAvailable = useCallback(
-    (e: React.MouseEvent, courtName: string, startMin: number) => {
+    (
+      e: React.MouseEvent,
+      courtName: string,
+      startMin: number,
+      slots: CourtSlot[]
+    ) => {
       e.stopPropagation();
-      const PW = 210;
-      let lx = e.clientX - PW / 2;
-      let ly = e.clientY - 330;
-      if (lx < 8) lx = 8;
-      if (lx + PW > window.innerWidth - 8) lx = window.innerWidth - PW - 8;
-      if (ly < 64) ly = e.clientY + 16;
+      const target = e.currentTarget as HTMLElement;
+      const rect = target.getBoundingClientRect();
+
+      const centerX = rect.left + rect.width / 2;
+      const lx = Math.max(115, Math.min(window.innerWidth - 115, centerX));
+      const ly = rect.top - 10;
+
       setSelectedDuration(0);
-      setPopup({ courtName, startMinutes: startMin, x: lx, y: ly });
+      setPopup({
+        courtName,
+        startMinutes: startMin,
+        slots,
+        anchorEl: target,
+        x: lx,
+        y: ly,
+      });
     },
     []
   );
 
   function handleReserve() {
-    // TODO: integrate với useBookingCartStore hoặc useCreateBooking
     setPopup(null);
   }
 
@@ -174,24 +186,25 @@ export function CourtGrid({ date }: CourtGridProps) {
                   {Array.from({ length: TOTAL_SLOTS }, (_, i) => {
                     const totalMin = START_HOUR * 60 + i * SLOT_MIN;
                     const isHour = totalMin % 60 === 0;
-                    const isClosed = court.court.status === "MAINTENANCE";
                     const slotFound = court.slots.find(
                       (s) => s.startTime === slotKey(i)
                     );
                     const slotStatus: SlotDisplayStatus =
-                      slotFound?.displayStatus ?? "AVAILABLE";
+                      slotFound?.displayStatus ?? "CLOSED";
 
                     return (
                       <CourtSlotCell
                         key={i}
                         status={slotStatus}
-                        isClosed={isClosed}
+                        isClosed={slotStatus === "CLOSED"}
                         isHourSep={isHour}
                         isNowSlot={i === nowSlotIndex}
                         nowFrac={nowFrac}
                         startMinutes={totalMin}
                         courtName={court.court.name}
-                        onClickAvailable={handleClickAvailable}
+                        onClickAvailable={(e, name, min) =>
+                          handleClickAvailable(e, name, min, court.slots)
+                        }
                       />
                     );
                   })}

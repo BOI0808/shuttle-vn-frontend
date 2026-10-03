@@ -104,6 +104,7 @@ export default function CourtsClient() {
       </div>
 
       {/* Main content */}
+      {/* Main content */}
       <div className="max-w-[1400px] mx-auto px-7 py-6 flex flex-col gap-5">
         <CourtGrid date={date} />
         <WalkInBookingForm />
