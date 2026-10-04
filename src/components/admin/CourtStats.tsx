@@ -79,6 +79,9 @@ export function CourtStats({
           </span>
         </div>
         <div>
+          <p className="font-mono text-[10px] text-slate-500 uppercase tracking-wider">
+            Mức giá cơ bản
+          </p>
           <p className="text-lg font-bold font-display text-slate-900 leading-tight">
             {priceRange}
           </p>

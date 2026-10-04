@@ -6,9 +6,13 @@ import { cn } from "@/utils";
 interface CourtCardGridProps {
   courts: Court[];
   onStatusChange: (court: Court) => void;
+  occupancyMap?: Record<number, number>;
 }
-
-export function CourtCardGrid({ courts, onStatusChange }: CourtCardGridProps) {
+export function CourtCardGrid({
+  courts,
+  onStatusChange,
+  occupancyMap = {},
+}: CourtCardGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
       {courts.map((court) => (
@@ -70,24 +74,35 @@ export function CourtCardGrid({ courts, onStatusChange }: CourtCardGridProps) {
                   30K – 50K
                 </span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400 text-[11px]">
-                  Tỉ lệ lấp đầy (tháng)
-                </span>
-                <span className="font-mono font-semibold text-emerald-600">
-                  {court.status === "ACTIVE" ? "65%" : "0%"}
-                </span>
-              </div>
-              <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
-                <div
-                  className={cn(
-                    "h-full rounded-full transition-all duration-500",
-                    court.status === "ACTIVE"
-                      ? "bg-emerald-500 w-[65%]"
-                      : "bg-slate-300 w-0"
-                  )}
-                />
-              </div>
+              {(() => {
+                const rate =
+                  court.status === "ACTIVE"
+                    ? occupancyMap[court.courtId] ?? 0
+                    : 0;
+                return (
+                  <>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400 text-[11px]">
+                        Tỉ lệ lấp đầy (tháng)
+                      </span>
+                      <span className="font-mono font-semibold text-emerald-600">
+                        {rate}%
+                      </span>
+                    </div>
+                    <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className={cn(
+                          "h-full rounded-full transition-all duration-500",
+                          rate > 0 ? "bg-emerald-500" : "bg-slate-300"
+                        )}
+                        style={{
+                          width: `${Math.min(100, Math.max(0, rate))}%`,
+                        }}
+                      />
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           </div>
 

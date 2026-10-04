@@ -28,6 +28,16 @@ export default function ManageCourtsClient() {
     queryFn: () => courtService.getCourtGrid(todayStr),
   });
 
+  const { data: usageData } = useQuery({
+    queryKey: ["court-usage"],
+    queryFn: () => courtService.getCourtUsage(),
+  });
+
+  const occupancyMap: Record<number, number> = {};
+  usageData?.courts?.forEach((item: any) => {
+    occupancyMap[item.courtId] = Math.round(item.occupancyRate || 0);
+  });
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -100,7 +110,11 @@ export default function ManageCourtsClient() {
           Đang tải dữ liệu sân...
         </div>
       ) : viewMode === "card" ? (
-        <CourtCardGrid courts={courts} onStatusChange={setStatusCourt} />
+        <CourtCardGrid
+          courts={courts}
+          onStatusChange={setStatusCourt}
+          occupancyMap={occupancyMap}
+        />
       ) : (
         <CourtTable courts={courts} onStatusChange={setStatusCourt} />
       )}

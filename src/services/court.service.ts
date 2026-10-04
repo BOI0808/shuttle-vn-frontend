@@ -118,4 +118,19 @@ export const courtService = {
     >(`/courts/${id}/status`, payload);
     return data.data;
   },
+
+  async getCourtUsage(): Promise<any> {
+    if (IS_MOCK) {
+      await mockDelay();
+      return {
+        courts: [
+          { courtId: 1, occupancyRate: 65 },
+          { courtId: 2, occupancyRate: 40 },
+          { courtId: 3, occupancyRate: 0 },
+        ],
+      };
+    }
+    const { data } = await axiosInstance.get("/admin/statistics/court-usage");
+    return data.data;
+  },
 };
