@@ -7,9 +7,11 @@ import {
   PaginatedResponse,
   PaginationParams,
   UpdateCourtRequest,
+  UpdateCourtStatusRequest,
+  UpdateCourtStatusResult,
 } from "@/types";
-import {IS_MOCK, mockDelay} from "@/mocks/config";
-import {getMockCourtGrid, mockCourts} from "@/mocks/data";
+import { IS_MOCK, mockDelay } from "@/mocks/config";
+import { getMockCourtGrid, mockCourts } from "@/mocks/data";
 
 export const courtService = {
   async getCourts(
@@ -94,5 +96,26 @@ export const courtService = {
       return;
     }
     await axiosInstance.delete(`/courts/${id}`);
+  },
+
+  async updateCourtStatus(
+    id: string,
+    payload: UpdateCourtStatusRequest
+  ): Promise<UpdateCourtStatusResult> {
+    if (IS_MOCK) {
+      await mockDelay();
+      const court = mockCourts.find((c) => c.courtId.toString() === id);
+      if (!court) throw new Error("Court not found");
+      court.status = payload.status;
+      court.updatedAt = new Date().toISOString();
+      return {
+        court,
+        affectedUpcomingBookingsCount: payload.status === "ACTIVE" ? 0 : 2,
+      };
+    }
+    const { data } = await axiosInstance.patch<
+      ApiResponse<UpdateCourtStatusResult>
+    >(`/courts/${id}/status`, payload);
+    return data.data;
   },
 };

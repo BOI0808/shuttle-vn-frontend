@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { courtService } from '@/services';
-import { QUERY_KEYS } from '@/config/app';
-import { PaginationParams } from '@/types';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { courtService } from "@/services";
+import { QUERY_KEYS } from "@/config/app";
+import { PaginationParams, UpdateCourtStatusRequest } from "@/types";
 
 export function useCourts(params?: PaginationParams) {
   return useQuery({
@@ -16,7 +16,7 @@ export function useCourtGrid(date: string) {
   return useQuery({
     queryKey: QUERY_KEYS.courtGrid(date),
     queryFn: () => courtService.getCourtGrid(date),
-    refetchInterval: 1000 * 30, // Refetch mỗi 30 giây cho real-time
+    refetchInterval: 1000 * 30,
   });
 }
 
@@ -34,6 +34,23 @@ export function useDeleteCourt() {
     mutationFn: (id: string) => courtService.deleteCourt(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.courts });
+    },
+  });
+}
+
+export function useUpdateCourtStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: UpdateCourtStatusRequest;
+    }) => courtService.updateCourtStatus(id, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.courts });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.courtGrids });
     },
   });
 }

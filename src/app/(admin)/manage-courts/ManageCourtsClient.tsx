@@ -1,10 +1,16 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useQuery } from "@tanstack/react-query";
 import { courtService } from "@/services";
+import { Court } from "@/types";
 import { QUERY_KEYS } from "@/config/app";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import { cn } from "@/utils";
+import { CourtStatusModal } from "@/components/admin/CourtStatusModal";
+import { CourtStats } from "@/components/admin/CourtStats";
+import { CourtCardGrid } from "@/components/admin/CourtCardGrid";
+import { CourtTable } from "@/components/admin/CourtTable";
 
 export default function ManageCourtsClient() {
   const { data, isLoading } = useQuery({
@@ -12,50 +18,99 @@ export default function ManageCourtsClient() {
     queryFn: () => courtService.getCourts(),
   });
 
+  const [viewMode, setViewMode] = useState<"card" | "list">("card");
+  const [statusCourt, setStatusCourt] = useState<Court | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  const todayStr = new Date().toISOString().split("T")[0];
+  const { data: gridData } = useQuery({
+    queryKey: ["courts-grid", todayStr],
+    queryFn: () => courtService.getCourtGrid(todayStr),
+  });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const allPrices =
+    gridData?.courts?.flatMap((c) => c.slots.map((s) => s.pricePerHour)) || [];
+  const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 60000;
+  const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 100000;
+  const priceRange = `${minPrice / 1000}K–${maxPrice / 1000}K`;
+
+  const courts = data?.items || [];
+
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold text-slate-900">Quản lý sân</h2>
-        <Button size="sm" className="w-auto">
-          <span className="material-symbols-outlined text-[16px] mr-1">add</span>
-          Thêm sân mới
-        </Button>
-      </div>
+      {mounted &&
+        typeof document !== "undefined" &&
+        document.getElementById("admin-header-actions") &&
+        createPortal(
+          <div className="flex items-center gap-2.5">
+            <div className="flex bg-slate-100 p-0.5 rounded-[8px] border border-slate-200">
+              <button
+                type="button"
+                onClick={() => setViewMode("card")}
+                className={cn(
+                  "flex items-center gap-1 px-2.5 py-1 rounded-[6px] text-[12px] font-medium transition-all cursor-pointer",
+                  viewMode === "card"
+                    ? "bg-white text-gray-900 shadow-sm font-semibold"
+                    : "text-gray-500 hover:text-gray-800"
+                )}
+              >
+                <span className="material-symbols-outlined text-[15px]">
+                  grid_view
+                </span>
+                Thẻ
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("list")}
+                className={cn(
+                  "flex items-center gap-1 px-2.5 py-1 rounded-[6px] text-[12px] font-medium transition-all cursor-pointer",
+                  viewMode === "list"
+                    ? "bg-white text-gray-900 shadow-sm font-semibold"
+                    : "text-gray-500 hover:text-gray-800"
+                )}
+              >
+                <span className="material-symbols-outlined text-[15px]">
+                  table_rows
+                </span>
+                Danh sách
+              </button>
+            </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50/50 text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-                <th className="px-5 py-3 border-b border-slate-100 font-semibold">Tên sân</th>
-                <th className="px-5 py-3 border-b border-slate-100 font-semibold">Mô tả</th>
-                <th className="px-5 py-3 border-b border-slate-100 font-semibold">Trạng thái</th>
-                <th className="px-5 py-3 border-b border-slate-100 font-semibold">Ngày tạo</th>
-                <th className="px-5 py-3 border-b border-slate-100 font-semibold text-right">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {isLoading ? (
-                <tr><td colSpan={5} className="px-5 py-8 text-center text-slate-500 font-mono">Đang tải...</td></tr>
-              ) : data?.items.map((court) => (
-                <tr key={court.courtId} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-5 py-4 text-[13px] font-bold text-slate-900">{court.name}</td>
-                  <td className="px-5 py-4 text-[13px] text-slate-600">{court.description}</td>
-                  <td className="px-5 py-4">
-                    <Badge status={court.status === "ACTIVE" ? "COMPLETED" : "CANCELLED"}>
-                      {court.status === "ACTIVE" ? "Hoạt động" : "Bảo trì"}
-                    </Badge>
-                  </td>
-                  <td className="px-5 py-4 text-[11px] font-mono text-slate-500">{new Date(court.createdAt).toLocaleDateString("vi-VN")}</td>
-                  <td className="px-5 py-4 text-right">
-                    <Button variant="outline" size="sm" className="w-auto inline-flex">Sửa</Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            <button
+              type="button"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-gray-700 bg-white border border-gray-300 rounded-[8px] hover:bg-gray-50 hover:border-gray-400 shadow-sm transition-all cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[17px] text-gray-600">
+                add
+              </span>
+              Thêm sân mới
+            </button>
+          </div>,
+          document.getElementById("admin-header-actions")!
+        )}
+
+      <CourtStats courts={courts} priceRange={priceRange} />
+
+      {isLoading ? (
+        <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500 font-mono text-sm">
+          Đang tải dữ liệu sân...
         </div>
-      </div>
+      ) : viewMode === "card" ? (
+        <CourtCardGrid courts={courts} onStatusChange={setStatusCourt} />
+      ) : (
+        <CourtTable courts={courts} onStatusChange={setStatusCourt} />
+      )}
+
+      {statusCourt && (
+        <CourtStatusModal
+          court={statusCourt}
+          onClose={() => setStatusCourt(null)}
+        />
+      )}
     </div>
   );
 }

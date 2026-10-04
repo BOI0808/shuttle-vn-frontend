@@ -1,6 +1,5 @@
 export type CourtStatus = "ACTIVE" | "MAINTENANCE" | "CLOSED";
 
-/** Trạng thái hiển thị của một slot trên grid (tính toán phía FE) */
 export type SlotDisplayStatus = "AVAILABLE" | "BOOKED" | "CLOSED";
 
 export interface Court {
@@ -13,31 +12,23 @@ export interface Court {
   updatedAt: string;
 }
 
-/**
- * Lịch mở/đóng sân theo ngày trong tuần.
- * dayOfWeek: 0 = Chủ nhật, 1 = Thứ 2, ..., 6 = Thứ 7 (ISO: 1=Mon … 7=Sun)
- */
 export interface CourtSchedule {
   id: number;
   courtId: number;
-  dayOfWeek: number; // 0–6
-  openTime: string; // HH:mm
-  closeTime: string; // HH:mm
+  dayOfWeek: number;
+  openTime: string;
+  closeTime: string;
   isAvailable: boolean;
   updatedAt: string;
 }
 
-/**
- * Quy tắc giá theo khung giờ.
- * pricePerHour được tính theo số phút thực tế (BR-07).
- */
 export interface PricingRule {
   id: number;
   courtId: number;
-  dayOfWeek: number; // 0–6
-  startTime: string; // HH:mm
-  endTime: string; // HH:mm
-  pricePerHour: number; // Decimal(10,2) — đơn vị VND
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+  pricePerHour: number;
   updatedAt: string;
 }
 
@@ -45,9 +36,9 @@ export interface PricingRule {
 
 export interface CourtSlot {
   courtId: number;
-  date: string; // ISO yyyy-MM-dd
-  startTime: string; // HH:mm
-  endTime: string; // HH:mm
+  date: string;
+  startTime: string;
+  endTime: string;
   displayStatus: SlotDisplayStatus;
   bookingId: string | null;
   pricePerHour: number;
@@ -62,8 +53,6 @@ export interface CourtGridResponse {
   date: string;
   courts: CourtGridItem[];
 }
-
-// ── Requests ──────────────────────────────────────────────────────────────────
 
 export interface CreateCourtRequest {
   name: string;
@@ -88,4 +77,14 @@ export interface UpsertPricingRuleRequest {
   startTime: string;
   endTime: string;
   pricePerHour: number;
+}
+
+export interface UpdateCourtStatusRequest {
+  status: CourtStatus;
+  reason?: string;
+}
+
+export interface UpdateCourtStatusResult {
+  court: Court;
+  affectedUpcomingBookingsCount: number;
 }
