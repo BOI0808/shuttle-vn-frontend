@@ -1,4 +1,4 @@
-import type { components } from "@/components/api/schema";
+import type { components } from "@/api/schema";
 
 export type AccountStatus = components["schemas"]["AccountStatus"];
 export type CodeType = components["schemas"]["CodeType"];

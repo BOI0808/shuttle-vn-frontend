@@ -1,4 +1,4 @@
-import type { components } from "@/components/api/schema";
+import type { components } from "@/api/schema";
 
 export type CourtStatus = components["schemas"]["CourtStatus"];
 export type SlotDisplayStatus = "AVAILABLE" | "BOOKED" | "CLOSED";

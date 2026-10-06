@@ -1,4 +1,4 @@
-import type { components, paths } from "@/components/api/schema";
+import type { components, paths } from "@/api/schema";
 
 export type ActorType = components["schemas"]["ActorType"];
 export type Audit = components["schemas"]["AuditDto"];
