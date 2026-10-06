@@ -11,9 +11,9 @@ export function CourtStats({
   priceRange = "60K–100K",
 }: CourtStatsProps) {
   const totalCourts = courts.length;
-  const activeCourts = courts.filter((c) => c.status === "ACTIVE").length;
+  const activeCourts = courts.filter((c) => c.status === "Active").length;
   const maintenanceCourts = courts.filter(
-    (c) => c.status === "MAINTENANCE"
+    (c) => c.status === "Maintenance"
   ).length;
 
   return (

@@ -64,7 +64,7 @@ export const courtService = {
       return {
         courtId: mockCourts.length + 1,
         ...payload,
-        status: "ACTIVE",
+        status: "Active",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -110,7 +110,7 @@ export const courtService = {
       court.updatedAt = new Date().toISOString();
       return {
         court,
-        affectedUpcomingBookingsCount: payload.status === "ACTIVE" ? 0 : 2,
+        affectedUpcomingBookingsCount: payload.status === "Active" ? 0 : 2,
       };
     }
     const { data } = await axiosInstance.patch<

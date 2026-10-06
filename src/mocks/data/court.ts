@@ -14,7 +14,7 @@ export const mockCourts: Court[] = [
     courtId: 1,
     name: "Sân 1",
     description: "Sân cầu lông tiêu chuẩn, thảm tập luyện chuyên dụng",
-    status: "ACTIVE",
+    status: "Active",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -22,7 +22,7 @@ export const mockCourts: Court[] = [
     courtId: 2,
     name: "Sân 2",
     description: "Sân cầu lông tiêu chuẩn, ánh sáng tốt",
-    status: "ACTIVE",
+    status: "Active",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -30,7 +30,7 @@ export const mockCourts: Court[] = [
     courtId: 3,
     name: "Sân 3",
     description: "Sân đang bảo trì định kỳ",
-    status: "MAINTENANCE",
+    status: "Maintenance",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -44,7 +44,7 @@ export const getMockCourtGrid = (date: string): CourtGridResponse => ({
       const start = 5 * 60 + i * 30;
       const booked = (Math.floor(i / 3) + court.courtId) % 4 === 0;
       const displayStatus: SlotDisplayStatus =
-        court.status !== "ACTIVE" ? "CLOSED" : booked ? "BOOKED" : "AVAILABLE";
+        court.status !== "Active" ? "CLOSED" : booked ? "BOOKED" : "AVAILABLE";
       return {
         courtId: court.courtId,
         date,

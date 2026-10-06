@@ -1,5 +1,6 @@
-export type CourtStatus = "ACTIVE" | "MAINTENANCE" | "CLOSED";
+import type { components } from "@/api/schema";
 
+export type CourtStatus = components["schemas"]["CourtStatus"];
 export type SlotDisplayStatus = "AVAILABLE" | "BOOKED" | "CLOSED";
 
 export interface Court {
@@ -10,25 +11,29 @@ export interface Court {
   isInUse?: boolean;
   createdAt: string;
   updatedAt: string;
+  courtSchedules?: CourtSchedule[];
+  pricingRules?: PricingRule[];
 }
 
 export interface CourtSchedule {
-  id: number;
+  scheduleId: number;
   courtId: number;
   dayOfWeek: number;
   openTime: string;
   closeTime: string;
   isAvailable: boolean;
+  createdAt: string;
   updatedAt: string;
 }
 
 export interface PricingRule {
-  id: number;
+  pricingRuleId: number;
   courtId: number;
   dayOfWeek: number;
   startTime: string;
   endTime: string;
   pricePerHour: number;
+  createdAt: string;
   updatedAt: string;
 }
 
@@ -57,12 +62,14 @@ export interface CourtGridResponse {
 export interface CreateCourtRequest {
   name: string;
   description: string;
+  defaultOpenTime: string;
+  defaultCloseTime: string;
+  defaultPricePerHour: number;
 }
 
 export interface UpdateCourtRequest {
   name?: string;
   description?: string;
-  status?: CourtStatus;
 }
 
 export interface UpsertCourtScheduleRequest {

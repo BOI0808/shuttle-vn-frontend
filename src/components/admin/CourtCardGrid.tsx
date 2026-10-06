@@ -76,7 +76,7 @@ export function CourtCardGrid({
               </div>
               {(() => {
                 const rate =
-                  court.status === "ACTIVE"
+                  court.status === "Active"
                     ? occupancyMap[court.courtId] ?? 0
                     : 0;
                 return (

@@ -31,9 +31,9 @@ export const PAYMENT_METHOD_LABEL: Record<string, string> = {
 };
 
 export const COURT_STATUS_LABEL: Record<string, string> = {
-  ACTIVE: "Đang hoạt động",
-  MAINTENANCE: "Bảo trì",
-  CLOSED: "Đóng cửa",
+  Active: "Đang hoạt động",
+  Maintenance: "Bảo trì",
+  Closed: "Đóng cửa",
 };
 
 export const SLOT_DISPLAY_STATUS_LABEL: Record<string, string> = {
@@ -43,9 +43,8 @@ export const SLOT_DISPLAY_STATUS_LABEL: Record<string, string> = {
 };
 
 export const ACCOUNT_STATUS_LABEL: Record<string, string> = {
-  ACTIVE: "Hoạt động",
-  LOCKED: "Bị khoá",
-  DISABLED: "Vô hiệu hoá",
+  Active: "Hoạt động",
+  Disabled: "Vô hiệu hoá",
 };
 
 export const USER_ROLE_LABEL: Record<string, string> = {
