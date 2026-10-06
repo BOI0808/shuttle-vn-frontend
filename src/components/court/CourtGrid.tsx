@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useCourtGrid } from "@/hooks/useCourt";
 import { CourtSlotCell } from "./CourtSlotCell";
 import { SlotPopup, SlotPopupState } from "./SlotPopup";
@@ -36,6 +36,21 @@ export function CourtGrid({ date }: CourtGridProps) {
 
   const [popup, setPopup] = useState<SlotPopupState | null>(null);
   const [selectedDuration, setSelectedDuration] = useState(0);
+
+  const scrollContainerRef = useCallback((el: HTMLDivElement | null) => {
+    if (!el) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY * 1.2;
+      }
+    };
+
+    el.addEventListener("wheel", handleWheel, { passive: false });
+  }, []);
 
   const now = new Date();
   const nowTotalMin = now.getHours() * 60 + now.getMinutes();
@@ -126,7 +141,10 @@ export function CourtGrid({ date }: CourtGridProps) {
         </div>
 
         {/* Scrollable grid */}
-        <div className="overflow-x-auto [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full">
+        <div
+          ref={scrollContainerRef}
+          className="overflow-x-auto [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full"
+        >
           <table className="border-collapse" style={{ tableLayout: "fixed" }}>
             <thead>
               <tr>

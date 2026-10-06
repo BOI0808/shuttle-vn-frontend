@@ -20,14 +20,13 @@ export function CourtSlotCell({
   status,
   isClosed,
   isHourSep,
-  isNowSlot,
-  nowFrac,
   startMinutes,
   courtName,
   onClickAvailable,
 }: CourtSlotCellProps) {
   return (
     <td
+      style={{ contentVisibility: "auto", containIntrinsicSize: "72px 56px" }}
       className={cn(
         "w-[72px] min-w-[72px] h-14 p-[5px_3px] border-b border-b-gray-100 vertical-middle relative",
         isHourSep ? "border-r border-r-gray-300" : "border-r border-r-gray-200"
@@ -35,14 +34,14 @@ export function CourtSlotCell({
     >
       <div
         className={cn(
-          "w-full h-full rounded-[5px] border border-transparent flex items-center justify-center relative overflow-hidden transition-[filter] duration-100",
+          "w-full h-full rounded-[5px] border border-transparent flex items-center justify-center relative overflow-hidden",
           isClosed
             ? "slot-closed"
             : status === "BOOKED"
             ? "slot-booked"
             : status === "AVAILABLE"
             ? "slot-available"
-            : "slot-mine" // AVAILABLE mapped to mine when it's user's booking
+            : "slot-mine"
         )}
         title={
           isClosed
