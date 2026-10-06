@@ -1,4 +1,4 @@
-import { BookingDetail } from "./booking";
+import type { BookingDetail } from "./booking";
 
 export interface RevenueStats {
   date: string; // ISO yyyy-MM-dd

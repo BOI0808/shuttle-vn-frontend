@@ -2,7 +2,7 @@ export interface ApiResponse<T> {
   success: boolean;
   data: T;
   message: string | null;
-  errors: string[] | null;
+  errors: Record<string, string[]> | null;
 }
 
 export interface PaginatedResponse<T> {

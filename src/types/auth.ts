@@ -1,6 +1,8 @@
-export type AccountStatus = "Active" | "Disabled";
-export type CodeType = "VerifyEmail" | "ResetPassword";
-export type AccountType = "Customer" | "Employee";
+import type { components } from "@/components/api/schema";
+
+export type AccountStatus = components["schemas"]["AccountStatus"];
+export type CodeType = components["schemas"]["CodeType"];
+export type AccountType = components["schemas"]["AccountType"];
 export type UserRole = "Admin" | "Employee" | "Customer";
 
 export interface UserAccount {
@@ -15,6 +17,7 @@ export interface UserAccount {
 
 export interface Employee {
   employeeId: string;
+  accountId?: string | null;
   fullName: string;
   phone: string;
   email: string;
@@ -52,6 +55,12 @@ export interface RegisterRequest {
 export interface IssueCodeRequest {
   email: string;
   type: CodeType;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  code: string;
+  password: string;
 }
 
 export interface CreateEmployeeRequest {

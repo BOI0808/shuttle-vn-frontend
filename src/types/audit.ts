@@ -1,14 +1,12 @@
-export interface Audit {
-  id: number;
-  userId: string; // FK → UserAccount.accountId
-  action: string; // CREATE | UPDATE | DELETE
-  entityName: string; // tên bảng, VD: "Court", "Booking"
-  entityId: string;
-  oldValue: string | null; // JSON snapshot trước khi thay đổi
-  newValue: string | null; // JSON snapshot sau khi thay đổi
-  createdAt: string;
-}
+import type { components, paths } from "@/components/api/schema";
 
+export type ActorType = components["schemas"]["ActorType"];
+export type Audit = components["schemas"]["AuditDto"];
+export type AuditQuery = NonNullable<paths["/api/audits"]["get"]["parameters"]["query"]>;
+export type AuditListResponse = paths["/api/audits"]["get"]["responses"][200]["content"]["application/json"];
+export type AuditPage = NonNullable<AuditListResponse["data"]>;
+
+// FE-only key/value configuration.
 export interface Parameter {
   key: string; // unique
   value: string;

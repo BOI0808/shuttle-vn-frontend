@@ -12,15 +12,15 @@ import { COURT_STATUS_LABEL } from "@/config/app";
 import { cn, getErrorMessage } from "@/utils";
 
 const schema = z.object({
-  status: z.enum(["ACTIVE", "MAINTENANCE", "CLOSED"]),
+  status: z.enum(["Active", "Maintenance", "Closed"]),
   reason: z.string().max(200, "Tối đa 200 ký tự").optional(),
 });
 type FormData = z.infer<typeof schema>;
 
 const OPTIONS: { value: CourtStatus; hint: string }[] = [
-  { value: "ACTIVE", hint: "Nhận đặt sân bình thường" },
-  { value: "MAINTENANCE", hint: "Tạm ngưng nhận đặt sân mới để bảo trì" },
-  { value: "CLOSED", hint: "Ngừng hoạt động, không nhận đặt sân mới" },
+  { value: "Active", hint: "Nhận đặt sân bình thường" },
+  { value: "Maintenance", hint: "Tạm ngưng nhận đặt sân mới để bảo trì" },
+  { value: "Closed", hint: "Ngừng hoạt động, không nhận đặt sân mới" },
 ];
 
 interface CourtStatusModalProps {
@@ -122,7 +122,7 @@ export function CourtStatusModal({ court, onClose }: CourtStatusModalProps) {
               ))}
             </div>
 
-            {selected !== "ACTIVE" && !isUnchanged && (
+            {selected !== "Active" && !isUnchanged && (
               <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-700">
                 Các đơn đặt sân hiện có (Chờ xác nhận / Đã xác nhận) được giữ
                 nguyên và không bị huỷ tự động. Nhân viên cần chủ động liên hệ
