@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { courtService } from "@/services";
-import { QUERY_KEYS } from "@/config/app";
+import { useCourtGrid } from "@/hooks";
+import { COURT_STATUS_LABEL } from "@/config/app";
 import { getTodayISO } from "@/utils";
 import { Button } from "@/components/ui/Button";
 
@@ -31,10 +30,7 @@ function getTimelineStyle(startTime: string, endTime: string) {
 
 export default function ScheduleClient() {
   const [date, setDate] = useState(getTodayISO());
-  const { data: grid, isLoading } = useQuery({
-    queryKey: QUERY_KEYS.courtGrid(date),
-    queryFn: () => courtService.getCourtGrid(date),
-  });
+  const { data: grid, isLoading, isError } = useCourtGrid(date);
 
   const hours = Array.from({ length: 17 }, (_, i) => `${i + 5 < 10 ? "0" : ""}${i + 5}:00`);
 
@@ -70,11 +66,15 @@ export default function ScheduleClient() {
             {/* Court Rows */}
             {isLoading ? (
               <div className="p-12 text-center text-slate-500 font-mono">Đang tải lịch sân...</div>
-            ) : grid?.courts.map((item) => (
+            ) : isError ? (
+              <div className="p-12 text-center text-red-600">Không thể tải lịch sân.</div>
+            ) : !grid?.courts.length ? (
+              <div className="p-12 text-center text-slate-500">Không có dữ liệu sân trong ngày này.</div>
+            ) : grid.courts.map((item) => (
               <div key={item.court.courtId} className="flex border-b border-slate-100 last:border-b-0 hover:bg-slate-50/30 transition-colors">
                 <div className="w-32 p-4 border-r border-slate-100">
                   <p className="text-[13px] font-bold text-slate-900">{item.court.name}</p>
-                  <p className="text-[10px] text-slate-500">{item.court.status}</p>
+                  <p className="text-[10px] text-slate-500">{COURT_STATUS_LABEL[item.court.status]}</p>
                 </div>
                 <div className="flex-1 flex relative h-16 bg-slate-50/10">
                   {item.slots
