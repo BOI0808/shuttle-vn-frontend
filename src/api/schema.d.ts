@@ -571,9 +571,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["BadmintonCourtListApiResponse"];
-                        "application/json": components["schemas"]["BadmintonCourtListApiResponse"];
-                        "text/json": components["schemas"]["BadmintonCourtListApiResponse"];
+                        "text/plain": components["schemas"]["BadmintonCourtPagedResultApiResponse"];
+                        "application/json": components["schemas"]["BadmintonCourtPagedResultApiResponse"];
+                        "text/json": components["schemas"]["BadmintonCourtPagedResultApiResponse"];
                     };
                 };
             };
@@ -705,9 +705,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["BadmintonCourtListApiResponse"];
-                        "application/json": components["schemas"]["BadmintonCourtListApiResponse"];
-                        "text/json": components["schemas"]["BadmintonCourtListApiResponse"];
+                        "text/plain": components["schemas"]["CourtGridResponseDtoApiResponse"];
+                        "application/json": components["schemas"]["CourtGridResponseDtoApiResponse"];
+                        "text/json": components["schemas"]["CourtGridResponseDtoApiResponse"];
                     };
                 };
             };
@@ -1462,6 +1462,25 @@ export interface components {
                 [key: string]: string[];
             } | null;
         };
+        BadmintonCourtPagedResult: {
+            items?: components["schemas"]["BadmintonCourt"][] | null;
+            /** Format: int32 */
+            pageNumber?: number;
+            /** Format: int32 */
+            pageSize?: number;
+            /** Format: int32 */
+            totalCount?: number;
+            /** Format: int32 */
+            readonly totalPages?: number;
+        };
+        BadmintonCourtPagedResultApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["BadmintonCourtPagedResult"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
         BooleanApiResponse: {
             success?: boolean;
             data?: boolean;
@@ -1481,6 +1500,35 @@ export interface components {
         };
         /** @enum {string} */
         CodeType: "VerifyEmail" | "ResetPassword";
+        CourtDto: {
+            /** Format: int32 */
+            courtId?: number;
+            name?: string | null;
+            description?: string | null;
+            status?: string | null;
+            isInUse?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        CourtGridItemDto: {
+            court?: components["schemas"]["CourtDto"];
+            slots?: components["schemas"]["CourtSlotDto"][] | null;
+        };
+        CourtGridResponseDto: {
+            /** Format: date */
+            date?: string;
+            courts?: components["schemas"]["CourtGridItemDto"][] | null;
+        };
+        CourtGridResponseDtoApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["CourtGridResponseDto"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
         CourtSchedule: {
             /** Format: int32 */
             scheduleId?: number;
@@ -1513,6 +1561,19 @@ export interface components {
             errors?: {
                 [key: string]: string[];
             } | null;
+        };
+        CourtSlotDto: {
+            /** Format: int32 */
+            courtId?: number;
+            /** Format: date */
+            date?: string;
+            startTime?: string | null;
+            endTime?: string | null;
+            displayStatus?: string | null;
+            /** Format: uuid */
+            bookingId?: string | null;
+            /** Format: double */
+            pricePerHour?: number;
         };
         /** @enum {string} */
         CourtStatus: "Active" | "Maintenance" | "Closed";
