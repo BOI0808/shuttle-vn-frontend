@@ -571,9 +571,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["BadmintonCourtPagedResultApiResponse"];
-                        "application/json": components["schemas"]["BadmintonCourtPagedResultApiResponse"];
-                        "text/json": components["schemas"]["BadmintonCourtPagedResultApiResponse"];
+                        "text/plain": components["schemas"]["BadmintonCourtListApiResponse"];
+                        "application/json": components["schemas"]["BadmintonCourtListApiResponse"];
+                        "text/json": components["schemas"]["BadmintonCourtListApiResponse"];
                     };
                 };
             };
@@ -705,9 +705,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["CourtGridResponseDtoApiResponse"];
-                        "application/json": components["schemas"]["CourtGridResponseDtoApiResponse"];
-                        "text/json": components["schemas"]["CourtGridResponseDtoApiResponse"];
+                        "text/plain": components["schemas"]["BadmintonCourtListApiResponse"];
+                        "application/json": components["schemas"]["BadmintonCourtListApiResponse"];
+                        "text/json": components["schemas"]["BadmintonCourtListApiResponse"];
                     };
                 };
             };
@@ -1110,51 +1110,22 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["PricingRuleListApiResponse"];
-                        "application/json": components["schemas"]["PricingRuleListApiResponse"];
-                        "text/json": components["schemas"]["PricingRuleListApiResponse"];
+                        "text/plain": components["schemas"]["PricingRuleIReadOnlyListApiResponse"];
+                        "application/json": components["schemas"]["PricingRuleIReadOnlyListApiResponse"];
+                        "text/json": components["schemas"]["PricingRuleIReadOnlyListApiResponse"];
                     };
                 };
             };
         };
         put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    id: number;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": components["schemas"]["CreatePricingRuleDto"];
-                    "text/json": components["schemas"]["CreatePricingRuleDto"];
-                    "application/*+json": components["schemas"]["CreatePricingRuleDto"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "text/plain": components["schemas"]["PricingRuleApiResponse"];
-                        "application/json": components["schemas"]["PricingRuleApiResponse"];
-                        "text/json": components["schemas"]["PricingRuleApiResponse"];
-                    };
-                };
-            };
-        };
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/courts/{id}/pricing-rules/{pricingRuleId}": {
+    "/api/courts/{id}/pricing-rules/{dayOfWeek}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1168,15 +1139,15 @@ export interface paths {
                 header?: never;
                 path: {
                     id: number;
-                    pricingRuleId: number;
+                    dayOfWeek: number;
                 };
                 cookie?: never;
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["UpdatePricingRuleDto"];
-                    "text/json": components["schemas"]["UpdatePricingRuleDto"];
-                    "application/*+json": components["schemas"]["UpdatePricingRuleDto"];
+                    "application/json": components["schemas"]["SavePricingRuleDto"];
+                    "text/json": components["schemas"]["SavePricingRuleDto"];
+                    "application/*+json": components["schemas"]["SavePricingRuleDto"];
                 };
             };
             responses: {
@@ -1186,39 +1157,15 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["PricingRuleApiResponse"];
-                        "application/json": components["schemas"]["PricingRuleApiResponse"];
-                        "text/json": components["schemas"]["PricingRuleApiResponse"];
+                        "text/plain": components["schemas"]["PricingRuleIReadOnlyListApiResponse"];
+                        "application/json": components["schemas"]["PricingRuleIReadOnlyListApiResponse"];
+                        "text/json": components["schemas"]["PricingRuleIReadOnlyListApiResponse"];
                     };
                 };
             };
         };
         post?: never;
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    id: number;
-                    pricingRuleId: number;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "text/plain": components["schemas"]["ObjectApiResponse"];
-                        "application/json": components["schemas"]["ObjectApiResponse"];
-                        "text/json": components["schemas"]["ObjectApiResponse"];
-                    };
-                };
-            };
-        };
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1462,25 +1409,6 @@ export interface components {
                 [key: string]: string[];
             } | null;
         };
-        BadmintonCourtPagedResult: {
-            items?: components["schemas"]["BadmintonCourt"][] | null;
-            /** Format: int32 */
-            pageNumber?: number;
-            /** Format: int32 */
-            pageSize?: number;
-            /** Format: int32 */
-            totalCount?: number;
-            /** Format: int32 */
-            readonly totalPages?: number;
-        };
-        BadmintonCourtPagedResultApiResponse: {
-            success?: boolean;
-            data?: components["schemas"]["BadmintonCourtPagedResult"];
-            message?: string | null;
-            errors?: {
-                [key: string]: string[];
-            } | null;
-        };
         BooleanApiResponse: {
             success?: boolean;
             data?: boolean;
@@ -1500,35 +1428,6 @@ export interface components {
         };
         /** @enum {string} */
         CodeType: "VerifyEmail" | "ResetPassword";
-        CourtDto: {
-            /** Format: int32 */
-            courtId?: number;
-            name?: string | null;
-            description?: string | null;
-            status?: string | null;
-            isInUse?: boolean;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-        };
-        CourtGridItemDto: {
-            court?: components["schemas"]["CourtDto"];
-            slots?: components["schemas"]["CourtSlotDto"][] | null;
-        };
-        CourtGridResponseDto: {
-            /** Format: date */
-            date?: string;
-            courts?: components["schemas"]["CourtGridItemDto"][] | null;
-        };
-        CourtGridResponseDtoApiResponse: {
-            success?: boolean;
-            data?: components["schemas"]["CourtGridResponseDto"];
-            message?: string | null;
-            errors?: {
-                [key: string]: string[];
-            } | null;
-        };
         CourtSchedule: {
             /** Format: int32 */
             scheduleId?: number;
@@ -1562,19 +1461,6 @@ export interface components {
                 [key: string]: string[];
             } | null;
         };
-        CourtSlotDto: {
-            /** Format: int32 */
-            courtId?: number;
-            /** Format: date */
-            date?: string;
-            startTime?: string | null;
-            endTime?: string | null;
-            displayStatus?: string | null;
-            /** Format: uuid */
-            bookingId?: string | null;
-            /** Format: double */
-            pricePerHour?: number;
-        };
         /** @enum {string} */
         CourtStatus: "Active" | "Maintenance" | "Closed";
         CreateCourtDto: {
@@ -1593,16 +1479,6 @@ export interface components {
             email?: string | null;
             password?: string | null;
             isAdmin?: boolean;
-        };
-        CreatePricingRuleDto: {
-            /** Format: int32 */
-            dayOfWeek?: number;
-            /** Format: time */
-            startTime?: string;
-            /** Format: time */
-            endTime?: string;
-            /** Format: double */
-            pricePerHour?: number;
         };
         Customer: {
             /** Format: uuid */
@@ -1684,8 +1560,6 @@ export interface components {
             dayOfWeek?: number;
             /** Format: time */
             startTime?: string;
-            /** Format: time */
-            endTime?: string;
             /** Format: double */
             pricePerHour?: number;
             /** Format: date-time */
@@ -1693,15 +1567,7 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
         };
-        PricingRuleApiResponse: {
-            success?: boolean;
-            data?: components["schemas"]["PricingRule"];
-            message?: string | null;
-            errors?: {
-                [key: string]: string[];
-            } | null;
-        };
-        PricingRuleListApiResponse: {
+        PricingRuleIReadOnlyListApiResponse: {
             success?: boolean;
             data?: components["schemas"]["PricingRule"][] | null;
             message?: string | null;
@@ -1721,6 +1587,15 @@ export interface components {
             email?: string | null;
             code?: string | null;
             password?: string | null;
+        };
+        SavePricingRuleDto: {
+            pricingRules?: components["schemas"]["SavePricingRuleItemDto"][] | null;
+        };
+        SavePricingRuleItemDto: {
+            /** Format: time */
+            startTime?: string;
+            /** Format: double */
+            pricePerHour?: number;
         };
         StringApiResponse: {
             success?: boolean;
@@ -1744,16 +1619,6 @@ export interface components {
         UpdateCourtStatusDto: {
             status?: components["schemas"]["CourtStatus"];
             reason?: string | null;
-        };
-        UpdatePricingRuleDto: {
-            /** Format: int32 */
-            dayOfWeek?: number;
-            /** Format: time */
-            startTime?: string;
-            /** Format: time */
-            endTime?: string;
-            /** Format: double */
-            pricePerHour?: number;
         };
         UpdateProfileDto: {
             fullName?: string | null;

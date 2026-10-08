@@ -678,17 +678,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/BadmintonCourtPagedResultApiResponse"
+                  "$ref": "#/components/schemas/BadmintonCourtListApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BadmintonCourtPagedResultApiResponse"
+                  "$ref": "#/components/schemas/BadmintonCourtListApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BadmintonCourtPagedResultApiResponse"
+                  "$ref": "#/components/schemas/BadmintonCourtListApiResponse"
                 }
               }
             }
@@ -860,17 +860,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/CourtGridResponseDtoApiResponse"
+                  "$ref": "#/components/schemas/BadmintonCourtListApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CourtGridResponseDtoApiResponse"
+                  "$ref": "#/components/schemas/BadmintonCourtListApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CourtGridResponseDtoApiResponse"
+                  "$ref": "#/components/schemas/BadmintonCourtListApiResponse"
                 }
               }
             }
@@ -1377,74 +1377,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleListApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleListApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleListApiResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "PricingRule"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePricingRuleDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePricingRuleDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePricingRuleDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               }
             }
@@ -1452,7 +1395,7 @@
         }
       }
     },
-    "/api/courts/{id}/pricing-rules/{pricingRuleId}": {
+    "/api/courts/{id}/pricing-rules/{dayOfWeek}": {
       "put": {
         "tags": [
           "PricingRule"
@@ -1468,7 +1411,7 @@
             }
           },
           {
-            "name": "pricingRuleId",
+            "name": "dayOfWeek",
             "in": "path",
             "required": true,
             "schema": {
@@ -1481,17 +1424,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdatePricingRuleDto"
+                "$ref": "#/components/schemas/SavePricingRuleDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdatePricingRuleDto"
+                "$ref": "#/components/schemas/SavePricingRuleDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdatePricingRuleDto"
+                "$ref": "#/components/schemas/SavePricingRuleDto"
               }
             }
           }
@@ -1502,64 +1445,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "PricingRule"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "pricingRuleId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               }
             }
@@ -2048,62 +1944,6 @@
         },
         "additionalProperties": false
       },
-      "BadmintonCourtPagedResult": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/BadmintonCourt"
-            },
-            "nullable": true
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32",
-            "readOnly": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "BadmintonCourtPagedResultApiResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/BadmintonCourtPagedResult"
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          },
-          "errors": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "BooleanApiResponse": {
         "type": "object",
         "properties": {
@@ -2167,98 +2007,6 @@
           "ResetPassword"
         ],
         "type": "string"
-      },
-      "CourtDto": {
-        "type": "object",
-        "properties": {
-          "courtId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
-            "type": "string",
-            "nullable": true
-          },
-          "isInUse": {
-            "type": "boolean"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "CourtGridItemDto": {
-        "type": "object",
-        "properties": {
-          "court": {
-            "$ref": "#/components/schemas/CourtDto"
-          },
-          "slots": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CourtSlotDto"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "CourtGridResponseDto": {
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "courts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CourtGridItemDto"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "CourtGridResponseDtoApiResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/CourtGridResponseDto"
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          },
-          "errors": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
       },
       "CourtSchedule": {
         "type": "object",
@@ -2353,41 +2101,6 @@
         },
         "additionalProperties": false
       },
-      "CourtSlotDto": {
-        "type": "object",
-        "properties": {
-          "courtId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "startTime": {
-            "type": "string",
-            "nullable": true
-          },
-          "endTime": {
-            "type": "string",
-            "nullable": true
-          },
-          "displayStatus": {
-            "type": "string",
-            "nullable": true
-          },
-          "bookingId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "pricePerHour": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "additionalProperties": false
-      },
       "CourtStatus": {
         "enum": [
           "Active",
@@ -2443,28 +2156,6 @@
           },
           "isAdmin": {
             "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreatePricingRuleDto": {
-        "type": "object",
-        "properties": {
-          "dayOfWeek": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "startTime": {
-            "type": "string",
-            "format": "time"
-          },
-          "endTime": {
-            "type": "string",
-            "format": "time"
-          },
-          "pricePerHour": {
-            "type": "number",
-            "format": "double"
           }
         },
         "additionalProperties": false
@@ -2701,10 +2392,6 @@
             "type": "string",
             "format": "time"
           },
-          "endTime": {
-            "type": "string",
-            "format": "time"
-          },
           "pricePerHour": {
             "type": "number",
             "format": "double"
@@ -2720,33 +2407,7 @@
         },
         "additionalProperties": false
       },
-      "PricingRuleApiResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/PricingRule"
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          },
-          "errors": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "PricingRuleListApiResponse": {
+      "PricingRuleIReadOnlyListApiResponse": {
         "type": "object",
         "properties": {
           "success": {
@@ -2824,6 +2485,33 @@
         },
         "additionalProperties": false
       },
+      "SavePricingRuleDto": {
+        "type": "object",
+        "properties": {
+          "pricingRules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SavePricingRuleItemDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SavePricingRuleItemDto": {
+        "type": "object",
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "format": "time"
+          },
+          "pricePerHour": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
       "StringApiResponse": {
         "type": "object",
         "properties": {
@@ -2891,28 +2579,6 @@
           "reason": {
             "type": "string",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UpdatePricingRuleDto": {
-        "type": "object",
-        "properties": {
-          "dayOfWeek": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "startTime": {
-            "type": "string",
-            "format": "time"
-          },
-          "endTime": {
-            "type": "string",
-            "format": "time"
-          },
-          "pricePerHour": {
-            "type": "number",
-            "format": "double"
           }
         },
         "additionalProperties": false
