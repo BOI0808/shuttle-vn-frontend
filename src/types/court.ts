@@ -72,26 +72,22 @@ export interface UpdateCourtRequest {
   description?: string;
 }
 
-export interface UpsertCourtScheduleRequest {
-  dayOfWeek: number;
+export interface UpdateCourtScheduleRequest {
   openTime: string;
   closeTime: string;
   isAvailable: boolean;
 }
 
-export interface UpsertPricingRuleRequest {
+export interface CreatePricingRuleRequest {
   dayOfWeek: number;
   startTime: string;
   endTime: string;
   pricePerHour: number;
 }
 
+export type UpdatePricingRuleRequest = CreatePricingRuleRequest;
+
 export interface UpdateCourtStatusRequest {
   status: CourtStatus;
   reason?: string;
-}
-
-export interface UpdateCourtStatusResult {
-  court: Court;
-  affectedUpcomingBookingsCount: number;
 }

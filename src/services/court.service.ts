@@ -3,46 +3,39 @@ import {
   ApiResponse,
   Court,
   CourtGridResponse,
+  CourtSchedule,
   CreateCourtRequest,
-  PaginatedResponse,
-  PaginationParams,
+  CreatePricingRuleRequest,
+  PricingRule,
   UpdateCourtRequest,
+  UpdateCourtScheduleRequest,
   UpdateCourtStatusRequest,
-  UpdateCourtStatusResult,
+  UpdatePricingRuleRequest,
+  PaginatedResponse,
 } from "@/types";
 import { IS_MOCK, mockDelay } from "@/mocks/config";
 import { getMockCourtGrid, mockCourts } from "@/mocks/data";
 
 export const courtService = {
-  async getCourts(
-    params?: PaginationParams
-  ): Promise<PaginatedResponse<Court>> {
+  async getCourts(): Promise<Court[]> {
     if (IS_MOCK) {
       await mockDelay();
-      return {
-        items: mockCourts,
-        totalCount: mockCourts.length,
-        pageNumber: params?.pageNumber || 1,
-        pageSize: params?.pageSize || 10,
-        totalPages: 1,
-      };
+      return mockCourts;
     }
     const { data } = await axiosInstance.get<
       ApiResponse<PaginatedResponse<Court>>
-    >("/courts", { params });
-    return data.data;
+    >("/courts");
+    return data.data.items;
   },
 
-  async getCourtById(id: string): Promise<Court> {
+  async getCourtById(id: number): Promise<Court> {
     if (IS_MOCK) {
       await mockDelay();
-      const court = mockCourts.find((c) => c.courtId.toString() === id);
-      if (!court) throw new Error("Court not found");
+      const court = mockCourts.find((item) => item.courtId === id);
+      if (!court) throw new Error("Không tìm thấy sân");
       return court;
     }
-    const { data } = await axiosInstance.get<ApiResponse<Court>>(
-      `/courts/${id}`
-    );
+    const { data } = await axiosInstance.get<ApiResponse<Court>>(`/courts/${id}`);
     return data.data;
   },
 
@@ -76,61 +69,58 @@ export const courtService = {
     return data.data;
   },
 
-  async updateCourt(id: string, payload: UpdateCourtRequest): Promise<Court> {
+  async updateCourt(id: number, payload: UpdateCourtRequest): Promise<Court> {
     if (IS_MOCK) {
       await mockDelay();
-      const court = mockCourts.find((c) => c.courtId.toString() === id);
-      if (!court) throw new Error("Court not found");
-      return { ...court, ...payload, updatedAt: new Date().toISOString() };
+      const court = mockCourts.find((item) => item.courtId === id);
+      if (!court) throw new Error("Không tìm thấy sân");
+      Object.assign(court, payload, { updatedAt: new Date().toISOString() });
+      return court;
     }
-    const { data } = await axiosInstance.put<ApiResponse<Court>>(
-      `/courts/${id}`,
-      payload
-    );
+    const { data } = await axiosInstance.patch<ApiResponse<Court>>(`/courts/${id}`, payload);
     return data.data;
   },
 
-  async deleteCourt(id: string): Promise<void> {
+  async updateCourtStatus(id: number, payload: UpdateCourtStatusRequest): Promise<boolean> {
     if (IS_MOCK) {
       await mockDelay();
-      return;
-    }
-    await axiosInstance.delete(`/courts/${id}`);
-  },
-
-  async updateCourtStatus(
-    id: string,
-    payload: UpdateCourtStatusRequest
-  ): Promise<UpdateCourtStatusResult> {
-    if (IS_MOCK) {
-      await mockDelay();
-      const court = mockCourts.find((c) => c.courtId.toString() === id);
-      if (!court) throw new Error("Court not found");
+      const court = mockCourts.find((item) => item.courtId === id);
+      if (!court) throw new Error("Không tìm thấy sân");
       court.status = payload.status;
       court.updatedAt = new Date().toISOString();
-      return {
-        court,
-        affectedUpcomingBookingsCount: payload.status === "Active" ? 0 : 2,
-      };
+      return true;
     }
-    const { data } = await axiosInstance.patch<
-      ApiResponse<UpdateCourtStatusResult>
-    >(`/courts/${id}/status`, payload);
+    const { data } = await axiosInstance.patch<ApiResponse<boolean>>(`/courts/${id}/status`, payload);
     return data.data;
   },
 
-  async getCourtUsage(): Promise<any> {
-    if (IS_MOCK) {
-      await mockDelay();
-      return {
-        courts: [
-          { courtId: 1, occupancyRate: 65 },
-          { courtId: 2, occupancyRate: 40 },
-          { courtId: 3, occupancyRate: 0 },
-        ],
-      };
-    }
-    const { data } = await axiosInstance.get("/admin/statistics/court-usage");
+  async getCourtSchedules(id: number): Promise<CourtSchedule[]> {
+    const { data } = await axiosInstance.get<ApiResponse<CourtSchedule[]>>(`/courts/${id}/schedules`);
     return data.data;
   },
+
+  async updateCourtSchedule(id: number, dayOfWeek: number, payload: UpdateCourtScheduleRequest): Promise<CourtSchedule> {
+    const { data } = await axiosInstance.put<ApiResponse<CourtSchedule>>(`/courts/${id}/schedules/${dayOfWeek}`, payload);
+    return data.data;
+  },
+
+  async getPricingRules(id: number): Promise<PricingRule[]> {
+    const { data } = await axiosInstance.get<ApiResponse<PricingRule[]>>(`/courts/${id}/pricing-rules`);
+    return data.data;
+  },
+
+  async createPricingRule(id: number, payload: CreatePricingRuleRequest): Promise<PricingRule> {
+    const { data } = await axiosInstance.post<ApiResponse<PricingRule>>(`/courts/${id}/pricing-rules`, payload);
+    return data.data;
+  },
+
+  async updatePricingRule(id: number, pricingRuleId: number, payload: UpdatePricingRuleRequest): Promise<PricingRule> {
+    const { data } = await axiosInstance.put<ApiResponse<PricingRule>>(`/courts/${id}/pricing-rules/${pricingRuleId}`, payload);
+    return data.data;
+  },
+
+  async deletePricingRule(id: number, pricingRuleId: number): Promise<void> {
+    await axiosInstance.delete(`/courts/${id}/pricing-rules/${pricingRuleId}`);
+  },
+
 };
