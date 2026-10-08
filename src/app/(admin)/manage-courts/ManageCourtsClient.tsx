@@ -2,53 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useQuery } from "@tanstack/react-query";
-import { courtService } from "@/services";
 import { Court } from "@/types";
-import { QUERY_KEYS } from "@/config/app";
+import { useCourts } from "@/hooks";
 import { cn } from "@/utils";
 import { CourtStatusModal } from "@/components/admin/CourtStatusModal";
+import { CourtFormModal } from "@/components/admin/CourtFormModal";
 import { CourtStats } from "@/components/admin/CourtStats";
 import { CourtCardGrid } from "@/components/admin/CourtCardGrid";
 import { CourtTable } from "@/components/admin/CourtTable";
 
 export default function ManageCourtsClient() {
-  const { data, isLoading } = useQuery({
-    queryKey: QUERY_KEYS.courts,
-    queryFn: () => courtService.getCourts(),
-  });
-
+  const { data: courts = [], isLoading, isError } = useCourts();
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
   const [statusCourt, setStatusCourt] = useState<Court | null>(null);
+  const [formCourt, setFormCourt] = useState<Court | "create" | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  const todayStr = new Date().toISOString().split("T")[0];
-  const { data: gridData } = useQuery({
-    queryKey: ["courts-grid", todayStr],
-    queryFn: () => courtService.getCourtGrid(todayStr),
-  });
-
-  const { data: usageData } = useQuery({
-    queryKey: ["court-usage"],
-    queryFn: () => courtService.getCourtUsage(),
-  });
-
-  const occupancyMap: Record<number, number> = {};
-  usageData?.courts?.forEach((item: any) => {
-    occupancyMap[item.courtId] = Math.round(item.occupancyRate || 0);
-  });
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const allPrices =
-    gridData?.courts?.flatMap((c) => c.slots.map((s) => s.pricePerHour)) || [];
-  const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 60000;
-  const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 100000;
-  const priceRange = `${minPrice / 1000}K–${maxPrice / 1000}K`;
-
-  const courts = data?.items || [];
+  useEffect(() => setMounted(true), []);
 
   return (
     <div className="flex flex-col gap-6">
@@ -92,6 +62,7 @@ export default function ManageCourtsClient() {
 
             <button
               type="button"
+              onClick={() => setFormCourt("create")}
               className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-gray-700 bg-white border border-gray-300 rounded-[8px] hover:bg-gray-50 hover:border-gray-400 shadow-sm transition-all cursor-pointer"
             >
               <span className="material-symbols-outlined text-[17px] text-gray-600">
@@ -103,28 +74,22 @@ export default function ManageCourtsClient() {
           document.getElementById("admin-header-actions")!
         )}
 
-      <CourtStats courts={courts} priceRange={priceRange} />
+      <CourtStats courts={courts} />
 
       {isLoading ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500 font-mono text-sm">
-          Đang tải dữ liệu sân...
-        </div>
+        <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500 font-mono text-sm">Đang tải dữ liệu sân...</div>
+      ) : isError ? (
+        <div className="bg-white border border-red-200 rounded-xl p-12 text-center text-red-600 text-sm">Không thể tải danh sách sân.</div>
+      ) : courts.length === 0 ? (
+        <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500 text-sm">Chưa có sân nào.</div>
       ) : viewMode === "card" ? (
-        <CourtCardGrid
-          courts={courts}
-          onStatusChange={setStatusCourt}
-          occupancyMap={occupancyMap}
-        />
+        <CourtCardGrid courts={courts} onStatusChange={setStatusCourt} onEdit={setFormCourt} />
       ) : (
-        <CourtTable courts={courts} onStatusChange={setStatusCourt} />
+        <CourtTable courts={courts} onStatusChange={setStatusCourt} onEdit={setFormCourt} />
       )}
 
-      {statusCourt && (
-        <CourtStatusModal
-          court={statusCourt}
-          onClose={() => setStatusCourt(null)}
-        />
-      )}
+      {statusCourt && <CourtStatusModal court={statusCourt} onClose={() => setStatusCourt(null)} />}
+      {formCourt && <CourtFormModal court={formCourt === "create" ? undefined : formCourt} onClose={() => setFormCourt(null)} />}
     </div>
   );
 }

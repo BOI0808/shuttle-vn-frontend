@@ -2,14 +2,9 @@ import { Court } from "@/types";
 
 interface CourtStatsProps {
   courts: Court[];
-  priceRange?: string;
 }
 
-// 🟢 SỬA LẠI:
-export function CourtStats({
-  courts,
-  priceRange = "60K–100K",
-}: CourtStatsProps) {
+export function CourtStats({ courts }: CourtStatsProps) {
   const totalCourts = courts.length;
   const activeCourts = courts.filter((c) => c.status === "Active").length;
   const maintenanceCourts = courts.filter(
@@ -17,7 +12,7 @@ export function CourtStats({
   ).length;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-600">
           <span
@@ -69,25 +64,6 @@ export function CourtStats({
           <p className="text-2xl font-bold font-display text-amber-600 leading-tight">
             {maintenanceCourts}
           </p>
-        </div>
-      </div>
-
-      <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0 text-purple-600">
-          <span className="material-symbols-outlined text-[22px]">
-            payments
-          </span>
-        </div>
-        <div>
-          <p className="font-mono text-[10px] text-slate-500 uppercase tracking-wider">
-            Mức giá cơ bản
-          </p>
-          <p className="text-lg font-bold font-display text-slate-900 leading-tight">
-            {priceRange}
-          </p>
-          <span className="text-[10px] text-slate-400 font-mono">
-            / 1 tiếng
-          </span>
         </div>
       </div>
     </div>

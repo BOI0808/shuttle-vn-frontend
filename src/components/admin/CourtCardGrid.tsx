@@ -1,17 +1,16 @@
 import { Court } from "@/types";
 import { Badge } from "@/components/ui/Badge";
 import { COURT_STATUS_LABEL } from "@/config/app";
-import { cn } from "@/utils";
 
 interface CourtCardGridProps {
   courts: Court[];
   onStatusChange: (court: Court) => void;
-  occupancyMap?: Record<number, number>;
+  onEdit: (court: Court) => void;
 }
 export function CourtCardGrid({
   courts,
   onStatusChange,
-  occupancyMap = {},
+  onEdit,
 }: CourtCardGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -53,57 +52,11 @@ export function CourtCardGrid({
             </div>
           </div>
 
-          <div className="p-4 space-y-3 flex-1">
+          <div className="p-4 flex-1">
             <p className="text-[12px] text-slate-600 line-clamp-2 leading-relaxed min-h-[36px]">
               {court.description ||
                 "Sân tiêu chuẩn với hệ thống đèn chiếu sáng chuyên dụng, sàn gỗ composite."}
             </p>
-
-            <div className="space-y-2 pt-1 border-t border-slate-100 text-xs">
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400 text-[11px]">Giờ mở cửa</span>
-                <span className="font-mono font-medium text-slate-800">
-                  05:00 – 22:00
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400 text-[11px]">
-                  Giá / 30 phút
-                </span>
-                <span className="font-mono font-semibold text-blue-600">
-                  30K – 50K
-                </span>
-              </div>
-              {(() => {
-                const rate =
-                  court.status === "Active"
-                    ? occupancyMap[court.courtId] ?? 0
-                    : 0;
-                return (
-                  <>
-                    <div className="flex justify-between items-center">
-                      <span className="text-slate-400 text-[11px]">
-                        Tỉ lệ lấp đầy (tháng)
-                      </span>
-                      <span className="font-mono font-semibold text-emerald-600">
-                        {rate}%
-                      </span>
-                    </div>
-                    <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
-                      <div
-                        className={cn(
-                          "h-full rounded-full transition-all duration-500",
-                          rate > 0 ? "bg-emerald-500" : "bg-slate-300"
-                        )}
-                        style={{
-                          width: `${Math.min(100, Math.max(0, rate))}%`,
-                        }}
-                      />
-                    </div>
-                  </>
-                );
-              })()}
-            </div>
           </div>
 
           <div className="p-3 bg-slate-50/70 border-t border-slate-100 flex items-center justify-end gap-2">
@@ -119,6 +72,7 @@ export function CourtCardGrid({
             </button>
 
             <button
+              onClick={() => onEdit(court)}
               className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-[11px] font-mono font-medium transition-colors cursor-pointer"
               title="Chỉnh sửa thông tin sân"
             >
@@ -126,15 +80,6 @@ export function CourtCardGrid({
                 edit
               </span>
               Chỉnh sửa
-            </button>
-
-            <button
-              className="inline-flex items-center justify-center p-1.5 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 transition-colors cursor-pointer"
-              title="Xoá sân"
-            >
-              <span className="material-symbols-outlined text-[14px]">
-                delete
-              </span>
             </button>
           </div>
         </div>
