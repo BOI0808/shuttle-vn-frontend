@@ -31,7 +31,6 @@ export interface PricingRule {
   courtId: number;
   dayOfWeek: number;
   startTime: string;
-  endTime: string;
   pricePerHour: number;
   createdAt: string;
   updatedAt: string;
@@ -78,14 +77,14 @@ export interface UpdateCourtScheduleRequest {
   isAvailable: boolean;
 }
 
-export interface CreatePricingRuleRequest {
-  dayOfWeek: number;
+export interface SavePricingRuleItem {
   startTime: string;
-  endTime: string;
   pricePerHour: number;
 }
 
-export type UpdatePricingRuleRequest = CreatePricingRuleRequest;
+export interface SavePricingRulesRequest {
+  pricingRules: SavePricingRuleItem[];
+}
 
 export interface UpdateCourtStatusRequest {
   status: CourtStatus;

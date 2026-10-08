@@ -5,12 +5,11 @@ import {
   CourtGridResponse,
   CourtSchedule,
   CreateCourtRequest,
-  CreatePricingRuleRequest,
   PricingRule,
+  SavePricingRulesRequest,
   UpdateCourtRequest,
   UpdateCourtScheduleRequest,
   UpdateCourtStatusRequest,
-  UpdatePricingRuleRequest,
   PaginatedResponse,
 } from "@/types";
 import { IS_MOCK, mockDelay } from "@/mocks/config";
@@ -109,18 +108,9 @@ export const courtService = {
     return data.data;
   },
 
-  async createPricingRule(id: number, payload: CreatePricingRuleRequest): Promise<PricingRule> {
-    const { data } = await axiosInstance.post<ApiResponse<PricingRule>>(`/courts/${id}/pricing-rules`, payload);
+  async savePricingRules(id: number, dayOfWeek: number, payload: SavePricingRulesRequest): Promise<PricingRule[]> {
+    const { data } = await axiosInstance.put<ApiResponse<PricingRule[]>>(`/courts/${id}/pricing-rules/${dayOfWeek}`, payload);
     return data.data;
-  },
-
-  async updatePricingRule(id: number, pricingRuleId: number, payload: UpdatePricingRuleRequest): Promise<PricingRule> {
-    const { data } = await axiosInstance.put<ApiResponse<PricingRule>>(`/courts/${id}/pricing-rules/${pricingRuleId}`, payload);
-    return data.data;
-  },
-
-  async deletePricingRule(id: number, pricingRuleId: number): Promise<void> {
-    await axiosInstance.delete(`/courts/${id}/pricing-rules/${pricingRuleId}`);
   },
 
 };

@@ -10,12 +10,14 @@ import { CourtFormModal } from "@/components/admin/CourtFormModal";
 import { CourtStats } from "@/components/admin/CourtStats";
 import { CourtCardGrid } from "@/components/admin/CourtCardGrid";
 import { CourtTable } from "@/components/admin/CourtTable";
+import { CourtOperationsModal } from "@/components/admin/CourtOperationsModal";
 
 export default function ManageCourtsClient() {
   const { data: courts = [], isLoading, isError } = useCourts();
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
   const [statusCourt, setStatusCourt] = useState<Court | null>(null);
   const [formCourt, setFormCourt] = useState<Court | "create" | null>(null);
+  const [operationsCourt, setOperationsCourt] = useState<Court | null>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -83,13 +85,14 @@ export default function ManageCourtsClient() {
       ) : courts.length === 0 ? (
         <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500 text-sm">Chưa có sân nào.</div>
       ) : viewMode === "card" ? (
-        <CourtCardGrid courts={courts} onStatusChange={setStatusCourt} onEdit={setFormCourt} />
+        <CourtCardGrid courts={courts} onStatusChange={setStatusCourt} onEdit={setFormCourt} onConfigure={setOperationsCourt} />
       ) : (
-        <CourtTable courts={courts} onStatusChange={setStatusCourt} onEdit={setFormCourt} />
+        <CourtTable courts={courts} onStatusChange={setStatusCourt} onEdit={setFormCourt} onConfigure={setOperationsCourt} />
       )}
 
       {statusCourt && <CourtStatusModal court={statusCourt} onClose={() => setStatusCourt(null)} />}
       {formCourt && <CourtFormModal court={formCourt === "create" ? undefined : formCourt} onClose={() => setFormCourt(null)} />}
+      {operationsCourt && <CourtOperationsModal court={operationsCourt} onClose={() => setOperationsCourt(null)} />}
     </div>
   );
 }

@@ -5,11 +5,10 @@ import { courtService } from "@/services";
 import { QUERY_KEYS } from "@/config/app";
 import {
   CreateCourtRequest,
-  CreatePricingRuleRequest,
+  SavePricingRulesRequest,
   UpdateCourtRequest,
   UpdateCourtScheduleRequest,
   UpdateCourtStatusRequest,
-  UpdatePricingRuleRequest,
 } from "@/types";
 
 export function useCourts() {
@@ -76,7 +75,10 @@ export function useUpdateCourtSchedule() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ courtId, dayOfWeek, payload }: { courtId: number; dayOfWeek: number; payload: UpdateCourtScheduleRequest }) => courtService.updateCourtSchedule(courtId, dayOfWeek, payload),
-    onSuccess: (_, { courtId }) => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.courtSchedules(courtId) }),
+    onSuccess: (_, { courtId }) => Promise.all([
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.courtSchedules(courtId) }),
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.pricingRules(courtId) }),
+    ]),
   });
 }
 
@@ -88,26 +90,10 @@ export function usePricingRules(courtId: number) {
   });
 }
 
-export function useCreatePricingRule() {
+export function useSavePricingRules() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ courtId, payload }: { courtId: number; payload: CreatePricingRuleRequest }) => courtService.createPricingRule(courtId, payload),
-    onSuccess: (_, { courtId }) => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.pricingRules(courtId) }),
-  });
-}
-
-export function useUpdatePricingRule() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ courtId, pricingRuleId, payload }: { courtId: number; pricingRuleId: number; payload: UpdatePricingRuleRequest }) => courtService.updatePricingRule(courtId, pricingRuleId, payload),
-    onSuccess: (_, { courtId }) => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.pricingRules(courtId) }),
-  });
-}
-
-export function useDeletePricingRule() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ courtId, pricingRuleId }: { courtId: number; pricingRuleId: number }) => courtService.deletePricingRule(courtId, pricingRuleId),
+    mutationFn: ({ courtId, dayOfWeek, payload }: { courtId: number; dayOfWeek: number; payload: SavePricingRulesRequest }) => courtService.savePricingRules(courtId, dayOfWeek, payload),
     onSuccess: (_, { courtId }) => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.pricingRules(courtId) }),
   });
 }

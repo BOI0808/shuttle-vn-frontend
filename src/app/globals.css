@@ -62,3 +62,21 @@ input::-ms-reveal,
 input::-ms-clear {
   display: none;
 }
+
+.pricing-boundary::-webkit-slider-thumb {
+  width: 18px;
+  height: 96px;
+  appearance: none;
+  pointer-events: auto;
+  cursor: ew-resize;
+  background: linear-gradient(to right, transparent 7px, #166534 7px, #166534 11px, transparent 11px);
+}
+
+.pricing-boundary::-moz-range-thumb {
+  width: 18px;
+  height: 96px;
+  pointer-events: auto;
+  cursor: ew-resize;
+  border: 0;
+  background: #166534;
+}

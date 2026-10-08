@@ -6,9 +6,10 @@ interface CourtTableProps {
   courts: Court[];
   onStatusChange: (court: Court) => void;
   onEdit: (court: Court) => void;
+  onConfigure: (court: Court) => void;
 }
 
-export function CourtTable({ courts, onStatusChange, onEdit }: CourtTableProps) {
+export function CourtTable({ courts, onStatusChange, onEdit, onConfigure }: CourtTableProps) {
   return (
     <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
       <div className="overflow-x-auto">
@@ -73,6 +74,15 @@ export function CourtTable({ courts, onStatusChange, onEdit }: CourtTableProps) 
                 </td>
                 <td className="px-5 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
+                    <button
+                      onClick={() => onConfigure(court)}
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[11px] font-mono font-medium transition-colors cursor-pointer"
+                      title="Cấu hình lịch và bảng giá"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">calendar_clock</span>
+                      Lịch & giá
+                    </button>
+
                     <button
                       onClick={() => onStatusChange(court)}
                       className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-700 text-[11px] font-mono font-medium transition-colors cursor-pointer"

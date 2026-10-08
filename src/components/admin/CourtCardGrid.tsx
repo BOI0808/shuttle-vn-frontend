@@ -6,11 +6,13 @@ interface CourtCardGridProps {
   courts: Court[];
   onStatusChange: (court: Court) => void;
   onEdit: (court: Court) => void;
+  onConfigure: (court: Court) => void;
 }
 export function CourtCardGrid({
   courts,
   onStatusChange,
   onEdit,
+  onConfigure,
 }: CourtCardGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -59,7 +61,16 @@ export function CourtCardGrid({
             </p>
           </div>
 
-          <div className="p-3 bg-slate-50/70 border-t border-slate-100 flex items-center justify-end gap-2">
+          <div className="p-3 bg-slate-50/70 border-t border-slate-100 flex flex-wrap items-center justify-end gap-2">
+            <button
+              onClick={() => onConfigure(court)}
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[11px] font-mono font-medium transition-colors cursor-pointer"
+              title="Cấu hình lịch và bảng giá"
+            >
+              <span className="material-symbols-outlined text-[14px]">calendar_clock</span>
+              Lịch & giá
+            </button>
+
             <button
               onClick={() => onStatusChange(court)}
               className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-700 text-[11px] font-mono font-medium transition-colors cursor-pointer"
@@ -68,7 +79,7 @@ export function CourtCardGrid({
               <span className="material-symbols-outlined text-[14px]">
                 sync
               </span>
-              Đổi trạng thái
+              Trạng thái
             </button>
 
             <button
