@@ -13,14 +13,6 @@ function formatDateValue(date: Date) {
   return `${y}-${m}-${d}`;
 }
 
-function formatDateDisplay(date: Date) {
-  const days = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
-  const d = String(date.getDate()).padStart(2, "0");
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const y = date.getFullYear();
-  return `${days[date.getDay()]}, ${d}/${m}/${y}`;
-}
-
 export default function CourtsClient() {
   const [date, setDate] = useState(formatDateValue(new Date()));
   const { isAuthenticated } = useAuthStore();

@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 interface CustomDatePickerProps {
   value: string;
   onChange: (dateStr: string) => void;
+  className?: string;
 }
 
 const DAYS_OF_WEEK = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
@@ -22,7 +23,11 @@ function formatDateDisplay(dateStr: string) {
   )}/${d.getFullYear()}`;
 }
 
-export function CustomDatePicker({ value, onChange }: CustomDatePickerProps) {
+export function CustomDatePicker({
+  value,
+  onChange,
+  className = "absolute bottom-5 left-7 z-20",
+}: CustomDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -42,6 +47,13 @@ export function CustomDatePicker({ value, onChange }: CustomDatePickerProps) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (!value) return;
+    const d = new Date(value + "T00:00:00");
+    setViewYear(d.getFullYear());
+    setViewMonth(d.getMonth());
+  }, [value]);
 
   const prevMonth = () => {
     if (viewMonth === 0) {
@@ -99,7 +111,7 @@ export function CustomDatePicker({ value, onChange }: CustomDatePickerProps) {
   })();
 
   return (
-    <div ref={containerRef} className="absolute bottom-5 left-7 z-20">
+    <div ref={containerRef} className={className}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
