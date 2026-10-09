@@ -5,9 +5,11 @@ import { COURT_STATUS_LABEL } from "@/config/app";
 interface CourtTableProps {
   courts: Court[];
   onStatusChange: (court: Court) => void;
+  onEdit: (court: Court) => void;
+  onConfigure: (court: Court) => void;
 }
 
-export function CourtTable({ courts, onStatusChange }: CourtTableProps) {
+export function CourtTable({ courts, onStatusChange, onEdit, onConfigure }: CourtTableProps) {
   return (
     <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
       <div className="overflow-x-auto">
@@ -19,9 +21,6 @@ export function CourtTable({ courts, onStatusChange }: CourtTableProps) {
               </th>
               <th className="px-5 py-3 border-b border-slate-100 font-semibold">
                 Mô tả
-              </th>
-              <th className="px-5 py-3 border-b border-slate-100 font-semibold">
-                Giờ mở cửa
               </th>
               <th className="px-5 py-3 border-b border-slate-100 font-semibold">
                 Trạng thái
@@ -60,9 +59,6 @@ export function CourtTable({ courts, onStatusChange }: CourtTableProps) {
                 <td className="px-5 py-4 text-[13px] text-slate-600">
                   {court.description || "—"}
                 </td>
-                <td className="px-5 py-4 text-[12px] font-mono text-slate-600">
-                  05:00 – 22:00
-                </td>
                 <td className="px-5 py-4">
                   <div className="flex flex-wrap items-center gap-1.5">
                     <Badge status={court.status}>
@@ -79,6 +75,15 @@ export function CourtTable({ courts, onStatusChange }: CourtTableProps) {
                 <td className="px-5 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
                     <button
+                      onClick={() => onConfigure(court)}
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[11px] font-mono font-medium transition-colors cursor-pointer"
+                      title="Cấu hình lịch và bảng giá"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">calendar_clock</span>
+                      Lịch & giá
+                    </button>
+
+                    <button
                       onClick={() => onStatusChange(court)}
                       className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-700 text-[11px] font-mono font-medium transition-colors cursor-pointer"
                       title="Đổi trạng thái"
@@ -90,20 +95,12 @@ export function CourtTable({ courts, onStatusChange }: CourtTableProps) {
                     </button>
 
                     <button
+                      onClick={() => onEdit(court)}
                       className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-[11px] font-mono font-medium transition-colors cursor-pointer"
                       title="Sửa"
                     >
                       <span className="material-symbols-outlined text-[14px]">
                         edit
-                      </span>
-                    </button>
-
-                    <button
-                      className="inline-flex items-center justify-center p-1.5 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 transition-colors cursor-pointer"
-                      title="Xóa"
-                    >
-                      <span className="material-symbols-outlined text-[14px]">
-                        delete
                       </span>
                     </button>
                   </div>

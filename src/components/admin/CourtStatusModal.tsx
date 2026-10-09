@@ -46,18 +46,12 @@ export function CourtStatusModal({ court, onClose }: CourtStatusModalProps) {
   const onSubmit = ({ status, reason }: FormData) => {
     mutation.mutate(
       {
-        id: String(court.courtId),
+        id: court.courtId,
         payload: { status, reason: reason?.trim() || undefined },
       },
       {
-        onSuccess: ({ affectedUpcomingBookingsCount: n }) => {
-          if (n > 0) {
-            toast.warning(
-              `Đã cập nhật. Còn ${n} đơn đặt sân sắp tới trên sân này, vui lòng liên hệ khách hàng để xử lý.`
-            );
-          } else {
-            toast.success("Đã cập nhật trạng thái sân");
-          }
+        onSuccess: () => {
+          toast.success("Đã cập nhật trạng thái sân");
           onClose();
         },
         onError: (error) => toast.error(getErrorMessage(error)),

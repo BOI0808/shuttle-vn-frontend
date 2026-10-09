@@ -1377,74 +1377,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleListApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleListApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleListApiResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "PricingRule"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePricingRuleDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePricingRuleDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePricingRuleDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               }
             }
@@ -1452,7 +1395,7 @@
         }
       }
     },
-    "/api/courts/{id}/pricing-rules/{pricingRuleId}": {
+    "/api/courts/{id}/pricing-rules/{dayOfWeek}": {
       "put": {
         "tags": [
           "PricingRule"
@@ -1468,7 +1411,7 @@
             }
           },
           {
-            "name": "pricingRuleId",
+            "name": "dayOfWeek",
             "in": "path",
             "required": true,
             "schema": {
@@ -1481,17 +1424,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdatePricingRuleDto"
+                "$ref": "#/components/schemas/SavePricingRuleDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdatePricingRuleDto"
+                "$ref": "#/components/schemas/SavePricingRuleDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdatePricingRuleDto"
+                "$ref": "#/components/schemas/SavePricingRuleDto"
               }
             }
           }
@@ -1502,64 +1445,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PricingRuleApiResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "PricingRule"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "pricingRuleId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/PricingRuleIReadOnlyListApiResponse"
                 }
               }
             }
@@ -2264,28 +2160,6 @@
         },
         "additionalProperties": false
       },
-      "CreatePricingRuleDto": {
-        "type": "object",
-        "properties": {
-          "dayOfWeek": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "startTime": {
-            "type": "string",
-            "format": "time"
-          },
-          "endTime": {
-            "type": "string",
-            "format": "time"
-          },
-          "pricePerHour": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "additionalProperties": false
-      },
       "Customer": {
         "type": "object",
         "properties": {
@@ -2518,10 +2392,6 @@
             "type": "string",
             "format": "time"
           },
-          "endTime": {
-            "type": "string",
-            "format": "time"
-          },
           "pricePerHour": {
             "type": "number",
             "format": "double"
@@ -2537,33 +2407,7 @@
         },
         "additionalProperties": false
       },
-      "PricingRuleApiResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/PricingRule"
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          },
-          "errors": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "PricingRuleListApiResponse": {
+      "PricingRuleIReadOnlyListApiResponse": {
         "type": "object",
         "properties": {
           "success": {
@@ -2641,6 +2485,33 @@
         },
         "additionalProperties": false
       },
+      "SavePricingRuleDto": {
+        "type": "object",
+        "properties": {
+          "pricingRules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SavePricingRuleItemDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SavePricingRuleItemDto": {
+        "type": "object",
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "format": "time"
+          },
+          "pricePerHour": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
       "StringApiResponse": {
         "type": "object",
         "properties": {
@@ -2708,28 +2579,6 @@
           "reason": {
             "type": "string",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UpdatePricingRuleDto": {
-        "type": "object",
-        "properties": {
-          "dayOfWeek": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "startTime": {
-            "type": "string",
-            "format": "time"
-          },
-          "endTime": {
-            "type": "string",
-            "format": "time"
-          },
-          "pricePerHour": {
-            "type": "number",
-            "format": "double"
           }
         },
         "additionalProperties": false
