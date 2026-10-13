@@ -10,8 +10,8 @@ import {
   PaginatedResponse,
   PaginationParams,
 } from "@/types";
-import {IS_MOCK, mockDelay} from "@/mocks/config";
-import {mockBookings} from "@/mocks/data";
+import { IS_MOCK, mockDelay } from "@/mocks/config";
+import { mockBookings } from "@/mocks/data";
 
 export const bookingService = {
   // Customer
@@ -20,7 +20,10 @@ export const bookingService = {
       await mockDelay();
       return {
         bookingId: `b-${Math.random().toString(36).substring(2, 11)}`,
-        bookingCode: `DS-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+        bookingCode: `DS-${Math.random()
+          .toString(36)
+          .substring(2, 7)
+          .toUpperCase()}`,
         ...payload,
         status: "PENDING",
         totalCost: 150000,
@@ -42,7 +45,10 @@ export const bookingService = {
       await mockDelay();
       return {
         bookingId: `b-${Math.random().toString(36).substring(2, 11)}`,
-        bookingCode: `DS-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+        bookingCode: `DS-${Math.random()
+          .toString(36)
+          .substring(2, 7)
+          .toUpperCase()}`,
         customerId: "guest-id",
         courtId: payload.courtId,
         date: payload.date,
@@ -67,8 +73,8 @@ export const bookingService = {
     if (IS_MOCK) {
       await mockDelay();
       return {
-        items: mockBookings.filter(b => b.customerId === "c1"),
-        totalCount: mockBookings.filter(b => b.customerId === "c1").length,
+        items: mockBookings.filter((b) => b.customerId === "c1"),
+        totalCount: mockBookings.filter((b) => b.customerId === "c1").length,
         pageNumber: params?.pageNumber || 1,
         pageSize: params?.pageSize || 10,
         totalPages: 1,
@@ -120,7 +126,8 @@ export const bookingService = {
         bookingId: booking.bookingId,
         oldStatus,
         newStatus: "CANCELLED",
-        changedBy: null,
+        actorType: "CUSTOMER",
+        actorName: null,
         changedAt: new Date().toISOString(),
         reason: "Người dùng yêu cầu hủy trên web",
       });
@@ -137,8 +144,10 @@ export const bookingService = {
     if (IS_MOCK) {
       await mockDelay();
       let filtered = [...mockBookings];
-      if (params?.date) filtered = filtered.filter(b => b.date === params.date);
-      if (params?.status) filtered = filtered.filter(b => b.status === params.status);
+      if (params?.date)
+        filtered = filtered.filter((b) => b.date === params.date);
+      if (params?.status)
+        filtered = filtered.filter((b) => b.status === params.status);
 
       return {
         items: filtered,
@@ -159,7 +168,10 @@ export const bookingService = {
       await mockDelay();
       return {
         invoiceId: `inv-${Math.random().toString(36).substring(2, 11)}`,
-        invoiceCode: `HD-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-001`,
+        invoiceCode: `HD-${new Date()
+          .toISOString()
+          .slice(0, 10)
+          .replace(/-/g, "")}-001`,
         bookingId: "mock-booking-id",
         totalCost: 150000,
         status: "PAID",

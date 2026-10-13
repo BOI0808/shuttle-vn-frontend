@@ -43,7 +43,7 @@ export const mockBookings: BookingDetail[] = [
       issuedBy: "e1",
       issuedAt: "2026-09-19T10:30:00Z",
       paidAt: "2026-09-19T10:35:00Z",
-      paymentMethod: "MONEY",
+      paymentMethod: "CASH",
       note: "Thanh toán tại quầy",
     },
     statusHistory: [],

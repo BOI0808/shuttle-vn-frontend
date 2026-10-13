@@ -16,7 +16,7 @@ export const customerService = {
       };
     }
     const { data } = await axiosInstance.get<ApiResponse<PaginatedResponse<Customer>>>(
-      `/customers`,
+      `/accounts/customers`,
       { params }
     );
     return data.data;
@@ -34,7 +34,7 @@ export const customerService = {
       };
     }
     const { data } = await axiosInstance.post<ApiResponse<Customer>>(
-        `/customers`,
+        `/accounts/customers`,
         payload
     );
     return data.data;
