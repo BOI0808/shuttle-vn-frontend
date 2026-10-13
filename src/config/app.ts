@@ -26,8 +26,20 @@ export const INVOICE_STATUS_LABEL: Record<string, string> = {
 };
 
 export const PAYMENT_METHOD_LABEL: Record<string, string> = {
-  BANKING: "Chuyển khoản",
-  MONEY: "Tiền mặt",
+  BANK: "Chuyển khoản",
+  CASH: "Tiền mặt",
+};
+
+export const BOOKING_PAYMENT_STATUS_LABEL: Record<string, string> = {
+  NO_INVOICE: "Chưa lập hóa đơn",
+  UNPAID: "Chưa thanh toán",
+  PAID: "Đã thanh toán",
+};
+
+export const ACTOR_TYPE_LABEL: Record<string, string> = {
+  SYSTEM: "Hệ thống",
+  EMPLOYEE: "Nhân viên",
+  CUSTOMER: "Khách hàng",
 };
 
 export const COURT_STATUS_LABEL: Record<string, string> = {
@@ -63,6 +75,17 @@ export const DAY_OF_WEEK_LABEL: Record<number, string> = {
   6: "Thứ 7",
 };
 
+export interface BookingAdminQueryParams {
+  pageNumber?: number;
+  pageSize?: number;
+  fromDate?: string;
+  toDate?: string;
+  courtId?: number;
+  status?: string;
+  customerId?: string;
+  keyword?: string;
+}
+
 export const QUERY_KEYS = {
   courts: ["courts"] as const,
   court: (id: number) => ["court", id] as const,
@@ -75,6 +98,17 @@ export const QUERY_KEYS = {
   booking: (id: string) => ["booking", id] as const,
   bookingByCode: (code: string) => ["booking-code", code] as const,
   myBookings: ["my-bookings"] as const,
+  pendingBookings: (params?: { pageNumber?: number; pageSize?: number }) =>
+    ["pending-bookings", params ?? {}] as const,
+  pendingBookingsAll: ["pending-bookings"] as const,
+  adminBookings: (params?: BookingAdminQueryParams) =>
+    ["admin-bookings", params ?? {}] as const,
+  adminBookingsAll: ["admin-bookings"] as const,
+  bookingDetail: (id: string) => ["booking-detail", id] as const,
+  customerBookings: (
+    customerId: string,
+    params?: { pageNumber?: number; pageSize?: number },
+  ) => ["customer-bookings", customerId, params ?? {}] as const,
 
   invoices: ["invoices"] as const,
   invoice: (id: string) => ["invoice", id] as const,

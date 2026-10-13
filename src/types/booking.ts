@@ -2,8 +2,13 @@ export type BookingStatus = "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
 
 export type InvoiceStatus = "UNPAID" | "PAID" | "CANCELLED";
 
-/** BANKING = chuyển khoản, MONEY = tiền mặt */
-export type PaymentMethod = "BANKING" | "MONEY";
+/** BANK = chuyển khoản, CASH = tiền mặt (khớp BE/database.md) */
+export type PaymentMethod = "BANK" | "CASH";
+
+export type BookingActorType = "SYSTEM" | "EMPLOYEE" | "CUSTOMER";
+
+/** NO_INVOICE khi chưa có hóa đơn hợp lệ (SRS 3.3) */
+export type BookingPaymentStatus = "NO_INVOICE" | "UNPAID" | "PAID";
 
 // ── Core entities ──────────────────────────────────────────────────────────────
 
@@ -24,9 +29,10 @@ export interface Booking {
 export interface BookingStatusHistory {
   id: string;
   bookingId: string;
-  oldStatus: BookingStatus;
+  oldStatus: BookingStatus | null; 
   newStatus: BookingStatus;
-  changedBy: string | null; // Employee.employeeId hoặc NULL nếu hệ thống
+  actorType: BookingActorType;
+  actorName: string | null;
   changedAt: string;
   reason: string;
 }
@@ -54,6 +60,36 @@ export interface BookingDetail extends Booking {
   statusHistory: BookingStatusHistory[];
 }
 
+export interface BookingListItem {
+  bookingId: string;
+  bookingCode: string;
+  customerId: string;
+  customerName: string;
+  customerPhone: string;
+  courtId: number;
+  courtName: string;
+  date: string; 
+  startTime: string; 
+  endTime: string; 
+  status: BookingStatus;
+  totalCost: number;
+  paymentStatus: BookingPaymentStatus;
+  createdAt: string; 
+}
+
+export interface BookingInvoiceSummary {
+  invoiceCode: string;
+  status: InvoiceStatus;
+  paymentMethod: PaymentMethod | null;
+  paidAt: string | null;
+}
+
+export interface BookingAdminDetail extends BookingListItem {
+  customerEmail: string;
+  invoice: BookingInvoiceSummary | null;
+  statusHistory: BookingStatusHistory[];
+}
+
 // ── Requests ──────────────────────────────────────────────────────────────────
 
 export interface CreateBookingRequest {
@@ -63,6 +99,17 @@ export interface CreateBookingRequest {
   startTime: string; // HH:mm
   endTime: string; // HH:mm
   note?: string;
+}
+
+export interface ConfirmBookingRequest {
+  isPaid: boolean;
+  paymentMethod?: PaymentMethod;
+  paidAt?: string; // ISO UTC, bắt buộc khi isPaid
+  note?: string;
+}
+
+export interface RejectBookingRequest {
+  reason: string;
 }
 
 /**
