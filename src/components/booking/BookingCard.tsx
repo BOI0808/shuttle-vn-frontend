@@ -21,13 +21,13 @@ export function BookingCard({
   onViewInvoice,
 }: BookingCardProps) {
   const muted =
-    booking.status === "COMPLETED" || booking.status === "CANCELLED";
+    booking.status === "Completed" || booking.status === "Cancelled";
 
   const canReschedule =
-    booking.status === "PENDING" || booking.status === "CONFIRMED";
+    booking.status === "Pending" || booking.status === "Confirmed";
   const canCancel =
-    booking.status === "PENDING" || booking.status === "CONFIRMED";
-  const canViewInvoice = booking.status === "COMPLETED";
+    booking.status === "Pending" || booking.status === "Confirmed";
+  const canViewInvoice = booking.status === "Completed";
 
   return (
     <div

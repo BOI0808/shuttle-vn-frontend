@@ -22,9 +22,21 @@ export const mockDashboardSummary: DashboardSummary = {
     { date: "2026-09-19", revenue: 5100000, bookingCount: 36 },
   ],
   occupancyByCourtToday: [
-    { courtId: 1, courtName: "Sân 1", totalSlots: 15, bookedSlots: 12, occupancyRate: 80 },
-    { courtId: 2, courtName: "Sân 2", totalSlots: 15, bookedSlots: 14, occupancyRate: 93 },
+    {
+      courtId: 1,
+      courtName: "Sân 1",
+      totalSlots: 15,
+      bookedSlots: 12,
+      occupancyRate: 80,
+    },
+    {
+      courtId: 2,
+      courtName: "Sân 2",
+      totalSlots: 15,
+      bookedSlots: 14,
+      occupancyRate: 93,
+    },
   ],
   recentBookings: mockBookings.slice(0, 3),
-  pendingBookingsList: mockBookings.filter(b => b.status === "PENDING"),
+  pendingBookingsList: mockBookings.filter((b) => b.status === "Pending"),
 };

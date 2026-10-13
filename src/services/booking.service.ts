@@ -25,7 +25,7 @@ export const bookingService = {
           .substring(2, 7)
           .toUpperCase()}`,
         ...payload,
-        status: "PENDING",
+        status: "Pending",
         totalCost: 150000,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -54,7 +54,7 @@ export const bookingService = {
         date: payload.date,
         startTime: payload.startTime,
         endTime: payload.endTime,
-        status: "PENDING",
+        status: "Pending",
         totalCost: 150000,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -119,14 +119,14 @@ export const bookingService = {
       if (!booking) return;
 
       const oldStatus = booking.status;
-      booking.status = "CANCELLED";
+      booking.status = "Cancelled";
       booking.updatedAt = new Date().toISOString();
       booking.statusHistory.push({
         id: `h-${Math.random().toString(36).slice(2, 9)}`,
         bookingId: booking.bookingId,
         oldStatus,
-        newStatus: "CANCELLED",
-        actorType: "CUSTOMER",
+        newStatus: "Cancelled",
+        actorType: "Customer",
         actorName: null,
         changedAt: new Date().toISOString(),
         reason: "Người dùng yêu cầu hủy trên web",
@@ -174,7 +174,7 @@ export const bookingService = {
           .replace(/-/g, "")}-001`,
         bookingId: "mock-booking-id",
         totalCost: 150000,
-        status: "PAID",
+        status: "Paid",
         issuedBy: "e1",
         issuedAt: new Date().toISOString(),
         paidAt: new Date().toISOString(),

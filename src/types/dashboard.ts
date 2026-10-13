@@ -19,8 +19,8 @@ export interface DashboardSummary {
   todayBookings: number;
   monthRevenue: number;
   monthBookings: number;
-  pendingBookings: number; // trạng thái PENDING cần xử lý
-  unpaidInvoices: number; // hoá đơn UNPAID
+  pendingBookings: number; // trạng thái Pending cần xử lý
+  unpaidInvoices: number; // hoá đơn Unpaid
   occupancyRateToday: number; // % tổng sân hôm nay
   revenueTrend?: string;
   bookingsTrend?: string;

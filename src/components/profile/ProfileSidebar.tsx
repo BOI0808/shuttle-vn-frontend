@@ -16,13 +16,13 @@ export function ProfileSidebar() {
 
   const totalBookings = bookings.length;
   const completedCount = bookings.filter(
-    (b) => b.status === "COMPLETED"
+    (b) => b.status === "Completed"
   ).length;
   const cancelledCount = bookings.filter(
-    (b) => b.status === "CANCELLED"
+    (b) => b.status === "Cancelled"
   ).length;
   const totalSpent = bookings
-    .filter((b) => b.status === "COMPLETED")
+    .filter((b) => b.status === "Completed")
     .reduce((sum, b) => sum + b.totalCost, 0);
 
   const fullName = user?.fullName ?? "Người dùng";

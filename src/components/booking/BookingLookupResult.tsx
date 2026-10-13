@@ -90,7 +90,11 @@ export function BookingLookupResult({
         {/* Detail rows */}
         <div className="mb-[18px]">
           <InfoRow icon="sports_tennis" label="Sân" value={booking.courtName} />
-          <InfoRow icon="calendar_today" label="Ngày" value={formatDate(booking.date)} />
+          <InfoRow
+            icon="calendar_today"
+            label="Ngày"
+            value={formatDate(booking.date)}
+          />
           <InfoRow
             icon="schedule"
             label="Khung giờ"
@@ -126,7 +130,7 @@ export function BookingLookupResult({
       </div>
 
       {/* Status notices */}
-      {booking.status === "COMPLETED" && (
+      {booking.status === "Completed" && (
         <div className="mt-3 fade-in">
           <div className="flex items-start gap-2.5 px-3.5 py-2.5 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700">
             <span className="material-symbols-outlined text-[16px] text-green-600 flex-shrink-0 mt-px">
@@ -139,7 +143,7 @@ export function BookingLookupResult({
           </div>
         </div>
       )}
-      {booking.status === "CANCELLED" && (
+      {booking.status === "Cancelled" && (
         <div className="mt-3 fade-in">
           <div className="flex items-start gap-2.5 px-3.5 py-2.5 bg-red-50 border border-red-200 rounded-lg text-xs text-red-600">
             <span className="material-symbols-outlined text-[16px] text-red-600 flex-shrink-0 mt-px">
