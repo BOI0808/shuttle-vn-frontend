@@ -1,7 +1,8 @@
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
+import { isAxiosError } from "axios";
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
@@ -15,11 +16,11 @@ export function formatCurrency(amount: number): string {
 }
 
 export function formatDate(dateStr: string): string {
-  return format(new Date(dateStr), 'dd/MM/yyyy', { locale: vi });
+  return format(new Date(dateStr), "dd/MM/yyyy", { locale: vi });
 }
 
 export function formatDateTime(dateStr: string): string {
-  return format(new Date(dateStr), 'dd/MM/yyyy HH:mm', { locale: vi });
+  return format(new Date(dateStr), "dd/MM/yyyy HH:mm", { locale: vi });
 }
 
 export function toISODate(date: Date): string {
@@ -30,7 +31,26 @@ export function getTodayISO(): string {
   return toISODate(new Date());
 }
 
+interface ApiErrorBody {
+  message?: string | null;
+  errors?: Record<string, string[]> | null;
+}
+
+function getApiErrorMessage(error: unknown): string | null {
+  if (!isAxiosError<ApiErrorBody>(error)) return null;
+  const body = error.response?.data;
+  if (!body || typeof body !== "object") return null;
+
+  const details = Object.values(body.errors ?? {}).flat();
+  const parts = [body.message, ...details].filter(
+    (part): part is string => typeof part === "string" && part.length > 0
+  );
+  return parts.length > 0 ? Array.from(new Set(parts)).join(" ") : null;
+}
+
 export function getErrorMessage(error: unknown): string {
+  const apiMessage = getApiErrorMessage(error);
+  if (apiMessage) return apiMessage;
   if (error instanceof Error) return error.message;
   if (typeof error === "string") return error;
   return "Đã có lỗi xảy ra, vui lòng thử lại.";
