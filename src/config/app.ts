@@ -6,40 +6,36 @@ export const APP_CONFIG = {
 } as const;
 
 export const BOOKING_STATUS_LABEL: Record<string, string> = {
-  PENDING: "Chờ xác nhận",
-  CONFIRMED: "Đã xác nhận",
-  COMPLETED: "Hoàn thành",
-  CANCELLED: "Đã huỷ",
+  Pending: "Chờ xác nhận",
+  Confirmed: "Đã xác nhận",
+  Completed: "Hoàn thành",
+  Cancelled: "Đã huỷ",
 };
 
 export const BOOKING_STATUS_COLOR: Record<string, string> = {
-  PENDING: "yellow",
-  CONFIRMED: "blue",
-  COMPLETED: "green",
-  CANCELLED: "red",
+  Pending: "yellow",
+  Confirmed: "blue",
+  Completed: "green",
+  Cancelled: "red",
 };
 
 export const INVOICE_STATUS_LABEL: Record<string, string> = {
-  UNPAID: "Chưa thanh toán",
-  PAID: "Đã thanh toán",
-  CANCELLED: "Đã huỷ",
+  Unpaid: "Chưa thanh toán",
+  Paid: "Đã thanh toán",
+  Cancelled: "Đã huỷ",
 };
 
 export const PAYMENT_METHOD_LABEL: Record<string, string> = {
-  BANK: "Chuyển khoản",
-  CASH: "Tiền mặt",
+  Bank: "Chuyển khoản",
+  Cash: "Tiền mặt",
 };
 
-export const BOOKING_PAYMENT_STATUS_LABEL: Record<string, string> = {
-  NO_INVOICE: "Chưa lập hóa đơn",
-  UNPAID: "Chưa thanh toán",
-  PAID: "Đã thanh toán",
-};
+export const NO_INVOICE_LABEL = "Chưa lập hóa đơn";
 
 export const ACTOR_TYPE_LABEL: Record<string, string> = {
-  SYSTEM: "Hệ thống",
-  EMPLOYEE: "Nhân viên",
-  CUSTOMER: "Khách hàng",
+  System: "Hệ thống",
+  Employee: "Nhân viên",
+  Customer: "Khách hàng",
 };
 
 export const COURT_STATUS_LABEL: Record<string, string> = {

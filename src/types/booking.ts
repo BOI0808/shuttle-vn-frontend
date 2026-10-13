@@ -1,14 +1,10 @@
-export type BookingStatus = "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+import type { ActorType } from "./audit";
 
-export type InvoiceStatus = "UNPAID" | "PAID" | "CANCELLED";
+export type BookingStatus = "Pending" | "Confirmed" | "Completed" | "Cancelled";
 
-/** BANK = chuyển khoản, CASH = tiền mặt (khớp BE/database.md) */
-export type PaymentMethod = "BANK" | "CASH";
+export type InvoiceStatus = "Unpaid" | "Paid" | "Cancelled";
 
-export type BookingActorType = "SYSTEM" | "EMPLOYEE" | "CUSTOMER";
-
-/** NO_INVOICE khi chưa có hóa đơn hợp lệ (SRS 3.3) */
-export type BookingPaymentStatus = "NO_INVOICE" | "UNPAID" | "PAID";
+export type PaymentMethod = "Bank" | "Cash";
 
 // ── Core entities ──────────────────────────────────────────────────────────────
 
@@ -31,7 +27,7 @@ export interface BookingStatusHistory {
   bookingId: string;
   oldStatus: BookingStatus | null; 
   newStatus: BookingStatus;
-  actorType: BookingActorType;
+  actorType: ActorType;
   actorName: string | null;
   changedAt: string;
   reason: string;
@@ -73,7 +69,7 @@ export interface BookingListItem {
   endTime: string; 
   status: BookingStatus;
   totalCost: number;
-  paymentStatus: BookingPaymentStatus;
+  paymentStatus: InvoiceStatus | null;
   createdAt: string; 
 }
 

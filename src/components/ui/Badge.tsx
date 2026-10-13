@@ -2,34 +2,32 @@ import { HTMLAttributes } from "react";
 import { cn } from "@/utils";
 
 type BadgeStatus =
-  | "PENDING"
-  | "CONFIRMED"
-  | "COMPLETED"
-  | "CANCELLED"
+  | "Pending"
+  | "Confirmed"
+  | "Completed"
+  | "Cancelled"
   | "Active"
   | "Maintenance"
   | "Closed"
   | "IN_USE"
-  | "UNPAID"
-  | "PAID"
-  | "NO_INVOICE";
+  | "Unpaid"
+  | "Paid";
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   status: BadgeStatus;
 }
 
 const STATUS_CLASSES: Record<BadgeStatus, string> = {
-  PENDING: "bg-amber-50 text-amber-600 border-amber-200",
-  CONFIRMED: "bg-blue-50 text-blue-600 border-blue-200",
-  COMPLETED: "bg-green-50 text-green-600 border-green-200",
-  CANCELLED: "bg-red-50 text-red-600 border-red-200",
+  Pending: "bg-amber-50 text-amber-600 border-amber-200",
+  Confirmed: "bg-blue-50 text-blue-600 border-blue-200",
+  Completed: "bg-green-50 text-green-600 border-green-200",
+  Cancelled: "bg-red-50 text-red-600 border-red-200",
   Active: "bg-green-50 text-green-600 border-green-200",
   Maintenance: "bg-amber-50 text-amber-600 border-amber-200",
   Closed: "bg-red-50 text-red-600 border-red-200",
   IN_USE: "bg-blue-50 text-blue-600 border-blue-200",
-  UNPAID: "bg-amber-50 text-amber-600 border-amber-200",
-  PAID: "bg-green-50 text-green-600 border-green-200",
-  NO_INVOICE: "bg-gray-50 text-gray-500 border-gray-200",
+  Unpaid: "bg-amber-50 text-amber-600 border-amber-200",
+  Paid: "bg-green-50 text-green-600 border-green-200",
 };
 
 export function Badge({ status, className, children, ...props }: BadgeProps) {
