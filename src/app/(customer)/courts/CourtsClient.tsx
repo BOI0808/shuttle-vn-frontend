@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { CourtGrid } from "@/components/court/CourtGrid";
-import { WalkInBookingForm } from "@/components/booking/WalkInBookingForm";
-import { useAuthStore } from "@/stores/auth.store";
 import { CustomDatePicker } from "@/components/ui/CustomDatePicker";
 
 function formatDateValue(date: Date) {
@@ -15,7 +13,6 @@ function formatDateValue(date: Date) {
 
 export default function CourtsClient() {
   const [date, setDate] = useState(formatDateValue(new Date()));
-  const { isAuthenticated } = useAuthStore();
 
   return (
     <>
@@ -65,8 +62,6 @@ export default function CourtsClient() {
       {/* Main content */}
       <div className="max-w-[1400px] mx-auto px-7 py-6 flex flex-col gap-5">
         <CourtGrid date={date} />
-
-        {!isAuthenticated && <WalkInBookingForm />}
       </div>
     </>
   );

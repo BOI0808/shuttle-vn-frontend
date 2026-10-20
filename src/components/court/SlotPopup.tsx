@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { cn } from "@/utils";
 import { CourtSlot } from "@/types";
+import { usePricePreview } from "@/hooks/useBooking";
 
 interface Duration {
   label: string;
@@ -49,6 +50,8 @@ function buildDurations(slots: CourtSlot[], startMinutes: number): Duration[] {
 }
 
 export interface SlotPopupState {
+  courtId: number;
+  date: string;
   courtName: string;
   startMinutes: number;
   slots: CourtSlot[];
@@ -61,7 +64,7 @@ interface SlotPopupProps {
   state: SlotPopupState;
   selectedDuration: number;
   onSelectDuration: (idx: number) => void;
-  onReserve: () => void;
+  onReserve: (durationMinutes: number) => void;
   onClose: () => void;
 }
 
@@ -79,6 +82,13 @@ export function SlotPopup({
   );
   const dur: Duration | undefined = durations[selectedDuration];
   const startLabel = toHHMM(state.startMinutes);
+  const pricePreview = usePricePreview({
+    courtId: state.courtId,
+    date: state.date,
+    startTime: startLabel,
+    endTime: dur ? toHHMM(state.startMinutes + dur.mins) : "",
+  });
+  const quotedPrice = pricePreview.data?.totalCost;
 
   useEffect(() => {
     function handleMouseDown(e: MouseEvent) {
@@ -177,8 +187,8 @@ export function SlotPopup({
 
       {/* Reserve button */}
       <button
-        onClick={onReserve}
-        disabled={!dur}
+        onClick={() => onReserve(dur?.mins ?? 0)}
+        disabled={!dur || pricePreview.isFetching || typeof quotedPrice !== "number"}
         className="w-full py-2.5 rounded-[9px] text-[13px] font-semibold text-white transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ background: "#10b981" }}
         onMouseEnter={(e) =>
@@ -188,7 +198,15 @@ export function SlotPopup({
           ((e.currentTarget as HTMLElement).style.background = "#10b981")
         }
       >
-        Đặt sân · {dur ? formatVnd(dur.price) : "—"}
+        {pricePreview.isError
+          ? "Không tải được giá"
+          : `Đặt sân · ${dur
+              ? pricePreview.isFetching
+                ? "Đang tính..."
+                : typeof quotedPrice === "number"
+                  ? formatVnd(quotedPrice)
+                  : "Chưa có báo giá"
+              : "—"}`}
       </button>
 
       {/* Arrow */}
