@@ -8,7 +8,6 @@ import type { BookingDetail } from "@/types";
 interface BookingCardProps {
   booking: BookingDetail;
   onViewDetail: (id: string) => void;
-  onReschedule: (id: string) => void;
   onCancel: (id: string) => void;
   onViewInvoice: (id: string) => void;
 }
@@ -16,18 +15,17 @@ interface BookingCardProps {
 export function BookingCard({
   booking,
   onViewDetail,
-  onReschedule,
   onCancel,
   onViewInvoice,
 }: BookingCardProps) {
   const muted =
     booking.status === "Completed" || booking.status === "Cancelled";
 
-  const canReschedule =
-    booking.status === "Pending" || booking.status === "Confirmed";
   const canCancel =
-    booking.status === "Pending" || booking.status === "Confirmed";
-  const canViewInvoice = booking.status === "Completed";
+    (booking.status === "Pending" || booking.status === "Confirmed") &&
+    booking.paymentStatus !== "Paid" &&
+    new Date(`${booking.date}T${booking.startTime.slice(0, 5)}:00+07:00`).getTime() - Date.now() >= 60 * 60 * 1000;
+  const canViewInvoice = booking.paymentStatus !== null && booking.paymentStatus !== undefined;
 
   return (
     <div
@@ -120,18 +118,6 @@ export function BookingCard({
                 receipt_long
               </span>
               Hóa đơn
-            </button>
-          )}
-
-          {canReschedule && (
-            <button
-              onClick={() => onReschedule(booking.bookingId)}
-              className="inline-flex items-center gap-1 px-[13px] py-[7px] rounded-md text-xs font-medium border border-amber-200 text-amber-600 bg-amber-50 hover:bg-amber-100 hover:border-amber-300 transition-colors"
-            >
-              <span className="material-symbols-outlined text-[15px]">
-                schedule
-              </span>
-              Đổi lịch
             </button>
           )}
 
