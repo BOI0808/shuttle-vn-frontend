@@ -6,6 +6,9 @@ import { CourtSlotCell } from "./CourtSlotCell";
 import { SlotPopup, SlotPopupState } from "./SlotPopup";
 import { SlotDisplayStatus, CourtGridResponse, CourtSlot } from "@/types";
 import { DAY_OF_WEEK_LABEL } from "@/config/app";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/stores/auth.store";
+import { toast } from "sonner";
 
 const START_HOUR = 5;
 const END_HOUR = 22;
@@ -28,6 +31,8 @@ interface CourtGridProps {
 }
 
 export function CourtGrid({ date }: CourtGridProps) {
+  const router = useRouter();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { data, isLoading, isError } = useCourtGrid(date) as {
     data: CourtGridResponse | undefined;
     isLoading: boolean;
@@ -36,27 +41,38 @@ export function CourtGrid({ date }: CourtGridProps) {
 
   const [popup, setPopup] = useState<SlotPopupState | null>(null);
   const [selectedDuration, setSelectedDuration] = useState(0);
-
-  const scrollContainerRef = useCallback((el: HTMLDivElement | null) => {
-    if (!el) return;
-
-    const handleWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-
-      if (e.deltaY !== 0) {
-        e.preventDefault();
-        el.scrollLeft += e.deltaY * 1.2;
-      }
-    };
-
-    el.addEventListener("wheel", handleWheel, { passive: false });
-  }, []);
+  const autoScrolledDateRef = useRef("");
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const now = new Date();
   const nowTotalMin = now.getHours() * 60 + now.getMinutes();
+  const localToday = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
   const nowSlotOffset = (nowTotalMin - START_HOUR * 60) / SLOT_MIN;
   const nowSlotIndex = Math.floor(nowSlotOffset);
   const nowFrac = nowSlotOffset - nowSlotIndex;
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+      event.preventDefault();
+      container.scrollLeft += event.deltaY * 1.2;
+    };
+    container.addEventListener("wheel", handleWheel, { passive: false });
+
+    if (autoScrolledDateRef.current !== date) {
+      const firstAllowedMinute = date === localToday
+        ? Math.ceil((nowTotalMin + 1) / SLOT_MIN) * SLOT_MIN
+        : START_HOUR * 60;
+      const slotIndex = Math.max(0, Math.floor((firstAllowedMinute - START_HOUR * 60) / SLOT_MIN));
+      container.scrollLeft = slotIndex * 72;
+      autoScrolledDateRef.current = date;
+    }
+
+    return () => container.removeEventListener("wheel", handleWheel);
+  }, [date, data, localToday, nowTotalMin]);
 
   const dateObj = new Date(`${date}T00:00:00`);
   const dayLabel =
@@ -68,6 +84,7 @@ export function CourtGrid({ date }: CourtGridProps) {
   const handleClickAvailable = useCallback(
     (
       e: React.MouseEvent,
+      courtId: number,
       courtName: string,
       startMin: number,
       slots: CourtSlot[]
@@ -82,6 +99,8 @@ export function CourtGrid({ date }: CourtGridProps) {
 
       setSelectedDuration(0);
       setPopup({
+        courtId,
+        date,
         courtName,
         startMinutes: startMin,
         slots,
@@ -90,10 +109,22 @@ export function CourtGrid({ date }: CourtGridProps) {
         y: ly,
       });
     },
-    []
+    [date]
   );
 
-  function handleReserve() {
+  function handleReserve(durationMinutes: number) {
+    if (!popup || durationMinutes <= 0) return;
+    const current = new Date();
+    const currentMinutes = current.getHours() * 60 + current.getMinutes();
+    if (popup.date < localToday || (popup.date === localToday && popup.startMinutes <= currentMinutes)) {
+      toast.error("Khung giờ này đã qua. Vui lòng chọn giờ khác.");
+      setPopup(null);
+      return;
+    }
+    const startTime = toHHMM(popup.startMinutes);
+    const endTime = toHHMM(popup.startMinutes + durationMinutes);
+    const path = isAuthenticated ? "/booking" : "/booking/guest";
+    router.push(`${path}?courtId=${popup.courtId}&date=${popup.date}&startTime=${startTime}&endTime=${endTime}`);
     setPopup(null);
   }
 
@@ -207,8 +238,11 @@ export function CourtGrid({ date }: CourtGridProps) {
                     const slotFound = court.slots.find(
                       (s) => s.startTime === slotKey(i)
                     );
-                    const slotStatus: SlotDisplayStatus =
-                      slotFound?.displayStatus ?? "CLOSED";
+                    const slotIsPast = date < localToday ||
+                      (date === localToday && totalMin <= now.getHours() * 60 + now.getMinutes());
+                    const slotStatus: SlotDisplayStatus = slotIsPast
+                      ? "CLOSED"
+                      : slotFound?.displayStatus ?? "CLOSED";
 
                     return (
                       <CourtSlotCell
@@ -219,9 +253,10 @@ export function CourtGrid({ date }: CourtGridProps) {
                         isNowSlot={i === nowSlotIndex}
                         nowFrac={nowFrac}
                         startMinutes={totalMin}
+                        isPast={slotIsPast}
                         courtName={court.court.name}
                         onClickAvailable={(e, name, min) =>
-                          handleClickAvailable(e, name, min, court.slots)
+                          handleClickAvailable(e, court.court.courtId, name, min, court.slots)
                         }
                       />
                     );

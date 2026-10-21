@@ -23,14 +23,14 @@ export interface Booking {
 }
 
 export interface BookingStatusHistory {
-  id: string;
-  bookingId: string;
-  oldStatus: BookingStatus | null; 
+  id?: string;
+  bookingId?: string;
+  oldStatus: BookingStatus | null;
   newStatus: BookingStatus;
   actorType: ActorType;
   actorName: string | null;
   changedAt: string;
-  reason: string;
+  reason: string | null;
 }
 
 export interface Invoice {
@@ -52,8 +52,9 @@ export interface BookingDetail extends Booking {
   customerName: string;
   customerPhone: string;
   courtName: string;
-  invoice: Invoice | null;
+  invoice: Invoice | BookingInvoiceSummary | null;
   statusHistory: BookingStatusHistory[];
+  paymentStatus?: InvoiceStatus | null;
 }
 
 export interface BookingListItem {
@@ -89,12 +90,12 @@ export interface BookingAdminDetail extends BookingListItem {
 // ── Requests ──────────────────────────────────────────────────────────────────
 
 export interface CreateBookingRequest {
-  customerId: string;
   courtId: number;
-  date: string; // yyyy-MM-dd
-  startTime: string; // HH:mm
-  endTime: string; // HH:mm
-  note?: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  totalCost: number;
+  quoteFingerprint: string;
 }
 
 export interface ConfirmBookingRequest {
@@ -112,15 +113,17 @@ export interface RejectBookingRequest {
  * Khi khách chưa có tài khoản (BR-03):
  * BE tự tạo Customer với accountId = NULL, rồi tạo Booking.
  */
-export interface CreateWalkInBookingRequest {
-  guestFullName: string;
-  guestPhone: string;
-  guestEmail?: string;
+export interface CreateGuestBookingRequest {
   courtId: number;
   date: string;
   startTime: string;
   endTime: string;
-  note?: string;
+  totalCost: number;
+  quoteFingerprint: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  verificationCode: string;
 }
 
 export interface UpdateBookingStatusRequest {

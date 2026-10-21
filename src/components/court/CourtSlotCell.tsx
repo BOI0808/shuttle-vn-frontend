@@ -8,6 +8,7 @@ interface CourtSlotCellProps {
   isNowSlot: boolean;
   nowFrac: number;
   startMinutes: number;
+  isPast?: boolean;
   courtName: string;
   onClickAvailable: (
     e: React.MouseEvent,
@@ -21,6 +22,7 @@ export function CourtSlotCell({
   isClosed,
   isHourSep,
   startMinutes,
+  isPast = false,
   courtName,
   onClickAvailable,
 }: CourtSlotCellProps) {
@@ -44,7 +46,9 @@ export function CourtSlotCell({
             : "slot-mine"
         )}
         title={
-          isClosed
+          isPast
+            ? "Đã qua"
+            : isClosed
             ? "Đóng cửa"
             : status === "BOOKED"
             ? "Đã đặt"

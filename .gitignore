@@ -54,3 +54,6 @@ coverage/
 .vercel
 .turbo
 design-htmls/
+
+# AI
+.github/agents/

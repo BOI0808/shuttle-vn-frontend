@@ -132,6 +132,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    keyword?: string;
                     pageNumber?: number;
                     pageSize?: number;
                 };
@@ -147,9 +148,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["CustomerPagedResultApiResponse"];
-                        "application/json": components["schemas"]["CustomerPagedResultApiResponse"];
-                        "text/json": components["schemas"]["CustomerPagedResultApiResponse"];
+                        "text/plain": components["schemas"]["CustomerListItemDtoPagedResultApiResponse"];
+                        "application/json": components["schemas"]["CustomerListItemDtoPagedResultApiResponse"];
+                        "text/json": components["schemas"]["CustomerListItemDtoPagedResultApiResponse"];
                     };
                 };
             };
@@ -176,9 +177,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["CustomerApiResponse"];
-                        "application/json": components["schemas"]["CustomerApiResponse"];
-                        "text/json": components["schemas"]["CustomerApiResponse"];
+                        "text/plain": components["schemas"]["CustomerListItemDtoApiResponse"];
+                        "application/json": components["schemas"]["CustomerListItemDtoApiResponse"];
+                        "text/json": components["schemas"]["CustomerListItemDtoApiResponse"];
                     };
                 };
             };
@@ -213,9 +214,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["CustomerApiResponse"];
-                        "application/json": components["schemas"]["CustomerApiResponse"];
-                        "text/json": components["schemas"]["CustomerApiResponse"];
+                        "text/plain": components["schemas"]["CustomerListItemDtoApiResponse"];
+                        "application/json": components["schemas"]["CustomerListItemDtoApiResponse"];
+                        "text/json": components["schemas"]["CustomerListItemDtoApiResponse"];
                     };
                 };
             };
@@ -243,13 +244,140 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["CustomerApiResponse"];
-                        "application/json": components["schemas"]["CustomerApiResponse"];
-                        "text/json": components["schemas"]["CustomerApiResponse"];
+                        "text/plain": components["schemas"]["CustomerListItemDtoApiResponse"];
+                        "application/json": components["schemas"]["CustomerListItemDtoApiResponse"];
+                        "text/json": components["schemas"]["CustomerListItemDtoApiResponse"];
                     };
                 };
             };
         };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/accounts/customers/{id}/bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    pageNumber?: number;
+                    pageSize?: number;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingListItemDtoPagedResultApiResponse"];
+                        "application/json": components["schemas"]["BookingListItemDtoPagedResultApiResponse"];
+                        "text/json": components["schemas"]["BookingListItemDtoPagedResultApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    fromDate?: string;
+                    toDate?: string;
+                    courtId?: number;
+                    status?: components["schemas"]["BookingStatus"];
+                    customerId?: string;
+                    keyword?: string;
+                    pageNumber?: number;
+                    pageSize?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingListItemDtoPagedResultApiResponse"];
+                        "application/json": components["schemas"]["BookingListItemDtoPagedResultApiResponse"];
+                        "text/json": components["schemas"]["BookingListItemDtoPagedResultApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/bookings/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDetailDtoApiResponse"];
+                        "application/json": components["schemas"]["BookingDetailDtoApiResponse"];
+                        "text/json": components["schemas"]["BookingDetailDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -549,6 +677,567 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/bookings/price-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    courtId?: number;
+                    date?: string;
+                    startTime?: string;
+                    endTime?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["PricePreviewResponseApiResponse"];
+                        "application/json": components["schemas"]["PricePreviewResponseApiResponse"];
+                        "text/json": components["schemas"]["PricePreviewResponseApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header: {
+                    "Idempotency-Key": string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["CreateBookingDto"];
+                    "text/json": components["schemas"]["CreateBookingDto"];
+                    "application/*+json": components["schemas"]["CreateBookingDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDtoApiResponse"];
+                        "application/json": components["schemas"]["BookingDtoApiResponse"];
+                        "text/json": components["schemas"]["BookingDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ObjectApiResponse"];
+                        "application/json": components["schemas"]["ObjectApiResponse"];
+                        "text/json": components["schemas"]["ObjectApiResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["PricePreviewResponseApiResponse"];
+                        "application/json": components["schemas"]["PricePreviewResponseApiResponse"];
+                        "text/json": components["schemas"]["PricePreviewResponseApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings/quick": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header: {
+                    "Idempotency-Key": string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["QuickBookingDto"];
+                    "text/json": components["schemas"]["QuickBookingDto"];
+                    "application/*+json": components["schemas"]["QuickBookingDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDtoApiResponse"];
+                        "application/json": components["schemas"]["BookingDtoApiResponse"];
+                        "text/json": components["schemas"]["BookingDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ObjectApiResponse"];
+                        "application/json": components["schemas"]["ObjectApiResponse"];
+                        "text/json": components["schemas"]["ObjectApiResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["PricePreviewResponseApiResponse"];
+                        "application/json": components["schemas"]["PricePreviewResponseApiResponse"];
+                        "text/json": components["schemas"]["PricePreviewResponseApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings/{bookingId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: never;
+                header: {
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    bookingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["CancelBookingDto"];
+                    "text/json": components["schemas"]["CancelBookingDto"];
+                    "application/*+json": components["schemas"]["CancelBookingDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDtoApiResponse"];
+                        "application/json": components["schemas"]["BookingDtoApiResponse"];
+                        "text/json": components["schemas"]["BookingDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/api/bookings/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    pageNumber?: number;
+                    pageSize?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDtoPagedResultApiResponse"];
+                        "application/json": components["schemas"]["BookingDtoPagedResultApiResponse"];
+                        "text/json": components["schemas"]["BookingDtoPagedResultApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings/{bookingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    bookingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDtoApiResponse"];
+                        "application/json": components["schemas"]["BookingDtoApiResponse"];
+                        "text/json": components["schemas"]["BookingDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings/{bookingId}/invoice": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    bookingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["InvoiceDtoApiResponse"];
+                        "application/json": components["schemas"]["InvoiceDtoApiResponse"];
+                        "text/json": components["schemas"]["InvoiceDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/booking-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    pageNumber?: number;
+                    pageSize?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingListItemDtoPagedResultApiResponse"];
+                        "application/json": components["schemas"]["BookingListItemDtoPagedResultApiResponse"];
+                        "text/json": components["schemas"]["BookingListItemDtoPagedResultApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/booking-requests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDetailDtoApiResponse"];
+                        "application/json": components["schemas"]["BookingDetailDtoApiResponse"];
+                        "text/json": components["schemas"]["BookingDetailDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/booking-requests/{id}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "Idempotency-Key"?: string;
+                };
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ConfirmBookingDto"];
+                    "text/json": components["schemas"]["ConfirmBookingDto"];
+                    "application/*+json": components["schemas"]["ConfirmBookingDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDetailDtoApiResponse"];
+                        "application/json": components["schemas"]["BookingDetailDtoApiResponse"];
+                        "text/json": components["schemas"]["BookingDetailDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/booking-requests/{id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "Idempotency-Key"?: string;
+                };
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RejectBookingDto"];
+                    "text/json": components["schemas"]["RejectBookingDto"];
+                    "application/*+json": components["schemas"]["RejectBookingDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDetailDtoApiResponse"];
+                        "application/json": components["schemas"]["BookingDetailDtoApiResponse"];
+                        "text/json": components["schemas"]["BookingDetailDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/booking-requests/{id}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "Idempotency-Key"?: string;
+                };
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ConfirmBookingDto"];
+                    "text/json": components["schemas"]["ConfirmBookingDto"];
+                    "application/*+json": components["schemas"]["ConfirmBookingDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDetailDtoApiResponse"];
+                        "application/json": components["schemas"]["BookingDetailDtoApiResponse"];
+                        "text/json": components["schemas"]["BookingDetailDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/courts": {
         parameters: {
             query?: never;
@@ -571,9 +1260,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["BadmintonCourtListApiResponse"];
-                        "application/json": components["schemas"]["BadmintonCourtListApiResponse"];
-                        "text/json": components["schemas"]["BadmintonCourtListApiResponse"];
+                        "text/plain": components["schemas"]["BadmintonCourtPagedResultApiResponse"];
+                        "application/json": components["schemas"]["BadmintonCourtPagedResultApiResponse"];
+                        "text/json": components["schemas"]["BadmintonCourtPagedResultApiResponse"];
                     };
                 };
             };
@@ -705,9 +1394,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["BadmintonCourtListApiResponse"];
-                        "application/json": components["schemas"]["BadmintonCourtListApiResponse"];
-                        "text/json": components["schemas"]["BadmintonCourtListApiResponse"];
+                        "text/plain": components["schemas"]["CourtGridResponseDtoApiResponse"];
+                        "application/json": components["schemas"]["CourtGridResponseDtoApiResponse"];
+                        "text/json": components["schemas"]["CourtGridResponseDtoApiResponse"];
                     };
                 };
             };
@@ -1347,7 +2036,7 @@ export interface components {
         /** @enum {string} */
         ActorType: "System" | "Employee" | "Customer";
         AuditDto: {
-            /** Format: int32 */
+            /** Format: int64 */
             id?: number;
             actorType?: components["schemas"]["ActorType"];
             /** Format: uuid */
@@ -1387,6 +2076,8 @@ export interface components {
             description?: string | null;
             status?: components["schemas"]["CourtStatus"];
             /** Format: date-time */
+            deletedAt?: string | null;
+            /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
             updatedAt?: string;
@@ -1409,6 +2100,182 @@ export interface components {
                 [key: string]: string[];
             } | null;
         };
+        BadmintonCourtPagedResult: {
+            items?: components["schemas"]["BadmintonCourt"][] | null;
+            /** Format: int32 */
+            pageNumber?: number;
+            /** Format: int32 */
+            pageSize?: number;
+            /** Format: int32 */
+            totalCount?: number;
+            /** Format: int32 */
+            readonly totalPages?: number;
+        };
+        BadmintonCourtPagedResultApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["BadmintonCourtPagedResult"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
+        BookingDetailDto: {
+            /** Format: uuid */
+            bookingId?: string;
+            bookingCode?: string | null;
+            /** Format: uuid */
+            customerId?: string;
+            customerName?: string | null;
+            customerPhone?: string | null;
+            customerEmail?: string | null;
+            /** Format: int32 */
+            courtId?: number;
+            courtName?: string | null;
+            /** Format: date */
+            date?: string;
+            startTime?: string | null;
+            endTime?: string | null;
+            status?: components["schemas"]["BookingStatus"];
+            /** Format: double */
+            totalCost?: number;
+            paymentStatus?: components["schemas"]["InvoiceStatus"];
+            /** Format: date-time */
+            createdAt?: string;
+            invoice?: components["schemas"]["BookingInvoiceDto"];
+            statusHistory?: components["schemas"]["BookingStatusHistoryDto"][] | null;
+        };
+        BookingDetailDtoApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["BookingDetailDto"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
+        BookingDto: {
+            /** Format: uuid */
+            bookingId?: string;
+            bookingCode?: string | null;
+            /** Format: uuid */
+            customerId?: string;
+            customerName?: string | null;
+            customerEmail?: string | null;
+            customerPhone?: string | null;
+            /** Format: int32 */
+            courtId?: number;
+            courtName?: string | null;
+            /** Format: date */
+            date?: string;
+            /** Format: time */
+            startTime?: string;
+            /** Format: time */
+            endTime?: string;
+            status?: components["schemas"]["BookingStatus"];
+            /** Format: double */
+            totalCost?: number;
+            /** Format: date-time */
+            createdAt?: string;
+            priceSegments?: components["schemas"]["BookingPriceSegmentDto"][] | null;
+            invoice?: components["schemas"]["InvoiceDto"];
+        };
+        BookingDtoApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["BookingDto"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
+        BookingDtoPagedResult: {
+            items?: components["schemas"]["BookingDto"][] | null;
+            /** Format: int32 */
+            pageNumber?: number;
+            /** Format: int32 */
+            pageSize?: number;
+            /** Format: int32 */
+            totalCount?: number;
+            /** Format: int32 */
+            readonly totalPages?: number;
+        };
+        BookingDtoPagedResultApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["BookingDtoPagedResult"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
+        BookingInvoiceDto: {
+            invoiceCode?: string | null;
+            status?: components["schemas"]["InvoiceStatus"];
+            paymentMethod?: components["schemas"]["PaymentMethod"];
+            /** Format: date-time */
+            paidAt?: string | null;
+        };
+        BookingListItemDto: {
+            /** Format: uuid */
+            bookingId?: string;
+            bookingCode?: string | null;
+            /** Format: uuid */
+            customerId?: string;
+            customerName?: string | null;
+            customerPhone?: string | null;
+            /** Format: int32 */
+            courtId?: number;
+            courtName?: string | null;
+            /** Format: date */
+            date?: string;
+            startTime?: string | null;
+            endTime?: string | null;
+            status?: components["schemas"]["BookingStatus"];
+            /** Format: double */
+            totalCost?: number;
+            paymentStatus?: components["schemas"]["InvoiceStatus"];
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        BookingListItemDtoPagedResult: {
+            items?: components["schemas"]["BookingListItemDto"][] | null;
+            /** Format: int32 */
+            pageNumber?: number;
+            /** Format: int32 */
+            pageSize?: number;
+            /** Format: int32 */
+            totalCount?: number;
+            /** Format: int32 */
+            readonly totalPages?: number;
+        };
+        BookingListItemDtoPagedResultApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["BookingListItemDtoPagedResult"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
+        BookingPriceSegmentDto: {
+            /** Format: int32 */
+            segmentNo?: number;
+            /** Format: time */
+            priceStartTime?: string;
+            /** Format: time */
+            segmentStartTime?: string;
+            /** Format: time */
+            segmentEndTime?: string;
+            /** Format: double */
+            pricePerHour?: number;
+        };
+        /** @enum {string} */
+        BookingStatus: "Pending" | "Confirmed" | "Completed" | "Cancelled";
+        BookingStatusHistoryDto: {
+            oldStatus?: components["schemas"]["BookingStatus"];
+            newStatus?: components["schemas"]["BookingStatus"];
+            actorType?: components["schemas"]["ActorType"];
+            actorName?: string | null;
+            /** Format: date-time */
+            changedAt?: string;
+            reason?: string | null;
+        };
         BooleanApiResponse: {
             success?: boolean;
             data?: boolean;
@@ -1416,6 +2283,9 @@ export interface components {
             errors?: {
                 [key: string]: string[];
             } | null;
+        };
+        CancelBookingDto: {
+            reason?: string | null;
         };
         ChangePasswordDto: {
             currentPassword?: string | null;
@@ -1427,7 +2297,43 @@ export interface components {
             type?: components["schemas"]["CodeType"];
         };
         /** @enum {string} */
-        CodeType: "VerifyEmail" | "ResetPassword";
+        CodeType: "VerifyEmail" | "ResetPassword" | "QuickBooking";
+        ConfirmBookingDto: {
+            isPaid?: boolean;
+            paymentMethod?: components["schemas"]["PaymentMethod"];
+            /** Format: date-time */
+            paidAt?: string | null;
+            note?: string | null;
+        };
+        CourtDto: {
+            /** Format: int32 */
+            courtId?: number;
+            name?: string | null;
+            description?: string | null;
+            status?: string | null;
+            isInUse?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        CourtGridItemDto: {
+            court?: components["schemas"]["CourtDto"];
+            slots?: components["schemas"]["CourtSlotDto"][] | null;
+        };
+        CourtGridResponseDto: {
+            /** Format: date */
+            date?: string;
+            courts?: components["schemas"]["CourtGridItemDto"][] | null;
+        };
+        CourtGridResponseDtoApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["CourtGridResponseDto"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
         CourtSchedule: {
             /** Format: int32 */
             scheduleId?: number;
@@ -1461,8 +2367,34 @@ export interface components {
                 [key: string]: string[];
             } | null;
         };
+        CourtSlotDto: {
+            /** Format: int32 */
+            courtId?: number;
+            /** Format: date */
+            date?: string;
+            startTime?: string | null;
+            endTime?: string | null;
+            displayStatus?: string | null;
+            /** Format: uuid */
+            bookingId?: string | null;
+            /** Format: double */
+            pricePerHour?: number;
+        };
         /** @enum {string} */
         CourtStatus: "Active" | "Maintenance" | "Closed";
+        CreateBookingDto: {
+            /** Format: int32 */
+            courtId?: number;
+            /** Format: date */
+            date?: string;
+            /** Format: time */
+            startTime?: string;
+            /** Format: time */
+            endTime?: string;
+            /** Format: double */
+            totalCost?: number | null;
+            quoteFingerprint?: string | null;
+        };
         CreateCourtDto: {
             name?: string | null;
             description?: string | null;
@@ -1493,16 +2425,31 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
         };
-        CustomerApiResponse: {
+        CustomerListItemDto: {
+            /** Format: uuid */
+            customerId?: string;
+            fullName?: string | null;
+            phone?: string | null;
+            email?: string | null;
+            /** Format: uuid */
+            accountId?: string | null;
+            hasAccount?: boolean;
+            accountStatus?: components["schemas"]["AccountStatus"];
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        CustomerListItemDtoApiResponse: {
             success?: boolean;
-            data?: components["schemas"]["Customer"];
+            data?: components["schemas"]["CustomerListItemDto"];
             message?: string | null;
             errors?: {
                 [key: string]: string[];
             } | null;
         };
-        CustomerPagedResult: {
-            items?: components["schemas"]["Customer"][] | null;
+        CustomerListItemDtoPagedResult: {
+            items?: components["schemas"]["CustomerListItemDto"][] | null;
             /** Format: int32 */
             pageNumber?: number;
             /** Format: int32 */
@@ -1512,9 +2459,9 @@ export interface components {
             /** Format: int32 */
             readonly totalPages?: number;
         };
-        CustomerPagedResultApiResponse: {
+        CustomerListItemDtoPagedResultApiResponse: {
             success?: boolean;
-            data?: components["schemas"]["CustomerPagedResult"];
+            data?: components["schemas"]["CustomerListItemDtoPagedResult"];
             message?: string | null;
             errors?: {
                 [key: string]: string[];
@@ -1539,6 +2486,31 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
         };
+        InvoiceDto: {
+            /** Format: uuid */
+            invoiceId?: string;
+            invoiceCode?: string | null;
+            status?: components["schemas"]["InvoiceStatus"];
+            /** Format: double */
+            totalCost?: number;
+            paymentMethod?: components["schemas"]["PaymentMethod"];
+            /** Format: date-time */
+            issuedAt?: string;
+            /** Format: date-time */
+            paidAt?: string | null;
+            /** Format: date-time */
+            cancelledAt?: string | null;
+        };
+        InvoiceDtoApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["InvoiceDto"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
+        /** @enum {string} */
+        InvoiceStatus: "Unpaid" | "Paid" | "Cancelled";
         LoginDto: {
             email?: string | null;
             password?: string | null;
@@ -1546,6 +2518,22 @@ export interface components {
         ObjectApiResponse: {
             success?: boolean;
             data?: unknown;
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
+        /** @enum {string} */
+        PaymentMethod: "Bank" | "Cash";
+        PricePreviewResponse: {
+            /** Format: double */
+            totalCost?: number;
+            segments?: components["schemas"]["BookingPriceSegmentDto"][] | null;
+            quoteFingerprint?: string | null;
+        };
+        PricePreviewResponseApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["PricePreviewResponse"];
             message?: string | null;
             errors?: {
                 [key: string]: string[];
@@ -1575,6 +2563,23 @@ export interface components {
                 [key: string]: string[];
             } | null;
         };
+        QuickBookingDto: {
+            /** Format: int32 */
+            courtId?: number;
+            /** Format: date */
+            date?: string;
+            /** Format: time */
+            startTime?: string;
+            /** Format: time */
+            endTime?: string;
+            /** Format: double */
+            totalCost?: number | null;
+            quoteFingerprint?: string | null;
+            fullName?: string | null;
+            phone?: string | null;
+            email?: string | null;
+            verificationCode?: string | null;
+        };
         RegisterDto: {
             fullName?: string | null;
             phone?: string | null;
@@ -1582,6 +2587,9 @@ export interface components {
             code?: string | null;
             password?: string | null;
             confirmPassword?: string | null;
+        };
+        RejectBookingDto: {
+            reason?: string | null;
         };
         ResetPasswordDto: {
             email?: string | null;

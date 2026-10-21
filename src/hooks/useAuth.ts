@@ -48,7 +48,7 @@ export function useAuth() {
     onSettled: () => {
       clearAuth();
       queryClient.clear();
-      router.push("/login");
+      router.push("/courts");
     },
   });
 

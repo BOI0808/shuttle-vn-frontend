@@ -7,7 +7,8 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAuthenticated = Boolean(request.cookies.get(AUTH_COOKIE_NAME)?.value);
-  const isPublicPath = PUBLIC_PATHS.some(
+  const isGuestBookingPath = pathname === "/booking/guest";
+  const isPublicPath = isGuestBookingPath || PUBLIC_PATHS.some(
       (p) => pathname === p || pathname.startsWith(p + "/")
   );
 

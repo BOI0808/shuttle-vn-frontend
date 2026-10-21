@@ -6,14 +6,39 @@ import { QUERY_KEYS } from "@/config/app";
 import {
   ConfirmPaymentRequest,
   CreateBookingRequest,
-  CreateWalkInBookingRequest,
+  CreateGuestBookingRequest,
   PaginationParams,
 } from "@/types";
+
+export function usePricePreview(params: {
+  courtId: number;
+  date: string;
+  startTime: string;
+  endTime: string;
+}) {
+  return useQuery({
+    queryKey: ["booking-price-preview", params],
+    queryFn: () => bookingService.getPricePreview(params),
+    enabled:
+      params.courtId > 0 &&
+      !!params.date &&
+      !!params.startTime &&
+      !!params.endTime &&
+      params.endTime > params.startTime,
+  });
+}
 
 export function useMyBookings(params?: PaginationParams) {
   return useQuery({
     queryKey: [...QUERY_KEYS.myBookings, params],
     queryFn: () => bookingService.getMyBookings(params),
+  });
+}
+
+export function useAllMyBookings() {
+  return useQuery({
+    queryKey: [...QUERY_KEYS.myBookings, "all"],
+    queryFn: () => bookingService.getAllMyBookings(),
   });
 }
 
@@ -48,25 +73,34 @@ export function useAllBookings(
 export function useCreateBooking() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: CreateBookingRequest) =>
-      bookingService.createBooking(payload),
+    mutationFn: ({ payload, idempotencyKey }: { payload: CreateBookingRequest; idempotencyKey: string }) =>
+      bookingService.createBooking(payload, idempotencyKey),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.myBookings });
     },
   });
 }
 
-export function useCreateWalkInBooking() {
+export function useCreateGuestBooking() {
   return useMutation({
-    mutationFn: (payload: CreateWalkInBookingRequest) =>
-      bookingService.createWalkInBooking(payload),
+    mutationFn: ({ payload, idempotencyKey }: { payload: CreateGuestBookingRequest; idempotencyKey: string }) =>
+      bookingService.createGuestBooking(payload, idempotencyKey),
+  });
+}
+
+export function useBookingInvoice(id: string, enabled = true) {
+  return useQuery({
+    queryKey: [...QUERY_KEYS.booking(id), "invoice"],
+    queryFn: () => bookingService.getBookingInvoice(id),
+    enabled: !!id && enabled,
   });
 }
 
 export function useCancelBooking() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => bookingService.cancelBooking(id),
+    mutationFn: ({ id, reason, idempotencyKey }: { id: string; reason: string; idempotencyKey: string }) =>
+      bookingService.cancelBooking(id, reason, idempotencyKey),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.myBookings });
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.bookings });
