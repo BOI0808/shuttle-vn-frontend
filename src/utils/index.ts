@@ -38,6 +38,10 @@ export function formatDateTimeVN(dateStr: string): string {
   return `${pick("day")}/${pick("month")}/${pick("year")} ${pick("hour")}:${pick("minute")}`;
 }
 
+export function hasBookingEnded(date: string, endTime: string): boolean {
+  return new Date(`${date}T${endTime}:00+07:00`).getTime() <= Date.now();
+}
+
 export function toISODate(date: Date): string {
   return date.toISOString().split("T")[0];
 }
