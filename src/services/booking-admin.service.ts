@@ -3,8 +3,10 @@ import {
   ApiResponse,
   BookingAdminDetail,
   BookingListItem,
+  ConfirmBookingRequest,
   PaginatedResponse,
   PaginationParams,
+  RejectBookingRequest,
 } from "@/types";
 import { IS_MOCK, mockDelay } from "@/mocks/config";
 import { mockAdminBookings } from "@/mocks/data";
@@ -44,8 +46,47 @@ export const bookingAdminService = {
       if (!booking) throw new Error("Không tìm thấy đơn đặt sân");
       return booking;
     }
-    const { data } = await axiosInstance.get<ApiResponse<BookingAdminDetail>>(
+  const { data } = await axiosInstance.get<ApiResponse<BookingAdminDetail>>(
       `/booking-requests/${id}`
+    );
+    return data.data;
+  },
+
+  async confirmBooking(
+    id: string,
+    payload: ConfirmBookingRequest,
+    idempotencyKey: string
+  ): Promise<BookingAdminDetail> {
+    const { data } = await axiosInstance.post<ApiResponse<BookingAdminDetail>>(
+      `/booking-requests/${id}/confirm`,
+      payload,
+      { headers: { "Idempotency-Key": idempotencyKey } }
+    );
+    return data.data;
+  },
+
+  async rejectBooking(
+    id: string,
+    payload: RejectBookingRequest,
+    idempotencyKey: string
+  ): Promise<BookingAdminDetail> {
+    const { data } = await axiosInstance.post<ApiResponse<BookingAdminDetail>>(
+      `/booking-requests/${id}/reject`,
+      payload,
+      { headers: { "Idempotency-Key": idempotencyKey } }
+    );
+    return data.data;
+  },
+
+  async completeBooking(
+    id: string,
+    payload: ConfirmBookingRequest | undefined,
+    idempotencyKey: string
+  ): Promise<BookingAdminDetail> {
+    const { data } = await axiosInstance.post<ApiResponse<BookingAdminDetail>>(
+      `/booking-requests/${id}/complete`,
+      payload,
+      { headers: { "Idempotency-Key": idempotencyKey } }
     );
     return data.data;
   },
