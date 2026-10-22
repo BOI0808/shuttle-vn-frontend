@@ -31,7 +31,7 @@ Luôn:
 Luôn chạy:
 
 - npm run lint
-- npm run typecheck
+- npm run type-check
 
 Khắc phục toàn bộ lỗi trước khi hoàn thành task.
 
@@ -102,9 +102,9 @@ src/
 - **Không dùng `any`** – dùng `unknown` + type guard hoặc proper generic.
 - Mọi type/interface đều export từ `src/types/` và re-export qua `src/types/index.ts`.
 - API responses wrap trong `ApiResponse<T>` – luôn destructure `response.data.data`.
-- Enum-like literals dùng **SCREAMING_SNAKE_CASE**: `"PENDING"`, `"CONFIRMED"`, `"ACTIVE"`, `"BANKING"`, `"BOOKED"`, v.v.
+- Enum-like literals trả ra từ API dùng **PascalCase** theo `src/api/schema.d.ts`: `"Pending"`, `"Confirmed"`, `"Active"`, `"Bank"`, v.v. Ngoại lệ: `SlotDisplayStatus` do FE tự tính, giữ `"AVAILABLE" | "BOOKED" | "CLOSED"`.
 - `UserRole` dùng **PascalCase**: `"Admin" | "Employee" | "Customer"` — suy ra từ `AuthResponse`, không phải từ server enum.
-- `PaymentMethod`: `"BANKING" | "MONEY"` (không phải `Cash` hay `BankTransfer`).
+- `PaymentMethod`: `"Bank" | "Cash"` (không phải `Banking`, `Money` hay `BankTransfer`).
 
 ### Next.js App Router
 
@@ -162,7 +162,7 @@ onError: (error) => toast.error(getErrorMessage(error));
 
 - `useCourtGrid(date)` – refetch interval **30 giây**.
 - `SlotDisplayStatus`: `"AVAILABLE" | "BOOKED" | "CLOSED"` — tính toán phía FE, không phải từ server.
-- `CourtStatus`: `"ACTIVE" | "MAINTENANCE"` — trạng thái vật lý của sân.
+- `CourtStatus`: `"Active" | "Maintenance" | "Closed"` — trạng thái vật lý của sân.
 - Click slot `AVAILABLE` → add vào `useBookingCartStore`.
 
 ### Booking Flow (Registered)
@@ -181,8 +181,8 @@ onError: (error) => toast.error(getErrorMessage(error));
 ### Booking Status Flow
 
 ```
-PENDING → CONFIRMED → COMPLETED
-       ↘ CANCELLED
+Pending → Confirmed → Completed
+       ↘ Cancelled
 ```
 
 ### Invoice & Payment Flow
@@ -190,13 +190,13 @@ PENDING → CONFIRMED → COMPLETED
 ```
 (Admin/Staff tạo invoice)
 CreateInvoiceRequest { bookingId, paymentMethod, note? }
-    → Invoice: UNPAID
+    → Invoice: Unpaid
 
 (Confirm payment)
 ConfirmPaymentRequest { invoiceId, paymentMethod }
-    → Invoice: PAID
+    → Invoice: Paid
 
-Invoice status: UNPAID → PAID | CANCELLED
+Invoice status: Unpaid → Paid | Cancelled
 Invoice code format: HD-{yyyyMMdd}-{STT}
 ```
 
@@ -231,19 +231,19 @@ Tất cả export từ `src/config/app.ts`:
 
 ```typescript
 // Booking
-BOOKING_STATUS_LABEL;    // { PENDING: 'Chờ xác nhận', CONFIRMED: 'Đã xác nhận', COMPLETED: 'Hoàn thành', CANCELLED: 'Đã huỷ' }
-BOOKING_STATUS_COLOR;    // { PENDING: 'yellow', CONFIRMED: 'blue', COMPLETED: 'green', CANCELLED: 'red' }
+BOOKING_STATUS_LABEL;    // { Pending: 'Chờ xác nhận', Confirmed: 'Đã xác nhận', Completed: 'Hoàn thành', Cancelled: 'Đã huỷ' }
+BOOKING_STATUS_COLOR;    // { Pending: 'yellow', Confirmed: 'blue', Completed: 'green', Cancelled: 'red' }
 
 // Invoice
-INVOICE_STATUS_LABEL;    // { UNPAID: 'Chưa thanh toán', PAID: 'Đã thanh toán', CANCELLED: 'Đã huỷ' }
-PAYMENT_METHOD_LABEL;    // { BANKING: 'Chuyển khoản', MONEY: 'Tiền mặt' }
+INVOICE_STATUS_LABEL;    // { Unpaid: 'Chưa thanh toán', Paid: 'Đã thanh toán', Cancelled: 'Đã huỷ' }
+PAYMENT_METHOD_LABEL;    // { Bank: 'Chuyển khoản', Cash: 'Tiền mặt' }
 
 // Court
-COURT_STATUS_LABEL;          // { ACTIVE: 'Đang hoạt động', MAINTENANCE: 'Bảo trì' }
+COURT_STATUS_LABEL;          // { Active: 'Đang hoạt động', Maintenance: 'Bảo trì', Closed: 'Đóng cửa' }
 SLOT_DISPLAY_STATUS_LABEL;   // { AVAILABLE: 'Còn trống', BOOKED: 'Đã đặt', CLOSED: 'Đóng cửa' }
 
 // Account
-ACCOUNT_STATUS_LABEL;    // { ACTIVE: 'Hoạt động', LOCKED: 'Bị khoá', DISABLED: 'Vô hiệu hoá' }
+ACCOUNT_STATUS_LABEL;    // { Active: 'Hoạt động', Disabled: 'Vô hiệu hoá' }
 USER_ROLE_LABEL;         // { Admin: 'Quản trị viên', Employee: 'Nhân viên', Customer: 'Khách hàng' }
 
 // Misc
@@ -285,7 +285,7 @@ Khi Claude sinh code cho project này:
 5. **Import từ barrel** – dùng `@/types`, `@/utils`, `@/services`, `@/hooks`, không import sâu.
 6. **Không viết code C# / backend** – chỉ tập trung frontend.
 7. **Không dùng `any`** – TypeScript strict mode.
-8. **Literal types đúng casing** – SCREAMING_SNAKE_CASE cho status/method, PascalCase cho `UserRole`.
+8. **Literal types đúng casing** – PascalCase cho enum từ API (`BookingStatus`, `InvoiceStatus`, `PaymentMethod`, `CourtStatus`, `AccountStatus`) và `UserRole`; `SlotDisplayStatus` giữ chữ hoa.
 
 ---
 
