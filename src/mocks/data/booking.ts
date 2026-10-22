@@ -1,4 +1,4 @@
-import { Booking, BookingDetail, Invoice } from "@/types";
+import { Booking, BookingAdminDetail, BookingDetail, Invoice } from "@/types";
 
 export const mockBookings: BookingDetail[] = [
   {
@@ -65,5 +65,92 @@ export const mockBookings: BookingDetail[] = [
     updatedAt: "2026-09-19T08:00:00Z",
     invoice: null,
     statusHistory: [],
+  },
+];
+
+export const mockAdminBookings: BookingAdminDetail[] = [
+  {
+    bookingId: "ab1",
+    bookingCode: "DS-2001",
+    customerId: "c1",
+    customerName: "Nguyễn Văn A",
+    customerPhone: "0901234567",
+    customerEmail: "customer@shuttlevn.com",
+    courtId: 1,
+    courtName: "Sân 1",
+    date: "2026-10-23",
+    startTime: "18:00",
+    endTime: "20:00",
+    status: "Pending",
+    totalCost: 300000,
+    paymentStatus: null,
+    createdAt: "2026-10-21T02:15:00Z",
+    invoice: null,
+    statusHistory: [
+      {
+        oldStatus: null,
+        newStatus: "Pending",
+        actorType: "Customer",
+        actorName: "Nguyễn Văn A",
+        changedAt: "2026-10-21T02:15:00Z",
+        reason: null,
+      },
+    ],
+  },
+  {
+    bookingId: "ab2",
+    bookingCode: "DS-2002",
+    customerId: "c3",
+    customerName: "Lê Văn C",
+    customerPhone: "0912334455",
+    customerEmail: "customer3@gmail.com",
+    courtId: 2,
+    courtName: "Sân 2",
+    date: "2026-10-22",
+    startTime: "08:00",
+    endTime: "09:30",
+    status: "Pending",
+    totalCost: 225000,
+    paymentStatus: null,
+    createdAt: "2026-10-21T01:40:00Z",
+    invoice: null,
+    statusHistory: [
+      {
+        oldStatus: null,
+        newStatus: "Pending",
+        actorType: "Customer",
+        actorName: "Lê Văn C",
+        changedAt: "2026-10-21T01:40:00Z",
+        reason: null,
+      },
+    ],
+  },
+  {
+    bookingId: "ab3",
+    bookingCode: "DS-2003",
+    customerId: "c2",
+    customerName: "Trần Thị B",
+    customerPhone: "0907654321",
+    customerEmail: "customer2@gmail.com",
+    courtId: 1,
+    courtName: "Sân 1",
+    date: "2026-10-24",
+    startTime: "19:00",
+    endTime: "20:00",
+    status: "Pending",
+    totalCost: 150000,
+    paymentStatus: null,
+    createdAt: "2026-10-21T03:05:00Z",
+    invoice: null,
+    statusHistory: [
+      {
+        oldStatus: null,
+        newStatus: "Pending",
+        actorType: "Customer",
+        actorName: "Trần Thị B",
+        changedAt: "2026-10-21T03:05:00Z",
+        reason: null,
+      },
+    ],
   },
 ];
