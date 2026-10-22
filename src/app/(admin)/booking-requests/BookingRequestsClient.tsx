@@ -3,12 +3,17 @@
 import { useState } from "react";
 
 import { BookingDetailModal } from "@/components/booking/BookingDetailModal";
+import { ConfirmBookingModal } from "@/components/booking/ConfirmBookingModal";
+import { RejectBookingModal } from "@/components/booking/RejectBookingModal";
 import { Button } from "@/components/ui/Button";
 import { Pagination } from "@/components/ui/Pagination";
 import { usePendingBookings } from "@/hooks";
+import type { BookingListItem } from "@/types";
 import { formatCurrency, formatDate, formatDateTimeVN, getErrorMessage } from "@/utils";
 
 const PAGE_SIZE = 20;
+
+type RowAction = { type: "confirm" | "reject"; booking: BookingListItem };
 
 const HEADERS = [
   "Mã đơn",
@@ -21,6 +26,7 @@ const HEADERS = [
 export default function BookingRequestsClient() {
   const [pageNumber, setPageNumber] = useState(1);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [rowAction, setRowAction] = useState<RowAction | null>(null);
   const { data, isLoading, isError, error } = usePendingBookings({
     pageNumber,
     pageSize: PAGE_SIZE,
@@ -117,16 +123,43 @@ export default function BookingRequestsClient() {
                   <td className="px-5 py-4 font-mono text-[12px] font-bold text-slate-900">
                     {formatCurrency(booking.totalCost)}
                   </td>
-                  <td className="px-5 py-4 text-right">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="inline-flex w-auto"
-                      onClick={() => setSelectedId(booking.bookingId)}
-                    >
-                      Chi tiết
-                    </Button>
+                  <td className="px-5 py-4">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="inline-flex w-auto"
+                        onClick={() => setSelectedId(booking.bookingId)}
+                      >
+                        Chi tiết
+                      </Button>
+                      {booking.status === "Pending" && (
+                        <>
+                          <Button
+                            type="button"
+                            size="sm"
+                            className="inline-flex w-auto"
+                            onClick={() =>
+                              setRowAction({ type: "confirm", booking })
+                            }
+                          >
+                            Xác nhận
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="inline-flex w-auto border-red-300 text-red-600 hover:bg-red-50"
+                            onClick={() =>
+                              setRowAction({ type: "reject", booking })
+                            }
+                          >
+                            Từ chối
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -141,6 +174,20 @@ export default function BookingRequestsClient() {
         <BookingDetailModal
           bookingId={selectedId}
           onClose={() => setSelectedId(null)}
+        />
+      )}
+
+      {rowAction?.type === "confirm" && (
+        <ConfirmBookingModal
+          booking={rowAction.booking}
+          action="confirm"
+          onClose={() => setRowAction(null)}
+        />
+      )}
+      {rowAction?.type === "reject" && (
+        <RejectBookingModal
+          booking={rowAction.booking}
+          onClose={() => setRowAction(null)}
         />
       )}
     </div>
