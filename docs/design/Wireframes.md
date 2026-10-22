@@ -1,39 +1,41 @@
 # WIREFRAMES HỆ THỐNG ĐẶT SÂN CẦU LÔNG (SHUTTLEVN)
-### Đặc tả Wireframe Mục tiêu & Đối chiếu Hiện trạng Codebase
+### Đặc tả Wireframe đã đối chiếu với SRS/UseCase và mã nguồn hiện tại
 
 **Khu vực 1: Cổng Khách hàng (WF-01 đến WF-08) và Khu vực 2: Cổng Quản trị & Nhân viên (WF-09 đến WF-19)**
 
 | Mục | Nội dung |
 |---|---|
-| Căn cứ nghiệp vụ | SRS 1.7 và UseCase 1.5 (nguồn chuẩn duy nhất), User-Flows.md v1.1 |
-| Căn cứ kỹ thuật | Mã nguồn thực tế trong `shuttle-vn-frontend/src` (Next.js 15 App Router, React 19, Tailwind CSS) |
+| Căn cứ nghiệp vụ | SRS 1.7 và UseCase 1.5 (nguồn chuẩn duy nhất), User-Flows.md |
+| Căn cứ giao diện | Mã nguồn `shuttle-vn-frontend/src` (Next.js App Router, React, Tailwind CSS) và `docs/design/Design-System.md` |
+| Căn cứ API | Các controller của `ShuttleVNBackend` (kiểm tra khả năng đáp ứng của từng màn hình) |
 | Phạm vi tài liệu | 19 màn hình WF-01 đến WF-19 |
 | Định dạng | ASCII wireframe + bảng đối chiếu Hiện trạng Codebase & Chuẩn mục tiêu |
+| Quy ước route | Thư mục `(auth)`, `(customer)`, `(admin)` là route group, **không tạo tiền tố URL**. Route mục tiêu của Cổng Quản trị vì vậy không có `/admin/...` (ví dụ `/booking-requests`, không phải `/booking-requests`) |
 | Nhãn đối chiếu | `[G-xx]` là điểm đối chiếu/giả định được tổng hợp ở mục cuối tài liệu |
 
 ### Danh sách 19 màn hình & Đối chiếu Codebase
 
-| Mã | Màn hình | Đối tượng | Route Codebase hiện tại | Route Wireframe mục tiêu | Tình trạng Codebase hiện tại |
-|---|---|---|---|---|---|
-| WF-01 | Đăng ký tài khoản | Khách vãng lai | `/register` (`/(auth)/register`) | `/register` | Đang chạy (`RegisterForm.tsx`, mã xác thực inline, mk min 6) |
-| WF-02 | Đăng nhập | Mọi tài khoản | `/login` (`/(auth)/login`) | `/login` | Đang chạy (`LoginForm.tsx`, `useAuth.ts` chuyển cả Staff vào `/dashboard`) |
-| WF-03 | Quên mật khẩu | Khách thành viên | *Chưa có route* | `/forgot-password` | Chưa triển khai (link tại login đang trỏ `#`) |
-| WF-04 | Đặt sân & Lưới sân | Khách vãng lai, thành viên | `/courts` (`/(customer)/courts`) & `/booking` (placeholder) | `/booking` | Đang chạy lưới sân (`CourtsClient.tsx`); `/booking` là placeholder rỗng |
-| WF-05 | Lịch sử đặt sân | Khách thành viên | `/my-bookings` (`/(customer)/my-bookings`) | `/my-bookings` | Đang chạy (`BookingHistoryList.tsx`, còn nút Hóa đơn, nút action là `TODO`) |
-| WF-06 | Tra cứu đơn đặt sân | Khách vãng lai, thành viên | `/lookup` (`/(customer)/lookup`) | `/lookup` | Đang chạy (`BookingLookupForm.tsx`, có nút DEMO, ô liên hệ chưa bắt buộc) |
-| WF-07 | Hồ sơ cá nhân | Khách thành viên | `/profile` (`/(customer)/profile`) | `/profile` | Đang chạy (`ProfileInfoForm.tsx`, email disabled; `ProfileSidebar` có avatar/thống kê) |
-| WF-08 | Widget Trợ lý AI | Khách vãng lai, thành viên | *Chưa có UI widget* | (widget nổi) | Backend API route `/api/chat` đã có; Chưa có component giao diện `ChatWidget` |
-| WF-09 | Bảng điều khiển | Quản trị viên | `/dashboard` (`/(admin)/dashboard`) | `/admin/dashboard` | Đang chạy (`DashboardStats.tsx` còn thẻ Tỷ lệ lấp đầy, `RevenueChart`) |
-| WF-10 | Tiếp nhận yêu cầu đặt sân | Nhân viên, Quản trị viên | *Chưa có route* | `/admin/booking-requests` | Chưa triển khai (thuộc US-11 đang phát triển) |
-| WF-11 | Chi tiết đặt sân & Xử lý đơn | Nhân viên, Quản trị viên | *Chưa có route* | `/admin/bookings/[id]` | Chưa triển khai (thuộc US-12 đang phát triển) |
-| WF-12 | Quản lý lịch sân & Đặt tại quầy | Nhân viên, Quản trị viên | `/schedule` (`/(admin)/schedule`) | `/admin/court-schedule` | Đang chạy (`ScheduleClient.tsx` timeline; chưa có modal Đặt tại quầy) |
-| WF-13 | Quản lý thanh toán & Hóa đơn | Nhân viên, Quản trị viên | `/payments` (`/(admin)/payments`) | `/admin/payments` | 100% Placeholder (`payments/page.tsx` chỉ bọc RoleGuard) |
-| WF-14 | Quản lý khách hàng | Nhân viên, Quản trị viên | `/customers` (`/(admin)/customers`) | `/admin/customers` | Đang chạy bảng (`CustomersClient.tsx`; chưa có handler thêm/khóa khách) |
-| WF-15 | Quản lý sân & Bảng giá | Quản trị viên | `/manage-courts` (`/(admin)/manage-courts`) | `/admin/courts` | Đang chạy (`ManageCourtsClient.tsx`, `PricingTimeline.tsx`) |
-| WF-16 | Quản lý nhân viên & Phân quyền | Quản trị viên | `/employees` (`/(admin)/employees`) | `/admin/staff` | Đang chạy (`EmployeesClient.tsx`, `EmployeeFormModal.tsx` QTV nhập mk min 8) |
-| WF-17 | Theo dõi đặt sân toàn hệ thống | Quản trị viên | *Chưa có route* | `/admin/bookings` | Chưa triển khai (thuộc US-23 đang phát triển) |
-| WF-18 | Báo cáo & Thống kê | Quản trị viên | `/statistics` (`/(admin)/statistics`) | `/admin/reports` | 100% Placeholder (`statistics/page.tsx` thông báo đang phát triển) |
-| WF-19 | Nhật ký hoạt động | Quản trị viên | `/audits` (`/(admin)/audits`) | `/admin/audit-log` | 100% Placeholder (`audits/page.tsx` thông báo đang phát triển) |
+| Mã | Màn hình | Đối tượng | Route (hiện có / sẽ tạo) | Tình trạng Codebase hiện tại |
+|---|---|---|---|---|
+| WF-01 | Đăng ký tài khoản | Khách vãng lai | `/register` | Đang chạy (`RegisterForm.tsx`): mã xác thực nhập inline + nút lấy mã, mật khẩu tối thiểu 6 ký tự. Trang auth là thẻ giữa màn hình, không có header/footer |
+| WF-02 | Đăng nhập | Mọi tài khoản | `/login` | Đang chạy (`LoginForm.tsx`, `useAuth.ts`): khách → `/courts`, Nhân viên và Quản trị viên đều → `/dashboard`. Link "Quên mật khẩu?" trỏ `#` |
+| WF-03 | Quên mật khẩu | Khách thành viên | `/forgot-password` (sẽ tạo) | Chưa có route. API `POST /auth/issue-code` và `POST /auth/reset-password` đã có |
+| WF-04 | Đặt sân & Lưới sân | Khách vãng lai, thành viên | `/courts` (lưới) → `/booking` (thành viên) hoặc `/booking/guest` (vãng lai) | Đang chạy: `CourtsClient.tsx`, `CourtGrid.tsx`, `SlotPopup.tsx` (mốc 60–180 phút, giá xem trước từ máy chủ), `ReservationForm.tsx`. Chưa có bảng đơn giá; khách vãng lai nhập mã xác thực inline |
+| WF-05 | Lịch sử đặt sân | Khách thành viên | `/my-bookings` | Đang chạy: `BookingHistoryList.tsx`, `BookingCard.tsx`, `BookingListToolBar.tsx`, 10 đơn/trang. Có Chi tiết (modal), Hóa đơn, Hủy đặt (xác nhận bằng hộp thoại trình duyệt). Chưa có Đổi lịch |
+| WF-06 | Tra cứu đơn đặt sân | Khách vãng lai, thành viên | `/lookup` | Đang chạy (`LookupClient.tsx`, `BookingLookupForm.tsx`, `BookingLookupResult.tsx`): có nút DEMO, ô liên hệ chưa bắt buộc, hotline `1900 1234` gắn cứng |
+| WF-07 | Hồ sơ cá nhân | Khách thành viên | `/profile` | Đang chạy (`ProfileClient.tsx`): cột trái `ProfileSidebar` (avatar, thống kê), cột phải 2 tab "Thông tin" và "Bảo mật" (đổi mật khẩu, `PUT /profile/change-password`). Email khóa; SĐT validate 10 số |
+| WF-08 | Widget Trợ lý AI | Khách vãng lai, thành viên | Widget nổi | Có API route `/api/chat`; chưa có component giao diện |
+| WF-09 | Bảng điều khiển | Quản trị viên | `/dashboard` | Đang chạy (`DashboardClient.tsx`): 4 thẻ số liệu (còn "Tỷ lệ lấp đầy"), `RevenueChart`, danh sách Chờ xác nhận, bảng Đặt sân gần đây |
+| WF-10 | Tiếp nhận yêu cầu đặt sân | Nhân viên, Quản trị viên | `/booking-requests` (sẽ tạo) | Chưa có route FE. API `GET /booking-requests`, `POST /booking-requests/{id}/confirm|reject|complete` đã có |
+| WF-11 | Chi tiết đặt sân & Xử lý đơn | Nhân viên, Quản trị viên | `/bookings/[id]` (sẽ tạo) | Chưa có route FE. API `GET /booking-requests/{id}`, `GET /bookings/{id}`, `PATCH /bookings/{id}/cancel` đã có; chưa có API đổi lịch |
+| WF-12 | Quản lý lịch sân & Đặt tại quầy | Nhân viên, Quản trị viên | `/schedule` | Đang chạy (`ScheduleClient.tsx`): timeline ngang 05:00–22:00, mỗi sân một hàng, chỉ có chọn ngày. Ô đã đặt chỉ đọc; chưa có Đặt tại quầy |
+| WF-13 | Quản lý thanh toán & Hóa đơn | Nhân viên, Quản trị viên | `/payments` | Placeholder (`payments/page.tsx` chỉ bọc RoleGuard). Chỉ có `GET /bookings/{id}/invoice`; chưa có API thu tiền/hoàn tiền |
+| WF-14 | Quản lý khách hàng | Nhân viên, Quản trị viên | `/customers` | Đang chạy bảng (`CustomersClient.tsx`: Khách hàng, Liên hệ, Loại, Ngày đăng ký, Chi tiết). Chưa có ô tìm kiếm; nút Thêm khách/Chi tiết chưa gắn handler. API `/accounts/customers` và `/accounts/{id}/lock|unlock` đã có |
+| WF-15 | Quản lý sân & Bảng giá | Quản trị viên | `/manage-courts` | Đang chạy: `CourtStats`, chuyển Thẻ/Danh sách, `CourtFormModal`, `CourtStatusModal`, `CourtOperationsModal` (lịch tuần + `PricingTimeline`) |
+| WF-16 | Quản lý nhân viên & Phân quyền | Quản trị viên | `/employees` | Đang chạy (`EmployeesClient.tsx`, `EmployeeFormModal.tsx`): 3 thẻ số liệu, lọc, bảng, Sửa, Khóa/Mở khóa, Xóa. API `/employees` đầy đủ |
+| WF-17 | Theo dõi đặt sân toàn hệ thống | Quản trị viên | `/bookings` (sẽ tạo) | Chưa có route FE. API `GET /bookings` đã có |
+| WF-18 | Báo cáo & Thống kê | Quản trị viên | `/statistics` | Placeholder. API mới có `GET /admin/statistics/court-usage` |
+| WF-19 | Nhật ký hoạt động | Quản trị viên | `/audits` | Placeholder. API `GET /audits` đã có |
 
 ---
 
@@ -59,10 +61,13 @@ Dữ liệu trong wireframe (tên, mã đơn, giá, giờ) chỉ là **dữ li�
 3. **Mọi điều kiện nghiệp vụ được kiểm tra lại ở máy chủ khi gửi.** Giao diện ẩn/vô hiệu nút chỉ để hướng dẫn người dùng.
 4. **Đơn `Chờ xác nhận` hiển thị nhãn thanh toán "Chưa lập hóa đơn".** Hóa đơn chỉ sinh khi nhân viên xác nhận đơn.
 5. **Không vẽ** các mục đã loại khỏi phạm vi: tỷ lệ lấp đầy, quản lý thiết bị/phiên đăng nhập, khách tự vô hiệu hóa tài khoản, ca làm việc/chấm công/ngày nghỉ nhân viên, nút lập hóa đơn thủ công.
+6. **Wireframe vẽ cấu trúc và luồng, không vẽ màu.** Màu, font, khoảng cách theo `Design-System.md` (mục 0.4). Màn hình đã có trong codebase giữ nguyên bố cục hiện tại; phần khác biệt so với code được ghi ở khung "Hiện trạng Codebase & Định hướng" của từng màn hình.
 
 ### 0.2. Thành phần chung của Cổng Khách hàng
 
-**Header + Footer (khách chưa đăng nhập).** Header chỉ có Đặt sân, Tra cứu đơn, Đăng nhập, Đăng ký. Mục "Lịch sử đặt sân" chỉ dành cho khách thành viên nên được ẩn với khách vãng lai `[G-03]`.
+**Header (`CustomerNav.tsx`).** Cổng Khách hàng **không có footer**; hotline chỉ hiển thị ở WF-06. Trang đăng ký/đăng nhập/quên mật khẩu (nhóm `(auth)`) không có header, chỉ có thẻ ở giữa nền xám nhạt.
+
+Khách chưa đăng nhập: Đặt sân (`/courts`), Tra cứu đơn (`/lookup`), Đăng nhập, Đăng ký. Mục "Lịch sử đặt sân" chỉ dành cho khách thành viên nên được ẩn với khách vãng lai `[G-03]`.
 
 ```text
 +--------------------------------------------------------------------------------------------------+
@@ -70,11 +75,9 @@ Dữ liệu trong wireframe (tên, mã đơn, giá, giờ) chỉ là **dữ li�
 +--------------------------------------------------------------------------------------------------+
 | (nội dung trang)                                                                                 |
 +--------------------------------------------------------------------------------------------------+
-| © 2026 ShuttleVN                                                              Hotline: {Hotline} |
-+--------------------------------------------------------------------------------------------------+
 ```
 
-**Header (khách thành viên đã đăng nhập).** Có đủ Đặt sân, Lịch sử đặt sân, Tra cứu đơn và Avatar menu.
+Khách thành viên đã đăng nhập: Đặt sân, Lịch sử đặt sân (`/my-bookings`), Tra cứu đơn và Avatar menu.
 
 ```text
 +--------------------------------------------------------------------------------------------------+
@@ -82,11 +85,9 @@ Dữ liệu trong wireframe (tên, mã đơn, giá, giờ) chỉ là **dữ li�
 +--------------------------------------------------------------------------------------------------+
 | (nội dung trang)                                                                                 |
 +--------------------------------------------------------------------------------------------------+
-| © 2026 ShuttleVN                                                              Hotline: {Hotline} |
-+--------------------------------------------------------------------------------------------------+
 ```
 
-**Avatar menu** (mở khi bấm tên/avatar):
+**Avatar menu** (`UserMenu.tsx`, mở khi bấm tên/avatar):
 
 ```text
                                                                       +------------------------+
@@ -97,44 +98,68 @@ Dữ liệu trong wireframe (tên, mã đơn, giá, giờ) chỉ là **dữ li�
                                                                       +------------------------+
 ```
 
-| Thành phần chung | Quy ước giao diện (đề xuất) |
+| Thành phần chung | Quy ước giao diện |
 |---|---|
 | Header | Cố định trên cùng. Mục đang xem được đánh dấu. Trên màn hình hẹp, các mục gộp vào nút menu |
-| Footer | Bản quyền + hotline hỗ trợ |
-| Toast | Thành công (xanh), lỗi (đỏ). Tự đóng sau vài giây, có nút đóng. Lỗi nghiệp vụ nghiêm trọng dùng banner trong trang hoặc modal, không dùng toast |
+| Toast | Thư viện `sonner`. Thành công (xanh), lỗi (đỏ). Lỗi nghiệp vụ nghiêm trọng dùng banner trong trang hoặc modal, không dùng toast |
 | Loading | Skeleton cho danh sách/lưới. Nút gửi đổi sang trạng thái "Đang xử lý..." và bị vô hiệu để tránh gửi 2 lần |
 | Lỗi mạng / máy chủ | Banner "Không thể kết nối. Vui lòng thử lại." + nút Thử lại. Dữ liệu người dùng đã nhập được giữ nguyên |
-| Phiên hết hạn | Chuyển về Đăng nhập kèm thông báo, sau đó quay lại trang đang xem |
+| Phiên hết hạn | Phản hồi 401 → xóa phiên và chuyển về Đăng nhập (`axios.ts`) |
 | Tài khoản bị khóa giữa phiên | Đăng xuất bắt buộc và hiển thị thông báo tài khoản bị khóa (xem WF-02) |
 | Trợ lý AI | Nút chat nổi góc dưới phải trên mọi trang của Cổng Khách hàng (WF-08) |
 
 ### 0.3. Thành phần chung của Cổng Quản trị & Vận hành
 
-**Thanh bên điều hướng (AdminSidebar - w=220px, nền `#FBFBFA`):**
-- **Hiện trạng Codebase (`AdminSidebar.tsx`):** Đang fix cứng 8 liên kết cho mọi vai trò đăng nhập:
-  - *Tổng quan:* Bảng điều khiển (`/dashboard`), Thống kê (`/statistics`).
-  - *Vận hành:* Lịch sân (`/schedule`), Thanh toán (`/payments`), Quản lý sân (`/manage-courts`).
-  - *Quản trị:* Khách hàng (`/customers`), Nhân viên (`/employees`), Nhật ký hoạt động (`/audits`).
-- **Chuẩn Wireframe tương lai (Quyết định X-02 & SRS 2.2):** Phân quyền hiển thị theo Role:
-  - *Nhân viên (Employee):* Chỉ thấy 4 mục vận hành nghiệp vụ: Lịch sân, Yêu cầu đặt sân, Thanh toán, Khách hàng.
-  - *Quản trị viên (Admin):* Thấy đầy đủ 9 mục (thêm Bảng điều khiển, Quản lý sân, Nhân viên, Thống kê, Nhật ký, Đặt sân toàn hệ thống).
+Bố cục hiện có (`(admin)/layout.tsx`): **Sidebar cố định bên trái (`AdminSidebar.tsx`, rộng 220px, nền `#FBFBFA`, logo `ShuttleVN` + nhãn `Admin`)** và bên phải là **Topbar 52px (`AdminHeader.tsx`)** gồm tiêu đề trang ở bên trái và vùng nút hành động của trang. Menu chia 3 nhóm có nhãn, mục đang xem tô nền xanh nhạt.
+
+- **Hiện trạng Codebase:** Sidebar đang cố định 8 liên kết cho mọi vai trò: *Tổng quan* (Bảng điều khiển `/dashboard`, Thống kê `/statistics`), *Vận hành* (Lịch sân `/schedule`, Thanh toán `/payments`, Quản lý sân `/manage-courts`), *Quản trị* (Khách hàng `/customers`, Nhân viên `/employees`, Nhật ký hoạt động `/audits`). Topbar chưa có tên người dùng và nút Đăng xuất.
+- **Chuẩn mục tiêu (X-02, SRS 2.2):** Giữ nguyên bố cục, nhóm và icon Material Symbols; hiển thị menu theo vai trò; thêm vào bên phải Topbar tên người dùng, vai trò và nút Đăng xuất `[G-15]`.
+
+| Nhóm | Mục menu (route) | Nhân viên | Quản trị viên |
+|---|---|---|---|
+| Tổng quan | Bảng điều khiển (`/dashboard`) | – | Có |
+| Tổng quan | Thống kê (`/statistics`) | – | Có |
+| Vận hành | Lịch sân (`/schedule`) | Có | Có |
+| Vận hành | Yêu cầu đặt sân (`/booking-requests`) | Có | Có |
+| Vận hành | Thanh toán (`/payments`) | Có | Có |
+| Vận hành | Quản lý sân (`/manage-courts`) | – | Có |
+| Quản trị | Khách hàng (`/customers`) | Có | Có |
+| Quản trị | Nhân viên (`/employees`) | – | Có |
+| Quản trị | Đặt sân toàn hệ thống (`/bookings`) | – | Có |
+| Quản trị | Nhật ký hoạt động (`/audits`) | – | Có |
+
+Nhân viên thấy 4 mục, Quản trị viên thấy 10 mục. Nút hành động của trang (ví dụ `+ Thêm nhân viên`, `+ Thêm sân mới`) nằm ở vùng hành động bên phải Topbar trong code; các wireframe vẽ nút này ở dòng đầu vùng làm việc cho gọn. Chi tiết đơn (`/bookings/[id]`) mở từ Yêu cầu đặt sân, Lịch sân hoặc Đặt sân toàn hệ thống nên không có mục menu riêng.
 
 ```text
-+----------------------+------------------------------------------------------------------------------------------------+
-| ShuttleVN · Admin    | [Tiêu đề trang hiện tại]                                          Nguyễn Văn B · Nhân viên [v] |
-+----------------------+------------------------------------------------------------------------------------------------+
-| MENU                 | (Nội dung màn hình quản trị / vận hành)                                                        |
-|   Lịch sân           |                                                                                                |
-|   Yêu cầu đặt sân    |                                                                                                |
-|   Thanh toán         |                                                                                                |
-|   Khách hàng         |                                                                                                |
-+----------------------+------------------------------------------------------------------------------------------------+
++--------------------------+----------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| [Tiêu đề trang hiện tại]                         Trần Văn B · Nhân viên  [Đăng xuất]   |
++--------------------------+----------------------------------------------------------------------------------------+
+| VẬN HÀNH                 | (Nội dung màn hình quản trị / vận hành)                                                |
+|   Lịch sân               |                                                                                        |
+| > Yêu cầu đặt sân        |                                                                                        |
+|   Thanh toán             |                                                                                        |
+| QUẢN TRỊ                 |                                                                                        |
+|   Khách hàng             |                                                                                        |
++--------------------------+----------------------------------------------------------------------------------------+
 ```
+
+Khung trên là của Nhân viên: nhóm không còn mục nào (Tổng quan) thì ẩn cả nhãn nhóm.
+
+### 0.4. Quy ước giao diện áp dụng cho mọi màn hình (theo Design-System)
+
+| Hạng mục | Quy ước |
+|---|---|
+| Phong cách | Chuẩn hướng tới (Design-System), tối giản kiểu Notion: nền `#FBFBFA`, viền `#EAEAEA`, chữ chính `#2F3437`, chữ phụ `#787774`, màu nhấn xanh lá `#346538` / nền nhạt `#EDF3EC` |
+| Nút chính | Nền `#111111`, chữ trắng (Cổng Quản trị mới, ví dụ `CourtOperationsModal`); form khách hiện có đang dùng nút xanh emerald. Thống nhất theo Design-System khi refactor. Nút phụ viền xám, nút nguy hiểm màu đỏ |
+| Icon | Material Symbols |
+| Thẻ/Bảng | Thẻ nền trắng viền `#EAEAEA`, bo `rounded-xl`; bảng tiêu đề cột chữ mono viết hoa cỡ nhỏ |
+| Badge trạng thái | Luôn có chữ. Đơn: Chờ xác nhận / Đã xác nhận / Hoàn thành / Đã hủy. Sân: Hoạt động / Bảo trì / Đóng |
+| Modal | Lớp phủ tối mờ, đóng bằng nút X hoặc Hủy; hành động xóa/hủy dùng hộp xác nhận (`ConfirmDialog`) |
+| Lưới thời gian | Mỗi sân một hàng, cột là giờ (cuộn ngang), dùng chung cho `/courts` và `/schedule` |
 
 ---
 
 # KHU VỰC 1: CỔNG KHÁCH HÀNG (WF-01 đến WF-08)
-
 
 ## WF-01: Đăng ký tài khoản
 
@@ -157,8 +182,8 @@ Dữ liệu trong wireframe (tên, mã đơn, giá, giờ) chỉ là **dữ li�
 
 ```text
 +--------------------------------------------------------------------------------------------------+
-| [ShuttleVN]   Đặt sân   Tra cứu đơn                                        [Đăng nhập] [Đăng ký] |
-+--------------------------------------------------------------------------------------------------+
+|                                                                                                  |
+|                                       (icon) ShuttleVN                                           |
 |                                                                                                  |
 |                   +----------------------------------------------------------+                   |
 |                   |                    ĐĂNG KÝ TÀI KHOẢN                     |                   |
@@ -187,8 +212,6 @@ Dữ liệu trong wireframe (tên, mã đơn, giá, giờ) chỉ là **dữ li�
 |                   |                Đã có tài khoản? Đăng nhập                |                   |
 |                   +----------------------------------------------------------+                   |
 |                                                                                                  |
-+--------------------------------------------------------------------------------------------------+
-| © 2026 ShuttleVN                                                              Hotline: {Hotline} |
 +--------------------------------------------------------------------------------------------------+
 ```
 
@@ -328,18 +351,18 @@ Lỗi nhập sai mã:
 | Route Wireframe mục tiêu | `/login` |
 | Component Codebase | `src/components/auth/LoginForm.tsx` |
 | Tình trạng Codebase | Đang chạy |
-| Điều hướng ra | Khách thành viên → `/courts` (hoặc `/booking`). Nhân viên → Yêu cầu đặt sân (`/admin/booking-requests`) hoặc Lịch sân. Quản trị viên → Bảng điều khiển (`/admin/dashboard`). Link "Quên mật khẩu?" → `/forgot-password`. Link "Đăng ký ngay" → `/register` |
+| Điều hướng ra | Khách thành viên → `/courts` . Nhân viên → Yêu cầu đặt sân (`/booking-requests`) hoặc Lịch sân. Quản trị viên → Bảng điều khiển (`/dashboard`). Link "Quên mật khẩu?" → `/forgot-password`. Link "Đăng ký ngay" → `/register` |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
-> - *Codebase hiện tại:* `LoginForm.tsx` mật khẩu validate `min(6)`, link Quên MK trỏ `#`. `useAuth.ts` dòng 28–33 đang redirect cả Employee lẫn Admin vào `/dashboard`.
+> - *Codebase hiện tại:* `LoginForm.tsx` mật khẩu validate `min(6)`, link Quên MK trỏ `#`. `useAuth.ts` đang chuyển khách → `/courts`, còn cả Nhân viên lẫn Quản trị viên → `/dashboard`.
 > - *Chuẩn Wireframe tương lai:* Nâng mật khẩu lên `8–128 ký tự`. Gắn link Quên MK trỏ `/forgot-password`. Phân luồng chuyển hướng sau login theo vai trò (X-02): Employee vào trang vận hành (không vào dashboard). Hiển thị banner khóa sau 5 lần sai (BR-12).
 
 ### 2.1. Wireframe
 
 ```text
 +--------------------------------------------------------------------------------------------------+
-| [ShuttleVN]   Đặt sân   Tra cứu đơn                                        [Đăng nhập] [Đăng ký] |
-+--------------------------------------------------------------------------------------------------+
+|                                                                                                  |
+|                                       (icon) ShuttleVN                                           |
 |                                                                                                  |
 |                   +----------------------------------------------------------+                   |
 |                   |                        ĐĂNG NHẬP                         |                   |
@@ -356,8 +379,6 @@ Lỗi nhập sai mã:
 |                   |             Chưa có tài khoản? Đăng ký ngay              |                   |
 |                   +----------------------------------------------------------+                   |
 |                                                                                                  |
-+--------------------------------------------------------------------------------------------------+
-| © 2026 ShuttleVN                                                              Hotline: {Hotline} |
 +--------------------------------------------------------------------------------------------------+
 ```
 
@@ -440,7 +461,7 @@ Sai email hoặc mật khẩu:
 > - *Codebase hiện tại:* Chưa có page trong `src/app/(auth)/`, link tại form đăng nhập đang để trống (`#`).
 > - *Chuẩn Wireframe tương lai:* Xây dựng trang `/forgot-password` theo quy trình 3 bước chuẩn: Nhập email -> Nhận mã OTP 6 số (Modal M-01) -> Thiết lập mật khẩu mới (8–128 ký tự).
 
-Bố cục trang (header, footer, căn giữa) giống WF-02. Dưới đây chỉ vẽ phần thẻ ở từng bước.
+Bố cục trang (nền xám nhạt, logo, thẻ căn giữa, không có header/footer) giống WF-02. Dưới đây chỉ vẽ phần thẻ ở từng bước.
 
 ### 3.1. Bước 1: Nhập email
 
@@ -533,54 +554,48 @@ Quy tắc OTP giống mục 1.4 (6 chữ số, hiệu lực 10 phút, gửi lạ
 | Mã màn hình | WF-04 Đặt sân & Lưới sân |
 | Use-case | UC-05 Xem danh sách sân; UC-06 Xem lưới lịch và giá; UC-07 Đặt sân (thành viên); UC-08 Đặt sân nhanh (vãng lai); UC-02 OTP |
 | Đối tượng | Khách vãng lai, Khách thành viên |
-| Route Codebase hiện tại | `/courts` (`src/app/(customer)/courts/page.tsx`); `/booking` là placeholder rỗng |
-| Route Wireframe mục tiêu | `/booking` (hoặc `/courts`) |
-| Component Codebase | `CourtsClient.tsx`, `CourtGrid.tsx`, `SlotPopup.tsx`, `WalkInBookingForm.tsx` |
-| Tình trạng Codebase | Đang chạy lưới sân (`/courts`) / Placeholder rỗng (`/booking`) |
-| Điều hướng ra | Thành công → modal M-05. Từ M-05: Tra cứu đơn (vãng lai) hoặc Lịch sử đặt sân (thành viên) |
+| Route Codebase hiện tại | `/courts` (lưới), `/booking` (xác nhận, thành viên), `/booking/guest` (xác nhận, vãng lai) |
+| Route Wireframe mục tiêu | Giữ nguyên 3 route |
+| Component Codebase | `CourtsClient.tsx`, `CourtGrid.tsx`, `SlotPopup.tsx`, `member-booking-client.tsx`, `guest-booking-client.tsx`, `ReservationForm.tsx`, `booking-cart.store.ts` |
+| Tình trạng Codebase | Đang chạy |
+| Điều hướng ra | Bấm Đặt sân trong popover → trang xác nhận `[G-29]`. Thành công → khối thành công M-05. Từ M-05: Tra cứu đơn (vãng lai) hoặc Xem lịch sử đặt sân (thành viên) |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
-> - *Codebase hiện tại:* Lưới sân chạy trên `/courts`. `SlotPopup.tsx` chỉ có các mốc 60–180 phút, bấm nút đặt sân chỉ đóng popup (`setPopup(null)`). Form `WalkInBookingForm.tsx` đang để `guestEmail` là optional và chưa có OTP.
-> - *Chuẩn Wireframe tương lai:* Thêm mốc **30 phút** vào popup (BR-20). Form đặt nhanh: Bắt buộc email (KH-11, BR-10), bấm đặt sân thì kích hoạt **Modal OTP M-01** trước khi tạo đơn (X-07). Kết nối popup sang luồng xác nhận đặt sân (M-05) thay vì chỉ đóng popup.
+> - *Codebase hiện tại:* Luồng gồm 2 bước. Bước 1 tại `/courts`: banner chọn ngày, thẻ lưới (tự làm mới 30 giây) và chú giải 4 trạng thái; bấm ô trống mở popover tối neo trên ô, có mốc 60–180 phút và giá xem trước từ máy chủ. Nút đặt sân lưu lựa chọn vào `booking-cart.store` rồi chuyển sang trang xác nhận. Bước 2 tại `/booking` hoặc `/booking/guest`: `ReservationForm` hiển thị Ngày, Khung giờ, Tổng tiền; khách vãng lai nhập Họ tên, SĐT, Email và mã xác thực inline (nút "Nhận mã"). Giá đổi giữa chừng (HTTP 409) hiện khối cảnh báo xác nhận lại. Chưa có bảng đơn giá theo khung giờ.
+> - *Chuẩn Wireframe tương lai:* Giữ luồng 2 bước. Thêm mốc **30 phút** vào popover (BR-20). Thêm bảng đơn giá theo khung giờ dưới lưới (KH-07). Khách vãng lai bắt buộc email (KH-11, BR-10); khi bấm Xác nhận đặt sân thì mở **Modal OTP M-01** (6 ô rời) thay cho ô mã inline (X-07). Khối thành công thêm nút Tra cứu đơn / Xem lịch sử đặt sân.
 
-### 4.1. Wireframe trang
+### 4.1. Wireframe trang lưới `/courts`
 
 ```text
 +--------------------------------------------------------------------------------------------------+
 | [ShuttleVN]   *Đặt sân*   Tra cứu đơn                                      [Đăng nhập] [Đăng ký] |
 +--------------------------------------------------------------------------------------------------+
-| ĐẶT SÂN                                                                     Cập nhật mỗi 30 giây |
-| [<]  [ Thứ 6, 14/08/2026 (lịch) ]  [>]   [Hôm nay]                                               |
+| ĐẶT SÂN CẦU LÔNG                                                                                 |
+| Chọn ngày và khung giờ còn trống                                                                 |
+| [ Thứ 6, 14/08/2026 (lịch) ]                                                                     |
 +--------------------------------------------------------------------------------------------------+
-| [  ] Còn trống   [##] Đã đặt   [**] Đặt của bạn   [//] Đóng cửa   [..] Đã qua giờ (vô hiệu)      |
-+--------------------------------------------------------------------------------------------------+
+| Thứ 6 · 14/08/2026                                                    (*) Cập nhật mỗi 30 giây   |
 | Sân                   05:00   06:00   07:00   08:00   09:00   10:00   11:00   12:00   13:00   >> |
 | Sân A1                [..][..][..][..][..][..][  ][  ][##][##][  ][  ][**][**][  ][  ][  ][  ]   |
-| 6.1x13.4m · Thảm PU                                                                              |
+| Sân tiêu chuẩn                                                                                   |
 | Sân A2                [..][..][..][..][..][..][  ][  ][  ][  ][##][##][##][##][  ][  ][  ][  ]   |
-| 6.1x13.4m · Thảm PU                                                                              |
+| Sân tiêu chuẩn                                                                                   |
 | Sân A3 [Bảo trì]      [//][//][//][//][//][//][//][//][//][//][//][//][//][//][//][//][//][//]   |
-| 6.1x13.4m · Gỗ                                                                                   |
+| Đang sửa sàn                                                                                     |
+|                                                                                                  |
+|               [  ] Còn trống   [##] Đã đặt   [**] Đặt của bạn   [//] Đóng cửa    [..] Đã qua giờ |
 +--------------------------------------------------------------------------------------------------+
-| +------------------------------------------------------+  +------------------------------------+ |
-| | BẢNG ĐƠN GIÁ THEO KHUNG GIỜ (Thứ 6)                  |  | ĐẶT SÂN NHANH (Khách vãng lai)     | |
-| | [*Sân A1*] [Sân A2] [Sân A3]                         |  +------------------------------------+ |
-| +------------------------------------------------------+  | Họ và tên *                        | |
-| | Từ giờ     Đến giờ     Đơn giá / giờ                 |  | [ ______________________________ ] | |
-| | 05:00      17:00       60.000 ₫                      |  | Số điện thoại *                    | |
-| | 17:00      22:00       100.000 ₫                     |  | [ ______________________________ ] | |
-| |                                                      |  | Email *                            | |
-| | Đơn giá áp dụng đến mốc kế tiếp hoặc giờ đóng cửa.   |  | [ ______________________________ ] | |
-| +------------------------------------------------------+  | Mã đặt sân DS-XXXXX sẽ được gửi về | |
-|                                                           | email sau khi xác minh mã OTP.     | |
-|                                                           +------------------------------------+ |
+| BẢNG ĐƠN GIÁ THEO KHUNG GIỜ (Thứ 6)                                                              |
+| [*Sân A1*] [Sân A2] [Sân A3]                                                                     |
+| Từ giờ     Đến giờ     Đơn giá / giờ                                                             |
+| 05:00      17:00       60.000 ₫                                                                  |
+| 17:00      22:00       100.000 ₫                                                                 |
++--------------------------------------------------------------------------------------------------+
 |                                                                                      ( Chat AI ) |
-+--------------------------------------------------------------------------------------------------+
-| © 2026 ShuttleVN                                                              Hotline: {Hotline} |
 +--------------------------------------------------------------------------------------------------+
 ```
 
-Lưới trên minh họa **thời điểm hiện tại là 07:45**: các slot đến 07:30 đã qua nên bị vô hiệu. Phần lưới cuộn ngang tới giờ đóng cửa (cột đầu giữ cố định). Khung giờ 05:00–22:00 chỉ là dữ liệu mẫu, thực tế theo giờ mở cửa từng sân từng ngày `[G-04]`.
+Lưới trên minh họa **thời điểm hiện tại là 07:45**: các slot đến 07:30 đã qua nên bị vô hiệu. Phần lưới cuộn ngang tới giờ đóng cửa (cột đầu giữ cố định). Khung giờ 05:00–22:00 chỉ là dữ liệu mẫu, thực tế theo giờ mở cửa từng sân từng ngày `[G-04]`. Chú giải nằm dưới lưới, căn phải, đúng như `CourtGrid.tsx`.
 
 ### 4.2. Chi tiết thành phần
 
@@ -588,42 +603,30 @@ Lưới trên minh họa **thời điểm hiện tại là 07:45**: các slot đ
 
 | Thành phần | Quy tắc |
 |---|---|
-| `[<]` `[>]` | Lùi/tiến một ngày. Không cho lùi quá ngày hôm nay |
-| Ô ngày (lịch) | Không chọn được ngày quá khứ |
-| Hôm nay | Quay về ngày hiện tại |
+| Ô ngày (lịch) | `CustomDatePicker`. Không chọn được ngày quá khứ |
 | Cập nhật | Lưới tự tải lại định kỳ (30 giây) và khi đổi ngày |
 
 **b) Lưới sân**
 
 | Thành phần | Quy tắc |
 |---|---|
-| Hàng | Mỗi hàng là một sân: tên, kích thước, mặt sân và nhãn trạng thái sân `[G-01]` `[G-13]` |
+| Hàng | Mỗi hàng là một sân: tên, mô tả (`description`) và nhãn trạng thái sân `[G-13]` |
 | Cột | Slot 30 phút theo giờ mở cửa của sân trong ngày. Nhãn giờ ghi ở đầu mỗi giờ |
-| `[  ]` Còn trống | Bấm được → mở popup chọn thời lượng |
+| `[  ]` Còn trống | Bấm được → mở popover chọn thời lượng |
 | `[##]` Đã đặt | Không bấm được. Có tooltip "Đã có người đặt" |
 | `[**]` Đặt của bạn | Chỉ khách thành viên thấy (đơn của chính mình). Không bấm được, tooltip "Đơn của bạn" `[G-12]` |
 | `[//]` Đóng cửa | Ngoài giờ mở cửa, lịch không khả dụng, hoặc sân không ở trạng thái Hoạt động. Sân Bảo trì/Đóng hiện thêm badge trên nhãn hàng |
 | `[..]` Đã qua giờ | Slot có giờ bắt đầu không sau thời điểm hiện tại của máy chủ. Vô hiệu hóa |
-| Chú giải | Luôn hiển thị phía trên lưới, mỗi trạng thái có ký hiệu + chữ |
+| Chú giải | Luôn hiển thị, mỗi trạng thái có ký hiệu + chữ |
 
-**c) Bảng đơn giá theo khung giờ**
+**c) Bảng đơn giá theo khung giờ** (mục bổ sung, KH-07)
 
 | Thành phần | Quy tắc |
 |---|---|
 | Tab theo sân | Chọn sân để xem bảng giá của sân đó cho thứ của ngày đang chọn |
 | Cột | Từ giờ, Đến giờ, Đơn giá/giờ. "Đến giờ" là mốc kế tiếp hoặc giờ đóng cửa |
 
-**d) Thẻ "Đặt sân nhanh (Khách vãng lai)"**
-
-Chỉ hiển thị với khách chưa đăng nhập. Khách thành viên dùng thông tin tài khoản nên không thấy thẻ này.
-
-| Trường | Bắt buộc | Quy tắc |
-|---|---|---|
-| Họ và tên | Có | Không rỗng |
-| Số điện thoại | Có | 8–15 chữ số, cho phép `+` ở đầu |
-| Email | Có | Đúng định dạng. Email nhận mã OTP và mã đặt sân |
-
-Có thể bấm ô trống trước hoặc điền thẻ trước đều được. Thông tin chỉ được kiểm tra khi bấm **Đặt sân** trong popup; thiếu thì hiện lỗi tại thẻ và đưa con trỏ tới ô thiếu.
+Khách vãng lai và khách thành viên dùng chung trang lưới; **không có thẻ "Đặt sân nhanh" trên trang lưới**. Thông tin liên hệ của khách vãng lai được nhập ở bước xác nhận (mục 4.5).
 
 ### 4.3. Các trạng thái của trang
 
@@ -635,40 +638,73 @@ Có thể bấm ô trống trước hoặc điền thẻ trước đều đượ
 | Lỗi tải lưới | Banner lỗi + nút Thử lại, giữ ngày đang chọn |
 | Sân đã đổi trạng thái khi đang xem | Lưới tự cập nhật ở lần tải lại kế tiếp |
 
-### 4.4. Popup chọn thời lượng (khi bấm ô trống)
+### 4.4. Popover chọn thời lượng (khi bấm ô trống)
+
+Popover tối (`SlotPopup.tsx`) neo phía trên ô vừa bấm, đóng khi bấm ra ngoài. Ví dụ bấm ô 08:00 của Sân A2:
 
 ```text
-+--------------------------------------------------------------------+
-| ĐẶT SÂN                                                        [X] |
-+--------------------------------------------------------------------+
-| Sân A2 · Thứ 6, 14/08/2026                                         |
-| Giờ bắt đầu: 08:00                                                 |
-|                                                                    |
-| Chọn thời lượng (bước 30 phút, tối thiểu 30 phút):                 |
-| ( ) 30 phút     08:00 – 08:30                       30.000 ₫       |
-| (o) 1 giờ       08:00 – 09:00                       60.000 ₫       |
-| ( ) 1 giờ 30    08:00 – 09:30                       90.000 ₫       |
-| ( ) 2 giờ       08:00 – 10:00                      120.000 ₫       |
-| ( ) 2 giờ 30    08:00 – 10:30       (không chọn được: trùng lịch)  |
-|                                                                    |
-+--------------------------------------------------------------------+
-| Tổng tiền (máy chủ tính, chưa giữ chỗ):               60.000 ₫     |
-|   08:00–09:00 × 60.000 ₫/giờ                                       |
-|                                                                    |
-| (!) Chưa đủ thông tin liên hệ. Vui lòng điền thẻ "Đặt sân nhanh".  |
-+--------------------------------------------------------------------+
-| [ Hủy ]                                     [ Đặt sân · 60.000 ₫ ] |
-+--------------------------------------------------------------------+
+              +-----------------------------------------+
+              | Sân A2 · Thứ 6, 14/08/2026 · 08:00      |
+              |                                         |
+              | Thời lượng                              |
+              | [ 30 phút ] [*1 giờ*] [ 1 giờ 30 ]      |
+              | [ 2 giờ ]   [ 2 giờ 30 ] [ 3 giờ ]      |
+              |   (mức trùng lịch bị vô hiệu)           |
+              |                                         |
+              | 08:00 – 09:00           60.000 ₫        |
+              | [        Đặt sân · 60.000 ₫        ]    |
+              +--------------------v--------------------+
 ```
 
 | Thành phần | Quy tắc |
 |---|---|
-| Giờ bắt đầu | Lấy từ ô vừa bấm, không sửa trong popup |
-| Danh sách thời lượng | Bước 30 phút, tối thiểu 30 phút. Chỉ chọn được mức không trùng lịch, không vượt giờ đóng cửa, không qua nửa đêm. Mức không hợp lệ bị vô hiệu kèm lý do |
-| Giá từng mức | Do máy chủ tính (áp theo mốc giờ của sân/ngày) |
-| Tổng tiền | Cập nhật theo mức đang chọn. Khi đang chờ máy chủ: hiện skeleton, nút Đặt sân bị vô hiệu |
-| Nút **Đặt sân · {Tổng tiền}** | Khách thành viên: gửi đặt ngay. Khách vãng lai: nếu thông tin liên hệ chưa đủ thì báo lỗi, đủ thì gửi mã OTP và mở modal OTP |
-| Đóng (X)/Hủy | Không tạo đơn, không giữ chỗ |
+| Giờ bắt đầu | Lấy từ ô vừa bấm, không sửa trong popover |
+| Mốc thời lượng | Bước 30 phút, tối thiểu 30 phút. Chỉ chọn được mức không trùng lịch, không vượt giờ đóng cửa, không qua nửa đêm; mức không hợp lệ bị vô hiệu. Giao diện hiện tại chỉ liệt kê đến 3 giờ; SRS không đặt mức tối đa `[G-31]` |
+| Giá | Do máy chủ tính (`usePricePreview`, áp theo mốc giờ của sân/ngày). Khi đang chờ máy chủ: nút Đặt sân bị vô hiệu |
+| Nút **Đặt sân · {Tổng tiền}** | Lưu sân/ngày/giờ/thời lượng vào `booking-cart.store`, rồi chuyển khách thành viên sang `/booking`, khách vãng lai sang `/booking/guest`. Chưa tạo đơn, chưa giữ chỗ |
+| Đóng popover | Không tạo đơn, không giữ chỗ |
+
+### 4.5. Trang xác nhận đặt sân (`/booking`, `/booking/guest`)
+
+Trang xác nhận là thẻ căn giữa, rộng vừa phải, dưới header. Khách thành viên không nhập thông tin liên hệ; khách vãng lai nhập 3 trường.
+
+```text
++--------------------------------------------------------------------------------------------------+
+| [ShuttleVN]   *Đặt sân*   Tra cứu đơn                                      [Đăng nhập] [Đăng ký] |
++--------------------------------------------------------------------------------------------------+
+|                                                                                                  |
+|                   +----------------------------------------------------------+                   |
+|                   | XÁC NHẬN ĐẶT SÂN                                         |                   |
+|                   | Sân A2                                                   |                   |
+|                   |                                                          |                   |
+|                   | Ngày            Thứ 6, 14/08/2026                        |                   |
+|                   | Khung giờ       08:00 – 09:00                            |                   |
+|                   | Tổng tiền       60.000 ₫                                 |                   |
+|                   |-----------------------------------------------------------|                  |
+|                   | Họ và tên *                                              |                   |
+|                   | [ Nguyễn Văn A________________________________________ ] |                   |
+|                   | Số điện thoại *                                          |                   |
+|                   | [ 0901234567__________________________________________ ] |                   |
+|                   | Email *                                                  |                   |
+|                   | [ ten@email.com_______________________________________ ] |                   |
+|                   | (i) Mã đặt sân DS-XXXXX sẽ gửi về email sau khi xác minh |                   |
+|                   |     mã OTP.                                              |                   |
+|                   |                                                          |                   |
+|                   | [ Quay lại ]                     [ XÁC NHẬN ĐẶT SÂN ]    |                   |
+|                   +----------------------------------------------------------+                   |
+|                                                                                                  |
++--------------------------------------------------------------------------------------------------+
+```
+
+Với khách thành viên (`/booking`), ba ô nhập được thay bằng dòng "Đặt bằng tài khoản: Nguyễn Văn A · ten@email.com" và không có bước OTP.
+
+| Thành phần | Quy tắc |
+|---|---|
+| Tóm tắt | Ngày, Khung giờ, Tổng tiền do máy chủ tính. Giao diện không tự cộng giá |
+| Họ và tên / SĐT / Email | Chỉ khách vãng lai. Cùng quy tắc validation mục 1.2 (SĐT 8–15 chữ số, email đúng định dạng) |
+| **XÁC NHẬN ĐẶT SÂN** | Thành viên: gửi đặt ngay. Vãng lai: kiểm tra 3 ô, gửi mã OTP và mở Modal M-01 (mục 4.6). Nút đổi thành "Đang xử lý..." và bị vô hiệu khi đang gửi |
+| Quay lại | Về `/courts`, giữ ngày đang chọn |
+| Không có lựa chọn trong store | Chuyển về `/courts` |
 
 **Giá thay đổi trước khi gửi.** Nếu bảng giá đổi giữa lúc xem trước và lúc gửi, hệ thống không tự đặt với giá mới mà hiển thị khối cảnh báo để khách xác nhận lại:
 
@@ -686,13 +722,14 @@ Có thể bấm ô trống trước hoặc điền thẻ trước đều đượ
 
 | Tình huống | Thông báo (đề xuất) | Hành vi |
 |---|---|---|
-| Khung giờ vừa bị người khác đặt | "Khung giờ vừa được người khác đặt. Vui lòng chọn lại." | Đóng popup, tải lại lưới |
-| Giờ đã qua / ngoài giờ mở cửa / qua nửa đêm | "Khung giờ này không còn hợp lệ." | Đóng popup, tải lại lưới |
-| Sân không còn ở trạng thái Hoạt động | "Sân hiện không nhận đặt." | Đóng popup, tải lại lưới |
+| Khung giờ vừa bị người khác đặt | "Khung giờ vừa được người khác đặt. Vui lòng chọn lại." | Quay về `/courts`, tải lại lưới |
+| Giờ đã qua / ngoài giờ mở cửa / qua nửa đêm | "Khung giờ này không còn hợp lệ." | Quay về `/courts`, tải lại lưới |
+| Sân không còn ở trạng thái Hoạt động | "Sân hiện không nhận đặt." | Quay về `/courts`, tải lại lưới |
 | Tài khoản thành viên bị khóa | Chuyển về Đăng nhập, hiện banner khóa | – |
-| Lỗi máy chủ/mạng | "Không thể đặt sân lúc này. Vui lòng thử lại." | Giữ popup |
+| Lỗi máy chủ/mạng | "Không thể đặt sân lúc này. Vui lòng thử lại." | Giữ nguyên trang và dữ liệu đã nhập |
 
-### 4.5. Modal M-01: OTP đặt nhanh (khách vãng lai)
+
+### 4.6. Modal M-01: OTP đặt nhanh (khách vãng lai)
 
 Hiển thị tóm tắt yêu cầu đặt để khách biết mã gắn với nội dung nào. Quy tắc OTP giống mục 1.4. Khi lưu đơn thất bại (ví dụ trùng lịch), mã **không bị tiêu thụ** và khách được báo để chọn lại.
 
@@ -715,13 +752,15 @@ Hiển thị tóm tắt yêu cầu đặt để khách biết mã gắn với n�
 +----------------------------------------------------------------+
 ```
 
-### 4.6. Thông báo đặt thành công `M-05`
+### 4.7. Khối đặt sân thành công `M-05`
+
+Khối này `[G-30]` thay thế thẻ xác nhận ngay trên trang `/booking` hoặc `/booking/guest` (code hiện tại hiển thị mã đặt sân và nút "Xem đặt sân" tại chỗ).
 
 Khách vãng lai:
 
 ```text
 +--------------------------------------------------------------------+
-| ĐẶT SÂN THÀNH CÔNG                                             [X] |
+| ĐẶT SÂN THÀNH CÔNG                                                 |
 +--------------------------------------------------------------------+
 |                                                                    |
 |                         Mã đặt sân của bạn                         |
@@ -741,7 +780,7 @@ Khách thành viên (nút thứ hai đổi thành Xem lịch sử đặt sân):
 
 ```text
 +--------------------------------------------------------------------+
-| ĐẶT SÂN THÀNH CÔNG                                             [X] |
+| ĐẶT SÂN THÀNH CÔNG                                                 |
 +--------------------------------------------------------------------+
 |                                                                    |
 |                         Mã đặt sân của bạn                         |
@@ -772,13 +811,13 @@ Khách thành viên (nút thứ hai đổi thành Xem lịch sử đặt sân):
 | Đối tượng | Khách thành viên đã đăng nhập |
 | Route Codebase hiện tại | `/my-bookings` (`src/app/(customer)/my-bookings/page.tsx`) |
 | Route Wireframe mục tiêu | `/my-bookings` |
-| Component Codebase | `src/components/booking/BookingHistoryList.tsx`, `BookingCard.tsx` |
+| Component Codebase | `BookingHistoryList.tsx`, `BookingCard.tsx`, `BookingListToolBar.tsx` |
 | Tình trạng Codebase | Đang chạy |
-| Điều hướng ra | Nút "Đặt sân ngay" (khi rỗng) → `/courts` (hoặc `/booking`) |
+| Điều hướng ra | Nút "Đặt sân ngay" (khi rỗng) → `/courts`  |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
-> - *Codebase hiện tại:* `BookingCard.tsx` vẫn còn nút "Hóa đơn" cho đơn Completed; các nút Chi tiết, Đổi lịch, Hủy đặt trong `BookingHistoryList.tsx` mới chỉ là `console.log` dạng `TODO`.
-> - *Chuẩn Wireframe tương lai:* Xóa nút Hóa đơn của khách (D-13). Tách độc lập nhãn đặt sân và thanh toán: đơn Pending hiển thị nhãn thanh toán "Chưa lập hóa đơn" (D-12). Thay handler TODO bằng Modal Chi tiết (`G-09`), Modal Hủy đặt sân (`M-06`, bắt buộc lý do), Modal Đổi lịch (`M-06`).
+> - *Codebase hiện tại:* Đã có tab lọc trạng thái, ô tìm theo mã đặt sân, 10 đơn/trang với nút Trang trước/Trang sau. `BookingCard.tsx` có nút Chi tiết (mở modal), Hóa đơn (mở modal hóa đơn) và Hủy đặt (xác nhận bằng hộp thoại trình duyệt, gọi API hủy). Chưa có nút Đổi lịch.
+> - *Chuẩn Wireframe tương lai:* Xóa nút Hóa đơn của khách (D-13). Tách độc lập nhãn đặt sân và thanh toán: đơn Pending hiển thị nhãn thanh toán "Chưa lập hóa đơn" (D-12). Giữ modal Chi tiết (`G-09`). Thay hộp thoại trình duyệt khi hủy bằng Modal Hủy đặt sân (`M-06`, bắt buộc lý do) và thêm Modal Đổi lịch (UC-10).
 
 ### 5.1. Wireframe
 
@@ -824,9 +863,7 @@ Khách thành viên (nút thứ hai đổi thành Xem lịch sử đặt sân):
 | | [Chi tiết]                                                                                   | |
 | +----------------------------------------------------------------------------------------------+ |
 |                                                                                                  |
-| Hiển thị 1–20 / 36                                           [<]  1  2  [>]    Mỗi trang: [20 v] |
-+--------------------------------------------------------------------------------------------------+
-| © 2026 ShuttleVN                                                              Hotline: {Hotline} |
+|                                      [ Trang trước ]   Trang 1 / 4   [ Trang sau ]               |
 +--------------------------------------------------------------------------------------------------+
 ```
 
@@ -837,9 +874,9 @@ Năm thẻ trên minh họa năm tình huống: (1) Chờ xác nhận, được 
 | Thành phần | Quy tắc |
 |---|---|
 | Tabs lọc | Tất cả, Chờ xác nhận, Đã xác nhận, Hoàn thành, Đã hủy. Đổi tab thì về trang 1 |
-| Ô tìm kiếm | Tìm theo mã đặt sân (có trong luồng người dùng, theo mockup) |
+| Ô tìm kiếm | Tìm theo mã đặt sân (đã có trong `BookingListToolBar.tsx`). Đổi nội dung tìm thì về trang 1 |
 | Sắp xếp | Đơn mới nhất trước |
-| Phân trang | Mặc định 20 đơn/trang. Hiển thị "Hiển thị x–y / tổng" |
+| Phân trang | 10 đơn/trang (như `BookingHistoryList.tsx`), nút Trang trước / Trang sau và "Trang x / y". Chỉ hiện khi có từ 2 trang |
 | Mã đơn | Dạng `DS-XXXXX` |
 | Tên sân | Sân đã xóa mềm vẫn hiện tên/mã sân đã xóa, đơn lịch sử không bị mất |
 | Ngày/giờ | Ngày, giờ bắt đầu – kết thúc, thời lượng |
@@ -997,11 +1034,11 @@ Khối cảnh báo giá thay đổi:
 | Route Wireframe mục tiêu | `/lookup` |
 | Component Codebase | `LookupClient.tsx`, `BookingLookupForm.tsx`, `BookingLookupResult.tsx` |
 | Tình trạng Codebase | Đang chạy |
-| Điều hướng ra | Đơn đã hủy → "Đặt sân mới" → `/courts` (hoặc `/booking`) |
+| Điều hướng ra | Đơn đã hủy → "Đặt sân mới" → `/courts`  |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
-> - *Codebase hiện tại:* `BookingLookupForm.tsx` có các nút DEMO điền sẵn mã, ô SĐT/Email không bắt buộc.
-> - *Chuẩn Wireframe tương lai:* Bắt buộc nhập CẶP Mã đơn + SĐT/Email để bảo mật thông tin (Quyết định X-03). Xóa các nút DEMO. Che bớt ký tự tên khách hàng trong kết quả tra cứu.
+> - *Codebase hiện tại:* `BookingLookupForm.tsx` có các nút DEMO điền sẵn mã, ô SĐT/Email không bắt buộc. `BookingLookupResult.tsx` hiển thị hotline `1900 1234` (gắn cứng) cho khách cần hỗ trợ.
+> - *Chuẩn Wireframe tương lai:* Bắt buộc nhập CẶP Mã đơn + SĐT/Email để bảo mật thông tin (Quyết định X-03, BR-26). Xóa các nút DEMO. Hotline lấy từ cấu hình thay cho số gắn cứng `1900 1234` `[G-06]`.
 
 ### 6.1. Wireframe
 
@@ -1038,8 +1075,6 @@ Khối cảnh báo giá thay đổi:
 |              +--------------------------------------------------------------------+              |
 |                                                                                                  |
 +--------------------------------------------------------------------------------------------------+
-| © 2026 ShuttleVN                                                              Hotline: {Hotline} |
-+--------------------------------------------------------------------------------------------------+
 ```
 
 ### 6.2. Chi tiết thành phần và validation
@@ -1059,7 +1094,7 @@ Khối cảnh báo giá thay đổi:
 | Đơn đã hủy | Thẻ kết quả kèm nút "Đặt sân mới" |
 | Lỗi mạng | Banner lỗi + Thử lại |
 
-Trang tra cứu **chỉ xem**, không có nút hủy/đổi lịch/thanh toán. Cần thay đổi thì liên hệ nhân viên.
+Trang tra cứu **chỉ xem**, không có nút hủy/đổi lịch/thanh toán. Cần thay đổi thì liên hệ nhân viên qua hotline `{Hotline}` hiển thị cuối thẻ kết quả (KH-14).
 
 ```text
 +--------------------------------------------------------------------+
@@ -1095,8 +1130,8 @@ Trang tra cứu **chỉ xem**, không có nút hủy/đổi lịch/thanh toán. 
 | Điều hướng ra | Avatar menu |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
-> - *Codebase hiện tại:* `ProfileSidebar.tsx` đang có chức năng đổi avatar và 4 thẻ thống kê cá nhân (ngoài SRS/UC); `ProfileInfoForm.tsx` email đã disable, phone regex đang là 10 số (`^0\d{9}$`).
-> - *Chuẩn Wireframe tương lai:* Chuẩn hóa regex SĐT thành 8–15 chữ số (BR-26). Giữ email disabled (BR-18). Giữ UI avatar và thẻ thống kê ở client nếu cần; tuyệt đối không đưa quản lý phiên/thiết bị vào giao diện (X-04).
+> - *Codebase hiện tại:* Bố cục 2 cột (cột trái 280px). `ProfileSidebar.tsx` có avatar (nút máy ảnh, chưa lưu lên máy chủ), tên, vai trò và thẻ "Thống kê" gồm Tổng đặt sân, Hoàn thành, Đã hủy, Tổng chi tiêu (ngoài SRS/UC). Cột phải có 2 tab "Thông tin" và "Bảo mật". `ProfileInfoForm.tsx` mở khóa ô nhập khi bấm Chỉnh sửa, email khóa, SĐT validate `^0\d{9}$`. Tab "Bảo mật" (`ChangePasswordForm.tsx`) đã chạy với `PUT /profile/change-password`, có thanh đo độ mạnh mật khẩu.
+> - *Chuẩn Wireframe tương lai:* Chuẩn hóa SĐT thành 8–15 chữ số (BR-26). Giữ email khóa (BR-18). Giữ avatar và thẻ thống kê ở client; không đưa quản lý phiên/thiết bị hoặc nút tự vô hiệu hóa tài khoản vào giao diện (X-04). Mật khẩu mới 8–128 ký tự (BR-26).
 
 ### 7.1. Wireframe: tab Thông tin (chế độ xem)
 
@@ -1104,42 +1139,44 @@ Trang tra cứu **chỉ xem**, không có nút hủy/đổi lịch/thanh toán. 
 +--------------------------------------------------------------------------------------------------+
 | [ShuttleVN]   Đặt sân   Lịch sử đặt sân   Tra cứu đơn                      (NA) Nguyễn Văn A [v] |
 +--------------------------------------------------------------------------------------------------+
-| HỒ SƠ CÁ NHÂN                                                                                    |
 |                                                                                                  |
-|             +----------------------------------------------------------------------+             |
-|             | [*Thông tin*]  [Đổi mật khẩu]                                        |             |
-|             +----------------------------------------------------------------------+             |
-|             | Họ và tên          Nguyễn Văn A                                      |             |
-|             | Số điện thoại      0901234567                                        |             |
-|             | Email              ten@email.com   (khóa) Dùng để đăng nhập          |             |
-|             |                                                                      |             |
-|             |                                                        [ Chỉnh sửa ] |             |
-|             +----------------------------------------------------------------------+             |
-|                                                                                                  |
-+--------------------------------------------------------------------------------------------------+
-| © 2026 ShuttleVN                                                              Hotline: {Hotline} |
+|     +--------------------+   +------------------------------------------------------------+      |
+|     |       (NA) [cam]   |   | [*Thông tin*]  [Bảo mật]                                   |      |
+|     |    Nguyễn Văn A    |   +------------------------------------------------------------+      |
+|     |     Khách hàng     |   | THÔNG TIN CÁ NHÂN                            [ Chỉnh sửa ] |      |
+|     +--------------------+   |                                                            |      |
+|     | THỐNG KÊ           |   | Họ và tên          [ Nguyễn Văn A_______________ ] (khóa)  |      |
+|     | Tổng đặt sân    12 |   | Số điện thoại      [ 0901234567_________________ ] (khóa)  |      |
+|     | Hoàn thành       9 |   | Email              [ ten@email.com______________ ] (khóa)  |      |
+|     | Đã hủy           2 |   |                    Dùng để đăng nhập                       |      |
+|     |--------------------|   |                                                            |      |
+|     | Tổng chi tiêu      |   +------------------------------------------------------------+      |
+|     |        900.000 ₫   |                                                                       |
+|     +--------------------+                                                                       |
 +--------------------------------------------------------------------------------------------------+
 ```
+
+Ở chế độ xem, các ô họ tên và SĐT bị khóa; bấm **Chỉnh sửa** để mở khóa hai ô này (email luôn khóa).
 
 ### 7.2. Chế độ chỉnh sửa
 
 ```text
-+----------------------------------------------------------------------+
-| [*Thông tin*]  [Đổi mật khẩu]                                        |
-+----------------------------------------------------------------------+
-| Họ và tên *                                                          |
-| [ Nguyễn Văn A____________________________________________________ ] |
-|                                                                      |
-| Số điện thoại *                                                      |
-| [ 0901234567______________________________________________________ ] |
-|     8–15 chữ số, có thể bắt đầu bằng +                               |
-|                                                                      |
-| Email                                                                |
-| [ ten@email.com_______________________________ ] (khóa, chỉ đọc)     |
-|     Dùng để đăng nhập, không thể thay đổi                            |
-|                                                                      |
-| [ Hủy ]                                             [ Lưu thay đổi ] |
-+----------------------------------------------------------------------+
++------------------------------------------------------------+
+| [*Thông tin*]  [Bảo mật]                                   |
++------------------------------------------------------------+
+| Họ và tên *                                                |
+| [ Nguyễn Văn A__________________________________________ ] |
+|                                                            |
+| Số điện thoại *                                            |
+| [ 0901234567____________________________________________ ] |
+|     8–15 chữ số, có thể bắt đầu bằng +                     |
+|                                                            |
+| Email                                                      |
+| [ ten@email.com____________________ ] (khóa, chỉ đọc)      |
+|     Dùng để đăng nhập, không thể thay đổi                  |
+|                                                            |
+| [ Hủy ]                                   [ Lưu thay đổi ] |
++------------------------------------------------------------+
 ```
 
 | Trường | Sửa được | Quy tắc | Thông báo lỗi (đề xuất) |
@@ -1156,48 +1193,51 @@ Trang tra cứu **chỉ xem**, không có nút hủy/đổi lịch/thanh toán. 
 | Bấm Hủy | Bỏ thay đổi, quay về chế độ xem |
 
 ```text
-+----------------------------------------------------------------------+
-| [*Thông tin*]  [Đổi mật khẩu]                                        |
-+----------------------------------------------------------------------+
-| Họ và tên *                                                          |
-| [ ________________________________________________________________ ] |
-| (!) Họ tên không được để trống                                       |
-|                                                                      |
-| Số điện thoại *                                                      |
-| [ 123_____________________________________________________________ ] |
-| (!) Số điện thoại không hợp lệ                                       |
-|                                                                      |
-| [ Hủy ]                                             [ Lưu thay đổi ] |
-+----------------------------------------------------------------------+
++------------------------------------------------------------+
+| [*Thông tin*]  [Bảo mật]                                   |
++------------------------------------------------------------+
+| Họ và tên *                                                |
+| [ ______________________________________________________ ] |
+| (!) Họ tên không được để trống                             |
+|                                                            |
+| Số điện thoại *                                            |
+| [ 123___________________________________________________ ] |
+| (!) Số điện thoại không hợp lệ                             |
+|                                                            |
+| [ Hủy ]                                   [ Lưu thay đổi ] |
++------------------------------------------------------------+
 ```
 
-### 7.3. Tab Đổi mật khẩu
+### 7.3. Tab Bảo mật (Đổi mật khẩu)
 
-SRS 1.7 và UC 1.5 chưa có use-case riêng cho chức năng này. Theo quyết định đã chốt (O-06), tab được giữ trong thiết kế và **tạm ẩn** cho tới khi có backend `[G-02]`. Trong thời gian đó khách dùng Quên mật khẩu (WF-03).
+SRS 1.7 và UC 1.5 chưa có use-case riêng cho chức năng này, nhưng backend (`PUT /profile/change-password`) và giao diện đã được cài đặt nên tab được **giữ và hiển thị** `[G-02]`. Quên mật khẩu (WF-03) vẫn là đường khôi phục khi khách không nhớ mật khẩu hiện tại.
 
 ```text
-+----------------------------------------------------------------------+
-| [Thông tin]  [*Đổi mật khẩu*]    <<< TẠM ẨN (xem ghi chú O-06) >>>   |
-+----------------------------------------------------------------------+
-| Mật khẩu hiện tại *                                                  |
-| [ ********_________________________________________________ ] [Hiện] |
-|                                                                      |
-| Mật khẩu mới *                                                       |
-| [ ********_________________________________________________ ] [Hiện] |
-|     8–128 ký tự                                                      |
-|                                                                      |
-| Xác nhận mật khẩu mới *                                              |
-| [ ********_________________________________________________ ] [Hiện] |
-|                                                                      |
-| [ Hủy ]                                             [ Đổi mật khẩu ] |
-+----------------------------------------------------------------------+
++------------------------------------------------------------+
+| [Thông tin]  [*Bảo mật*]                                   |
++------------------------------------------------------------+
+| ĐỔI MẬT KHẨU                                               |
+|                                                            |
+| Mật khẩu hiện tại *                                        |
+| [ ********_______________________________________ ] [Hiện] |
+|                                                            |
+| Mật khẩu mới *                                             |
+| [ ********_______________________________________ ] [Hiện] |
+| [####------]  Trung bình        8–128 ký tự                |
+|                                                            |
+| Xác nhận mật khẩu mới *                                    |
+| [ ********_______________________________________ ] [Hiện] |
+|                                                            |
+|                                  [ Cập nhật mật khẩu ]     |
++------------------------------------------------------------+
 ```
 
 | Trường | Quy tắc |
 |---|---|
 | Mật khẩu hiện tại | Bắt buộc. Sai thì báo "Mật khẩu hiện tại không đúng" |
-| Mật khẩu mới | Bắt buộc, 8–128 ký tự |
+| Mật khẩu mới | Bắt buộc, 8–128 ký tự. Thanh độ mạnh chỉ mang tính gợi ý, không chặn lưu |
 | Xác nhận mật khẩu mới | Phải khớp mật khẩu mới (chỉ kiểm tra ở giao diện) |
+| Thành công | Toast "Mật khẩu đã được cập nhật" |
 
 Theo phạm vi đã loại bỏ, hồ sơ **không** có tab quản lý thiết bị/phiên đăng nhập và **không** có nút tự vô hiệu hóa tài khoản.
 
@@ -1277,48 +1317,7 @@ Theo phạm vi đã loại bỏ, hồ sơ **không** có tab quản lý thiết 
 
 ## Thành phần chung của Cổng Quản trị & Nhân viên
 
-Bố cục chung: **Sidebar cố định bên trái + Topbar (tên người dùng, vai trò, nút Đăng xuất) + Vùng làm việc chính.** Ở các wireframe bên dưới, cột trái là Sidebar, phần bên phải là vùng làm việc.
-
-Khung của **Quản trị viên** (đủ 10 mục menu):
-
-```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                   Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | (vùng làm việc chính)                                                                     |
-|                          |                                                                                           |
-| > Bảng điều khiển        | Tiêu đề trang + bộ lọc                                                                    |
-|   Lịch sân               | Bảng / lưới dữ liệu                                                                       |
-|   Yêu cầu đặt sân        | Nút hành động và badge trạng thái                                                         |
-|   Thanh toán             |                                                                                           |
-|   Quản lý sân            |                                                                                           |
-|   Khách hàng             |                                                                                           |
-|   Quản lý nhân viên      |                                                                                           |
-|   Báo cáo & Thống kê     |                                                                                           |
-|   Nhật ký hoạt động      |                                                                                           |
-|   Tài khoản & Phân quyền |                                                                                           |
-+----------------------------------------------------------------------------------------------------------------------+
-```
-
-Khung của **Nhân viên** (chỉ 4 mục menu):
-
-```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                         Trần Văn B · Nhân viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | (vùng làm việc chính)                                                                     |
-|                          |                                                                                           |
-|   Lịch sân               | Tiêu đề trang + bộ lọc                                                                    |
-| > Yêu cầu đặt sân        | Bảng / lưới dữ liệu                                                                       |
-|   Thanh toán             | Nút hành động và badge trạng thái                                                         |
-|   Khách hàng             |                                                                                           |
-+----------------------------------------------------------------------------------------------------------------------+
-```
-
-| Vai trò | Menu hiển thị |
-|---|---|
-| Nhân viên | Lịch sân, Yêu cầu đặt sân, Thanh toán, Khách hàng |
-| Quản trị viên | Bảng điều khiển, Lịch sân, Yêu cầu đặt sân, Thanh toán, Quản lý sân, Khách hàng, Quản lý nhân viên, Báo cáo & Thống kê, Nhật ký hoạt động, Tài khoản & Phân quyền |
+Bố cục, menu theo vai trò và quy ước giao diện xem mục 0.3 và 0.4. Trong WF-09 đến WF-19: cột trái là Sidebar (liệt kê mục theo thứ tự nhóm, không vẽ nhãn nhóm), hàng trên bên phải là Topbar (tiêu đề trang, người dùng, nút Đăng xuất), phần còn lại là vùng làm việc.
 
 Quản trị viên **kế thừa toàn bộ quyền của Nhân viên**: mọi màn hình WF-10 đến WF-14 dùng chung, vai trò Quản trị viên chỉ thêm các màn hình WF-09 và WF-15 đến WF-19.
 
@@ -1354,40 +1353,51 @@ Các dòng về chống gửi lặp, toast, loading và lỗi mạng là quy ư�
 | Use-case | Màn hình đích của Quản trị viên (Quyết định X-02, G-14) |
 | Đối tượng | Quản trị viên |
 | Route Codebase hiện tại | `/dashboard` (`src/app/(admin)/dashboard/page.tsx`) |
-| Route Wireframe mục tiêu | `/admin/dashboard` |
+| Route Wireframe mục tiêu | `/dashboard` |
 | Component Codebase | `DashboardClient.tsx`, `DashboardStats.tsx`, `RevenueChart.tsx` |
 | Tình trạng Codebase | Đang chạy |
 | Điều hướng ra | "Chi tiết" → WF-11. "Xem yêu cầu đặt sân" → WF-10 |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
-> - *Codebase hiện tại:* `DashboardStats.tsx` đang hiển thị 4 thẻ (gồm Tỷ lệ lấp đầy); `DashboardClient.tsx` có `RevenueChart` và bảng gần đây.
-> - *Chuẩn Wireframe tương lai:* Loại bỏ thẻ "Tỷ lệ lấp đầy" theo Quyết định X-04. Giữ 3 chỉ số chính: Doanh thu hôm nay, Đơn hoàn thành hôm nay, Đơn chờ xác nhận, và danh sách đơn cần xử lý gấp (Chờ xác nhận có giờ chơi gần nhất).
+> - *Codebase hiện tại:* `DashboardStats.tsx` hiển thị 4 thẻ (Doanh thu hôm nay, Đặt sân hôm nay, Chờ xác nhận, Tỷ lệ lấp đầy). `DashboardClient.tsx` có `RevenueChart` ("Doanh thu 7 ngày gần nhất"), thẻ danh sách "Chờ xác nhận" và bảng "Đặt sân gần đây" (Mã đơn, Khách hàng, Sân, Thời gian, Trạng thái, Tổng tiền).
+> - *Chuẩn Wireframe tương lai:* Giữ nguyên bố cục hiện có; chỉ bỏ thẻ "Tỷ lệ lấp đầy" (X-04). Còn 3 thẻ: Doanh thu hôm nay, Đặt sân hôm nay, Chờ xác nhận. Số liệu doanh thu chỉ cộng hóa đơn Đã thanh toán. Mỗi dòng trong thẻ "Chờ xác nhận" bấm được để mở WF-11; "Xem tất cả" mở WF-10 `[G-14]`.
 
 ### 9.1. Wireframe
 
 ```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                   Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | BẢNG ĐIỀU KHIỂN                                                Hôm nay: Thứ 6, 14/08/2026 |
-|                          |                                                                                           |
-| > Bảng điều khiển        | +---------------------------+ +---------------------------+ +---------------------------+ |
-|   Lịch sân               | | Doanh thu hôm nay         | | Đơn chờ duyệt             | | Lượt sân đặt trong ngày   | |
-|   Yêu cầu đặt sân        | | 1.250.000 ₫               | | 3                         | | 18                        | |
-|   Thanh toán             | | HĐ Đã thanh toán có thời  | | [Xem yêu cầu đặt sân >]   | | Ngày sử dụng hôm nay,     | |
-|   Quản lý sân            | | điểm thu là hôm nay       | |                           | | không tính đơn Đã hủy     | |
-|   Khách hàng             | +---------------------------+ +---------------------------+ +---------------------------+ |
-|   Quản lý nhân viên      |                                                                                           |
-|   Báo cáo & Thống kê     | ĐƠN CẦN XỬ LÝ GẤP (Chờ xác nhận, giờ chơi gần nhất trước)                                 |
-|   Nhật ký hoạt động      |                                                                                           |
-|   Tài khoản & Phân quyền | Mã đơn    Khách           Sân    Giờ chơi           Tổng tiền    Thao tác                 |
-|                          | --------  --------------  -----  -----------------  -----------  -----------              |
-|                          | DS-5N7XA  Hoàng Văn E     A1     14/08 17:00-18:00  100.000 ₫    [Chi tiết]               |
-|                          | DS-12AB5  Trần Thị B      A2     14/08 18:00-19:30  150.000 ₫    [Chi tiết]               |
-|                          | DS-8H4KM  Lê Văn C        A1     14/08 19:30-20:30  100.000 ₫    [Chi tiết]               |
-|                          |                                                                                           |
-|                          | [Xem tất cả yêu cầu chờ xác nhận >]                                                       |
-+----------------------------------------------------------------------------------------------------------------------+
++--------------------------+----------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| BẢNG ĐIỀU KHIỂN                              Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
++--------------------------+----------------------------------------------------------------------------------------+
+|                          |                                                                                        |
+| > Bảng điều khiển        | +--------------------------+ +--------------------------+ +--------------------------+ |
+|   Thống kê               | | Doanh thu hôm nay        | | Đặt sân hôm nay          | | Chờ xác nhận             | |
+|   Lịch sân               | | 1.250.000 ₫              | | 18                       | | 3                        | |
+|   Yêu cầu đặt sân        | | Chỉ cộng HĐ đã thu       | | Không tính Đã hủy        | | [Xem yêu cầu >]          | |
+|   Thanh toán             | +--------------------------+ +--------------------------+ +--------------------------+ |
+|   Quản lý sân            |                                                                                        |
+|   Khách hàng             | +--------------------------------------------------+ +-------------------------------+ |
+|   Nhân viên              | | Doanh thu 7 ngày gần nhất                        | | Chờ xác nhận            [3]   | |
+|   Đặt sân toàn hệ thống  | |                                                  | | Hoàng Văn E        [Chờ]      | |
+|   Nhật ký hoạt động      | |   1.2M       ##                                  | | A1 · 17:00–18:00 · Hôm nay    | |
+|                          | |   0.9M  ##   ##        ##                        | | ----------------------------- | |
+|                          | |   0.6M  ## ####  ##    ##                        | | Trần Thị B         [Chờ]      | |
+|                          | |   0.3M  ## ####  ####  ##                        | | A2 · 18:00–19:30 · Hôm nay    | |
+|                          | |         T7 CN T2 T3 T4 T5 T6                     | | ----------------------------- | |
+|                          | | (i) Chỉ cộng HĐ Đã thanh toán                    | | Lê Văn C           [Chờ]      | |
+|                          | +--------------------------------------------------+ | A1 · 19:30–20:30 · Hôm nay    | |
+|                          |                                                      | [ Xem tất cả → ]              | |
+|                          |                                                      +-------------------------------+ |
+|                          |                                                                                        |
+|                          | +------------------------------------------------------------------------------------+ |
+|                          | | ĐẶT SÂN GẦN ĐÂY                                                                    | |
+|                          | |                                                                                    | |
+|                          | | Mã đơn    Khách hàng      Sân   Thời gian          Trạng thái     Tổng tiền        | |
+|                          | | --------  --------------  ----  -----------------  -------------  ----------       | |
+|                          | | DS-5N7XA  Hoàng Văn E     A1    14/08 17:00-18:00  [Chờ xác nhận] 100.000 ₫        | |
+|                          | | DS-7K3QP  Lê Văn C        A1    14/08 18:00-19:00  [Đã xác nhận]  100.000 ₫        | |
+|                          | | DS-4T8RN  Phạm Thị D      A2    14/08 08:00-09:00  [Hoàn thành]    60.000 ₫        | |
+|                          | +------------------------------------------------------------------------------------+ |
++--------------------------+----------------------------------------------------------------------------------------+
 ```
 
 ### 9.2. Chi tiết thành phần
@@ -1395,17 +1405,18 @@ Các dòng về chống gửi lặp, toast, loading và lỗi mạng là quy ư�
 | Thành phần | Quy tắc |
 |---|---|
 | Doanh thu hôm nay | Tổng tiền các hóa đơn hợp lệ **Đã thanh toán** có thời điểm thu trong ngày hôm nay. Không cộng hóa đơn Đã hủy |
-| Đơn chờ duyệt | Số đơn đang Chờ xác nhận. Bấm để sang WF-10 |
-| Lượt sân đặt trong ngày | Số lượt đặt có ngày sử dụng là hôm nay, không tính Đã hủy |
-| Đơn cần xử lý gấp | Danh sách đơn Chờ xác nhận, giờ chơi gần nhất xếp trước. Tiêu chí "gấp" là đề xuất `[G-14]` |
-| Nút Chi tiết | Mở WF-11 |
+| Đặt sân hôm nay | Số lượt đặt có ngày sử dụng là hôm nay, không tính Đã hủy |
+| Chờ xác nhận | Số đơn đang Chờ xác nhận. Bấm để sang WF-10 |
+| Biểu đồ doanh thu 7 ngày | Cột theo ngày, chỉ cộng hóa đơn Đã thanh toán. Số liệu chi tiết theo kỳ xem ở WF-18 |
+| Thẻ Chờ xác nhận | Đơn Chờ xác nhận, giờ chơi gần nhất xếp trước. Bấm một dòng để mở WF-11. "Xem tất cả" mở WF-10 `[G-14]` |
+| Đặt sân gần đây | Bảng đơn mới nhất, cột: Mã đơn, Khách hàng, Sân, Thời gian, Trạng thái, Tổng tiền |
 
-Không có biểu đồ, chỉ số "Tỷ lệ lấp đầy", chuông thông báo hay nút xuất báo cáo (đã loại hoặc chưa quyết định).
+Không có chỉ số "Tỷ lệ lấp đầy", chuông thông báo hay nút xuất báo cáo.
 
 | Trạng thái | Hiển thị |
 |---|---|
-| Đang tải | Skeleton ba thẻ số liệu và bảng |
-| Không có đơn cần xử lý | "Không có yêu cầu nào đang chờ xác nhận." |
+| Đang tải | Skeleton ba thẻ số liệu, biểu đồ và bảng |
+| Không có đơn chờ | "Không có đơn chờ" trong thẻ Chờ xác nhận |
 | Lỗi tải | Banner lỗi + Thử lại. Mỗi thẻ có thể lỗi độc lập |
 
 ---
@@ -1418,22 +1429,22 @@ Không có biểu đồ, chỉ số "Tỷ lệ lấp đầy", chuông thông bá
 | Use-case | UC-14 Xem yêu cầu chờ xác nhận; UC-15 Xác nhận đặt sân (include UC-17); UC-16 Từ chối đặt sân |
 | Đối tượng | Nhân viên, Quản trị viên |
 | Route Codebase hiện tại | *Chưa có route trong codebase* (US-11) |
-| Route Wireframe mục tiêu | `/admin/booking-requests` |
+| Route Wireframe mục tiêu | `/booking-requests` |
 | Component Codebase | *Chưa tạo file* |
 | Tình trạng Codebase | Chưa triển khai (thuộc US-11 đang phát triển) |
-| Điều hướng ra | Chi tiết → WF-11 (`/admin/bookings/[id]`) |
+| Điều hướng ra | Chi tiết → WF-11 (`/bookings/[id]`) |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
 > - *Codebase hiện tại:* Chưa có route độc lập trong `src/app/(admin)/`.
-> - *Chuẩn Wireframe tương lai:* Xây dựng trang `/admin/booking-requests` với bảng danh sách đơn Chờ xác nhận (`Pending`) sắp xếp cũ nhất trước (NV-03), hiển thị tổng tiền, thời điểm tạo, kèm nút Chi tiết, Xác nhận, Từ chối.
+> - *Chuẩn Wireframe tương lai:* Xây dựng trang `/booking-requests` với bảng danh sách đơn Chờ xác nhận (`Pending`) sắp xếp cũ nhất trước (NV-03), hiển thị tổng tiền, thời điểm tạo, kèm nút Chi tiết, Xác nhận, Từ chối.
 
 ### 10.1. Wireframe
 
 ```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                         Trần Văn B · Nhân viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | YÊU CẦU ĐẶT SÂN (CHỜ XÁC NHẬN)                                              Cũ nhất trước |
++--------------------------+-------------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| YÊU CẦU ĐẶT SÂN (CHỜ XÁC NHẬN)                        Trần Văn B · Nhân viên  [Đăng xuất] |
++--------------------------+-------------------------------------------------------------------------------------------+
+|                          |                                                                             Cũ nhất trước |
 |                          |                                                                                           |
 |   Lịch sân               | Mã đơn    Gửi lúc      Khách         SĐT         Sân   Khung giờ          Tổng tiền       |
 | > Yêu cầu đặt sân        | --------  -----------  ------------  ----------  ----  -----------------  ----------      |
@@ -1445,7 +1456,7 @@ Không có biểu đồ, chỉ số "Tỷ lệ lấp đầy", chuông thông bá
 |                          |      [Xem chi tiết]  [Xác nhận]  [Từ chối]                                                |
 |                          |                                                                                           |
 |                          | Hiển thị 1–3 / 3 yêu cầu                                 [<]  1  [>]    Mỗi trang: [20 v] |
-+----------------------------------------------------------------------------------------------------------------------+
++--------------------------+-------------------------------------------------------------------------------------------+
 ```
 
 ### 10.2. Chi tiết thành phần
@@ -1456,7 +1467,6 @@ Không có biểu đồ, chỉ số "Tỷ lệ lấp đầy", chuông thông bá
 | Sắp xếp | Yêu cầu cũ nhất (gửi sớm nhất) xếp trước |
 | Cột | Mã đơn, Gửi lúc, Khách, SĐT, Sân, Khung giờ, Tổng tiền |
 | Phân trang | Mặc định 20 dòng/trang |
-| Quản trị viên | Thấy thêm tab "Tất cả đặt sân" (WF-17). Nhân viên không thấy tab này |
 | **Xem chi tiết** | Mở WF-11 |
 | **Xác nhận** | Mở modal Xác nhận (D-06, mục 11.3) |
 | **Từ chối** | Mở modal Từ chối (D-05, mục 11.4) |
@@ -1479,24 +1489,24 @@ Modal Xác nhận và Từ chối dùng chung với WF-11, xem mục 11.3 và 11
 | Use-case | UC-15, UC-16, UC-18 Ghi nhận lượt sử dụng, UC-21 Hủy do sự cố, UC-09/UC-10 hủy/đổi lịch thay khách |
 | Đối tượng | Nhân viên, Quản trị viên |
 | Route Codebase hiện tại | *Chưa có route trong codebase* (US-12) |
-| Route Wireframe mục tiêu | `/admin/bookings/[id]` |
+| Route Wireframe mục tiêu | `/bookings/[id]` |
 | Component Codebase | *Chưa tạo file* |
 | Tình trạng Codebase | Chưa triển khai (thuộc US-12 đang phát triển) |
 | Điều hướng ra | Breadcrumb "Yêu cầu đặt sân" quay lại WF-10 |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
 > - *Codebase hiện tại:* Chưa có trang chi tiết admin độc lập trong `src/app/(admin)/`.
-> - *Chuẩn Wireframe tương lai:* Xây dựng trang `/admin/bookings/[id]` hiển thị thông tin đơn, thông tin hóa đơn ("Chưa lập hóa đơn" nếu đơn Pending), timeline lịch sử trạng thái kèm lý do (BR-13), và các modal nghiệp vụ (Xác nhận đơn, Từ chối, Hoàn thành, Hủy sự cố, Đổi lịch).
+> - *Chuẩn Wireframe tương lai:* Xây dựng trang `/bookings/[id]` hiển thị thông tin đơn, thông tin hóa đơn ("Chưa lập hóa đơn" nếu đơn Pending), timeline lịch sử trạng thái kèm lý do (BR-13), và các modal nghiệp vụ (Xác nhận đơn, Từ chối, Hoàn thành, Hủy sự cố, Đổi lịch).
 
 ### 11.1. Wireframe trang
 
 Minh họa đơn `Đã xác nhận`, hóa đơn `Chưa thanh toán`.
 
 ```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                         Trần Văn B · Nhân viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | < Yêu cầu đặt sân  /  DS-7K3QP                                                            |
++--------------------------+-------------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| CHI TIẾT ĐẶT SÂN                                      Trần Văn B · Nhân viên  [Đăng xuất] |
++--------------------------+-------------------------------------------------------------------------------------------+
+|                          | < Yêu cầu đặt sân  /  DS-7K3QP                                                            |
 |                          | DS-7K3QP  [Đã xác nhận]                                          Tạo lúc 13/08/2026 20:10 |
 |   Lịch sân               | [Đổi lịch]  [Hủy theo yêu cầu khách]  [Ghi nhận hoàn thành]  [Hủy do sự cố]               |
 | > Yêu cầu đặt sân        | (i) "Ghi nhận hoàn thành" vô hiệu cho tới khi lượt chơi kết thúc (19:00).                 |
@@ -1525,7 +1535,7 @@ Minh họa đơn `Đã xác nhận`, hóa đơn `Chưa thanh toán`.
 |                          | | 13/08 20:10   (mới) -> Chờ xác nhận           Khách hàng                —             | |
 |                          | | 14/08 07:20   Chờ xác nhận -> Đã xác nhận     Nhân viên · Trần Văn B    —             | |
 |                          | +---------------------------------------------------------------------------------------+ |
-+----------------------------------------------------------------------------------------------------------------------+
++--------------------------+-------------------------------------------------------------------------------------------+
 ```
 
 ### 11.2. Chi tiết thành phần
@@ -1754,62 +1764,64 @@ Giá thay đổi giữa lúc xem báo giá và lúc lưu: hiện khối cảnh b
 | Use-case | UC-19 Xem lịch đặt sân theo ngày; UC-23 Cập nhật trạng thái sân; UC-20 Tạo đặt sân thay khách |
 | Đối tượng | Nhân viên, Quản trị viên |
 | Route Codebase hiện tại | `/schedule` (`src/app/(admin)/schedule/page.tsx`) |
-| Route Wireframe mục tiêu | `/admin/court-schedule` |
+| Route Wireframe mục tiêu | `/schedule` |
 | Component Codebase | `ScheduleClient.tsx` |
 | Tình trạng Codebase | Đang chạy (Timeline lịch sân) |
 | Điều hướng ra | Bấm ô đã đặt → WF-11 |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
-> - *Codebase hiện tại:* `ScheduleClient.tsx` đã có timeline lưới sân 05:00–22:00; chưa có nút và modal Đặt tại quầy.
-> - *Chuẩn Wireframe tương lai:* Bổ sung nút và Modal "Đặt sân tại quầy / Tạo đặt sân thay khách" (`M-09`, UC-20) không cần OTP (X-05) và thao tác click nhanh đổi trạng thái sân sang Bảo trì/Đóng cửa khi có sự cố.
+> - *Codebase hiện tại:* `ScheduleClient.tsx` là timeline ngang 05:00–22:00 (mỗi sân một hàng) dùng chung dữ liệu lưới sân; chỉ có bộ chọn ngày, chưa có lọc theo sân. Thanh đã đặt hiện "Đã đặt" + khung giờ, chưa bấm được, chưa phân biệt trạng thái đơn, chưa có tên khách/mã đơn. Trạng thái sân chỉ đọc. Chưa có nút và modal Đặt tại quầy.
+> - *Chuẩn Wireframe tương lai:* Giữ timeline ngang. Thanh đặt sân ghi tên khách + nhãn trạng thái (CXN/ĐXN/HT) và bấm được để mở WF-11. Thêm nút và Modal "Đặt sân tại quầy / Tạo đặt sân thay khách" (`M-09`, UC-20) không cần OTP (X-05). Nhãn trạng thái sân ở cột trái trở thành ô chọn để mở modal Đổi trạng thái (UC-23).
 
 ### 12.1. Wireframe
 
-Lưới theo mockup: mỗi sân một cột, mỗi dòng một slot 30 phút. Đơn dài nhiều slot hiện tên khách ở slot đầu, mã đơn ở slot thứ hai, các slot sau ghi "(tiếp tục)".
+Timeline ngang như `ScheduleClient.tsx`: mỗi sân một hàng, cột là giờ (code hiển thị 05:00–22:00, wireframe chỉ vẽ khung 16:00–22:00 để vừa khổ). Thanh đặt sân nằm theo đúng khoảng giờ; dòng trên ghi nhãn trạng thái và tên khách, dòng dưới ghi khung giờ. Cột sân ghi tên sân và trạng thái sân.
 
 ```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                         Trần Văn B · Nhân viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | LỊCH SÂN                                                               [ + Tạo lịch đặt ] |
-|                          | [<] [ Thứ 6, 14/08/2026 (lịch) ] [>] [Hôm nay]          Lọc theo sân: [ Tất cả v ]        |
-| > Lịch sân               |                                                                                           |
-|   Yêu cầu đặt sân        | Chú giải: [CXN] Chờ xác nhận  [ĐXN] Đã xác nhận  [HT] Hoàn thành  Trống  Bảo trì/Đóng     |
-|   Thanh toán             | Trạng thái sân: A1 [Hoạt động v] A2 [Hoạt động v] A3 [Bảo trì v] A4 [Đóng v]              |
-|   Khách hàng             |                                                                                           |
-|                          | Giờ   | Sân A1            | Sân A2            | Sân A3 [Bảo trì]  | Sân A4 [Đóng]         |
-|                          | ------+-------------------+-------------------+-------------------+-------------------    |
-|                          | 17:00 | Hoàng Văn E [CXN] | Trống             | Bảo trì           | Đóng                  |
-|                          | 17:30 | DS-5N7XA          | Trống             | Bảo trì           | Đóng                  |
-|                          | 18:00 | Lê Văn C [ĐXN]    | Trần Thị B [CXN]  | Bảo trì           | Đóng                  |
-|                          | 18:30 | DS-7K3QP          | DS-12AB5          | Bảo trì           | Đóng                  |
-|                          | 19:00 | Trống             | (tiếp tục)        | Bảo trì           | Đóng                  |
-|                          | 19:30 | Lê Văn C [CXN]    | Trống             | Bảo trì           | Đóng                  |
-|                          | 20:00 | DS-8H4KM          | Trống             | Bảo trì           | Đóng                  |
-|                          | 20:30 | Trống             | Trống             | Bảo trì           | Đóng                  |
-|                          |                                                                                           |
-|                          | (i) Bấm một ô đã đặt để mở chi tiết đặt sân. Lưới cuộn dọc đến hết giờ mở cửa.            |
-+----------------------------------------------------------------------------------------------------------------------+
++--------------------------+----------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| LỊCH SÂN                                           Trần Văn B · Nhân viên  [Đăng xuất] |
++--------------------------+----------------------------------------------------------------------------------------+
+|                          | [ Thứ 6, 14/08/2026 (lịch) ]  [ Hôm nay ]  Sân: [ Tất cả v ]        [ + Tạo lịch đặt ] |
+| > Lịch sân               |                                                                                        |
+|   Yêu cầu đặt sân        | Chú giải: [CXN] Chờ xác nhận  [ĐXN] Đã xác nhận  [HT] Hoàn thành  [//] Bảo trì/Đóng    |
+|   Thanh toán             |                                                                                        |
+|   Khách hàng             | Sân / Giờ     16:00       17:00       18:00       19:00       20:00       21:00        |
+|                          | -------------------------------------------------------------------------------------- |
+|                          | Sân A1                    [CXN] Hoàng Văn E|      [ĐXN] Lê Vă…|                        |
+|                          | [Hoạt động v]             17:00–18:30      |      19:00–20:00|                         |
+|                          |                                                                                        |
+|                          | Sân A2                                [CXN] Trần Thị B |                               |
+|                          | [Hoạt động v]                         18:00–19:30      |                               |
+|                          |                                                                                        |
+|                          | Sân A3        //////////////////////////////////////////////////////////////////////// |
+|                          | [Bảo trì v]   //////////////////////////////////////////////////////////////////////// |
+|                          |                                                                                        |
+|                          | Sân A4        //////////////////////////////////////////////////////////////////////// |
+|                          | [Đóng v]      //////////////////////////////////////////////////////////////////////// |
+|                          |                                                                                        |
+|                          | (i) Lưới cuộn ngang theo giờ mở cửa. Bấm thanh đã đặt để mở chi tiết đơn (WF-11).      |
+|                          | (i) Bấm vùng trống để mở modal Tạo lịch đặt (sân/ngày/giờ điền sẵn).                   |
++--------------------------+----------------------------------------------------------------------------------------+
 ```
 
 ### 12.2. Chi tiết thành phần
 
 | Thành phần | Quy tắc |
 |---|---|
-| Chọn ngày | `[<]` `[>]`, ô ngày, **Hôm nay** |
-| Lọc theo sân | Chọn một sân hoặc Tất cả |
+| Chọn ngày | Ô ngày (`CustomDatePicker`) và nút **Hôm nay** |
+| Lọc theo sân | Chọn một sân hoặc Tất cả (NV-09). Code hiện tại chưa có |
 | Chú giải | Chờ xác nhận `[CXN]`, Đã xác nhận `[ĐXN]`, Hoàn thành `[HT]` (vẫn giữ chỗ), Trống, Bảo trì/Đóng. Mỗi trạng thái có chữ, không chỉ màu |
-| Ô đã đặt | Tên khách, mã đặt sân, nhãn trạng thái. Bấm để mở WF-11 |
-| Ô trống | "Trống". Bấm để mở modal Tạo lịch đặt với sân/ngày/giờ điền sẵn (đề xuất) |
-| Sân Bảo trì/Đóng | Cả cột hiện "Bảo trì" hoặc "Đóng" |
-| Dải "Trạng thái sân" | Mỗi sân một ô chọn Hoạt động / Bảo trì / Đóng. Đổi trạng thái mở modal bên dưới |
+| Thanh đã đặt | Dài đúng khoảng giờ đặt. Ghi nhãn trạng thái, tên khách (cắt bớt nếu hẹp) và khung giờ; mã đặt sân xem ở chi tiết. Bấm để mở WF-11 |
+| Vùng trống | Bấm để mở modal Tạo lịch đặt với sân/ngày/giờ điền sẵn (đề xuất) |
+| Sân Bảo trì/Đóng | Cả hàng gạch chéo `[//]` |
+| Trạng thái sân (cột trái) | Mỗi sân một ô chọn Hoạt động / Bảo trì / Đóng. Đổi trạng thái mở modal mục 12.3 |
 | Nút **+ Tạo lịch đặt** | Mở modal M-09 |
 
 | Trạng thái | Hiển thị |
 |---|---|
-| Đang tải | Skeleton lưới |
-| Không có sân | "Chưa có sân nào." |
-| Lỗi tải | Banner lỗi + Thử lại |
+| Đang tải | "Đang tải lịch sân..." |
+| Không có sân | "Không có dữ liệu sân trong ngày này." |
+| Lỗi tải | "Không thể tải lịch sân." + Thử lại |
 
 ### 12.3. Modal Đổi trạng thái sân (UC-23)
 
@@ -1911,7 +1923,7 @@ Lưới theo mockup: mỗi sân một cột, mỗi dòng một slot 30 phút. Đ
 | Use-case | UC-28 Xem hóa đơn; UC-29 Thu tiền hóa đơn; UC-22 Ghi nhận hoàn tiền; UC-17 Lập hóa đơn (tự động) |
 | Đối tượng | Nhân viên, Quản trị viên |
 | Route Codebase hiện tại | `/payments` (`src/app/(admin)/payments/page.tsx`) |
-| Route Wireframe mục tiêu | `/admin/payments` |
+| Route Wireframe mục tiêu | `/payments` |
 | Component Codebase | `payments/page.tsx` |
 | Tình trạng Codebase | 100% Placeholder (chỉ bọc RoleGuard) |
 | Điều hướng ra | Mã đơn → WF-11 |
@@ -1923,10 +1935,10 @@ Lưới theo mockup: mỗi sân một cột, mỗi dòng một slot 30 phút. Đ
 ### 13.1. Wireframe
 
 ```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                         Trần Văn B · Nhân viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | THANH TOÁN & HÓA ĐƠN                                                                      |
++--------------------------+-------------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| THANH TOÁN & HÓA ĐƠN                                  Trần Văn B · Nhân viên  [Đăng xuất] |
++--------------------------+-------------------------------------------------------------------------------------------+
+|                          |                                                                                           |
 |                          | [ Tìm theo mã hóa đơn hoặc mã đặt sân...    ]   Trạng thái: [ Tất cả v ]                  |
 |   Lịch sân               |                                                                                           |
 |   Yêu cầu đặt sân        | Mã hóa đơn       Mã đơn    Khách        Tổng tiền   Trạng thái       Thao tác             |
@@ -1940,7 +1952,7 @@ Lưới theo mockup: mỗi sân một cột, mỗi dòng một slot 30 phút. Đ
 |                          | Hiển thị 1–5 / 5                                         [<]  1  [>]    Mỗi trang: [20 v] |
 |                          |                                                                                           |
 |                          | (i) Hóa đơn do hệ thống tự lập khi xác nhận đơn. Hóa đơn Đã hủy chỉ để tra cứu.           |
-+----------------------------------------------------------------------------------------------------------------------+
++--------------------------+-------------------------------------------------------------------------------------------+
 ```
 
 ### 13.2. Chi tiết thành phần
@@ -2062,58 +2074,58 @@ Chi tiết hiển thị cả chuỗi hóa đơn bị hủy và hóa đơn thay t
 | Use-case | UC-24 Quản lý hồ sơ khách hàng; UC-27 Khóa/mở khóa tài khoản; UC-30 Tra cứu nhanh |
 | Đối tượng | Nhân viên, Quản trị viên |
 | Route Codebase hiện tại | `/customers` (`src/app/(admin)/customers/page.tsx`) |
-| Route Wireframe mục tiêu | `/admin/customers` |
+| Route Wireframe mục tiêu | `/customers` |
 | Component Codebase | `CustomersClient.tsx` |
 | Tình trạng Codebase | Đang chạy (Bảng danh sách) |
 | Điều hướng ra | Mã đơn trong lịch sử → WF-11 |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
-> - *Codebase hiện tại:* `CustomersClient.tsx` đã có bảng khách hàng; các nút Thêm khách và Chi tiết chưa gắn handler.
+> - *Codebase hiện tại:* `CustomersClient.tsx` có bảng 5 cột (Khách hàng kèm mã, Liên hệ, Loại Thành viên/Vãng lai, Ngày đăng ký, Chi tiết) và nút Thêm khách hàng; chưa có ô tìm kiếm, phân trang; hai nút chưa gắn handler.
 > - *Chuẩn Wireframe tương lai:* Bổ sung thanh tìm kiếm nhanh (UC-30) và thao tác Khóa/Mở khóa tài khoản khách (UC-27, BR-27) reset bộ đếm sai về 0 (BR-12). Modal tạo hồ sơ khách hàng mới (UC-26).
 
 ### 14.1. Wireframe
 
+Bảng theo `CustomersClient.tsx`. Thanh tìm kiếm (UC-30) và phân trang là phần bổ sung, vẽ ở mục 14.2.
+
 ```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                         Trần Văn B · Nhân viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | QUẢN LÝ KHÁCH HÀNG                                                                        |
-|                          | [ Tìm theo họ tên, số điện thoại, email...             ]  [Tìm]                           |
-|   Lịch sân               |                                                                                           |
-|   Yêu cầu đặt sân        | Mã KH     Họ tên          SĐT          Email                     Trạng thái TK            |
-|   Thanh toán             | --------  --------------  -----------  ------------------------  -------------            |
-| > Khách hàng             | KH-0012   Trần Thị B      0901234567   tran.b@email.com          ACTIVE                   |
-|                          |      [Xem lịch sử đặt sân]  [Khóa tài khoản]                                              |
-|                          | KH-0015   Lê Văn C        0987654321   le.c@email.com            DISABLED                 |
-|                          |      [Xem lịch sử đặt sân]  [Mở khóa tài khoản]                                           |
-|                          | KH-0020   Phạm Thị D      0933445566   pham.d@email.com          —                        |
-|                          |      [Xem lịch sử đặt sân]            (chưa có tài khoản)                                 |
-|                          |                                                                                           |
-|                          | Hiển thị 1–3 / 3                                         [<]  1  [>]    Mỗi trang: [20 v] |
-|                          |                                                                                           |
-|                          | (i) "—" = khách chưa có tài khoản. Chỉ khóa/mở khóa được tài khoản khách hàng.            |
-+----------------------------------------------------------------------------------------------------------------------+
++--------------------------+----------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| QUẢN LÝ KHÁCH HÀNG                                 Trần Văn B · Nhân viên  [Đăng xuất] |
++--------------------------+----------------------------------------------------------------------------------------+
+|                          | [ + Thêm khách hàng ]                                                                  |
+|   Lịch sân               |                                                                                        |
+|   Yêu cầu đặt sân        | Khách hàng         Liên hệ                     Loại         Ngày đăng ký   Thao tác    |
+|   Thanh toán             | -----------------  --------------------------  -----------  -------------  ---------   |
+| > Khách hàng             | Trần Thị B         0901234567                  [Thành viên] 02/08/2026     [Chi tiết]  |
+|                          | KH-0012            tran.b@email.com                                                    |
+|                          | Lê Văn C           0987654321                  [Thành viên] 05/08/2026     [Chi tiết]  |
+|                          | KH-0015            le.c@email.com                                                      |
+|                          | Phạm Thị D         0933445566                  [Vãng lai]   10/08/2026     [Chi tiết]  |
+|                          | KH-0020            pham.d@email.com                                                    |
+|                          |                                                                                        |
+|                          | (i) Chi tiết: lịch sử đặt sân, Khóa/Mở khóa tài khoản (nếu khách có tài khoản).        |
++--------------------------+----------------------------------------------------------------------------------------+
 ```
 
 ### 14.2. Chi tiết thành phần
 
 | Thành phần | Quy tắc |
 |---|---|
-| Thanh tìm kiếm | Tìm theo họ tên, SĐT, email. Số điện thoại không dùng để gộp hồ sơ |
-| Cột | Mã KH, Họ tên, SĐT, Email, Trạng thái tài khoản (`ACTIVE` / `DISABLED`). Mã KH trong wireframe là dữ liệu mẫu |
-| Khách chưa có tài khoản (vãng lai) | Cột trạng thái hiện "—" và **không có** nút Khóa/Mở khóa `[G-20]` |
-| **Xem lịch sử đặt sân** | Mở modal lịch sử (mục 14.3) |
-| **Khóa tài khoản** | Chỉ ở khách có tài khoản `ACTIVE`. Mở modal mục 14.4 |
-| **Mở khóa tài khoản** | Chỉ ở khách có tài khoản `DISABLED`. Đưa bộ đếm đăng nhập sai về 0, áp dụng cả với khóa tự động ở lần sai thứ 5 |
+| Thanh tìm kiếm (bổ sung) | Đặt phía trên bảng, tìm theo họ tên, SĐT, email. Số điện thoại không dùng để gộp hồ sơ |
+| Phân trang (bổ sung) | Mặc định 20 dòng/trang, tối đa 100 (quy tắc chung) |
+| Cột | Khách hàng (họ tên + mã KH), Liên hệ (SĐT + email), Loại (Thành viên / Vãng lai), Ngày đăng ký, Thao tác. Trạng thái tài khoản (`ACTIVE` / `DISABLED`) hiển thị trong khung Chi tiết. Mã KH trong wireframe là dữ liệu mẫu |
+| Khách vãng lai (chưa có tài khoản) | Nhãn Loại "Vãng lai"; khung Chi tiết **không có** nút Khóa/Mở khóa `[G-20]` |
+| **Chi tiết** | Mở khung thông tin khách gồm lịch sử đặt sân (mục 14.3) và thao tác tài khoản |
+| **Khóa tài khoản** | Trong Chi tiết, chỉ ở khách có tài khoản `ACTIVE`. Mở modal mục 14.4 |
+| **Mở khóa tài khoản** | Trong Chi tiết, chỉ ở khách có tài khoản `DISABLED`. Đưa bộ đếm đăng nhập sai về 0, áp dụng cả với khóa tự động ở lần sai thứ 5 |
 | Phạm vi quyền | Chỉ khóa/mở khóa **tài khoản khách hàng**. Không khóa được tài khoản Nhân viên/Quản trị. Thao tác trên tài khoản nội bộ hoặc hard-delete bị từ chối |
 | Không có | Xóa hồ sơ khách đã giao dịch; sửa email; giá trị trạng thái thứ ba ("Vô hiệu hóa") |
 
-Quản trị viên còn xóa được tài khoản khách theo QT-10 bằng modal xóa tài khoản ở WF-16 (mục 16.4), không vẽ lại ở đây. Nhân viên sửa họ tên/SĐT khách (UC-24) chưa được vẽ `[G-19]`.
+Quản trị viên còn xóa được tài khoản khách theo QT-10: nút **Xóa tài khoản** chỉ hiện trong Chi tiết khi đăng nhập bằng Quản trị viên, mở modal ở mục 16.4. Nhân viên sửa họ tên/SĐT khách (UC-24) chưa được vẽ `[G-19]`.
 
 | Trạng thái | Hiển thị |
 |---|---|
 | Đang tải | Skeleton các dòng |
-| Rỗng | "Không tìm thấy khách hàng nào." |
+| Rỗng | "Không tìm thấy khách hàng nào." (hiện tại code hiển thị dòng thông báo trong bảng) |
 | Lỗi tải | Banner lỗi + Thử lại |
 
 ### 14.3. Modal Xem lịch sử đặt sân của khách
@@ -2171,44 +2183,60 @@ Danh sách có phân trang. Trạng thái thanh toán của đơn Chờ xác nh�
 | Use-case | UC-31 Thêm sân; UC-32 Sửa thông tin sân; UC-33 Xóa mềm sân; UC-23 Đổi trạng thái sân; UC-34 Giờ mở cửa; UC-35 Bảng giá |
 | Đối tượng | Quản trị viên |
 | Route Codebase hiện tại | `/manage-courts` (`src/app/(admin)/manage-courts/page.tsx`) |
-| Route Wireframe mục tiêu | `/admin/courts` |
-| Component Codebase | `ManageCourtsClient.tsx`, `CourtCardGrid.tsx`, `CourtTable.tsx`, `CourtStats.tsx`, `CourtFormModal.tsx`, `PricingTimeline.tsx` |
+| Route Wireframe mục tiêu | `/manage-courts` |
+| Component Codebase | `ManageCourtsClient.tsx`, `CourtCardGrid.tsx`, `CourtTable.tsx`, `CourtStats.tsx`, `CourtFormModal.tsx`, `CourtStatusModal.tsx`, `CourtOperationsModal.tsx`, `PricingTimeline.tsx` |
 | Tình trạng Codebase | Đang chạy |
 | Điều hướng ra | – |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
-> - *Codebase hiện tại:* Đã có UI chuyển đổi thẻ/bảng và thanh `PricingTimeline.tsx` chia mốc 30 phút theo thứ trong tuần.
-> - *Chuẩn Wireframe tương lai:* Bổ sung bước xem trước cấu hình sân trước khi lưu (BR-25, UC-31) và ràng buộc xóa mềm khi hết đơn Pending/Confirmed (BR-15).
+> - *Codebase hiện tại:* Có thẻ số liệu, chuyển Thẻ/Danh sách, `CourtFormModal` (Tên sân, Mô tả, Giá mặc định/giờ, Giờ mở/đóng), `CourtStatusModal` (Hoạt động / Bảo trì / Đóng và ô Lý do tùy chọn) và `CourtOperationsModal` gộp giờ hoạt động + bảng giá theo từng ngày trong tuần (kèm `PricingTimeline` chia mốc 30 phút, cảnh báo "Bảng giá sẽ được điều chỉnh"). Chưa có nút Xóa sân, chưa có bước xem trước khi thêm sân, form chưa có chọn trạng thái ban đầu.
+> - *Chuẩn Wireframe tương lai:* Bổ sung bước xem trước cấu hình sân trước khi lưu (BR-25, UC-31), chọn trạng thái ban đầu, và Xóa mềm sân khi hết đơn Chờ xác nhận/Đã xác nhận (UC-33, BR-19). Bỏ ô Lý do ở modal Đổi trạng thái (UC-23 không có lý do, nhật ký không có cột lý do — BR-14). Không có trường Kích thước/Mặt sân vì SRS, UC và dữ liệu sân không có `[G-01]`.
 
 ### 15.1. Wireframe danh sách sân
 
+Chế độ **Thẻ** (mặc định, `CourtCardGrid.tsx`). Nút chuyển Thẻ/Danh sách và nút Thêm sân mới nằm ở Topbar (`createPortal` vào `admin-header-actions`).
+
 ```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                   Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | QUẢN LÝ SÂN                                                            [ + Thêm sân mới ] |
-|                          |                                                                                           |
-|   Bảng điều khiển        | Sân         Kích thước · Mặt sân      Mô tả                         Trạng thái            |
-|   Lịch sân               | ----------  ------------------------  ----------------------------  ------------          |
-|   Yêu cầu đặt sân        | Sân A1      6.1x13.4m · Thảm PU       Sân tiêu chuẩn                Hoạt động             |
-|   Thanh toán             |      [Đổi trạng thái] [Sửa] [Giờ mở cửa] [Bảng giá] [Xóa]                                 |
-| > Quản lý sân            | Sân A2      6.1x13.4m · Thảm PU       Gần quầy lễ tân               Hoạt động             |
-|   Khách hàng             |      [Đổi trạng thái] [Sửa] [Giờ mở cửa] [Bảng giá] [Xóa]                                 |
-|   Quản lý nhân viên      | Sân A3      6.1x13.4m · Gỗ            Đang sửa sàn                  Bảo trì               |
-|   Báo cáo & Thống kê     |      [Đổi trạng thái] [Sửa] [Giờ mở cửa] [Bảng giá] [Xóa]                                 |
-|   Nhật ký hoạt động      |                                                                                           |
-|   Tài khoản & Phân quyền | (i) Sân đã xóa mềm không hiện ở danh sách này và không hiện ở lưới đặt sân.               |
-+----------------------------------------------------------------------------------------------------------------------+
++--------------------------+----------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| QUẢN LÝ SÂN                                  Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
++--------------------------+----------------------------------------------------------------------------------------+
+|                          | [ Thẻ ]  [ Danh sách ]                                               [ + Thêm sân mới ]|
+|   Bảng điều khiển        |                                                                                        |
+|   Thống kê               | +--------------------------+ +--------------------------+ +--------------------------+ |
+|   Lịch sân               | | Tổng số sân              | | Đang hoạt động           | | Đang bảo trì             | |
+|   Yêu cầu đặt sân        | | 4                        | | 2                        | | 1                        | |
+|   Thanh toán             | +--------------------------+ +--------------------------+ +--------------------------+ |
+| > Quản lý sân            |                                                                                        |
+|   Khách hàng             | +----------------------------------------+ +----------------------------------------+  |
+|   Nhân viên              | | Sân A1  [Đang hoạt động]               | | Sân A2  [Đang hoạt động]               |  |
+|   Đặt sân toàn hệ thống  | | Sân tiêu chuẩn                         | | Gần quầy lễ tân                        |  |
+|   Nhật ký hoạt động      | |                                        | |                                        |  |
+|                          | | [ Lịch & giá ] [ Đổi trạng thái ]      | | [ Lịch & giá ] [ Đổi trạng thái ]      |  |
+|                          | | [ Chỉnh sửa ]                          | | [ Chỉnh sửa ]                          |  |
+|                          | +----------------------------------------+ +----------------------------------------+  |
+|                          |                                                                                        |
+|                          | +----------------------------------------+ +----------------------------------------+  |
+|                          | | Sân A3  [Bảo trì]                      | | Sân A4  [Đóng cửa]                     |  |
+|                          | | Đang sửa sàn                           | | Sân dự phòng                           |  |
+|                          | |                                        | |                                        |  |
+|                          | | [ Lịch & giá ] [ Đổi trạng thái ]      | | [ Lịch & giá ] [ Đổi trạng thái ]      |  |
+|                          | | [ Chỉnh sửa ]                          | | [ Chỉnh sửa ]                          |  |
+|                          | +----------------------------------------+ +----------------------------------------+  |
+|                          |                                                                                        |
+|                          | (i) Chế độ Danh sách: bảng Sân / Mô tả / Trạng thái / Thao tác.                        |
+|                          | (i) Sân đã xóa mềm không hiện ở đây và không hiện ở lưới đặt sân.                      |
++--------------------------+----------------------------------------------------------------------------------------+
 ```
 
 | Thành phần | Quy tắc |
 |---|---|
-| Cột | Tên sân, Kích thước · Mặt sân `[G-01]`, Mô tả, Trạng thái |
-| Đổi trạng thái | Dùng lại modal ở mục 12.3 (Hoạt động / Bảo trì / Đóng). Còn đơn Chờ xác nhận/Đã xác nhận thì không chuyển sang Bảo trì/Đóng được |
-| Sửa | Mở form (mục 15.2) ở chế độ sửa |
-| Giờ mở cửa / Bảng giá | Mở modal cấu hình theo ngày (mục 15.4, 15.5) |
-| Xóa | Mở modal xóa mềm (mục 15.3) |
-| Không có | Chỉ số "Tỉ lệ lấp đầy" |
+| Thẻ số liệu | `CourtStats.tsx`: Tổng số sân, Đang hoạt động, Đang bảo trì. Không có "Tỷ lệ lấp đầy" |
+| Chuyển Thẻ / Danh sách | `CourtCardGrid.tsx` / `CourtTable.tsx`. Cùng dữ liệu, cùng thao tác |
+| Thẻ sân | Tên, nhãn trạng thái, Mô tả và 3 thao tác: **Lịch & giá**, đổi trạng thái, **Chỉnh sửa** |
+| Chế độ Danh sách | Cột Sân, Mô tả, Trạng thái, Thao tác. Thêm nút Xóa (mở modal mục 15.3) |
+| Đổi trạng thái | Dùng modal ở mục 12.3 (Hoạt động / Bảo trì / Đóng). Còn đơn Chờ xác nhận/Đã xác nhận thì không chuyển sang Bảo trì/Đóng được |
+| Chỉnh sửa | Mở form (mục 15.2) ở chế độ sửa |
+| Lịch & giá | Mở một modal cấu hình theo ngày trong tuần (mục 15.4) |
 | Rỗng | "Chưa có sân nào. Bấm Thêm sân mới để bắt đầu." |
 
 ### 15.2. Form Thêm / Sửa sân
@@ -2219,8 +2247,6 @@ Danh sách có phân trang. Trạng thái thanh toán của đơn Chờ xác nh�
 +--------------------------------------------------------------------------+
 | Tên sân *                 [ Sân A4________________________ ]             |
 | Mô tả                     [ Sân góc, gần cửa sổ___________ ]             |
-| Kích thước                [ 6.1x13.4m_____________________ ]             |
-| Mặt sân                   [ Thảm PU_______________________ ]             |
 | Trạng thái *              (o) Hoạt động  ( ) Bảo trì  ( ) Đóng           |
 | Giờ mở cửa mặc định *     [ 05:00 v ]                                    |
 | Giờ đóng cửa mặc định *   [ 22:00 v ]                                    |
@@ -2244,12 +2270,11 @@ Danh sách có phân trang. Trạng thái thanh toán của đơn Chờ xác nh�
 |---|---|---|
 | Tên sân | Có | Cắt khoảng trắng đầu/cuối. Không rỗng. Không trùng tên sân chưa xóa khác (không phân biệt hoa/thường) |
 | Mô tả | Không | – |
-| Kích thước, Mặt sân | Không | Chỉ để hiển thị `[G-01]` |
 | Trạng thái | Có (khi thêm) | Hoạt động, Bảo trì hoặc Đóng |
 | Giờ mở/đóng cửa mặc định | Có (khi thêm) | Giờ mở nhỏ hơn giờ đóng, ở phút 00 hoặc 30 |
 | Đơn giá mặc định | Có (khi thêm) | Số nguyên VND lớn hơn 0 |
 
-- **Thêm sân:** bắt buộc bấm **Xem trước** để thấy cấu hình kết quả rồi mới **Lưu sân**. Một giao dịch lưu sân, **7 lịch mở cửa** (mỗi ngày trong tuần một lịch) và **7 mốc giá** (tại giờ mở cửa), ghi nhật ký. Lỗi ở bước nào thì hoàn tác, không để sân thiếu giá.
+- **Thêm sân:** (code hiện tại lưu ngay, chưa có xem trước) bắt buộc bấm **Xem trước** để thấy cấu hình kết quả rồi mới **Lưu sân**. Một giao dịch lưu sân, **7 lịch mở cửa** (mỗi ngày trong tuần một lịch) và **7 mốc giá** (tại giờ mở cửa), ghi nhật ký. Lỗi ở bước nào thì hoàn tác, không để sân thiếu giá.
 - **Sửa sân:** chỉ sửa Tên, Mô tả (và thông tin sân). Sân Đã xóa không sửa được. Nhật ký ghi giá trị trước/sau.
 
 ### 15.3. Modal Xóa mềm sân
@@ -2272,75 +2297,38 @@ Danh sách có phân trang. Trạng thái thanh toán của đơn Chờ xác nh�
 
 Chỉ xóa được khi sân không còn đơn Chờ xác nhận/Đã xác nhận. Nếu xung đột với việc tạo/đổi/xác nhận đơn đồng thời: hoàn tác và tải lại. Sân đã xóa rồi: trả kết quả Đã xóa, không ghi thêm nhật ký. **Không xóa vật lý.**
 
-### 15.4. Cấu hình giờ mở cửa `M-13` (UC-34)
+### 15.4. Modal Lịch & giá `M-13` (UC-34, UC-35)
+
+Một modal rộng (`CourtOperationsModal.tsx`) cấu hình **hằng tuần**: cột trái chọn ngày (Thứ 2 đến Chủ nhật), cột phải có 2 khối **Giờ hoạt động** (UC-34) và **Khung giá** (UC-35), mỗi khối có nút lưu riêng.
 
 ```text
-+--------------------------------------------------------------------------+
-| CẤU HÌNH GIỜ MỞ CỬA · Sân A1                                         [X] |
-+--------------------------------------------------------------------------+
-| [T2] [T3] [T4] [T5] [*T6*] [T7] [CN]       (mỗi ngày một lịch riêng)     |
-|                                                                          |
-| [x] Ngày này nhận đặt (bỏ chọn = ngày nghỉ, lịch không bị xóa)           |
-| Giờ mở cửa *    [ 06:00 v ]       Giờ đóng cửa *   [ 22:00 v ]           |
-|                                                                          |
-| (!) Không lưu được nếu làm đơn Chờ xác nhận/Đã xác nhận của ngày         |
-|     này nằm ngoài giờ mở hoặc không khả dụng.                            |
-+--------------------------------------------------------------------------+
-| XEM TRƯỚC ĐIỀU CHỈNH BẢNG GIÁ (Thứ 6)                                    |
-|   Trước:  05:00 -> 60.000 ₫   |   17:00 -> 100.000 ₫                     |
-|   Sau:    06:00 -> 60.000 ₫   |   17:00 -> 100.000 ₫                     |
-|   Mốc nằm ngoài khoảng mới bị bỏ; thêm mốc tại giờ mở mới với đơn giá    |
-|   đang có hiệu lực tại đó (mở sớm hơn: lấy đơn giá mốc đầu tiên cũ).     |
-|                                                                          |
-| (i) Lịch có hiệu lực từ ngày hiện tại. Giờ mở/đóng ở phút 00 hoặc 30.    |
-+--------------------------------------------------------------------------+
-| [ Hủy ]                               [ Xem trước ]   [ Xác nhận & lưu ] |
-+--------------------------------------------------------------------------+
++--------------------------------------------------------------------------------------------------+
+| THIẾT LẬP HẰNG TUẦN                                                                          [X] |
+| Lịch và bảng giá · Sân A1                                                                        |
+| Áp dụng cố định cho mọi tuần.                                                                    |
++-----------------+--------------------------------------------------------------------------------+
+| 01 Thứ 2        | GIỜ HOẠT ĐỘNG                                                       [x] Mở cửa |
+| 02 Thứ 3        | 00:00     06:00     12:00     18:00     24:00                                  |
+| 03 Thứ 4        | [//////|=== 06:00–22:00 ===================|///////]                           |
+| 04 Thứ 5        | Giờ mở [ 06:00 v ]     Giờ đóng [ 22:00 v ]                      [ Lưu lịch ]  |
+| > 05 Thứ 6      | (i) Bảng giá sẽ được điều chỉnh: tự loại 1 khung giá nằm ngoài giờ hoạt động.  |
+| 06 Thứ 7        |                                                                                |
+| 07 Chủ nhật     | KHUNG GIÁ                                                     [ Lưu bảng giá ] |
+|                 | 06:00 |=========== 60.000 ₫/giờ ===========|== 100.000 ₫/giờ ==| 22:00         |
+|                 | (kéo điểm chia / thêm, xóa mốc; bước 30 phút)                                  |
+|                 | (v) Đã bao phủ đủ 06:00–22:00. Các điểm chia được khóa theo bước 30 phút.      |
++-----------------+--------------------------------------------------------------------------------+
 ```
 
 | Thành phần | Quy tắc |
 |---|---|
-| Tab T2 đến CN | Mỗi sân đúng một lịch cho mỗi ngày trong tuần, cấu hình từng ngày |
-| Khả dụng | Bỏ chọn là ngày nghỉ: đánh dấu không khả dụng, không xóa lịch |
-| Giờ mở/đóng | Phút 00 hoặc 30, giờ mở nhỏ hơn giờ đóng, không qua nửa đêm |
-| Xem trước | Hiển thị điều chỉnh bảng giá đi kèm trước khi lưu |
-| Lỗi | Làm đơn Chờ xác nhận/Đã xác nhận nằm ngoài giờ mở hoặc không khả dụng: từ chối. Thay đổi trong ngày hiện tại loại khỏi giờ mở các lượt đã ghi nhận Hoàn thành: từ chối. Giờ không hợp lệ: từ chối |
-| Mở rộng giờ | Được phép nếu không ảnh hưởng các đơn hiện có |
-
-### 15.5. Cấu hình bảng giá `M-13` (UC-35)
-
-```text
-+--------------------------------------------------------------------------+
-| CẤU HÌNH BẢNG GIÁ · Sân A1                                           [X] |
-+--------------------------------------------------------------------------+
-| [T2] [T3] [T4] [T5] [*T6*] [T7] [CN]     Giờ mở/đóng: 05:00–22:00        |
-|                                                                          |
-|  #   Từ giờ (mốc bắt đầu)    Đến giờ (tự tính)    Đơn giá (₫/giờ)        |
-|  1   [ 05:00 ] (= giờ mở)    17:00                [ 60.000  ]            |
-|  2   [ 17:00 v ]             22:00                [ 100.000 ] [Xóa]      |
-| [ + Thêm mốc giá ]                                                       |
-|                                                                          |
-| (!) Mốc giờ phải tăng dần, không trùng, mốc đầu bằng giờ mở cửa.         |
-| (!) Đơn giá là số nguyên VND lớn hơn 0; bảng giá không được rỗng.        |
-+--------------------------------------------------------------------------+
-| XEM TRƯỚC                                                                |
-|   05:00–17:00: 60.000 ₫/giờ     17:00–22:00: 100.000 ₫/giờ               |
-| (i) Lưu sẽ thay TOÀN BỘ bảng giá hiện hành của ngày này. Giá đã lưu trên |
-|     các đặt sân cũ không thay đổi.                                       |
-+--------------------------------------------------------------------------+
-| [ Hủy ]                                 [ Xem trước ]   [ Lưu bảng giá ] |
-+--------------------------------------------------------------------------+
-```
-
-| Thành phần | Quy tắc |
-|---|---|
-| Danh sách mốc | Mỗi dòng gồm **giờ bắt đầu** và **đơn giá theo giờ**. Không lưu giờ kết thúc; cột "Đến giờ" tự tính (mốc kế tiếp hoặc giờ đóng cửa) |
-| Mốc đầu | Bằng giờ mở cửa của ngày đó, không sửa được |
-| Mốc giờ | Tăng dần, không trùng, nằm trong [giờ mở, giờ đóng) |
-| Đơn giá | Số nguyên VND lớn hơn 0 |
-| **Xem trước** | Bắt buộc trước khi lưu |
-| Lưu | Thay **toàn bộ** bảng giá hiện hành của ngày đó, ghi nhật ký |
-| Lỗi | Bảng giá rỗng hoặc không hợp lệ: từ chối, hệ thống không tự sửa |
+| Cột ngày | Mỗi sân đúng một lịch và một bảng giá cho mỗi ngày trong tuần; cấu hình từng ngày. Ngày theo chuẩn ISO-8601 (Thứ 2 = 01) |
+| Mở cửa | Bỏ chọn là ngày nghỉ: đánh dấu không khả dụng, không xóa lịch. Ngày nghỉ không cần cấu hình giá |
+| Giờ mở/đóng | Phút 00 hoặc 30, giờ mở nhỏ hơn giờ đóng, không qua nửa đêm. Mở rộng giờ được phép nếu không ảnh hưởng đơn hiện có |
+| Thay giờ hoạt động | Giao diện tự co/dãn mốc giá cho khớp; khối cảnh báo vàng cho biết số khung giá sẽ bị loại **trước khi lưu** (xem trước điều chỉnh, UC-34) |
+| Khung giá | Thanh timeline `PricingTimeline`: các đoạn nối liền, mốc đầu bằng giờ mở cửa, các mốc cách nhau tối thiểu 30 phút, đơn giá là số nguyên VND lớn hơn 0 |
+| Nút Lưu lịch / Lưu bảng giá | Hai nút độc lập. Lưu bảng giá **thay toàn bộ** bảng giá hiện hành của ngày đó, ghi nhật ký. Lỗi thì khôi phục bảng giá từ máy chủ và báo lỗi |
+| Lỗi lưu lịch | Làm đơn Chờ xác nhận/Đã xác nhận nằm ngoài giờ mở hoặc không khả dụng: từ chối. Thay đổi trong ngày hiện tại loại khỏi giờ mở các lượt đã ghi nhận Hoàn thành: từ chối |
 | Đơn cũ | Tổng tiền và đơn giá đã lưu trên đặt sân cũ **không đổi** |
 
 ---
@@ -2349,48 +2337,55 @@ Chỉ xóa được khi sân không còn đơn Chờ xác nhận/Đã xác nhậ
 
 | Mục | Nội dung |
 |---|---|
-| Mã màn hình | WF-16 Quản lý nhân viên & Phân quyền |
+| Mã màn hình | WF-16 Quản lý nhân viên & Phân quyền (một màn hình, như `/employees`) |
 | Use-case | UC-36 Thêm nhân viên; UC-37 Sửa nhân viên; UC-38 Đổi vai trò; UC-27 Khóa/mở khóa; UC-39 Xóa tài khoản |
 | Đối tượng | Quản trị viên |
 | Route Codebase hiện tại | `/employees` (`src/app/(admin)/employees/page.tsx`) |
-| Route Wireframe mục tiêu | `/admin/staff`, `/admin/accounts` |
+| Route Wireframe mục tiêu | `/employees` |
 | Component Codebase | `EmployeesClient.tsx`, `EmployeeFormModal.tsx` |
 | Tình trạng Codebase | Đang chạy |
 | Điều hướng ra | – |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
-> - *Codebase hiện tại:* `EmployeeFormModal.tsx` đã cho QTV nhập mật khẩu trực tiếp min 8 ký tự (đã khớp X-06).
-> - *Chuẩn Wireframe tương lai:* Nới lỏng regex SĐT 8–15 chữ số (BR-26). Bổ sung ràng buộc bảo vệ không cho khóa, hạ quyền hoặc xóa Quản trị viên Hoạt động duy nhất (BR-27, UC-38). Đã loại bỏ ca làm việc/chấm công (X-04).
+> - *Codebase hiện tại:* `EmployeesClient.tsx` là một màn hình duy nhất: 3 thẻ số liệu (Tổng nhân viên, Đang hoạt động, Quản trị viên), ô tìm kiếm, lọc theo vai trò và trạng thái, bảng (Nhân viên kèm mã, Vai trò, Liên hệ, Trạng thái, Thao tác) với 3 nút Sửa, Khóa/Mở khóa, Xóa; tải tối đa 100 nhân viên, chưa phân trang. `EmployeeFormModal.tsx`: Họ và tên, SĐT (`^0\d{9}`), Email, Mật khẩu tối thiểu 8 ký tự (chỉ khi thêm); chưa có lựa chọn Vai trò. Khóa/Mở khóa chạy ngay không hỏi lại; Xóa dùng hộp xác nhận.
+> - *Chuẩn Wireframe tương lai:* Giữ một màn hình và một mục menu "Nhân viên" `[G-22]` (không tách "Tài khoản & Phân quyền"). Nới SĐT 8–15 chữ số, mật khẩu 8–128 (BR-26). Thêm lựa chọn Vai trò trong form Thêm/Sửa (UC-36, UC-38). Bảo vệ Quản trị viên Hoạt động cuối cùng khi khóa, xóa, hạ quyền (BR-27). Không có ca làm việc/chấm công (X-04).
 
 ### 16.1. Màn hình Quản lý nhân viên
 
 ```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                   Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | QUẢN LÝ NHÂN VIÊN                                                    [ + Thêm nhân viên ] |
-|                          | [ Tìm theo họ tên, SĐT, email...        ]                                                 |
-|   Bảng điều khiển        |                                                                                           |
-|   Lịch sân               | Họ tên            SĐT          Email                     Vai trò        Trạng thái        |
-|   Yêu cầu đặt sân        | ----------------  -----------  ------------------------  -------------  ----------        |
-|   Thanh toán             | Trần Văn B        0911111111   tran.vb@shuttlevn.vn      Nhân viên      ACTIVE            |
-|   Quản lý sân            |      [Sửa hồ sơ]                                                                          |
-|   Khách hàng             | Nguyễn Thị C      0922222222   nguyen.c@shuttlevn.vn     Quản trị viên  ACTIVE            |
-| > Quản lý nhân viên      |      [Sửa hồ sơ]                                                                          |
-|   Báo cáo & Thống kê     | Lê Văn F          0933333333   le.f@shuttlevn.vn         Nhân viên      DISABLED          |
-|   Nhật ký hoạt động      |      [Sửa hồ sơ]                                                                          |
-|   Tài khoản & Phân quyền |                                                                                           |
-|                          | (i) Đổi vai trò, khóa/mở khóa và xóa tài khoản ở mục "Tài khoản & Phân quyền".            |
-+----------------------------------------------------------------------------------------------------------------------+
++--------------------------+----------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| QUẢN LÝ NHÂN VIÊN                            Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
++--------------------------+----------------------------------------------------------------------------------------+
+|                          |                                                                   [ + Thêm nhân viên ] |
+|   Bảng điều khiển        |                                                                                        |
+|   Thống kê               | +--------------------------+ +--------------------------+ +--------------------------+ |
+|   Lịch sân               | | Tổng nhân viên           | | Đang hoạt động           | | Quản trị viên            | |
+|   Yêu cầu đặt sân        | | 3                        | | 2                        | | 1                        | |
+|   Thanh toán             | +--------------------------+ +--------------------------+ +--------------------------+ |
+|   Quản lý sân            |                                                                                        |
+|   Khách hàng             | [ Tìm tên, email, SĐT...  ] [Tất cả vai trò v] [Tất cả trạng thái v]   3 nhân viên     |
+| > Nhân viên              |                                                                                        |
+|   Đặt sân toàn hệ thống  | Nhân viên      Vai trò         Liên hệ               Trạng thái  Thao tác              |
+|   Nhật ký hoạt động      | -------------- --------------- --------------------- ----------- -------------------   |
+|                          | Trần Văn B     [Nhân viên]     0911111111            [Hoạt động] [Sửa][Khóa][Xóa]      |
+|                          | NV-0001                        tran.vb@shuttlevn.vn                                    |
+|                          | Nguyễn Thị C   [Quản trị viên] 0922222222            [Hoạt động] [Sửa][Khóa][Xóa]      |
+|                          | NV-0002                        nguyen.c@shuttlevn.vn                                   |
+|                          | Lê Văn F       [Nhân viên]     0933333333            [Bị khóa]   [Sửa][Mở khóa][Xóa]   |
+|                          | NV-0003                        le.f@shuttlevn.vn                                       |
+|                          |                                                                                        |
+|                          | (!) Không thể khóa, xóa hoặc hạ quyền Quản trị viên đang hoạt động cuối cùng.          |
++--------------------------+----------------------------------------------------------------------------------------+
 ```
 
 | Thành phần | Quy tắc |
 |---|---|
-| Cột | Họ tên, SĐT, Email, Vai trò (Nhân viên / Quản trị viên), Trạng thái tài khoản |
-| Chỉ giữ | Họ tên, số điện thoại, email, quyền |
-| Không vẽ | Ca làm việc, ngày nghỉ, giờ vào làm, phòng ban, thẻ "Ca làm hôm nay" (đã loại khỏi phạm vi) |
-| Sửa hồ sơ | Chỉ sửa họ tên và số điện thoại. Email khóa, không đổi được |
-| Rỗng | "Chưa có nhân viên nào." |
+| Thẻ số liệu | Tổng nhân viên, Đang hoạt động, Quản trị viên. Không có "Ca làm hôm nay" |
+| Tìm kiếm và lọc | Tìm theo họ tên, email, SĐT; lọc Vai trò (Quản trị viên / Nhân viên) và Trạng thái (Hoạt động / Bị khóa) |
+| Cột | Nhân viên (họ tên + mã), Vai trò, Liên hệ (SĐT + email), Trạng thái tài khoản, Thao tác |
+| Không vẽ | Ca làm việc, ngày nghỉ, giờ vào làm, phòng ban (đã loại khỏi phạm vi) |
+| Rỗng | "Không tìm thấy nhân viên" |
+| Thêm nhân viên | Nút ở vùng hành động của Topbar, mở form mục 16.2 |
 
 ### 16.2. Form Thêm nhân viên (UC-36)
 
@@ -2407,7 +2402,7 @@ Chỉ xóa được khi sân không còn đơn Chờ xác nhận/Đã xác nhậ
 |                        8–128 ký tự                                       |
 | (!) Email đã là email đăng nhập của tài khoản khác                       |
 +--------------------------------------------------------------------------+
-| [ Hủy ]                                                [ Tạo tài khoản ] |
+| [ Hủy ]                                               [ Thêm nhân viên ] |
 +--------------------------------------------------------------------------+
 ```
 
@@ -2419,52 +2414,18 @@ Chỉ xóa được khi sân không còn đơn Chờ xác nhận/Đã xác nhậ
 | Vai trò | Có | Nhân viên hoặc Quản trị viên |
 | Mật khẩu ban đầu | Có | Quản trị viên nhập trực tiếp, 8–128 ký tự |
 
-Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-một, ghi nhật ký. Xung đột đồng thời: hoàn tác, không để lại tài khoản hoặc hồ sơ mồ côi. Tài khoản nội bộ chỉ do Quản trị viên tạo, không có tự đăng ký.
+Form Sửa dùng cùng bố cục: không có ô Mật khẩu, Email khóa, được đổi Họ tên, SĐT và Vai trò (UC-37, UC-38; quyền mới có hiệu lực ở yêu cầu tiếp theo). Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-một, ghi nhật ký. Xung đột đồng thời: hoàn tác, không để lại tài khoản hoặc hồ sơ mồ côi. Tài khoản nội bộ chỉ do Quản trị viên tạo, không có tự đăng ký.
 
-### 16.3. Màn hình Tài khoản & Phân quyền
+### 16.3. Thao tác trên dòng nhân viên
 
-```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                   Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | TÀI KHOẢN & PHÂN QUYỀN                                                                    |
-|                          | [*Nhân viên & Quản trị viên*]  [Khách hàng có tài khoản]                                  |
-|   Bảng điều khiển        |                                                                                           |
-|   Lịch sân               | Họ tên            Email                   Vai trò          Trạng thái                     |
-|   Yêu cầu đặt sân        | ----------------  ----------------------  ---------------  ----------                     |
-|   Thanh toán             | Trần Văn B        tran.vb@shuttlevn.vn    Nhân viên        ACTIVE                         |
-|   Quản lý sân            |      [Đổi vai trò]  [Khóa]  [Xóa tài khoản]                                               |
-|   Khách hàng             | Nguyễn Thị C      nguyen.c@shuttlevn.vn   Quản trị viên    ACTIVE                         |
-|   Quản lý nhân viên      |      [Đổi vai trò]  [Khóa]  [Xóa tài khoản]                                               |
-|   Báo cáo & Thống kê     | Lê Văn F          le.f@shuttlevn.vn       Nhân viên        DISABLED                       |
-|   Nhật ký hoạt động      |      [Đổi vai trò]  [Mở khóa]  [Xóa tài khoản]                                            |
-| > Tài khoản & Phân quyền |                                                                                           |
-|                          | (!) Không thể khóa, xóa hoặc hạ quyền Quản trị viên đang hoạt động cuối cùng.             |
-+----------------------------------------------------------------------------------------------------------------------+
-```
-
-| Thành phần | Quy tắc |
+| Nút | Quy tắc |
 |---|---|
-| Tab | Nhân viên & Quản trị viên; Khách hàng có tài khoản (khóa/mở khóa/xóa. Không có nút Thêm tài khoản khách, UC-26 hoãn) |
-| **Đổi vai trò** | Nhân viên ↔ Quản trị viên. Không chuyển loại hồ sơ Khách ↔ Nhân viên |
-| **Khóa / Mở khóa** | Quản trị viên thao tác được mọi loại tài khoản. Chỉ Quản trị viên mở khóa tài khoản nội bộ. Hành vi giống mục 14.4 |
-| **Xóa tài khoản** | Mở modal mục 16.4 |
+| **Sửa** | Mở form mục 16.2 ở chế độ sửa (Họ tên, SĐT, Vai trò; Email khóa) |
+| **Khóa / Mở khóa** | Quản trị viên khóa/mở khóa được mọi loại tài khoản; chỉ Quản trị viên mở khóa tài khoản nội bộ. Hành vi giống mục 14.4 (mở khóa đưa bộ đếm sai về 0) |
+| **Xóa** | Mở modal mục 16.4 (hard-delete tài khoản, giữ hồ sơ nhân viên) |
+| Đổi vai trò | Nhân viên ↔ Quản trị viên qua ô Vai trò trong form Sửa. Không chuyển loại hồ sơ Khách ↔ Nhân viên |
 | Bảo vệ Quản trị viên cuối | Không khóa, xóa hoặc hạ quyền Quản trị viên `ACTIVE` cuối cùng. Giao diện hiện cảnh báo và máy chủ từ chối |
-
-```text
-+----------------------------------------------------------------------+
-| ĐỔI VAI TRÒ · Trần Văn B                                         [X] |
-+----------------------------------------------------------------------+
-| Vai trò hiện tại: Nhân viên                                          |
-|                                                                      |
-| Vai trò mới *      ( ) Nhân viên    (o) Quản trị viên                |
-|                                                                      |
-| (i) Quyền mới có hiệu lực ở các yêu cầu tiếp theo.                   |
-| (!) Không hạ quyền được Quản trị viên Hoạt động cuối cùng.           |
-+----------------------------------------------------------------------+
-| [ Hủy ]                                              [ Lưu vai trò ] |
-+----------------------------------------------------------------------+
-```
+| Tài khoản khách | Khóa/mở khóa ở WF-14; Quản trị viên xóa tài khoản khách bằng cùng modal 16.4. Không có nút Thêm tài khoản khách ở đây |
 
 ### 16.4. Modal Xóa tài khoản (hard-delete) `M-14` (UC-39)
 
@@ -2500,33 +2461,33 @@ Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-
 | Use-case | UC-40 Xem đặt sân toàn hệ thống |
 | Đối tượng | Quản trị viên |
 | Route Codebase hiện tại | *Chưa có route trong codebase* (US-23) |
-| Route Wireframe mục tiêu | `/admin/bookings` |
+| Route Wireframe mục tiêu | `/bookings` |
 | Component Codebase | *Chưa tạo file* |
 | Tình trạng Codebase | Chưa triển khai (thuộc US-23 đang phát triển) |
 | Điều hướng ra | Chọn đơn → xem lịch sử trạng thái; xử lý phát sinh ở WF-11 |
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
 > - *Codebase hiện tại:* Chưa có route độc lập trong `src/app/(admin)/`.
-> - *Chuẩn Wireframe tương lai:* Xây dựng `/admin/bookings` lọc đa tiêu chí cho QTV: ngày chơi giờ VN (D8), sân, trạng thái đơn, trạng thái thanh toán, xem timeline từng đơn.
+> - *Chuẩn Wireframe tương lai:* Xây dựng `/bookings` lọc đa tiêu chí cho QTV: ngày chơi giờ VN (D8), sân, trạng thái đơn, trạng thái thanh toán, xem timeline từng đơn.
 
 ### 17.1. Wireframe
 
 ```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                   Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | TẤT CẢ ĐẶT SÂN (TOÀN HỆ THỐNG)                                                            |
-|                          | [Yêu cầu chờ xác nhận]  [*Tất cả đặt sân*]                                                |
++--------------------------+-------------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| TẤT CẢ ĐẶT SÂN (TOÀN HỆ THỐNG)                  Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
++--------------------------+-------------------------------------------------------------------------------------------+
+|                          |                                                                                           |
 |   Bảng điều khiển        |                                                                                           |
+|   Thống kê               |                                                                                           |
 |   Lịch sân               | Từ ngày [ 09/08/2026 ]  Đến ngày [ 14/08/2026 ]  (giờ Việt Nam)                           |
-| > Yêu cầu đặt sân        | Sân [ Tất cả v ]  Trạng thái đơn [ Tất cả v ]  Thanh toán [ Tất cả v ]                    |
+|   Yêu cầu đặt sân        | Sân [ Tất cả v ]  Trạng thái đơn [ Tất cả v ]  Thanh toán [ Tất cả v ]                    |
 |   Thanh toán             | Khách hàng [ họ tên / SĐT / email ]                      [Lọc] [Xóa lọc]                  |
 |   Quản lý sân            |                                                                                           |
 |   Khách hàng             | Mã đơn    Khách       Sân  Ngày giờ           Tổng tiền   Trạng thái    Thanh toán        |
-|   Quản lý nhân viên      | --------  ----------  ---  -----------------  ----------  ------------  ----------------  |
-|   Báo cáo & Thống kê     | DS-12AB5  Trần Thị B  A2   14/08 18:00-19:30  150.000 ₫   Chờ xác nhận  Chưa lập hóa đơn  |
+|   Nhân viên              | --------  ----------  ---  -----------------  ----------  ------------  ----------------  |
+| > Đặt sân toàn hệ thống  | DS-12AB5  Trần Thị B  A2   14/08 18:00-19:30  150.000 ₫   Chờ xác nhận  Chưa lập hóa đơn  |
 |   Nhật ký hoạt động      | DS-7K3QP  Lê Văn C    A1   14/08 18:00-19:00  100.000 ₫   Đã xác nhận   Chưa thanh toán   |
-|   Tài khoản & Phân quyền | DS-3E5PL  Trần Thị B  A1   11/08 19:00-20:00  100.000 ₫   Hoàn thành    Đã thanh toán     |
+|                          | DS-3E5PL  Trần Thị B  A1   11/08 19:00-20:00  100.000 ₫   Hoàn thành    Đã thanh toán     |
 |                          | DS-2B6NV  Trần Thị B  A1   09/08 08:00-09:00  60.000 ₫    Đã hủy        —                 |
 |                          |                                                                                           |
 |                          | Hiển thị 1–4 / 4                                         [<]  1  [>]    Mỗi trang: [20 v] |
@@ -2539,7 +2500,7 @@ Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-
 |                          | | 14/08 07:20   Chờ xác nhận -> Đã xác nhận     Nhân viên · Trần Văn B    —             | |
 |                          | +---------------------------------------------------------------------------------------+ |
 |                          | (i) Chỉ xem. Xử lý phát sinh bằng thao tác ở màn hình chi tiết đặt sân.                   |
-+----------------------------------------------------------------------------------------------------------------------+
++--------------------------+-------------------------------------------------------------------------------------------+
 ```
 
 ### 17.2. Chi tiết thành phần
@@ -2550,6 +2511,7 @@ Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-
 | Sân | Danh sách sân, gồm cả sân đã xóa với nhãn "Sân đã xóa #<mã>" |
 | Trạng thái đơn | Tất cả, Chờ xác nhận, Đã xác nhận, Hoàn thành, Đã hủy |
 | Trạng thái thanh toán | Tất cả, Chưa lập hóa đơn, Chưa thanh toán, Đã thanh toán `[G-23]` |
+| Truy cập | Mục menu riêng "Đặt sân toàn hệ thống" (`/bookings`), chỉ Quản trị viên. API `GET /admin/bookings` |
 | Khách hàng | Tìm theo họ tên, SĐT, email |
 
 | Thành phần | Quy tắc |
@@ -2570,7 +2532,7 @@ Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-
 | Use-case | UC-41 Thống kê doanh thu; UC-42 Thống kê đặt sân |
 | Đối tượng | Quản trị viên |
 | Route Codebase hiện tại | `/statistics` (`src/app/(admin)/statistics/page.tsx`) |
-| Route Wireframe mục tiêu | `/admin/reports` |
+| Route Wireframe mục tiêu | `/statistics` |
 | Component Codebase | `statistics/page.tsx` |
 | Tình trạng Codebase | 100% Placeholder |
 | Điều hướng ra | – |
@@ -2582,21 +2544,21 @@ Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-
 ### 18.1. Wireframe
 
 ```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                   Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | BÁO CÁO & THỐNG KÊ                                                                        |
-|                          | Từ ngày [ 10/08/2026 ]  Đến ngày [ 14/08/2026 ]                                           |
-|   Bảng điều khiển        | Nhóm theo [*Ngày*] [Tháng]                                [ Xem báo cáo ]                 |
++--------------------------+-------------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| BÁO CÁO & THỐNG KÊ                              Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
++--------------------------+-------------------------------------------------------------------------------------------+
+|                          |                                                                                           |
+|   Bảng điều khiển        | Từ ngày [ 10/08/2026 ]  Đến ngày [ 14/08/2026 ]                                           |
+| > Thống kê               | Nhóm theo [*Ngày*] [Tháng]                                [ Xem báo cáo ]                 |
 |   Lịch sân               |                                                                                           |
 |   Yêu cầu đặt sân        | DOANH THU (hóa đơn hợp lệ Đã thanh toán, theo thời điểm thu)                              |
 |   Thanh toán             | Tổng doanh thu:  5.210.000 ₫                                                              |
 |   Quản lý sân            |                                                                                           |
 |   Khách hàng             | Ngày      Số HĐ đã thu    Doanh thu                                                       |
-|   Quản lý nhân viên      | --------  --------------  --------------                                                  |
-| > Báo cáo & Thống kê     | 10/08     6               720.000 ₫                                                       |
+|   Nhân viên              | --------  --------------  --------------                                                  |
+|   Đặt sân toàn hệ thống  | 10/08     6               720.000 ₫                                                       |
 |   Nhật ký hoạt động      | 11/08     9               1.080.000 ₫                                                     |
-|   Tài khoản & Phân quyền | 12/08     7               840.000 ₫                                                       |
+|                          | 12/08     7               840.000 ₫                                                       |
 |                          | 13/08     11              1.320.000 ₫                                                     |
 |                          | 14/08     10              1.250.000 ₫                                                     |
 |                          | Tổng      43              5.210.000 ₫                                                     |
@@ -2619,7 +2581,7 @@ Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-
 |                          | Tổng      56          65,5        49               57,5                                   |
 |                          |                                                                                           |
 |                          | (i) Doanh thu kỳ cũ có thể đổi nếu sau đó có hoàn tiền (hóa đơn đã hoàn bị loại).         |
-+----------------------------------------------------------------------------------------------------------------------+
++--------------------------+-------------------------------------------------------------------------------------------+
 ```
 
 ### 18.2. Chi tiết thành phần
@@ -2652,7 +2614,7 @@ Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-
 | Use-case | UC-43 Xem nhật ký hoạt động |
 | Đối tượng | Quản trị viên |
 | Route Codebase hiện tại | `/audits` (`src/app/(admin)/audits/page.tsx`) |
-| Route Wireframe mục tiêu | `/admin/audit-log` |
+| Route Wireframe mục tiêu | `/audits` |
 | Component Codebase | `audits/page.tsx` |
 | Tình trạng Codebase | 100% Placeholder |
 | Điều hướng ra | – |
@@ -2664,21 +2626,21 @@ Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-
 ### 19.1. Wireframe
 
 ```text
-+----------------------------------------------------------------------------------------------------------------------+
-| ShuttleVN · Khu quản trị                                                   Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
-+----------------------------------------------------------------------------------------------------------------------+
-| MENU                     | NHẬT KÝ HOẠT ĐỘNG                                                                         |
++--------------------------+-------------------------------------------------------------------------------------------+
+| ShuttleVN         [Admin]| NHẬT KÝ HOẠT ĐỘNG                               Nguyễn Thị C · Quản trị viên  [Đăng xuất] |
++--------------------------+-------------------------------------------------------------------------------------------+
 |                          |                                                                                           |
-|   Bảng điều khiển        | Từ ngày [ 14/08/2026 ]  Đến ngày [ 14/08/2026 ]  Tác nhân [ Tất cả v ]                    |
+|   Bảng điều khiển        |                                                                                           |
+|   Thống kê               | Từ ngày [ 14/08/2026 ]  Đến ngày [ 14/08/2026 ]  Tác nhân [ Tất cả v ]                    |
 |   Lịch sân               | Đối tượng [ Tất cả v ]  Thao tác [ Tất cả v ]                     [Lọc] [Xóa lọc]         |
 |   Yêu cầu đặt sân        |                                                                                           |
 |   Thanh toán             | Thời điểm UTC+7   Tác nhân                Thao tác            Đối tượng                   |
 |   Quản lý sân            | ----------------  ----------------------  ------------------  ------------------------    |
 |   Khách hàng             | 14/08/2026 07:40  Quản trị · Nguyễn C     Sửa bảng giá        Sân A1 · Thứ 6              |
-|   Quản lý nhân viên      |     Trước: 17:00 -> 90.000 ₫/giờ        Sau: 17:00 -> 100.000 ₫/giờ                       |
-|   Báo cáo & Thống kê     | 14/08/2026 07:30  Nhân viên · Trần Văn B  Đổi lịch đặt sân    Đặt sân DS-7K3QP            |
+|   Nhân viên              |     Trước: 17:00 -> 90.000 ₫/giờ        Sau: 17:00 -> 100.000 ₫/giờ                       |
+|   Đặt sân toàn hệ thống  | 14/08/2026 07:30  Nhân viên · Trần Văn B  Đổi lịch đặt sân    Đặt sân DS-7K3QP            |
 | > Nhật ký hoạt động      |     Trước: A1 · 17:00–18:00             Sau: A1 · 18:00–19:00                             |
-|   Tài khoản & Phân quyền | 14/08/2026 07:20  Nhân viên · Trần Văn B  Lập hóa đơn         Hóa đơn HD-20260814-001     |
+|                          | 14/08/2026 07:20  Nhân viên · Trần Văn B  Lập hóa đơn         Hóa đơn HD-20260814-001     |
 |                          |     Trước: (chưa có)                    Sau: Chưa thanh toán · 100.000 ₫                  |
 |                          | 14/08/2026 07:20  Nhân viên · Trần Văn B  Xác nhận đặt sân    Đặt sân DS-7K3QP            |
 |                          |     Trước: Chờ xác nhận                 Sau: Đã xác nhận                                  |
@@ -2688,7 +2650,7 @@ Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-
 |                          | Hiển thị 1–5 / 38                                        [<]  1  [>]    Mỗi trang: [20 v] |
 |                          |                                                                                           |
 |                          | (i) Bảng chỉ đọc, bất biến. Không có thao tác thêm/sửa/xóa và không có cột lý do.         |
-+----------------------------------------------------------------------------------------------------------------------+
++--------------------------+-------------------------------------------------------------------------------------------+
 ```
 
 ### 19.2. Chi tiết thành phần
@@ -2713,62 +2675,65 @@ Một giao dịch tạo hồ sơ nhân viên và tài khoản liên kết một-
 
 ## Ghi chú đối chiếu và giả định
 
-Nguyên tắc: SRS 1.7 và UC 1.5 là nguồn chuẩn. Khi yêu cầu thiết kế có điểm chưa khớp hoặc chưa có trong SRS/UC, wireframe vẫn vẽ theo yêu cầu và **gắn nhãn** để bạn quyết định.
+Nguyên tắc: SRS 1.7 và UC 1.5 là nguồn chuẩn về nghiệp vụ; mã nguồn hiện tại là chuẩn về bố cục và luồng giao diện. Điểm chưa khớp hoặc chưa có trong SRS/UC được **gắn nhãn** để bạn quyết định.
 
 | Mã | Nội dung | Cách xử lý trong wireframe |
 |---|---|---|
-| G-01 | Kích thước và mặt sân ở lưới sân (dữ liệu loại sân/mặt sân đang là mục chưa chốt O-01 trong User-Flows) | Vẽ theo yêu cầu. Nếu bỏ: chỉ hiển thị tên sân + badge trạng thái |
-| G-02 | Tab Đổi mật khẩu chưa có use-case (O-06) | Vẽ và đánh dấu TẠM ẨN |
+| G-01 | Kích thước và mặt sân ở lưới sân: SRS, UC, dữ liệu sân (`Court`) và form thêm sân không có hai trường này; lưới sân hiện hiển thị `description` | Đã bỏ khỏi wireframe, thay bằng Mô tả. Muốn giữ phải bổ sung vào SRS/UC và dữ liệu sân |
+| G-02 | Tab Đổi mật khẩu chưa có use-case trong SRS/UC (O-06), nhưng backend `PUT /profile/change-password` và tab "Bảo mật" đã chạy | Vẽ tab như code, không còn đánh dấu tạm ẩn. Nên bổ sung use-case vào SRS/UC |
 | G-03 | Header của khách chưa đăng nhập có hiện "Lịch sử đặt sân" hay không | Ẩn, vì lịch sử chỉ dành cho khách thành viên. Dễ đổi thành hiện và dẫn tới Đăng nhập nếu bạn muốn |
 | G-04 | "05:00–22:00" là khung mẫu. Quy tắc thật là giờ mở cửa cấu hình theo từng sân, từng ngày trong tuần | Lưới lấy cột theo giờ mở cửa thực tế |
 | G-05 | Nhãn thanh toán cho đơn Đã hủy chưa được SRS nêu | Hiển thị "—" |
-| G-06 | Số hotline chưa có trong SRS/UC | Dùng placeholder `{Hotline}` |
+| G-06 | Số hotline chưa có trong SRS/UC; code đang gắn cứng `1900 1234` ở trang tra cứu | Dùng placeholder `{Hotline}`, lấy từ cấu hình |
 | G-07 | Trường Xác nhận mật khẩu mới ở Quên mật khẩu chưa có trong UC-04 | Thêm theo cách đã làm ở Đăng ký (chỉ kiểm tra ở giao diện). Bỏ được nếu muốn bám sát UC |
 | G-08 | Báo "email đã có tài khoản" lúc đăng ký (BR-11) với yêu cầu không tiết lộ tài khoản tồn tại ở luồng gửi mã công khai (BR-26) | Vẽ banner dẫn tới Đăng nhập/Quên mật khẩu theo BR-11. Cần xác nhận thời điểm báo (trước hay sau khi xác minh OTP) |
 | G-09 | Khung "Chi tiết đơn" ở Lịch sử chưa có trong mockup HTML | Thêm khung chi tiết gọn, chỉ gồm thông tin đã có trên thẻ |
-| G-10 | Thay thế mockup HTML cũ bằng mã nguồn Next.js thực tế | 17 file HTML mockup cũ (UI-MockUp) là bản phác thảo ban đầu; tài liệu wireframe đã được đồng bộ chuẩn hóa trực tiếp với mã nguồn React/Next.js trong `shuttle-vn-frontend/src` và SRS 1.7 |
+| G-10 | Mockup HTML cũ (UI-MockUp) chỉ là bản phác thảo ban đầu | Wireframe lấy mã nguồn Next.js hiện tại và Design-System làm căn cứ giao diện, SRS 1.7/UC 1.5 làm căn cứ nghiệp vụ |
 | G-11 | Widget AI hiện trên các trang Cổng Khách hàng, ẩn ở Cổng Quản trị; giới hạn độ dài câu hỏi chưa quy định | Giả định: widget hiện ở mọi trang Cổng Khách hàng và ẩn ở Cổng Quản trị |
 | G-12 | Ô "Đặt của bạn" trên lưới có bấm được không | Không bấm được, chỉ tooltip |
 | G-13 | Sân Bảo trì/Đóng hiển thị thế nào trên lưới khi chú giải chỉ có 4 trạng thái | Cả hàng hiện ô Đóng cửa + badge trạng thái sân trên nhãn hàng |
-| G-14 | Bảng điều khiển không có use-case trong SRS/UC (O-05). Tiêu chí "đơn cần xử lý gấp" chưa được định nghĩa | Vẽ đúng 3 chỉ số và danh sách theo yêu cầu. "Gấp" = đơn Chờ xác nhận có giờ chơi gần nhất (đề xuất). Không vẽ biểu đồ, chuông, xuất báo cáo, tỷ lệ lấp đầy |
-| G-15 | Nút Đăng xuất ở Topbar chưa có use-case (D-21). Trang đích của nhân viên sau đăng nhập đã được bạn chốt là Yêu cầu đặt sân (đóng O-03 i) | Vẽ nút Đăng xuất theo yêu cầu. Nhân viên vào `/admin/booking-requests` |
+| G-14 | Bảng điều khiển không có use-case trong SRS/UC (O-05). Tiêu chí "đơn cần xử lý gấp" chưa được định nghĩa | Giữ bố cục đang chạy (3 thẻ, biểu đồ doanh thu 7 ngày, thẻ Chờ xác nhận, Đặt sân gần đây); bỏ Tỷ lệ lấp đầy. Chờ xác nhận xếp giờ chơi gần nhất trước (đề xuất). Không có chuông, xuất báo cáo. Cần xác nhận giữ biểu đồ |
+| G-15 | Nút Đăng xuất ở Topbar chưa có use-case (D-21). Trang đích của nhân viên sau đăng nhập đã được bạn chốt là Yêu cầu đặt sân (đóng O-03 i) | Vẽ nút Đăng xuất theo yêu cầu. Nhân viên vào `/booking-requests` |
 | G-16 | Yêu cầu WF-11 chỉ liệt kê 4 modal. Hủy theo yêu cầu khách và Đổi lịch thay khách (NV-11, UC-09, UC-10, F-NV-04) không nằm trong danh sách đó | Vẽ thêm, vì khách vãng lai chỉ hủy/đổi được qua nhân viên. Nếu muốn giữ đúng 4 modal thì bỏ mục 11.7 |
 | G-17 | Hoàn tiền M-11 được yêu cầu đặt ở WF-13, nhưng theo luồng F-NV-07 phần D nó là bước trong giao dịch hủy/đổi lịch đơn đã thanh toán, không phải nút độc lập trên danh sách hóa đơn | Vẽ modal ở WF-13 như yêu cầu, ghi rõ mở từ WF-11 |
 | G-18 | "Xác nhận tạo đơn ngay" ở modal Tạo lịch đặt thay khách | Hiểu là gửi tạo đơn ngay không qua OTP. Đơn tạo ra ở Chờ xác nhận (BR-20, F-NV-09), không tự xác nhận. Chỉ tạo trước giờ bắt đầu |
 | G-19 | Nhân viên có sửa họ tên/SĐT khách hay chỉ tra cứu và khóa/mở khóa (O-03 ii: UC-24 cho sửa, mô tả menu X-02 thì không) | Chỉ vẽ tra cứu, xem lịch sử, khóa/mở khóa như yêu cầu. Modal sửa khách chưa vẽ (không đổi email, BR-18) |
 | G-20 | Khách vãng lai không có tài khoản | Cột trạng thái "—", không có nút Khóa/Mở khóa |
 | G-21 | Mockup có thẻ số liệu, xuất Excel/PDF/CSV, ghi chú nội bộ của khách, đặt lại mật khẩu bởi quản trị (O-01 b) | Không vẽ, vì yêu cầu thiết kế không liệt kê và SRS/UC chưa có |
-| G-22 | Hai mục menu "Quản lý nhân viên" và "Tài khoản & Phân quyền" | Tách hai màn hình: hồ sơ nhân viên (thêm/sửa) và tài khoản (vai trò, khóa/mở khóa, xóa) |
-| G-23 | Menu quản trị viên không có mục riêng cho đặt sân toàn hệ thống. UC-40 lọc theo ngày, sân, trạng thái, khách hàng, còn yêu cầu có thêm "trạng thái thanh toán" | WF-17 đặt thành tab "Tất cả đặt sân" trong Yêu cầu đặt sân (chỉ Quản trị viên). Giữ bộ lọc thanh toán theo yêu cầu |
+| G-22 | Menu "Quản lý nhân viên" và "Tài khoản & Phân quyền" | Gộp thành một mục "Nhân viên" (`/employees`) đúng như code; đổi vai trò nằm trong form Sửa |
+| G-23 | UC-40 lọc theo ngày, sân, trạng thái, khách hàng; yêu cầu thiết kế có thêm "trạng thái thanh toán" | WF-17 là mục menu riêng "Đặt sân toàn hệ thống" (`/bookings`) như Design-System. Giữ bộ lọc thanh toán |
 | G-24 | Mockup thống kê có nhóm theo tuần, so sánh kỳ trước, lọc theo sân, tab Tình trạng sân (O-01 b) | Chỉ vẽ nhóm theo Ngày/Tháng (QT-17) |
 | G-25 | Nhật ký ở mockup có cột IP, sự kiện đăng nhập, cảnh báo hệ thống | Không vẽ (X-04, O-01 b) |
 | G-26 | Tra cứu nhanh theo mã đặt sân/SĐT/email (UC-30, M-12) chưa có màn hình riêng | Thanh tìm kiếm WF-14 phủ tìm khách. Tìm theo mã đặt sân chưa vẽ |
 | G-27 | SRS chưa nêu giới hạn cho thời điểm thu và thời điểm hoàn tiền | Đề xuất đã áp dụng: thời điểm thu (Xác nhận đặt sân, Ghi nhận hoàn thành, Thu tiền) không sau thời điểm hiện tại của máy chủ. Thời điểm hoàn không sau thời điểm hiện tại và không trước thời điểm thu của hóa đơn gốc. Máy chủ kiểm tra, nên bổ sung vào SRS |
 | G-28 | Nút "Xác nhận đã thu" ở thẻ Hóa đơn của WF-11 có trong mockup nhưng chưa có xử lý (D-09) | Vẽ nút mở cùng modal Thu tiền của WF-13 |
 
+| G-29 | Luồng đặt sân của khách là 2 bước (lưới → trang xác nhận `/booking`, `/booking/guest`) thay vì popup/thẻ đặt nhanh trong trang lưới | Wireframe theo luồng code, vẫn bám KH-08, KH-09, KH-11 |
+| G-30 | Trang xác nhận đặt sân thay vì modal thành công; code hiện tại hiển thị mã tại chỗ | Giữ khối thành công trong trang, thêm nút Tra cứu đơn / Xem lịch sử |
+| G-31 | Popover chọn thời lượng của code chỉ liệt kê đến 3 giờ, SRS (BR-20) không đặt mức tối đa | Giữ danh sách đến 3 giờ như code; cần xác nhận có giới hạn nghiệp vụ hay chỉ là giới hạn giao diện |
 
 ---
 
 ## Bảng tổng hợp đối chiếu Hiện trạng Codebase (Codebase Reality)
 
-| Mã WF | Màn hình | File Codebase (`src/app/` & `components/`) | Hiện trạng đang chạy | Khoảng cách cần refactor lên Chuẩn Wireframe |
+| Mã WF | Màn hình | File Codebase | Hiện trạng đang chạy | Khoảng cách cần bổ sung lên Chuẩn Wireframe |
 |---|---|---|---|---|
-| WF-01 | Đăng ký | `register/page.tsx`, `RegisterForm.tsx` | Form chạy được | Tách Modal OTP 6 ô rời (M-01); nâng mật khẩu lên 8–128 ký tự (BR-11) |
-| WF-02 | Đăng nhập | `login/page.tsx`, `LoginForm.tsx`, `useAuth.ts` | Form chạy được | Nâng mật khẩu lên 8-128; sửa redirect sau login cho Employee (X-02); link Quên MK trỏ `/forgot-password` |
-| WF-03 | Quên MK | *Chưa có file* | Chưa có trang | Xây dựng trang `/forgot-password` luồng 3 bước (Email -> OTP -> Mật khẩu mới) |
-| WF-04 | Đặt sân | `courts/page.tsx`, `CourtGrid.tsx`, `SlotPopup.tsx` | Chạy lưới sân | Thêm mốc 30p (BR-20); bắt buộc email + OTP cho khách đặt nhanh (X-01, X-07); kết nối popup sang xác nhận đơn |
-| WF-05 | Lịch sử | `my-bookings/page.tsx`, `BookingHistoryList.tsx` | Chạy danh sách | Bỏ nút Hóa đơn (D-13); nhãn thanh toán đơn Pending là "Chưa lập hóa đơn" (D-12); gắn modal Chi tiết, Hủy, Đổi lịch |
-| WF-06 | Tra cứu | `lookup/page.tsx`, `BookingLookupForm.tsx` | Chạy tra cứu | Bắt buộc nhập CẶP Mã đơn + SĐT/Email (X-03); xóa nút DEMO; che bớt tên khách |
-| WF-07 | Hồ sơ | `profile/page.tsx`, `ProfileInfoForm.tsx` | Chạy hồ sơ | Nới lỏng regex SĐT 8–15 số (BR-26); giữ email disabled; không đưa quản lý phiên/thiết bị vào UI (X-04) |
-| WF-08 | Trợ lý AI | `api/chat/route.ts` (backend) | Có backend API | Xây dựng component giao diện `ChatWidget.tsx` ở góc phải Cổng Khách hàng |
-| WF-09 | Dashboard | `dashboard/page.tsx`, `DashboardStats.tsx` | Chạy dashboard | Xóa thẻ "Tỷ lệ lấp đầy" (X-04); giữ 3 chỉ số cốt lõi và danh sách đơn cần xử lý gấp |
-| WF-10 | Yêu cầu đặt | *Chưa có file* (US-11) | Chưa có trang | Xây dựng `/admin/booking-requests` sắp xếp đơn Pending cũ nhất trước (NV-03) |
-| WF-11 | Xử lý đơn | *Chưa có file* (US-12) | Chưa có trang | Xây dựng `/admin/bookings/[id]` timeline trạng thái có lý do (BR-13) và các modal xử lý |
-| WF-12 | Lịch sân | `schedule/page.tsx`, `ScheduleClient.tsx` | Chạy timeline | Thêm nút và modal Đặt tại quầy không cần OTP (X-05) và thao tác nhanh đổi trạng thái sân |
-| WF-13 | Thanh toán | `payments/page.tsx` | Placeholder | Xây dựng bảng hóa đơn, modal thu tiền, modal hoàn tiền; không có nút lập hóa đơn thủ công (D-07) |
-| WF-14 | Khách hàng | `customers/page.tsx`, `CustomersClient.tsx` | Chạy bảng | Thêm tìm kiếm nhanh (UC-30); gắn handler khóa/mở khóa reset counter sai về 0 (BR-12) |
-| WF-15 | Quản lý sân| `manage-courts/page.tsx`, `PricingTimeline.tsx` | Chạy thẻ & timeline | Bổ sung xem trước cấu hình sân (BR-25); ràng buộc xóa mềm khi hết đơn (BR-15) |
-| WF-16 | Nhân viên | `employees/page.tsx`, `EmployeeFormModal.tsx` | Chạy form & bảng | Nới lỏng regex SĐT 8-15 số; bảo vệ QTV Hoạt động cuối cùng (BR-27); bỏ ca làm việc/chấm công (X-04) |
-| WF-17 | Toàn HT | *Chưa có file* (US-23) | Chưa có trang | Xây dựng `/admin/bookings` lọc đa tiêu chí cho QTV (UC-40) |
-| WF-18 | Thống kê | `statistics/page.tsx` | Placeholder | Xây dựng báo cáo Doanh thu (hóa đơn Paid, nhóm Ngày/Tháng theo QT-17) và Đặt sân; bỏ Tỷ lệ lấp đầy (X-04) |
-| WF-19 | Nhật ký | `audits/page.tsx` | Placeholder | Xây dựng bảng audit bất biến, chỉ đọc, không cột lý do (BR-14), hiển thị giá trị Trước/Sau |
+| WF-01 | Đăng ký | `register/page.tsx`, `RegisterForm.tsx` | Form + mã xác thực inline, mật khẩu min 6 | Modal OTP 6 ô rời (M-01); mật khẩu 8–128 (BR-11, BR-26) |
+| WF-02 | Đăng nhập | `login/page.tsx`, `LoginForm.tsx`, `useAuth.ts` | Form chạy; Nhân viên vào `/dashboard` | Mật khẩu 8–128; Nhân viên vào `/booking-requests` (X-02); link Quên MK → `/forgot-password` |
+| WF-03 | Quên MK | *Chưa có file* | Chưa có trang | Trang `/forgot-password` 3 bước (Email → OTP → Mật khẩu mới); API đã có |
+| WF-04 | Đặt sân | `courts/CourtsClient.tsx`, `CourtGrid.tsx`, `SlotPopup.tsx`, `booking/*`, `ReservationForm.tsx` | Lưới + popover + trang xác nhận chạy | Mốc 30 phút (BR-20); bảng đơn giá (KH-07); Modal OTP thay mã inline (X-07) |
+| WF-05 | Lịch sử | `my-bookings/page.tsx`, `BookingHistoryList.tsx`, `BookingCard.tsx` | Tab, tìm kiếm, phân trang 10, Chi tiết, Hóa đơn, Hủy | Bỏ nút Hóa đơn (D-13); nhãn "Chưa lập hóa đơn" (D-12); Modal Hủy có lý do (M-06) thay hộp thoại trình duyệt; thêm Đổi lịch |
+| WF-06 | Tra cứu | `lookup/LookupClient.tsx`, `BookingLookupForm.tsx` | Tra cứu chạy, có nút DEMO | Bắt buộc cặp Mã đơn + SĐT/Email (X-03); xóa DEMO; hotline từ cấu hình |
+| WF-07 | Hồ sơ | `profile/ProfileClient.tsx`, `ProfileInfoForm.tsx`, `ChangePasswordForm.tsx` | Hồ sơ + tab Bảo mật chạy | SĐT 8–15 số (BR-26); mật khẩu mới 8–128; không có quản lý phiên/thiết bị (X-04) |
+| WF-08 | Trợ lý AI | `app/api/chat` | Có API | Component `ChatWidget.tsx` nổi ở Cổng Khách hàng |
+| WF-09 | Dashboard | `dashboard/DashboardClient.tsx`, `DashboardStats.tsx`, `RevenueChart.tsx` | Chạy đủ 4 thẻ + biểu đồ + 2 danh sách | Bỏ thẻ Tỷ lệ lấp đầy (X-04); dòng Chờ xác nhận mở WF-11 |
+| WF-10 | Yêu cầu đặt | *Chưa có file*; API `booking-requests` | Chưa có trang | Trang `/booking-requests`, cũ nhất trước (NV-03) |
+| WF-11 | Xử lý đơn | *Chưa có file*; API confirm/reject/complete/cancel | Chưa có trang | Trang `/bookings/[id]` có timeline lý do (BR-13) và các modal xử lý; cần API đổi lịch |
+| WF-12 | Lịch sân | `schedule/ScheduleClient.tsx` | Timeline ngang chỉ đọc | Thanh ghi tên khách + trạng thái, bấm mở WF-11; modal Đặt tại quầy (X-05); đổi trạng thái sân |
+| WF-13 | Thanh toán | `payments/page.tsx` | Placeholder | Bảng hóa đơn, modal Thu tiền, Hoàn tiền; không có nút lập hóa đơn thủ công (D-07); cần API |
+| WF-14 | Khách hàng | `customers/CustomersClient.tsx` | Bảng chạy, nút chưa có handler | Tìm kiếm (UC-30), phân trang, Chi tiết + lịch sử, Khóa/Mở khóa (BR-12), Thêm khách (UC-26) |
+| WF-15 | Quản lý sân | `manage-courts/*`, `CourtFormModal.tsx`, `CourtStatusModal.tsx`, `CourtOperationsModal.tsx`, `PricingTimeline.tsx` | Thẻ/Danh sách, form, đổi trạng thái, Lịch & giá chạy | Xem trước khi thêm sân (BR-25); chọn trạng thái ban đầu; xóa mềm sân (UC-33); bỏ ô Lý do ở đổi trạng thái |
+| WF-16 | Nhân viên | `employees/EmployeesClient.tsx`, `EmployeeFormModal.tsx` | Bảng + form + Khóa/Xóa chạy | Ô Vai trò trong form (UC-38); SĐT 8–15; bảo vệ QTV cuối (BR-27); không ca làm việc (X-04) |
+| WF-17 | Toàn HT | *Chưa có file*; API `admin/bookings` | Chưa có trang | Trang `/bookings` lọc đa tiêu chí cho QTV (UC-40) |
+| WF-18 | Thống kê | `statistics/page.tsx` | Placeholder | Báo cáo Doanh thu (HĐ Đã thanh toán, Ngày/Tháng, QT-17) và Đặt sân; không Tỷ lệ lấp đầy (X-04) |
+| WF-19 | Nhật ký | `audits/page.tsx`; API `audits` | Placeholder | Bảng audit bất biến, chỉ đọc, không cột lý do (BR-14), giá trị Trước/Sau |
