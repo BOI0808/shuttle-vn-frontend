@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { CustomerProfileForm } from "@/components/admin/CustomerProfileForm";
+import { CustomerBookingsCard } from "@/components/admin/CustomerBookingsCard";
 import { useCustomer } from "@/hooks";
 import { getErrorMessage } from "@/utils";
 
@@ -43,7 +44,8 @@ export default function CustomerDetailClient({
         </Link>
       </div>
 
-      <CustomerProfileForm customer={customer} />
+    <CustomerProfileForm customer={customer} />
+    <CustomerBookingsCard customerId={customer.customerId} />
     </div>
   );
 }
