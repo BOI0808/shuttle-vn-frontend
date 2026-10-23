@@ -7,6 +7,7 @@ type BadgeStatus =
   | "Completed"
   | "Cancelled"
   | "Active"
+  | "Disabled"
   | "Maintenance"
   | "Closed"
   | "IN_USE"
@@ -23,6 +24,7 @@ const STATUS_CLASSES: Record<BadgeStatus, string> = {
   Completed: "bg-green-50 text-green-600 border-green-200",
   Cancelled: "bg-red-50 text-red-600 border-red-200",
   Active: "bg-green-50 text-green-600 border-green-200",
+  Disabled: "bg-red-50 text-red-600 border-red-200",
   Maintenance: "bg-amber-50 text-amber-600 border-amber-200",
   Closed: "bg-red-50 text-red-600 border-red-200",
   IN_USE: "bg-blue-50 text-blue-600 border-blue-200",
