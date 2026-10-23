@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { CustomerProfileForm } from "@/components/admin/CustomerProfileForm";
 import { CustomerBookingsCard } from "@/components/admin/CustomerBookingsCard";
+import { CustomerAccountCard } from "@/components/admin/CustomerAccountCard";
 import { useCustomer } from "@/hooks";
 import { getErrorMessage } from "@/utils";
 
@@ -45,6 +46,7 @@ export default function CustomerDetailClient({
       </div>
 
     <CustomerProfileForm customer={customer} />
+    <CustomerAccountCard customer={customer} />
     <CustomerBookingsCard customerId={customer.customerId} />
     </div>
   );
