@@ -38,8 +38,7 @@ export default function CustomersClient() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between gap-4">
-        <h2 className="text-xl font-bold text-slate-900">Quản lý khách hàng</h2>
+      <div className="flex items-center justify-end">
         <input
           className="w-full max-w-[320px] rounded-[7px] border border-gray-300 px-3 py-2 text-sm outline-none focus:border-emerald-500"
           placeholder="Tìm theo tên, SĐT, email..."

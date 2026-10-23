@@ -247,14 +247,9 @@ export default function AllBookingsClient({
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h2 className="text-xl font-bold text-slate-900">
-          Đặt sân toàn hệ thống
-        </h2>
-        <p className="mt-1 text-[13px] text-slate-500">
-          Ngày tính theo ngày sử dụng sân (giờ Việt Nam), gồm cả hai ngày.
-        </p>
-      </div>
+      <p className="text-[13px] text-slate-500">
+        Ngày tính theo ngày sử dụng sân (giờ Việt Nam), gồm cả hai ngày.
+      </p>
 
       <div className="flex flex-wrap items-end gap-3">
         <label className={LABEL_CLASS}>

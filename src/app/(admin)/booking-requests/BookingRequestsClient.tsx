@@ -36,12 +36,9 @@ export default function BookingRequestsClient() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h2 className="text-xl font-bold text-slate-900">Yêu cầu đặt sân</h2>
-        <p className="mt-1 text-[13px] text-slate-500">
-          Các đơn đang chờ xác nhận, đơn cũ nhất xếp trước.
-        </p>
-      </div>
+      <p className="text-[13px] text-slate-500">
+        Các đơn đang chờ xác nhận, đơn cũ nhất xếp trước.
+      </p>
 
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="overflow-x-auto">

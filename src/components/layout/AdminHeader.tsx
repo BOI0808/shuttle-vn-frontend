@@ -14,6 +14,15 @@ export function AdminHeader() {
     if (pathname.startsWith("/dashboard")) return "Bảng điều khiển";
     if (pathname.startsWith("/schedule")) return "Lịch sân";
     if (pathname.startsWith("/payments")) return "Xác nhận thanh toán";
+
+    // --- Bổ sung thêm các dòng bên dưới ---
+    if (pathname.startsWith("/booking-requests")) return "Yêu cầu đặt sân";
+    if (pathname.startsWith("/statistics")) return "Thống kê"; 
+    if (pathname.startsWith("/all-bookings") || pathname.startsWith("/bookings"))
+      return "Đặt sân toàn hệ thống";
+    if (pathname.startsWith("/audits")) return "Nhật ký hoạt động";
+    // -------------------------------------
+
     return "Admin Panel";
   };
 
