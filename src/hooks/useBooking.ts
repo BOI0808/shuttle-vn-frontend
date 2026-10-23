@@ -1,8 +1,13 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { bookingService } from "@/services";
-import { QUERY_KEYS } from "@/config/app";
+import { BookingAdminQueryParams, QUERY_KEYS } from "@/config/app";
 import {
   ConfirmPaymentRequest,
   CreateBookingRequest,
@@ -62,11 +67,14 @@ export function useBookingLookup() {
 }
 
 export function useAllBookings(
-  params?: PaginationParams & { date?: string; status?: string }
+  params?: BookingAdminQueryParams,
+  enabled = true
 ) {
   return useQuery({
-    queryKey: [...QUERY_KEYS.bookings, params],
+    queryKey: QUERY_KEYS.adminBookings(params),
     queryFn: () => bookingService.getAllBookings(params),
+    enabled,
+    placeholderData: keepPreviousData,
   });
 }
 

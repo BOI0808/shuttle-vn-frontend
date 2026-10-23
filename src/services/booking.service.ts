@@ -3,7 +3,9 @@ import {
   ApiResponse,
   ApiSchemas,
   Booking,
+  BookingAdminDetail,
   BookingDetail,
+  BookingListItem,
   ConfirmPaymentRequest,
   CreateBookingRequest,
   CreateGuestBookingRequest,
@@ -12,8 +14,9 @@ import {
   PaginationParams,
   PricePreviewDto,
 } from "@/types";
+import { BookingAdminQueryParams } from "@/config/app";
 import { IS_MOCK, mockDelay } from "@/mocks/config";
-import { mockBookings } from "@/mocks/data";
+import { mockAdminBookings, mockBookings } from "@/mocks/data";
 
 function toBookingDetail(
   dto: ApiSchemas["BookingDto"] | ApiSchemas["BookingDetailDto"]
@@ -50,6 +53,48 @@ function toBookingDetail(
       changedAt: item.changedAt ?? "",
       reason: item.reason ?? null,
     })),
+  };
+}
+
+function matchesAdminFilters(
+  booking: BookingAdminDetail,
+  params?: BookingAdminQueryParams
+): boolean {
+  if (!params) return true;
+  if (params.fromDate && booking.date < params.fromDate) return false;
+  if (params.toDate && booking.date > params.toDate) return false;
+  if (params.courtId && booking.courtId !== params.courtId) return false;
+  if (params.status && booking.status !== params.status) return false;
+  if (params.customerId && booking.customerId !== params.customerId) {
+    return false;
+  }
+  const keyword = params.keyword?.trim().toLowerCase();
+  if (!keyword) return true;
+  return [
+    booking.bookingCode,
+    booking.customerName,
+    booking.customerEmail,
+    booking.customerPhone,
+  ].some((value) => value.toLowerCase().includes(keyword));
+}
+
+function getMockAdminBookings(
+  params?: BookingAdminQueryParams
+): PaginatedResponse<BookingListItem> {
+  const pageNumber = params?.pageNumber ?? 1;
+  const pageSize = params?.pageSize ?? 20;
+  const matched = mockAdminBookings
+    .filter((booking) => matchesAdminFilters(booking, params))
+    .sort((a, b) =>
+      `${b.date}${b.startTime}`.localeCompare(`${a.date}${a.startTime}`)
+    );
+  const start = (pageNumber - 1) * pageSize;
+  return {
+    items: matched.slice(start, start + pageSize),
+    pageNumber,
+    pageSize,
+    totalCount: matched.length,
+    totalPages: Math.ceil(matched.length / pageSize),
   };
 }
 
@@ -225,27 +270,15 @@ export const bookingService = {
   },
 
   // Admin
-  async getAllBookings(
-    params?: PaginationParams & { date?: string; status?: string }
-  ): Promise<PaginatedResponse<Booking>> {
+    async getAllBookings(
+    params?: BookingAdminQueryParams
+  ): Promise<PaginatedResponse<BookingListItem>> {
     if (IS_MOCK) {
       await mockDelay();
-      let filtered = [...mockBookings];
-      if (params?.date)
-        filtered = filtered.filter((b) => b.date === params.date);
-      if (params?.status)
-        filtered = filtered.filter((b) => b.status === params.status);
-
-      return {
-        items: filtered,
-        totalCount: filtered.length,
-        pageNumber: params?.pageNumber || 1,
-        pageSize: params?.pageSize || 10,
-        totalPages: 1,
-      };
+      return getMockAdminBookings(params);
     }
     const { data } = await axiosInstance.get<
-      ApiResponse<PaginatedResponse<Booking>>
+      ApiResponse<PaginatedResponse<BookingListItem>>
     >("/admin/bookings", { params });
     return data.data;
   },
