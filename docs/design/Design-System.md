@@ -1,546 +1,504 @@
 # HỆ THỐNG THIẾT KẾ GIAO DIỆN (DESIGN SYSTEM) – SHUTTLEVN
-### Đặc tả Quy chuẩn Giao diện, Design Tokens & Thành phần UI Codebase
+### Quy chuẩn giao diện, Design Tokens và thành phần UI
 
-**Hệ thống Quản lý và Đặt sân Cầu lông Trực tuyến ShuttleVN**  
-**Phiên bản tài liệu:** 1.0 · **Ngày cập nhật:** 20/10/2026  
-**Căn cứ kỹ thuật & nghiệp vụ:**
-- Mã nguồn giao diện thực tế trong `shuttle-vn-frontend/src` (Next.js 15 App Router, TypeScript, Tailwind CSS, TanStack Query, Zustand, Sonner, Recharts).
-- Tệp cấu hình gốc: `tailwind.config.mts`, `src/app/globals.css`, `src/app/layout.tsx`, `src/config/app.ts`.
-- Hồ sơ nghiệp vụ chuẩn: `SRS.md` v1.7, `UseCase.md` v1.5, `User-Flows.md` v1.1, `Wireframes.md` v2.0, `UI-screens.md` v2.0.
+**Hệ thống Quản lý và Đặt sân Cầu lông Trực tuyến ShuttleVN**
+**Phiên bản tài liệu:** 2.0 (thay thế 1.0) · **Ngày cập nhật:** 23/10/2026
 
-> **NGUYÊN TẮC BẢO ĐẢM:**
-> 1. **Tuyệt đối trung thực với mã nguồn:** Phản ánh chính xác các biến token, lớp CSS, font chữ, kích thước, bo góc, màu sắc và component đang chạy thực tế trong `src/`.
-> 2. **Đồng bộ với chuẩn nghiệp vụ tương lai:** Cung cấp đầy đủ hướng dẫn quy chuẩn cho các thành phần đang phát triển (Modal OTP 6 ô rời, Timeline xử lý đơn, bảng audit chỉ đọc, bộ lọc đa tiêu chí).
-> 3. **Loại bỏ triệt để các tàn dư mockup lỗi thời:** Không có token hay component cho tỷ lệ lấp đầy, chấm công/ca làm việc, quản lý phiên/thiết bị hay cảnh báo phần cứng.
+**Căn cứ:**
+- Mã nguồn `shuttle-vn-frontend/src` (Next.js 16 App Router, React 19, TypeScript, **Tailwind CSS v4**, TanStack Query, Zustand, Sonner, Recharts).
+- Cấu hình: `tailwind.config.mts` (nạp qua `@config` trong `globals.css`), `src/app/globals.css`, `src/app/layout.tsx`, `src/config/app.ts`.
+- Nghiệp vụ và màn hình: `SRS.md` v1.7, `UseCase.md` v1.5, `User-Flows.md` v1.1, `Wireframes.md` v2.0, `UI-screens.md` v3.1.
+
+> **NGUYÊN TẮC:**
+> 1. **Trung thực với mã nguồn:** mỗi mục có phần **Hiện trạng** ghi đúng giá trị đang chạy trong `src/`.
+> 2. **Tách rõ chuẩn mục tiêu:** phần **Chuẩn** là quy định cho code mới và khi sửa code cũ, kèm trạng thái: ✅ code đã đúng chuẩn · ⚠ có nhưng lệch chuẩn · ❌ chưa có.
+> 3. **Không có tàn dư ngoài phạm vi:** không có token hay component cho tỷ lệ lấp đầy, ca làm việc, đặt cọc, thanh toán một phần, quản lý phiên/thiết bị.
 
 ---
 
 ## MỤC LỤC
 
-1. [Triết lý Thiết kế & Phân vùng Không gian (Design Philosophy)](#1-triết-lý-thiết-kế--phân-vùng-không-gian-design-philosophy)
-2. [Hệ thống Design Tokens Nền tảng](#2-hệ-thống-design-tokens-nền-tảng)
-   - [2.1 Bảng màu (Color Palette)](#21-bảng-màu-color-palette)
-   - [2.2 Kiểu chữ & Phân cấp Typography](#22-kiểu-chữ--phân-cấp-typography)
-   - [2.3 Khoảng cách & Bố cục Lưới (Spacing & Layout Grid)](#23-khoảng-cách--bố-cục-lưới-spacing--layout-grid)
-   - [2.4 Bo góc (Border Radius) & Đổ bóng (Box Shadow)](#24-bo-góc-border-radius--đổ-bóng-box-shadow)
-   - [2.5 Biểu tượng (Iconography)](#25-biểu-tượng-iconography)
-   - [2.6 Phân cấp Lớp Z-Index (Z-Index Layer Tokens)](#26-phân-cấp-lớp-z-index-z-index-layer-tokens)
-3. [Quy chuẩn Layout Shells & Điều hướng](#3-quy-chuẩn-layout-shells--điều-hướng)
-   - [3.1 Cổng Khách hàng (Customer Shell)](#31-cổng-khách-hàng-customer-shell)
-   - [3.2 Cổng Quản trị & Vận hành (Admin Shell)](#32-cổng-quản-trị--vận-hành-admin-shell)
-4. [Thư viện Thành phần UI Cơ bản (Atomic Components)](#4-thư-viện-thành-phần-ui-cơ-bản-atomic-components)
-   - [4.1 Nút bấm (Button)](#41-nút-bấm-button)
-   - [4.2 Nhãn trạng thái (Badge)](#42-nhãn-trạng-thái-badge)
-   - [4.3 Khung nội dung (Card)](#43-khung-nội-dung-card)
-   - [4.4 Trường nhập liệu (Input & Label)](#44-trường-nhập-liệu-input--label)
-   - [4.5 Hộp thoại xác nhận (ConfirmDialog & Modal Shell)](#45-hộp-thoại-xác-nhận-confirmdialog--modal-shell)
-   - [4.6 Bộ chọn ngày (CustomDatePicker)](#46-bộ-chọn-ngày-customdatepicker)
-   - [4.7 Thanh phân trang (Pagination)](#47-thanh-phân-trang-pagination)
-5. [Thành phần Giao diện Nghiệp vụ Đặc thù (Domain Components)](#5-thành-phần-giao-diện-nghiệp-vụ-đặc-thù-domain-components)
-   - [5.1 Lưới ô đặt sân (Court Slot Grid)](#51-lưới-ô-đặt-sân-court-slot-grid)
-   - [5.2 Cửa sổ chọn thời lượng nổi (SlotPopup)](#52-cửa-sổ-chọn-thời-lượng-nổi-slotpopup)
-   - [5.3 Bảng dữ liệu Vận hành (Admin Data Table)](#53-bảng-dữ-liệu-vận-hành-admin-data-table)
-   - [5.4 Thanh phân bổ giá giờ chơi (PricingTimeline)](#54-thanh-phân-bổ-giá-giờ-chơi-pricingtimeline)
-   - [5.5 Biểu đồ Doanh thu (RevenueChart)](#55-biểu-đồ-doanh-thu-revenuechart)
-   - [5.6 Dòng thời gian lịch sử trạng thái (Status Timeline)](#56-dòng-thời-gian-lịch-sử-trạng-thái-status-timeline)
-   - [5.7 Modal Xác minh Email OTP 6 ô rời (Modal M-01)](#57-modal-xác-minh-email-otp-6-ô-rời-modal-m-01)
-   - [5.8 Widget Trợ lý ảo AI (ChatWidget.tsx - WF-08)](#58-widget-trợ-lý-ảo-ai-chatwidgettsx---wf-08)
-6. [Hệ thống Phản hồi Trạng thái & Thông báo (Feedback & States)](#6-hệ-thống-phản-hồi-trạng-thái--thông-báo-feedback--states)
-7. [Tiêu chuẩn Khả năng Tiếp cận & Quy tắc Lập trình UI](#7-tiêu-chuẩn-khả-năng-tiếp-cận--quy-tắc-lập-trình-ui)
+1. Triết lý thiết kế và phân vùng không gian
+2. Design Tokens nền tảng (màu, chữ, khoảng cách, bo góc/đổ bóng, icon, z-index)
+3. Layout shells và điều hướng
+4. Thành phần UI cơ bản (Button, Badge, Card, Input/Label, Modal/ConfirmDialog, DatePicker, Pagination)
+5. Thành phần nghiệp vụ (lưới sân, SlotPopup, bảng admin, PricingTimeline, biểu đồ, Status Timeline, OTP, ChatWidget)
+6. Phản hồi trạng thái (toast, banner, empty, loading)
+7. Khả năng tiếp cận và quy tắc lập trình UI
+8. Các điểm bản 1.0 đã sai và được sửa
 
 ---
 
-## 1. TRIẾT LÝ THIẾT KẾ & PHÂN VÙNG KHÔNG GIAN (DESIGN PHILOSOPHY)
+## 1. TRIẾT LÝ THIẾT KẾ VÀ PHÂN VÙNG KHÔNG GIAN
 
-Hệ thống ShuttleVN phục vụ hai nhóm đối tượng với nhu cầu sử dụng hoàn toàn khác nhau, do đó giao diện được phân chia thành **hai không gian trải nghiệm (2 Sub-systems / Portals)** với đặc trưng thị giác riêng biệt:
+Giao diện chia thành **hai cổng** với đặc trưng thị giác riêng.
 
-### 1.1 Cổng Khách hàng (Customer Experience Portal)
-- **Tôn chỉ:** Năng động, tin cậy, thể thao hiện đại, tối ưu hóa tốc độ hoàn tất giao dịch đặt sân.
-- **Phong cách thị giác:**
-  - Kết hợp nền tối sang trọng (`#1a1f2e` Dark Navy) ở thanh điều hướng và Hero Section với nền sáng (`bg-slate-50`) ở khu vực lưới sân và nội dung.
-  - Điểm nhấn thị giác mạnh bằng tông xanh ngọc thể thao (`Emerald / Badminton Green`), tạo cảm giác tươi mới, chuẩn sân thi đấu.
-  - Các khối thẻ bo góc lớn mềm mại (`rounded-[14px]`, `rounded-2xl`), hiệu ứng đổ bóng sâu (`shadow-[0_4px_24px_rgba(0,0,0,0.07)]`) tạo chiều sâu không gian.
+### 1.1 Cổng Khách hàng (Customer Portal)
+- **Tôn chỉ:** năng động, tin cậy, tối ưu tốc độ hoàn tất đặt sân.
+- **Hiện trạng thị giác:**
+  - Thanh điều hướng nền tối `#1a1f2e`; Hero trang `/courts` dùng gradient xanh đậm + ảnh phủ mờ (`h-[260px]`).
+  - Nền trang khách `bg-[#f0f2f5]` (`(customer)/layout.tsx`); nền mặc định `body` là `bg-slate-50 text-slate-800`.
+  - Nhấn thương hiệu bằng xanh ngọc `emerald-*`.
+  - Thẻ bo góc lớn (`rounded-[14px]`, `rounded-xl`, `rounded-2xl`), đổ bóng mềm `shadow-[0_4px_24px_rgba(0,0,0,0.07)]`.
+- **Chuẩn bề rộng nội dung** (mỗi trang tự đặt, không có container chung): lưới sân `max-w-[1400px] px-7 py-6`; lịch sử đặt sân và hồ sơ `max-w-[960px] px-7 py-7`; tra cứu đơn `max-w-[560px] px-4`. Trang mới theo nhóm gần nhất.
 
-### 1.2 Cổng Quản trị & Vận hành (Admin & Staff Productivity Portal)
-- **Tôn chỉ:** Tối đa hóa năng suất làm việc (High-Density Productivity), rõ ràng, trung tính, không gây mỏi mắt trong ca trực kéo dài.
-- **Phong cách thị giác (Clean Notion-like / Minimalist Workspace):**
-  - Sử dụng nền xám trắng sạch sẽ (`#FBFBFA` Notion off-white), đường viền mảnh nhẹ nhàng (`#EAEAEA`, `border-slate-200`).
-  - Phân cấp dữ liệu chặt chẽ bằng Typography kỹ thuật (`JetBrains Mono` cho mã số, ngày giờ; `Hanken Grotesk` cho tiêu đề; `Inter` cho nội dung bảng).
-  - Tối ưu hóa mật độ hiển thị thông tin bảng biểu (Compact Data Grid), thao tác vi mô nhanh thông qua các nút hành động nhỏ (`text-[11px] font-mono`).
+### 1.2 Cổng Quản trị và Vận hành (Admin Portal)
+- **Tôn chỉ:** năng suất cao, rõ ràng, trung tính, không gây mỏi mắt.
+- **Hiện trạng thị giác:**
+  - Sidebar nền `#FBFBFA`, viền `#EAEAEA`; vùng làm việc nền `bg-gray-100`; thanh tiêu đề trắng viền `border-gray-200`.
+  - Tiêu đề dùng `Hanken Grotesk` (`font-display`), mã số/ngày giờ/nhãn dùng `JetBrains Mono` (`font-mono`), nội dung bảng dùng `Inter` (`font-sans`).
+  - Mật độ cao: bảng gọn (`text-[13px]`), nút thao tác nhỏ (`text-[11px] font-mono`).
 
 ---
 
-## 2. HỆ THỐNG DESIGN TOKENS NỀN TẢNG
+## 2. DESIGN TOKENS NỀN TẢNG
 
-### 2.1 Bảng màu (Color Palette)
+### 2.1 Bảng màu
 
-Hệ màu ShuttleVN được định nghĩa trong `tailwind.config.mts` và các quy ước màu ngữ nghĩa trong `src/config/app.ts`, `src/app/globals.css`.
+#### A. Màu thương hiệu
 
-#### A. Tông màu Thương hiệu Chủ đạo (Primary Emerald Scale)
-Màu xanh cầu lông đại diện cho sân đấu, sức khỏe và tính sẵn sàng:
+**Hiện trạng:** `tailwind.config.mts` khai báo thang `primary-50…950`, nhưng **gần như không component nào dùng** (chỉ 1 chỗ `text-primary-600`). Toàn bộ component dùng thang **`emerald-*` mặc định của Tailwind**. Hai thang **không trùng mã màu** (ví dụ `primary-500` = `#22c55e`, trong khi nút chính dùng `emerald-500`).
 
-| Token | Mã HEX | Ứng dụng thực tế trong Codebase |
+**Chuẩn:** dùng **`emerald-*`** cho màu thương hiệu trong mọi component mới; không trộn `primary-*` và `emerald-*` trong cùng component. Nếu sau này muốn chuyển sang `primary-*` thì đổi một lần cho toàn bộ codebase.
+
+| Vai trò | Giá trị đang dùng | Nơi dùng |
 |---|---|---|
-| `primary-50` | `#f0fdf4` | Nền hover ô slot còn trống (`.slot-available:hover`), nền icon sân |
-| `primary-100` | `#dcfce7` | Nền nhãn sân đang hoạt động, badge active |
-| `primary-200` | `#bbf7d0` | Viền badge, viền ô slot trạng thái nhẹ |
-| `primary-300` | `#86efac` | Viền hover ô slot còn trống (`border-color: #86efac`) |
-| `primary-400` | `#4ade80` | Điểm nhấn active icon, viền focus sáng |
-| `primary-500` | `#22c55e` | Màu nút bấm chính (`bg-emerald-500`), chấm nhấp nháy cập nhật thời gian thực |
-| `primary-600` | `#16a34a` | Trạng thái hover nút chính (`hover:bg-emerald-600`), icon logo admin |
-| `primary-700` | `#15803d` | Màu chữ nhấn mạnh trên nền sáng, text nút lịch & giá |
-| `primary-800` | `#166534` | Con trỏ kéo timeline (`.pricing-boundary::-webkit-slider-thumb`) |
-| `primary-900` | `#14532d` | Chữ tiêu đề tương phản cao |
-| `primary-950` | `#052e16` | Nền tối tương phản tối đa |
+| Nút chính | `bg-emerald-500`, hover `bg-emerald-600`, disabled `bg-emerald-300` | `Button` (primary) |
+| Viền/nền nhẹ | `emerald-50`, `emerald-100`, `emerald-200` | Nút thao tác admin, badge nhẹ |
+| Chữ nhấn | `emerald-600`, `emerald-700` | Liên kết nhỏ, chữ nút thao tác |
+| Focus input | `border-emerald-500` + bóng `rgba(16,185,129,0.12)` | `Input` |
+| Màu inline | `#10b981`, hover `#059669` | `.slot-mine`, nút "Đặt sân" trong `SlotPopup` |
+| Nền tối cổng khách | `#1a1f2e` | `CustomerNav`, header khung chat (mục tiêu) |
+| Popup chọn giờ | `#1f2937`, mục `#374151`, hover `#4b5563` | `SlotPopup` |
+| Sidebar admin | nền `#FBFBFA`, viền `#EAEAEA`, mục đang chọn `bg-[#EDF3EC] text-[#346538]`, nhãn nhóm `#9B9A97` | `AdminSidebar` |
 
-#### B. Màu sắc Trạng thái Ngữ nghĩa (Semantic Status Colors)
-Quy chuẩn đồng nhất giữa `Badge.tsx`, `BOOKING_STATUS_COLOR`, `INVOICE_STATUS_LABEL`:
+Thang `primary-*` (chưa dùng, giữ để tham chiếu): 50 `#f0fdf4` · 100 `#dcfce7` · 200 `#bbf7d0` · 300 `#86efac` · 400 `#4ade80` · 500 `#22c55e` · 600 `#16a34a` · 700 `#15803d` · 800 `#166534` · 900 `#14532d` · 950 `#052e16`.
 
-| Trạng thái Nghiệp vụ | Mã Màu Tailwind | Lớp CSS thực tế (`Badge.tsx`) | Ý nghĩa & Đối tượng áp dụng |
-|---|---|---|---|
-| **Hoàn thành / Đã thanh toán / Hoạt động** | `Green / Emerald` | `bg-green-50 text-green-600 border-green-200` | Đơn `Completed`, Hóa đơn `Paid`, Sân `Active`, Khách `Active` |
-| **Đã xác nhận / Đang sử dụng** | `Blue` | `bg-blue-50 text-blue-600 border-blue-200` | Đơn `Confirmed`, Sân `IN_USE`, Cột biểu đồ `RevenueChart` (`#3b82f6`) |
-| **Chờ xác nhận / Chưa thanh toán / Bảo trì** | `Amber / Yellow` | `bg-amber-50 text-amber-600 border-amber-200` | Đơn `Pending`, Hóa đơn `Unpaid`, Sân `Maintenance`, Warning |
-| **Đã hủy / Đóng cửa / Nguy hiểm** | `Red` | `bg-red-50 text-red-600 border-red-200` | Đơn `Cancelled`, Hóa đơn `Cancelled`, Sân `Closed`, Nút Xóa |
+#### B. Màu trạng thái ngữ nghĩa
 
-#### C. Màu Trạng thái Ô Slot Đặt sân (Court Slot Colors trong `globals.css`)
+**Hiện trạng** (`Badge.tsx`, `STATUS_CLASSES`): `bg-{màu}-50 text-{màu}-600 border-{màu}-200`.
 
-| Trạng thái Slot | Lớp CSS Component | Màu nền & Viền | Hiệu ứng Con trỏ & Tương tác |
-|---|---|---|---|
-| **Còn trống (`AVAILABLE`)** | `.slot-available` | Nền trắng `#FFFFFF`, viền `#E5E7EB` (`gray-200`) | Hover: nền `#f0fdf4`, viền `#86efac`, con trỏ `pointer` |
-| **Đã đặt (`BOOKED`)** | `.slot-booked` | Nền xám `#E5E7EB` (`gray-200`), viền `#D1D5DB` (`gray-300`) | Con trỏ `not-allowed`, không tương tác |
-| **Đặt của bạn (`MINE`)** | `.slot-mine` | Nền xanh ngọc `#10b981`, viền `#059669` | Con trỏ `pointer`, hiển thị tooltip đơn của khách |
-| **Đóng cửa / Nghỉ (`CLOSED`)** | `.slot-closed` | Nền `#f3f4f6`, sọc chéo -45° `#d1d5db` & `#e5e7eb` | Con trỏ `not-allowed`, vô hiệu hóa hoàn toàn |
-
-#### D. Màu Phân đoạn Bảng giá Giờ chơi (`PricingTimeline.tsx`)
-
-| Đoạn giá | Lớp Màu Nền | Ý nghĩa phân đoạn |
+| Màu | Trạng thái (key `Badge`) | Ý nghĩa |
 |---|---|---|
-| Phân đoạn 1 | `bg-[#DDECDD]` | Giờ thấp điểm sáng sớm (ví dụ: 05:00–08:00) |
-| Phân đoạn 2 | `bg-[#DDECF3]` | Giờ hành chính ban ngày (ví dụ: 08:00–16:00) |
-| Phân đoạn 3 | `bg-[#F5EACB]` | Giờ cao điểm chiều tối (ví dụ: 16:00–20:00) |
-| Phân đoạn 4 | `bg-[#E8E2F0]` | Giờ đêm muộn (ví dụ: 20:00–22:00) |
+| Xanh lá | `Completed`, `Paid`, `Active` | Hoàn thành, Đã thanh toán, Hoạt động |
+| Xanh dương | `Confirmed`, `IN_USE` | Đã xác nhận; `IN_USE` ("Đang sử dụng") **không thuộc SRS**, không dùng cho màn hình mới |
+| Vàng (amber) | `Pending`, `Unpaid`, `Maintenance` | Chờ xác nhận, Chưa thanh toán, Bảo trì |
+| Đỏ | `Cancelled`, `Closed` | Đã hủy, Đóng cửa |
+
+**Chuẩn bổ sung** (theo `UI-screens.md` §2.5; ❌ chưa có trong `Badge`):
+
+| Cần có | Màu | Dùng cho |
+|---|---|---|
+| `Disabled` | Đỏ (như `Cancelled`) | Tài khoản "Bị khóa" (WF-14, WF-16B). Nhãn hiển thị là **"Bị khóa"** |
+| `NoInvoice` | Xám: `bg-gray-50 text-gray-500 border-gray-200` | "Chưa lập hóa đơn" (đơn Chờ xác nhận) |
+
+Quy tắc: nhãn thanh toán của đơn **Đã hủy** hiển thị "—", không dùng badge.
+
+#### C. Màu ô slot đặt sân (`globals.css`, `@layer components`)
+
+**Hiện trạng:**
+
+| Slot | Lớp | Nền / viền | Tương tác |
+|---|---|---|---|
+| Còn trống (`AVAILABLE`) | `.slot-available` | nền trắng, viền `gray-200`; hover nền `#f0fdf4`, viền `#86efac` | `pointer` |
+| Đã đặt (`BOOKED`) | `.slot-booked` | nền `gray-200`, viền `gray-300` | `not-allowed` |
+| Đặt của bạn | `.slot-mine` | nền `#10b981`, viền `#059669` | `pointer` |
+| Đóng (`CLOSED`) | `.slot-closed` | nền `#f3f4f6`, sọc chéo -45° `#d1d5db`/`#e5e7eb` | `not-allowed` |
+
+⚠ `.slot-mine` hiện **không bao giờ xuất hiện**: backend chỉ trả `AVAILABLE | BOOKED | CLOSED`. ⚠ Ô **đã qua giờ** đang dùng chung `.slot-closed` (chỉ khác tooltip "Đã qua").
+
+**Chuẩn** (`UI-screens.md` WF-04):
+- ❌ Thêm `.slot-past` riêng cho "Đã qua giờ": nền `gray-50`, viền `gray-100`, **không sọc**, `not-allowed`, để phân biệt với "Đóng cửa" (sọc).
+- Mọi trạng thái có **ký hiệu hoặc chữ trong chú giải**, không chỉ dựa vào màu. Tooltip theo trạng thái: "Còn trống – bấm để đặt", "Đã có người đặt", "Đơn của bạn", "Đã qua giờ", "Đóng cửa".
+- `.slot-mine` chỉ dùng cho khách thành viên và chỉ khi backend trả cờ đơn của chính họ; không bấm được.
+
+#### D. Phân đoạn bảng giá (`PricingTimeline.tsx`) — ✅
+
+| Đoạn | Lớp | Gợi ý |
+|---|---|---|
+| 1 | `bg-[#DDECDD]` | Giờ thấp điểm sáng sớm |
+| 2 | `bg-[#DDECF3]` | Giờ ban ngày |
+| 3 | `bg-[#F5EACB]` | Giờ cao điểm chiều tối |
+| 4 | `bg-[#E8E2F0]` | Giờ muộn |
+
+Khung timeline `border-[#D9DDD8] bg-[#F2F3F2]`; con trỏ kéo mốc `#166534` (`.pricing-boundary`).
+
+#### E. Màu biểu đồ (`RevenueChart.tsx`)
+Cột `#3b82f6`; lưới `#f1f5f9`; chữ trục `#64748b` cỡ 10; tooltip viền `#e2e8f0`, bo `8px`.
 
 ---
 
-### 2.2 Kiểu chữ & Phân cấp Typography
+### 2.2 Kiểu chữ
 
-Codebase tích hợp 3 font chữ chuyên biệt thông qua `@next/font/google` trong `src/app/layout.tsx`:
+**Hiện trạng** (`src/app/layout.tsx`, import từ **`next/font/google`**):
 
 ```typescript
-// Định nghĩa trong layout.tsx
 const inter = Inter({ subsets: ["latin", "vietnamese"], variable: "--font-inter" });
 const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], variable: "--font-hanken" });
 const jetBrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
 ```
 
-#### A. Bảng ánh xạ Font chữ (Font Mapping)
+`tailwind.config.mts` ánh xạ: `font-sans` → `--font-inter`, `font-display` → `--font-hanken`, `font-mono` → `--font-jetbrains`. `<body>` có `font-sans bg-slate-50 text-slate-800 antialiased`.
 
-| Phân loại | Tên Font | Lớp Tailwind | Phạm vi Ứng dụng |
-|---|---|---|---|
-| **Body Sans** | **Inter** | `font-sans` | Toàn bộ văn bản nội dung, đoạn văn, nhãn form, mô tả chung, placeholder |
-| **Display Heading** | **Hanken Grotesk** | `font-display` | Tiêu đề trang (H1, H2), Tên sân, Số liệu Dashboard lớn, Brand Logo |
-| **Data & Technical** | **JetBrains Mono** | `font-mono` | Mã đơn (`DS-XXXXX`), Mã Hóa đơn (`HD-...`), Giờ giấc (`17:30`), Đơn giá (`100.000 ₫`), Nhãn Badge, Nút bấm (`Button.tsx`), Nhãn Label in hoa |
+⚠ `RevenueChart` tham chiếu `var(--font-jetbrains-mono)` — biến này **không tồn tại**; phải là `var(--font-jetbrains)`.
 
-#### B. Phân cấp Cỡ chữ & Trọng số (Type Hierarchy & Scale)
-
-| Cấp bậc | Cỡ chữ / Line-height | Font chữ & Trọng số | Ví dụ sử dụng trong Codebase |
-|---|---|---|---|
-| **Hero Title** | `text-2xl` hoặc `text-3xl` (24–30px) | `font-display font-bold` | "Đặt Sân Cầu Lông" trên trang `/courts` |
-| **Page Title** | `text-[17px]` hoặc `text-[16px]` | `font-display font-bold` | Tiêu đề Header Admin ("Quản lý sân", "Lịch sân") |
-| **Card / Section Title** | `text-[15px]` | `font-display font-bold` | Tên thứ trong tuần ở lưới sân, Tiêu đề biểu đồ doanh thu |
-| **Body Regular** | `text-sm` (14px) / 20px | `font-sans font-normal` | Văn bản nội dung form, mô tả modal, kết quả tra cứu |
-| **Table Content** | `text-[13px]` | `font-sans` hoặc `font-display` | Tên khách hàng, email trong bảng, mô tả sân |
-| **Button Label** | `text-[13px]` (`md`), `text-xs` (`sm`) | `font-mono font-medium tracking-[0.05em]` | "ĐĂNG NHẬP", "XÁC NHẬN ĐẶT SÂN", "Lịch & giá" |
-| **Badge Label** | `text-[11px]` | `font-mono font-semibold tracking-[0.03em]` | "Chờ xác nhận", "Đã thanh toán", "Đang hoạt động" |
-| **Form Uppercase Label** | `text-[11px]` | `font-mono font-semibold uppercase tracking-[0.06em]` | "HỌ VÀ TÊN *", "MÃ ĐẶT SÂN *", "SỐ ĐIỆN THOẠI *" |
-| **Table Header** | `text-[10px]` | `font-mono font-semibold uppercase tracking-wider` | "TÊN SÂN", "TRẠNG THÁI", "THAO TÁC" trong `CourtTable` |
-| **Micro Tag** | `text-[9px]` | `font-mono font-medium uppercase tracking-wide` | Tag "ADMIN" trên thanh Sidebar `AdminSidebar.tsx` |
-
----
-
-### 2.3 Khoảng cách & Bố cục Lưới (Spacing & Layout Grid)
-
-Hệ thống khoảng cách tuân thủ bước nhảy lũy tiến 4px (Base-4 scale của Tailwind CSS):
-
-- **Micro Spacing:**
-  - `gap-1` (4px), `gap-1.5` (6px), `gap-2` (8px): Khoảng cách giữa icon và chữ trong button, khoảng cách giữa các badge.
-  - `px-2.5 py-[3px]`: Padding chuẩn của badge.
-  - `px-3 py-1.5`: Padding chuẩn của button kích cỡ nhỏ `sm`.
-- **Form & Input Spacing:**
-  - `py-[11px] px-3`: Chiều cao chuẩn ô input (tương đương height 44px đạt chuẩn cảm ứng ngón tay).
-  - `mb-1.5`: Khoảng cách giữa Label và Input.
-  - `space-y-4` (16px) hoặc `space-y-5` (20px): Khoảng cách giữa các hàng form fields.
-- **Card & Table Spacing:**
-  - `p-5` hoặc `p-6`: Padding bên trong của Card và Modal.
-  - `px-5 py-3.5`: Padding ô dữ liệu của Table hàng ngang.
-- **Lưới ô thời gian (Court Grid Cell Matrix):**
-  - Chiều rộng mỗi ô 30 phút: `w-[72px] min-w-[72px]`.
-  - Chiều cao hàng sân: `h-14` (56px).
-  - Khoảng cách cột giờ chẵn (60 phút): Đường kẻ đậm hơn (`border-r-gray-300` so với `border-r-gray-200` của mốc 30 phút).
-
----
-
-### 2.4 Bo góc (Border Radius) & Đổ bóng (Box Shadow)
-
-#### A. Quy chuẩn Bo góc (Radius Tokens)
-Định nghĩa trong `:root { --radius: 0.5rem; }` (`globals.css`) và các lớp cụ thể:
-
-| Radius Token | Giá trị | Lớp Tailwind | Áp dụng cho Component |
-|---|---|---|---|
-| **Full** | `9999px` | `rounded-full` | `Badge.tsx`, Avatar khách hàng, Nút floating bot tròn |
-| **Extra Large** | `16px` | `rounded-2xl` | Container Lưới sân `CourtGrid.tsx`, Thẻ Hero Section |
-| **Large Card** | `14px` | `rounded-[14px]` | `Card.tsx`, Thẻ đặt sân `BookingCard.tsx` |
-| **Modal / Table** | `12px` | `rounded-xl` | `ConfirmDialog.tsx`, `CourtTable.tsx`, Khung biểu đồ |
-| **Medium Element** | `8px` | `rounded-lg` / `rounded-[8px]` | Thẻ sân `CourtCardGrid.tsx`, Icon container |
-| **Control Standard** | `7px` | `rounded-[7px]` | `Button.tsx`, `Input.tsx`, Nút bấm xác nhận trong dialog |
-| **Slot Cell** | `5px` | `rounded-[5px]` | Ô slot trạng thái bên trong lưới sân `CourtSlotCell.tsx` |
-
-#### B. Quy chuẩn Đổ bóng (Elevation & Shadows)
-
-| Cấp bậc Elevation | Giá trị Shadow CSS | Ngữ cảnh Sử dụng |
+| Phân loại | Lớp | Phạm vi |
 |---|---|---|
-| **Subtle (Bảng / Thẻ Admin)** | `shadow-[0_1px_3px_rgba(0,0,0,0.04)]` | Thẻ thống kê Admin, Bảng danh sách sân, Bảng khách hàng |
-| **Card Elevation (Khách hàng)**| `shadow-[0_4px_24px_rgba(0,0,0,0.07)]` | Thẻ `Card.tsx`, Thẻ tra cứu đơn, Thẻ hồ sơ cá nhân |
-| **Primary Button Glow** | `hover:shadow-[0_4px_14px_rgba(16,185,129,0.28)]` | Hiệu ứng rê chuột trên nút chính màu xanh Emerald |
-| **Focus Ring Glow** | `focus:shadow-[0_0_0_3px_rgba(16,185,129,0.12)]` | Viền phát sáng tập trung khi focus vào Input |
-| **Dialog Backdrop Elevation** | `shadow-2xl` (tương đương `0 25px 50px -12px rgba(0,0,0,0.25)`) | Hộp thoại nổi Modal, `ConfirmDialog.tsx`, Popup chọn thời lượng |
+| Nội dung | `font-sans` (Inter) | Văn bản, mô tả, placeholder, nội dung bảng |
+| Tiêu đề | `font-display` (Hanken Grotesk) | Tiêu đề trang, tên sân, số liệu lớn, logo |
+| Dữ liệu kỹ thuật | `font-mono` (JetBrains Mono) | Mã đơn `DS-XXXXX`, hóa đơn `HD-…`, giờ, giá, nhãn `Badge`, chữ `Button`, nhãn `Label`, tiêu đề cột |
 
----
+**Thang chữ (giá trị đang dùng trong code):**
 
-### 2.5 Biểu tượng (Iconography)
-
-ShuttleVN chuẩn hóa việc sử dụng bộ thư viện **Google Material Symbols Outlined** (được nhúng qua CDN font trong `layout.tsx`).
-
-- **Cấu hình chuẩn:**
-  ```html
-  <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 0" }}>
-    icon_name
-  </span>
-  ```
-  *(Khi biểu tượng ở trạng thái active hoặc được chọn, chuyển `fontVariationSettings: "'FILL' 1"`)*.
-
-- **Bảng quy ước Biểu tượng chuẩn theo Nghiệp vụ:**
-
-| Biểu tượng | Tên Icon Material | Ý nghĩa / Màn hình sử dụng |
+| Cấp | Cỡ / kiểu | Ví dụ |
 |---|---|---|
-| 🎾 | `sports_tennis` | Logo thương hiệu ShuttleVN, Quản lý sân đấu |
-| 📊 | `space_dashboard` | Bảng điều khiển tổng quan (`WF-09`) |
-| 📅 | `calendar_month` | Lịch sân vận hành (`WF-12`) |
-| ⏰ | `calendar_clock` | Nút cấu hình lịch và bảng giá sân (`WF-15`) |
-| 💳 | `payments` | Quản lý thanh toán & hóa đơn (`WF-13`) |
-| 👥 | `group` | Quản lý khách hàng (`WF-14`) |
-| 🪪 | `badge` | Quản lý nhân viên & tài khoản (`WF-16`) |
-| 📈 | `monitoring` | Thống kê & báo cáo doanh thu (`WF-18`) |
-| 📜 | `history` | Nhật ký hoạt động Audit Log (`WF-19`) |
-| 🔍 | `search` | Ô tìm kiếm mã đơn, tìm kiếm khách hàng |
-| ⚠️ | `warning` | Icon cảnh báo trong `ConfirmDialog.tsx` |
-| 👁️ | `visibility` / `visibility_off` | Toggle Hiện / Ẩn mật khẩu trong `Input.tsx` |
-| 🔄 | `sync` | Đổi nhanh trạng thái sân trong bảng |
-| 🤖 | `smart_toy` / `chat` | Widget Trợ lý AI Chatbot (`WF-08`) |
-| 🚪 | `logout` | Nút Đăng xuất trên thanh Topbar |
+| Hero | `text-[34px] font-display font-bold` | "Đặt Sân Cầu Lông" ở `/courts` |
+| Tiêu đề trang admin | `text-[16px] font-display font-bold` | `AdminHeader` |
+| Tiêu đề khối | `text-[15px] font-bold` | Tiêu đề thẻ/biểu đồ, tiêu đề dialog |
+| Nội dung | `text-sm` (14px) | Form, mô tả modal |
+| Nội dung bảng | `text-[13px]` | Tên, email trong bảng |
+| Nút | `font-mono font-medium tracking-[0.05em]`; `sm` `text-xs`, `md` `text-[13px]`, `lg` `text-sm` | `Button` |
+| Badge | `text-[11px] font-mono font-semibold tracking-[0.03em]` | Nhãn trạng thái |
+| Nhãn form | `text-[11px] font-mono font-semibold uppercase tracking-[0.06em]` | `Label` |
+| Nhãn số liệu | `text-[11px] font-mono uppercase tracking-wider` | Thẻ thống kê |
+| Tiêu đề cột | `text-[10px] font-mono font-semibold uppercase tracking-wider` | `CourtTable` |
+| Nhãn nhỏ | `text-[9px] font-mono font-medium uppercase` | Tag "ADMIN", nhãn nhóm sidebar |
 
 ---
 
-### 2.6 Phân cấp Lớp Z-Index (Z-Index Layer Tokens)
+### 2.3 Khoảng cách và lưới
 
-Để ngăn chặn triệt để lỗi xung đột ngữ cảnh xếp lớp (Stacking Context conflicts) giữa các thành phần giao diện cố định và cửa sổ nổi, ShuttleVN quy chuẩn hóa 7 cấp độ `z-index`:
+Bước nhảy 4px của Tailwind. Giá trị đang dùng:
 
-| Token / Lớp | Giá trị Z-Index | Thành phần Giao diện Áp dụng |
+- **Badge:** `px-2.5 py-[3px]`. **Button:** `sm` `px-3 py-1.5`, `md` `px-4 py-3`, `lg` `px-6 py-3.5`.
+- **Input:** `py-[11px] pl-3 pr-3` (cao ≈ 44px, đạt chuẩn cảm ứng); khoảng cách nhãn–ô `mb-1.5`; khoảng cách giữa các trường `space-y-4`/`space-y-5`.
+- **Dialog/Modal:** padding `p-6`. **Bảng:** ô tiêu đề `px-5 py-3`.
+- **Lưới sân:** ô 30 phút `w-[72px] min-w-[72px] h-14`; cột tên sân `min-width 130px`, đệm `10px 16px`; đường kẻ dọc đậm hơn (`border-r-gray-300`) tại mốc giờ chẵn, mốc 30 phút dùng `border-r-gray-200`.
+
+---
+
+### 2.4 Bo góc và đổ bóng
+
+`:root { --radius: 0.5rem }`; `tailwind.config.mts` đặt `rounded-lg` = `--radius` (8px), `rounded-md` = 6px, `rounded-sm` = 4px.
+
+| Bo góc | Lớp | Áp dụng (hiện trạng) |
 |---|---|---|
-| `z-normal` | `z-0` | Nội dung văn bản, bảng, thẻ thông thường |
-| `z-sticky-element` | `z-10` | Cột tên sân cố định bên trái lưới (`CourtGrid`), Header cố định của bảng |
-| `z-dropdown` | `z-20` | Popover lịch chọn ngày (`CustomDatePicker`), Dropdown menu tài khoản (`UserMenu`) |
-| `z-header` | `z-50` | Thanh điều hướng khách (`CustomerNav`), Topbar quản trị (`AdminHeader`), Nút tròn nổi AI Bot |
-| `z-popover-panel` | `z-[60]` | Khung hội thoại AI Chatbot khi mở rộng ở góc phải màn hình |
-| `z-court-popup` | `z-[100]` | Cửa sổ chọn thời lượng slot nổi trên lưới (`SlotPopup.tsx`) |
-| `z-modal-backdrop` | `z-[110]` | Lớp phủ nền mờ và cửa sổ Modal (`ConfirmDialog.tsx`, Modals `M-01` đến `M-19`) |
-| `z-toast-notification`| `z-[9999]` | Thông báo Toast góc trên bên phải màn hình (`Sonner Toaster`) |
+| Tròn | `rounded-full` | `Badge`, avatar, nút chọn ngày dạng viên |
+| 16px | `rounded-2xl` | Khung `CourtGrid`, popover lịch, khối hero |
+| 14px | `rounded-[14px]` | `Card`, `SlotPopup` |
+| 12px | `rounded-xl` | `ConfirmDialog`, bảng admin, thẻ thống kê, `BookingCard`, `CourtCardGrid` |
+| 10px | `rounded-[10px]` | Menu người dùng (`UserMenu`) |
+| 8px | `rounded-lg` | Nút thao tác trong bảng, ô cấu hình giá |
+| 7px | `rounded-[7px]` | `Button`, `Input`, nút trong dialog |
+| 5px | `rounded-[5px]` | Ô slot trong lưới |
+
+| Đổ bóng | Giá trị | Ngữ cảnh |
+|---|---|---|
+| Nhẹ (admin) | `shadow-[0_1px_3px_rgba(0,0,0,0.04)]` | Thẻ thống kê, bảng admin |
+| Thẻ khách | `shadow-[0_4px_24px_rgba(0,0,0,0.07)]` | `Card` |
+| Header admin | `shadow-sm` | `AdminHeader` |
+| Nút chính khi hover | `hover:shadow-[0_4px_14px_rgba(16,185,129,0.28)]` | `Button` primary |
+| Focus input | `focus:shadow-[0_0_0_3px_rgba(16,185,129,0.12)]` (lỗi: `rgba(239,68,68,0.12)`) | `Input` |
+| Popover lịch | `shadow-[0_10px_35px_rgba(0,0,0,0.18)]` | `CustomDatePicker` |
+| Nổi | `shadow-2xl` | Modal, `ConfirmDialog`; `SlotPopup` dùng `0 16px 48px rgba(0,0,0,0.32)` |
 
 ---
 
-## 3. QUY CHUẨN LAYOUT SHELLS & ĐIỀU HƯỚNG
+### 2.5 Biểu tượng
 
-### 3.1 Cổng Khách hàng (Customer Shell)
-- **File tham chiếu:** `src/app/(customer)/layout.tsx`, `src/components/layout/CustomerNav.tsx`.
-- **Đặc điểm kích thước:**
-  - Header cố định trên cùng: Chiều cao `h-[56px]`, màu nền `#1a1f2e` (Dark Navy).
-  - Vùng nội dung chính: Căn giữa `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6`.
-- **Thành phần điều hướng:**
-  - Trái: Logo ShuttleVN kèm biểu tượng `sports_tennis` màu xanh ngọc.
-  - Giữa: Liên kết điều hướng chính:
-    - `Đặt sân`: `/courts` (hoặc `/booking`).
-    - `Lịch sử đặt sân`: `/my-bookings` (chỉ hiển thị khi đã đăng nhập, `requiresAuth: true`).
-    - `Tra cứu đơn`: `/lookup` (dành cho mọi đối tượng).
-  - Phải:
-    - Chưa đăng nhập: `LoginButton.tsx` dẫn tới `/login`.
-    - Đã đăng nhập: `UserMenu.tsx` (avatar tròn chứa chữ cái đầu họ tên, menu popover dẫn tới `/profile`, `/my-bookings` và nút Đăng xuất).
+Dùng **Google Material Symbols Outlined**, nạp bằng thẻ `<link>` tới Google Fonts trong `<head>` của `layout.tsx`.
 
-### 3.2 Cổng Quản trị & Vận hành (Admin Shell)
-- **File tham chiếu:** `src/app/(admin)/layout.tsx`, `src/components/layout/AdminSidebar.tsx`, `src/components/layout/AdminHeader.tsx`.
-- **Đặc điểm kích thước:**
-  - Sidebar bên trái cố định: Chiều rộng `w-[220px] flex-shrink-0 min-h-screen`, màu nền `#FBFBFA`, viền phải `border-r border-[#EAEAEA]`.
-  - Header trên cùng (Topbar): Chiều cao `h-[52px]`, màu nền trắng, viền dưới `border-b border-gray-200`.
-  - Content Workspace: Nền `bg-slate-50`, phần đệm `p-6 overflow-y-auto`.
-- **Phân quyền hiển thị Menu Sidebar (Theo Quyết định cốt lõi X-02):**
-  - **Nhân viên vận hành (`Employee` - thấy 4 mục):**
-    - Lịch sân (`/schedule`)
-    - Yêu cầu đặt sân (`/booking-requests`)
-    - Thanh toán (`/payments`)
-    - Khách hàng (`/customers`)
-  - **Quản trị viên (`Admin` - thấy toàn bộ 9 mục thuộc 4 nhóm):**
-    - *Tổng quan:* Bảng điều khiển (`/dashboard`), Thống kê (`/statistics`).
-    - *Vận hành:* Lịch sân (`/schedule`), Yêu cầu đặt sân (`/booking-requests`), Thanh toán (`/payments`), Quản lý sân (`/manage-courts`).
-    - *Quản trị:* Khách hàng (`/customers`), Nhân viên (`/employees`), Đặt sân toàn hệ thống (`/bookings`), Nhật ký hoạt động (`/audits`).
-
----
-
-## 4. THƯ VIỆN THÀNH PHẦN UI CƠ BẢN (ATOMIC COMPONENTS)
-
-### 4.1 Nút bấm (Button)
-- **File mã nguồn:** `src/components/ui/Button.tsx`.
-- **Đặc tính kỹ thuật:** Hỗ trợ `loading` (spinner xoay `animate-spin`), `disabled`, và tự động vô hiệu hóa khi đang tải.
-- **Biến thể (Variants):**
-
-```typescript
-// 1. Primary Variant (Chủ đạo): Dùng cho hành động quan trọng nhất (Đăng nhập, Đặt sân, Lưu)
-className = "bg-emerald-500 text-white hover:bg-emerald-600 hover:shadow-[0_4px_14px_rgba(16,185,129,0.28)] disabled:bg-emerald-300"
-
-// 2. Outline Variant: Dùng cho hành động phụ, điều hướng phân trang, nút quay lại
-className = "bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-
-// 3. Ghost Variant: Dùng trong thanh công cụ, icon action không viền
-className = "bg-transparent text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+```html
+<span className="material-symbols-outlined text-[18px]">icon_name</span>
 ```
 
-- **Kích cỡ (Sizes):**
-  - `sm`: `px-3 py-1.5 text-xs` (dùng trong phân trang, micro-actions).
-  - `md` *(mặc định)*: `px-4 py-3 text-[13px]` (dùng trong form).
-  - `lg`: `px-6 py-3.5 text-sm` (dùng trong hero CTA).
+Trạng thái chọn/active: `style={{ fontVariationSettings: "'FILL' 1" }}` (mặc định `FILL 0`). Không dùng `lucide-react` (đã cài nhưng không dùng).
+
+| Icon | Ý nghĩa / nơi dùng |
+|---|---|
+| `sports_tennis` | Logo, Quản lý sân |
+| `space_dashboard` | Bảng điều khiển |
+| `calendar_month` | Lịch sân |
+| `payments` | Thanh toán |
+| `group` | Khách hàng |
+| `badge` | Nhân viên |
+| `monitoring` | Thống kê / Báo cáo |
+| `history` | Nhật ký hoạt động; Lịch sử đặt sân (menu người dùng) |
+| `calendar_clock` | Nút "Lịch & giá" của sân |
+| `calendar_today` | Nút chọn ngày |
+| `search` | Ô tìm kiếm |
+| `warning` | Cảnh báo trong `ConfirmDialog` |
+| `visibility` / `visibility_off` | Hiện/Ẩn mật khẩu |
+| `sync` | Đổi trạng thái sân |
+| `person`, `logout` | Menu người dùng |
+| `smart_toy` | Nút trợ lý AI — ❌ **chưa dùng** (chưa có widget) |
+
+Nút chỉ có icon **bắt buộc** có `aria-label`.
 
 ---
 
-### 4.2 Nhãn trạng thái (Badge)
-- **File mã nguồn:** `src/components/ui/Badge.tsx`.
-- **Kiểu dáng:** Bo tròn tuyệt đối (`rounded-full`), font chữ kỹ thuật (`font-mono text-[11px] font-semibold tracking-[0.03em] border`).
-- **Mã ánh xạ màu sắc chuẩn:**
+### 2.6 Phân cấp z-index
 
-```typescript
-const STATUS_CLASSES: Record<BadgeStatus, string> = {
-  // Trạng thái đơn đặt sân
-  Pending:     "bg-amber-50 text-amber-600 border-amber-200", // Chờ xác nhận
-  Confirmed:   "bg-blue-50 text-blue-600 border-blue-200",     // Đã xác nhận
-  Completed:   "bg-green-50 text-green-600 border-green-200",  // Hoàn thành
-  Cancelled:   "bg-red-50 text-red-600 border-red-200",        // Đã hủy
+**Hiện trạng** (giá trị thực trong code):
 
-  // Trạng thái sân đấu
-  Active:      "bg-green-50 text-green-600 border-green-200",  // Đang hoạt động
-  Maintenance: "bg-amber-50 text-amber-600 border-amber-200", // Bảo trì
-  Closed:      "bg-red-50 text-red-600 border-red-200",        // Đóng cửa
-  IN_USE:      "bg-blue-50 text-blue-600 border-blue-200",     // Đang có người chơi
+| z-index | Thành phần |
+|---|---|
+| `z-[2]` | Nội dung hero `/courts` |
+| `z-[5]`, `z-[11]` | Cột tên sân cố định và hàng giờ của `CourtGrid` |
+| `z-10`, `z-20` | Cột/hàng cố định ở Lịch sân; con trượt `PricingTimeline`; popover `CustomDatePicker` (`z-20`) |
+| `z-40` | Lớp phủ trong `CustomerNav` (menu cũ, không còn dùng) |
+| `z-50` | `CustomerNav`; ⚠ dialog chi tiết/hóa đơn trong `BookingHistoryList` |
+| `z-60` | Menu thả `UserMenu` |
+| `z-[100]` | Modal admin: `CourtFormModal`, `CourtOperationsModal`, `CourtStatusModal`, `EmployeeFormModal` |
+| `z-[110]` | `ConfirmDialog` |
+| `z-[200]` | `SlotPopup` |
+| rất cao | Toast Sonner (thư viện tự quản lý) |
 
-  // Trạng thái hóa đơn
-  Unpaid:      "bg-amber-50 text-amber-600 border-amber-200", // Chưa thanh toán
-  Paid:        "bg-green-50 text-green-600 border-green-200",  // Đã thanh toán
-};
-```
+**Chuẩn** (thang dùng cho code mới):
 
----
-
-### 4.3 Khung nội dung (Card)
-- **File mã nguồn:** `src/components/ui/Card.tsx`.
-- **Quy cách:** `bg-white border border-gray-200 rounded-[14px] shadow-[0_4px_24px_rgba(0,0,0,0.07)]`.
-- **Ứng dụng:** Thẻ tóm tắt thông tin, thẻ đặt sân của khách, khung tra cứu đơn, khung form đăng nhập.
-
----
-
-### 4.4 Trường nhập liệu (Input & Label)
-- **File mã nguồn:** `src/components/ui/Input.tsx`, `src/components/ui/Label.tsx`.
-- **Đặc tính thông minh của Input:**
-  - Hỗ trợ Icon bên trái (`pl-10`).
-  - Tự động tích hợp nút toggle Hiện/Ẩn mắt mật khẩu khi `type="password"` (icon `visibility` / `visibility_off`).
-  - Hỗ trợ hiển thị dòng thông báo lỗi validation màu đỏ bên dưới.
-- **Quy chuẩn hiển thị:**
-  - Trạng thái thường: `bg-gray-50 border border-gray-300 rounded-[7px] text-[#1a1a2e] text-sm py-[11px] pr-3`.
-  - Trạng thái Focus: `focus:border-emerald-500 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.12)] focus:bg-white`.
-  - Trạng thái Disabled: `disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed`.
-  - Trạng thái Lỗi: `border-red-400 focus:border-red-400 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.12)]`.
-- **Quy cách Label:**
-  - Font kỹ thuật in hoa: `text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono`.
-  - Dấu hoa thị bắt buộc: `<span className="text-red-500 ml-0.5">*</span>`.
+| Lớp | Giá trị | Dùng cho |
+|---|---|---|
+| Nội dung | `z-0` | Văn bản, bảng, thẻ |
+| Cố định trong nội dung | `z-10` | Cột/hàng sticky của lưới và bảng |
+| Popover nhỏ | `z-20` | `CustomDatePicker` |
+| Header, nút nổi | `z-50` | `CustomerNav`, nút tròn AI (mục tiêu) |
+| Dropdown/panel | `z-[60]` | `UserMenu`, khung chat AI (mục tiêu) |
+| Modal | `z-[100]` | Mọi modal và dialog chi tiết (⚠ sửa dialog đang `z-50` trong `BookingHistoryList`) |
+| Xác nhận trên modal | `z-[110]` | `ConfirmDialog` |
+| Popup neo trên lưới | `z-[200]` | `SlotPopup` (giữ nguyên, không xuất hiện cùng modal) |
+| Toast | do Sonner | Không đặt phần tử khác cao hơn |
 
 ---
 
-### 4.5 Hộp thoại xác nhận (ConfirmDialog & Modal Shell)
-- **File mã nguồn:** `src/components/ui/ConfirmDialog.tsx`.
-- **Quy cách Modal Overlay:**
-  - Lớp mờ nền (Backdrop): `fixed inset-0 bg-gray-900/60 flex items-center justify-center z-[110]`.
-  - Thân Modal (Dialog Container): `bg-white border border-gray-200 rounded-xl w-[420px] max-w-[95vw] shadow-2xl p-6`.
-  - Biến thể: `warning` (icon cảnh báo màu vàng amber-500, nút confirm `bg-amber-500`) hoặc `danger` (nút confirm `bg-red-600 hover:bg-red-700`).
+## 3. LAYOUT SHELLS VÀ ĐIỀU HƯỚNG
+
+### 3.1 Cổng Khách hàng
+
+- **File:** `src/app/(customer)/layout.tsx`, `components/layout/CustomerNav.tsx`, `ui/UserMenu.tsx`, `ui/LoginButton.tsx`.
+- **Hiện trạng:**
+  - Header **`sticky top-0 z-50 h-14 px-7`**, nền `#1a1f2e` (không phải `fixed`).
+  - Trái: logo `sports_tennis` + ShuttleVN. Giữa: **Đặt sân** (`/courts`), **Lịch sử đặt sân** (`/my-bookings`, chỉ khi đã đăng nhập), **Tra cứu đơn** (`/lookup`).
+  - Phải: chưa đăng nhập chỉ có nút **"Đăng Nhập"**; đã đăng nhập là `UserMenu` (avatar tròn `w-7 h-7` chữ cái đầu; menu `z-60`, `min-w-[190px]`, mục *Hồ sơ cá nhân*, *Lịch sử đặt sân*, *Đăng xuất*).
+  - ⚠ Còn state `menuOpen` và lớp phủ `z-40` không dùng.
+  - Không có footer.
+- **Chuẩn:**
+  - ❌ Chưa đăng nhập hiện **cả "Đăng nhập" và "Đăng ký"** (wireframe 4.1).
+  - ❌ Thêm **footer** `© ShuttleVN` + **Hotline** lấy từ một hằng cấu hình duy nhất (G-06).
+  - Tài khoản Nhân viên/Admin khi vào trang khách: không hiển thị luồng đặt sân (BR-10, xem `UI-screens.md` WF-04).
+
+### 3.2 Cổng Quản trị
+
+- **File:** `src/app/(admin)/layout.tsx`, `components/layout/AdminSidebar.tsx`, `AdminHeader.tsx`.
+- **Hiện trạng:**
+  - Khung: `min-h-screen bg-gray-100 flex`. Sidebar `sticky top-0 w-[220px] flex-shrink-0 px-2.5 py-3.5`, nền `#FBFBFA`, viền phải `#EAEAEA`, logo + tag "ADMIN".
+  - Header trên: `h-[52px] bg-white border-b border-gray-200 shadow-sm px-6`, tiêu đề `font-display font-bold text-[16px]`, vùng thao tác `#admin-header-actions` (portal ở `/manage-courts`; trang nhân viên dùng sự kiện `open-add-employee`).
+  - Vùng nội dung: `main.flex-1.p-6.overflow-auto`.
+  - Sidebar **8 mục / 3 nhóm** (Tổng quan: Bảng điều khiển, Thống kê · Vận hành: Lịch sân, Thanh toán, Quản lý sân · Quản trị: Khách hàng, Nhân viên, Nhật ký hoạt động) và **chưa lọc theo vai trò**.
+  - ⚠ Tiêu đề trang: `/statistics`, `/audits` rơi về "Admin Panel"; `/payments` ghi "Xác nhận thanh toán".
+  - ❌ Không có nút **Đăng xuất**.
+- **Chuẩn** (`UI-screens.md` §2.3, §2.4, §2.6, X-02, G-15, G-22, G-23):
+
+| Vai trò | Mục sidebar → route mục tiêu |
+|---|---|
+| **Nhân viên (4)** | Lịch sân `/admin/court-schedule` · Yêu cầu đặt sân `/admin/booking-requests` · Thanh toán `/admin/payments` · Khách hàng `/admin/customers` |
+| **Quản trị viên (10)** | Bảng điều khiển `/admin/dashboard` · Lịch sân · Yêu cầu đặt sân · Thanh toán · Quản lý sân `/admin/courts` · Khách hàng · Quản lý nhân viên `/admin/staff` · Báo cáo & Thống kê `/admin/reports` · Nhật ký hoạt động `/admin/audit-log` · Tài khoản & Phân quyền `/admin/accounts` |
+
+  - "Tất cả đặt sân" (`/admin/bookings`) **không phải mục sidebar**: là tab cạnh "Yêu cầu chờ xác nhận", chỉ Admin thấy.
+  - Sidebar lọc theo `user.role`; mục đang mở dùng `bg-[#EDF3EC] text-[#346538]`.
+  - Header có nút **Đăng xuất** (icon `logout`) ở góc phải; mỗi trang có tiêu đề đúng tên menu.
+  - Nhân viên mặc định vào "Yêu cầu đặt sân"; Admin vào "Bảng điều khiển".
 
 ---
 
-### 4.6 Bộ chọn ngày (CustomDatePicker)
-- **File mã nguồn:** `src/components/ui/CustomDatePicker.tsx`.
-- **Quy cách:**
-  - Hiển thị ngày được chọn dạng thân thiện tiếng Việt: `"Thứ 2, 20/10/2026"`.
-  - Popover lịch dạng ma trận tháng, hỗ trợ điều hướng Tháng trước / Tháng sau, tự động đóng khi click ra ngoài.
-  - Phím chọn nhanh: "Hôm nay", "Ngày mai".
+## 4. THÀNH PHẦN UI CƠ BẢN
+
+### 4.1 Button — `src/components/ui/Button.tsx`
+- Có `loading` (spinner `animate-spin`), tự vô hiệu khi `loading`/`disabled`.
+- ⚠ Mặc định **`w-full`** (chiếm hết bề ngang). Nút đặt cạnh nhau/trong hàng phải truyền `className="w-auto"`.
+- Biến thể:
+
+| Variant | Lớp | Dùng cho |
+|---|---|---|
+| `primary` | `bg-emerald-500 text-white hover:bg-emerald-600 hover:shadow-[…] disabled:bg-emerald-300` | Hành động chính |
+| `outline` | `bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50` | Hành động phụ, Hủy, phân trang |
+| `ghost` | `bg-transparent text-gray-600 hover:bg-gray-100 disabled:opacity-50` | Thanh công cụ |
+
+- Kích cỡ: `sm` `px-3 py-1.5 text-xs` · `md` (mặc định) `px-4 py-3 text-[13px]` · `lg` `px-6 py-3.5 text-sm`. Bo `rounded-[7px]`, chữ `font-mono font-medium tracking-[0.05em]`.
+- **Chuẩn:** hành động nguy hiểm (xóa, hủy đơn) dùng nền đỏ `bg-red-600 hover:bg-red-700` như `ConfirmDialog`; ❌ chưa có variant `danger` trong `Button`.
+
+### 4.2 Badge — `src/components/ui/Badge.tsx`
+- Dạng viên `rounded-full`, `font-mono text-[11px] font-semibold tracking-[0.03em] border`.
+- Key hiện có: `Pending`, `Confirmed`, `Completed`, `Cancelled`, `Active`, `Maintenance`, `Closed`, `IN_USE`, `Unpaid`, `Paid` (màu ở §2.1.B).
+- Nội dung hiển thị lấy từ `src/config/app.ts` (`BOOKING_STATUS_LABEL`, `INVOICE_STATUS_LABEL`, `COURT_STATUS_LABEL`...), **không** viết cứng chuỗi.
+- ❌ Cần thêm `Disabled` và `NoInvoice` (§2.1.B).
+
+### 4.3 Card — `src/components/ui/Card.tsx`
+`bg-white border border-gray-200 rounded-[14px] shadow-[0_4px_24px_rgba(0,0,0,0.07)]`. Dùng cho khung form đăng nhập, thẻ khách, khối tra cứu.
+
+### 4.4 Input và Label — `ui/Input.tsx`, `ui/Label.tsx`
+- `Input`: hỗ trợ `icon` bên trái (`pl-10`), tự thêm nút Hiện/Ẩn khi `type="password"` (`aria-label` "Hiện/Ẩn mật khẩu"), hiển thị lỗi dưới ô `mt-1 text-xs text-red-500`.
+- Trạng thái: thường `bg-gray-50 border border-gray-300 rounded-[7px] text-sm py-[11px]`; focus `border-emerald-500 bg-white` + bóng; disabled `bg-gray-100 text-gray-400 border-gray-200`; lỗi `border-red-400`.
+- `Label`: `block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono`; `required` thêm `*` đỏ `ml-0.5`.
+- ⚠ Một số form (`ReservationForm`, `BookingLookupForm`) dùng `<input>` thô. **Chuẩn:** mọi trường nhập dùng `Input` + `Label`.
+
+### 4.5 Modal và ConfirmDialog
+
+**Hiện trạng:**
+- `ConfirmDialog` (`ui/ConfirmDialog.tsx`): lớp phủ `fixed inset-0 bg-gray-900/60 z-[110]`, thân `bg-white border border-gray-200 rounded-xl w-[420px] max-w-[95vw] shadow-2xl p-6`; biến thể `warning` (nút `bg-amber-500`) và `danger` (`bg-red-600`); icon `warning` `text-amber-500`; có `isLoading` ("Đang xử lý...").
+- **Chưa có component Modal dùng chung.** Các modal admin tự dựng `fixed inset-0 z-[100] bg-gray-900/60 backdrop-blur-[2px]`; dialog chi tiết đặt sân tự dựng với `z-50`.
+- ⚠ `ConfirmDialog` và các modal **chưa** đóng bằng phím Esc, chưa có `role="dialog"`/`aria-modal`.
+
+**Chuẩn Modal Shell** (cho các modal mới ở `UI-screens.md` §5; ❌ tách thành component `Modal` khi làm modal mới đầu tiên):
+- Lớp phủ `fixed inset-0 z-[100] bg-gray-900/60 backdrop-blur-[2px] flex items-center justify-center`.
+- Thân `bg-white border border-gray-200 rounded-xl shadow-2xl max-w-[95vw] max-h-[90vh] overflow-y-auto`; rộng 420px (xác nhận) hoặc 480–640px (form).
+- Tiêu đề `font-display font-bold text-[15px]`; nút đóng icon `close` có `aria-label="Đóng"`.
+- Chân: nút phụ `outline` (Hủy/Giữ…) bên trái nút chính; thao tác phá hủy dùng nền đỏ.
+- Có `role="dialog" aria-modal="true" aria-labelledby`, đóng bằng **Esc**; đóng bằng X/Hủy **không** thay đổi dữ liệu; nút gửi vô hiệu khi đang xử lý; lỗi hiện ngay trong modal.
+- Modal OTP, thu tiền, hoàn tiền… theo quy tắc riêng ở `UI-screens.md`.
+
+### 4.6 Bộ chọn ngày — `ui/CustomDatePicker.tsx`
+- **Hiện trạng:** nút dạng viên (`rounded-full`, nền trắng, icon `calendar_today`) hiển thị `T2, 20/10/2026` (viết tắt `CN, T2…T7`); popover lịch `w-[310px] rounded-2xl`, chuyển tháng trước/sau, chân có **"Hôm nay"** và **"Đóng"**; đóng khi bấm ra ngoài. **Không** có "Ngày mai". Vị trí mặc định `absolute bottom-5 left-7 z-20` (ghi đè bằng `className`). Dùng ngày **giờ trình duyệt**.
+- **Chuẩn:** ❌ thêm nút `[<]` `[>]` chuyển ngày trước/sau cạnh nút chọn (WF-04, WF-12); khách không chọn được ngày quá khứ; đóng bằng Esc.
+
+### 4.7 Phân trang — `ui/Pagination.tsx`
+- Trái: `{từ}–{đến} / {tổng}` (`text-xs text-gray-500`). Phải: nút **Trước** / **Sau** (`outline`, `sm`) và `{trang}/{tổng trang}` (`font-mono text-xs`); tự vô hiệu ở đầu/cuối; ẩn khi không có bản ghi.
+- **Chuẩn:** phân trang **phía máy chủ**, mặc định **20 bản ghi/trang**; đổi bộ lọc hoặc tab thì về trang 1.
 
 ---
 
-### 4.7 Thanh phân trang (Pagination)
-- **File mã nguồn:** `src/components/ui/Pagination.tsx`.
-- **Quy cách:**
-  - Bên trái: Chỉ số bản ghi `font-sans text-xs text-gray-500` dạng `"1–20 / 85"`.
-  - Bên phải: Nút "Trước" (`variant="outline" size="sm"`), số trang `font-mono text-xs` (`"1/5"`), nút "Sau". Tự động vô hiệu hóa ở trang đầu và trang cuối.
+## 5. THÀNH PHẦN NGHIỆP VỤ ĐẶC THÙ
+
+### 5.1 Lưới ô đặt sân — `court/CourtGrid.tsx`, `CourtSlotCell.tsx`
+- **Hiện trạng:**
+  - Trục ngang 05:00–22:00 (hằng `START_HOUR`/`END_HOUR`), ô 30 phút `w-[72px] h-14`; trục dọc là tên sân + mô tả, cố định bên trái (`sticky left-0 z-[5]`).
+  - Khung `bg-white rounded-2xl overflow-hidden`; cuộn ngang bằng bánh xe chuột (cuộn dọc → ngang).
+  - Chân khung: chấm xanh `w-[7px] h-[7px] bg-green-500` **tĩnh** + chữ "Cập nhật mỗi 30 giây" (đúng với `refetchInterval` 30 giây); chú giải 4 mục: Còn trống, Đã đặt, Đặt của bạn, Đóng cửa.
+  - Ô đã qua giờ của hôm nay bị vô hiệu (tính bằng giờ trình duyệt).
+  - ⚠ Marker "giờ hiện tại": `isNowSlot` và `nowFrac` được tính và truyền xuống `CourtSlotCell` nhưng **không được vẽ** (chưa có gì hiển thị).
+- **Chuẩn:**
+  - Màu và tooltip ô theo §2.1.C; chú giải có chữ cho từng trạng thái; bỏ mục "Đặt của bạn" khỏi chú giải cho tới khi backend trả cờ `isMine`.
+  - ⚠ Hàng sân Bảo trì/Đóng hiện **badge** trạng thái trên tiêu đề hàng (G-13).
+  - Giờ hiển thị theo giờ mở cửa từng sân/ngày (G-04) — cần backend.
+  - Marker giờ hiện tại là tùy chọn: nếu làm, vẽ vạch dọc `bg-red-500` rộng 2px tại vị trí `nowFrac` chỉ khi ngày đang xem là hôm nay; nếu không làm, xóa hai prop thừa.
+
+### 5.2 Popup chọn thời lượng — `court/SlotPopup.tsx`
+- **Hiện trạng:**
+  - Panel tối `#1f2937`, `w-[210px] rounded-[14px] p-4`, neo bằng tọa độ động ngay trên ô được bấm (`fixed z-[200] -translate-x-1/2 -translate-y-full`) có mũi tên; đóng khi bấm ra ngoài.
+  - Tiêu đề = tên sân; dòng giờ `HH:mm – HH:mm (nhãn)` (`font-mono text-[11px]`).
+  - Danh sách thời lượng **60 / 90 / 120 / 150 / 180 phút** (nền `#374151`, chọn thì viền `emerald-500`, kèm giá), tự ẩn mức bị vướng slot đã đặt; không đủ chỗ hiện "Không đủ thời gian trống liên tiếp (tối thiểu 1 giờ)".
+  - Nút `#10b981`: **"Đặt sân · {giá}"** (giá từ `usePricePreview`); trạng thái "Đang tính...", "Chưa có báo giá", "Không tải được giá".
+  - ⚠ Nhiều giá trị đặt bằng `style` inline và `onMouseEnter/Leave`.
+- **Chuẩn:**
+  - ❌ **Bước 30 phút, tối thiểu 30 phút** (BR-20): thêm mức 30 phút (và 30 phút lẻ nếu lưới cho phép); thông báo "tối thiểu 30 phút".
+  - Mức bị vô hiệu (trùng lịch, quá giờ đóng cửa, qua nửa đêm) hiển thị mờ kèm lý do ngắn, không ẩn hẳn.
+  - Chuyển màu hover/chọn sang lớp Tailwind; giữ inline chỉ cho tọa độ.
+
+### 5.3 Bảng dữ liệu vận hành — `admin/CourtTable.tsx`, `CustomersClient.tsx`, `EmployeesClient.tsx`
+- **Hiện trạng/Chuẩn khung:**
+  - Khung `bg-white border border-slate-200 rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]`.
+  - Hàng tiêu đề `bg-slate-50/50 text-[10px] font-mono text-slate-400 uppercase tracking-wider`, ô `px-5 py-3 border-b border-slate-100 font-semibold`.
+  - Hàng dữ liệu `hover:bg-slate-50 transition-colors`, đường kẻ `border-slate-100`.
+  - Nút thao tác: `inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[11px] font-mono font-medium`; màu theo ý nghĩa — hiện ở `CourtTable`: **emerald** (Lịch & giá), **amber** (Trạng thái), **slate** (Chỉnh sửa); chuẩn: thao tác phá hủy (Xóa, Khóa) dùng **red**.
+- **Chuẩn bổ sung:** dùng `<th scope="col">`; chữ tiêu đề cột `text-slate-500` (xem §7.1 về tương phản); có trạng thái rỗng và phân trang (§6, §4.7).
+- **Thẻ thống kê** (`DashboardStats`, `CourtStats`): `bg-white border border-slate-200 rounded-xl` + bóng nhẹ, đệm `p-[18px]` (Dashboard) hoặc `p-4` (CourtStats); nhãn `text-[11px] font-mono uppercase tracking-wider text-slate-500`. Dashboard chuẩn có **3 thẻ** (Doanh thu hôm nay, Đơn chờ duyệt, Lượt sân đặt trong ngày); **không** có thẻ tỷ lệ lấp đầy.
+
+### 5.4 Thanh phân bổ giá giờ chơi — `admin/PricingTimeline.tsx` ✅
+- Chia đoạn 30 phút (`STEP = 30`, đoạn tối thiểu 30 phút); thanh trượt kéo mốc giờ (`.pricing-boundary`); màu đoạn theo §2.1.D; nút thêm/xóa mốc giá (nút xóa có `aria-label`, mốc đầu và mốc duy nhất không xóa được).
+- Dùng trong `CourtOperationsModal` (tab T2–CN). **Chuẩn:** lưu lịch và lưu giá đi qua bước **Xem trước** (Wireframes 15.4/15.5) — hiện là hai nút lưu riêng.
+
+### 5.5 Biểu đồ doanh thu — `admin/RevenueChart.tsx`
+- **Hiện trạng:** Recharts `BarChart` trong khung `bg-white border border-slate-200 rounded-xl p-5 h-[350px]`, tiêu đề "Doanh thu 7 ngày gần nhất" (`text-[15px] font-bold`), cột `#3b82f6` `radius={[4,4,0,0]}` `barSize={32}`, lưới `#f1f5f9`, tooltip bo 8px viền `#e2e8f0` định dạng `formatCurrency`. Đang đặt trên Dashboard.
+- **Chuẩn** (`UI-screens.md` QĐ-06): **gỡ khỏi Dashboard**, dùng lại ở **Báo cáo & Thống kê (WF-18)** làm biểu đồ cột theo kỳ (ngày/tháng).
+- **Quy tắc nghiệp vụ:** doanh thu chỉ cộng hóa đơn **Đã thanh toán**, tính theo **thời điểm thu**; không tính hóa đơn Chưa thanh toán hay Đã hủy. Số liệu do API trả, không tự cộng ở FE.
+- ⚠ Sửa `fontFamily` trục thành `var(--font-jetbrains)`.
+
+### 5.6 Dòng thời gian lịch sử trạng thái — ❌ chưa có component
+- **Áp dụng:** chi tiết đặt sân (WF-11) và theo dõi toàn hệ thống (WF-17).
+- **Dữ liệu:** `statusHistory[]` gồm `oldStatus`, `newStatus`, `actorType`, `actorName`, `changedAt`, `reason`.
+- **Chuẩn:** cột dọc, trục xám mảnh nối các nút tròn; màu nút theo trạng thái mới (Chờ xác nhận vàng, Đã xác nhận xanh dương, Hoàn thành xanh lá, Đã hủy đỏ). Mỗi mốc: `Cũ → Mới` (nhãn tiếng Việt), thời điểm giờ Việt Nam `dd/MM/yyyy HH:mm` (`font-mono text-xs`), tác nhân bằng `ACTOR_TYPE_LABEL` (**Hệ thống / Nhân viên / Khách hàng**) kèm họ tên, và **lý do** (chữ nghiêng màu xám) khi có (hủy, từ chối, đổi lịch…) — BR-13.
+
+### 5.7 Modal xác minh OTP 6 ô (`M-01`) — ❌ chưa có
+- **Áp dụng:** Đăng ký (WF-01), Quên mật khẩu (WF-03), Đặt nhanh vãng lai (WF-04). Hiện các luồng này dùng ô nhập mã inline.
+- **Chuẩn:**
+  - 6 ô số độc lập `w-11 h-12 text-center text-xl font-mono font-bold border border-gray-300 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20`; tự nhảy ô khi nhập; Backspace lùi ô; hỗ trợ dán chuỗi 6 số.
+  - Đếm ngược gửi lại **60 giây** (`Gửi lại mã (59s)`); mã hiệu lực **10 phút**; sai **5 lần** thì vô hiệu mã và hiện banner lỗi.
+
+### 5.8 Widget Trợ lý AI — ❌ chưa có (`WF-08`)
+- **Hiện trạng:** chỉ có route `src/app/api/chat/route.ts` (system prompt cố định; model đặt trong route). Chưa có component widget và chưa dùng icon `smart_toy`.
+- **Chuẩn:**
+  - Hiện trên mọi trang Cổng Khách hàng, **ẩn ở Cổng Quản trị** (G-11).
+  - Nút nổi: `fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg`, icon `smart_toy` 28px.
+  - Khung chat: `fixed bottom-24 right-6 z-[60] w-[380px] max-w-[90vw] h-[520px] max-h-[80vh] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden`; header 56px nền `#1a1f2e` chữ trắng `font-display font-bold text-sm`, nút `close`.
+  - Tin khách: căn phải `bg-emerald-500 text-white rounded-2xl rounded-tr-none px-4 py-2.5 text-sm`; tin AI: căn trái `bg-white border border-gray-200 text-slate-800 rounded-2xl rounded-tl-none px-4 py-2.5 text-sm shadow-sm`; đang trả lời: 3 chấm `animate-bounce`.
+  - **Banner cố định** đầu khung: AI chỉ tư vấn thông tin công khai, không đặt/hủy/đổi sân, không thu tiền, không xem dữ liệu cá nhân. Gợi ý nhanh (chip): Hướng dẫn đặt sân · Giá theo giờ · Gợi ý giờ còn trống · Hotline. Giá nêu là tham khảo; không có thông tin thì chỉ về hotline.
 
 ---
 
-## 5. THÀNH PHẦN GIAO DIỆN NGHIỆP VỤ ĐẶC THÙ (DOMAIN COMPONENTS)
+## 6. PHẢN HỒI TRẠNG THÁI
 
-### 5.1 Lưới ô đặt sân (Court Slot Grid)
-- **File mã nguồn:** `src/components/court/CourtGrid.tsx`, `CourtSlotCell.tsx`.
-- **Cấu trúc:**
-  - Trục ngang: Trục thời gian từ 05:00 đến 22:00 chia thành các slot 30 phút (`w-[72px] min-w-[72px]`).
-  - Trục dọc: Danh sách tên sân cố định bên trái (`sticky left-0 bg-white z-10 w-[140px]`).
-  - Hàng Now Marker: Đường kẻ chỉ giờ hiện tại (màu đỏ/xanh) tính theo tỷ lệ `nowFrac` di chuyển liên tục theo thời gian thực.
-  - Nhịp cập nhật dữ liệu: Hiển thị chấm tròn xanh nhấp nháy kèm chữ "Cập nhật mỗi 30 giây" (`font-mono text-[11px]`).
+### 6.1 Toast (Sonner)
+Cấu hình `src/app/providers.tsx`: `<Toaster position="top-right" richColors closeButton toastOptions={{ duration: 3000 }} />`.
+- `toast.success`: thao tác thành công nhẹ ("Lưu thông tin thành công"…). `toast.error`: lỗi mạng, lỗi chung (dùng `getErrorMessage`).
+- **Không dùng toast** cho lỗi nghiệp vụ nghiêm trọng (tài khoản bị khóa do sai mật khẩu 5 lần, bảo vệ Admin cuối, hủy quá hạn) — dùng **banner** trong trang hoặc **trong modal**.
 
----
+### 6.2 Banner thông báo — ❌ chưa có component dùng chung
+- **Chuẩn:** `rounded-lg border px-4 py-3 text-sm flex gap-2.5` + icon; `role="alert"` cho lỗi.
+  - Lỗi: `bg-red-50 border-red-200 text-red-700`; cảnh báo: `bg-amber-50 border-amber-200 text-amber-700`; thông tin: `bg-blue-50 border-blue-200 text-blue-700`.
+  - Banner lỗi tải dữ liệu có nút **Thử lại** (`outline`, `sm`).
+- **Dùng cho:** banner khóa tài khoản và sai thông tin đăng nhập (WF-02), banner email đã có tài khoản (WF-01), lỗi tải danh sách, cảnh báo không khóa/xóa Admin cuối.
 
-### 5.2 Cửa sổ chọn thời lượng nổi (SlotPopup)
-- **File mã nguồn:** `src/components/court/SlotPopup.tsx`.
-- **Đặc tính:** Cửa sổ popover nổi được tính toán tọa độ động (`x`, `y`) neo trực tiếp ngay trên ô slot vừa click.
-- **Nội dung:**
-  - Tên sân & Thời gian bắt đầu: ví dụ `"Sân 1 · Bắt đầu lúc 17:30"`.
-  - Các nút chọn thời lượng (Pills): `[ 30p ]`, `[ 60p ]`, `[ 90p ]`, `[ 120p ]`, `[ 150p ]`, `[ 180p ]`. *(Đã bổ sung mốc 30 phút theo chuẩn BR-20)*.
-  - Tự động kiểm tra các ô liên tiếp phía sau: Nếu bị vướng slot đã đặt thì disable các mức thời lượng vượt quá.
-  - Nút Submit: `"Đặt sân · {Tổng tiền} ₫"` (`bg-emerald-500 text-white`).
+### 6.3 Trạng thái rỗng
+- **Chuẩn:** khung căn giữa, icon `text-gray-300 text-[48px]`, tiêu đề `text-gray-600 font-medium text-sm`, nút gợi ý nếu người dùng có thể tạo dữ liệu. Câu chữ theo từng màn hình ở `UI-screens.md`.
+- **Hiện trạng:** chỉ có ở `BookingLookupResult`; các danh sách khác chỉ hiện một dòng chữ.
 
----
-
-### 5.3 Bảng dữ liệu Vận hành (Admin Data Table)
-- **File mã nguồn:** `src/components/admin/CourtTable.tsx`, `src/app/(admin)/customers/CustomersClient.tsx`, `EmployeesClient.tsx`.
-- **Quy chuẩn cấu trúc:**
-  - Khung bao: `bg-white border border-slate-200 rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]`.
-  - Header bảng: `bg-slate-50/50 text-[10px] font-mono text-slate-400 uppercase tracking-wider px-5 py-3 border-b border-slate-100`.
-  - Hàng dữ liệu: `hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0`.
-  - Nút thao tác nhanh (Micro Action Buttons): `inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[11px] font-mono font-medium transition-colors cursor-pointer`.
+### 6.4 Trạng thái đang tải
+- **Hiện trạng:** chủ yếu là chữ "Đang tải…" (11 chỗ); chỉ `CourtOperationsModal` có skeleton thật. `animate-pulse` ở `CourtTable`/`CourtCardGrid` là chấm nhấp nháy của nhãn "Đang sử dụng", không phải skeleton.
+- **Chuẩn:** skeleton `animate-pulse bg-slate-200/60 rounded-md`, cao bằng hàng thực để tránh nhảy bố cục; áp dụng cho lưới sân, bảng và thẻ thống kê. Nút gửi hiển thị `loading` (§4.1).
 
 ---
 
-### 5.4 Thanh phân bổ giá giờ chơi (PricingTimeline)
-- **File mã nguồn:** `src/components/admin/PricingTimeline.tsx`.
-- **Đặc tính:** Giao diện trực quan cho phép Quản trị viên cấu hình bảng giá nhiều mức theo khung giờ trong ngày:
-  - Chia đoạn 30 phút (`STEP = 30`).
-  - Thanh trượt mốc giờ (`.pricing-boundary::-webkit-slider-thumb`) kéo mốc giờ bắt đầu/kết thúc mượt mà.
-  - Màu sắc phân biệt các đoạn giá: `bg-[#DDECDD]`, `bg-[#DDECF3]`, `bg-[#F5EACB]`, `bg-[#E8E2F0]`.
-  - Nút "+ Thêm mốc giá" và icon xóa đoạn giá.
+## 7. KHẢ NĂNG TIẾP CẬN VÀ QUY TẮC LẬP TRÌNH UI
+
+### 7.1 Khả năng tiếp cận (WCAG AA)
+**Hiện trạng:** 13 chỗ có `aria-label`; **chưa** có `scope="col"`, `sr-only`, hay xử lý phím Esc cho modal/popover; nhiều chữ `text-gray-400`/`text-slate-400` có độ tương phản thấp (`slate-400` trên nền trắng ≈ 2.6:1).
+
+**Chuẩn:**
+1. **Tương phản ≥ 4.5:1** cho chữ cung cấp thông tin: tối thiểu `text-gray-500`/`text-slate-500` (≈ 4.8:1 trên nền trắng); `*-400` chỉ cho placeholder, icon trang trí.
+2. **Screen reader:** nút chỉ có icon bắt buộc có `aria-label`; bảng dùng `<thead>`, `<th scope="col">`; modal có `role="dialog"`, `aria-modal`, `aria-labelledby`; lỗi form gắn với trường; banner lỗi `role="alert"`.
+3. **Bàn phím:** `Tab` tuần tự; `Enter` gửi form; **`Esc` đóng** modal/dialog/popover; trạng thái focus nhìn thấy rõ.
+4. **Không chỉ dựa vào màu:** trạng thái ô lưới, nhãn đơn/hóa đơn luôn có chữ hoặc ký hiệu.
+
+### 7.2 Quy tắc lập trình UI
+1. **Gộp class bằng `cn()`** (`src/utils/index.ts`): `twMerge(clsx(inputs))`.
+2. **Hạn chế style inline:** chỉ cho giá trị tính động (tọa độ popup, %, vị trí). ⚠ Hiện còn nhiều inline ở `SlotPopup`, chú giải lưới, hero — chuyển sang Tailwind khi sửa các file này.
+3. **Định dạng dữ liệu:**
+   - Tiền: `formatCurrency(amount)` → `100.000 ₫` (`Intl.NumberFormat("vi-VN")`).
+   - Ngày giờ: `formatDate()` (`dd/MM/yyyy`), `formatDateTime()` (`dd/MM/yyyy HH:mm`) — dùng `date-fns`.
+   - ⚠ Các hàm này và `CustomDatePicker` dùng **múi giờ trình duyệt**, và `toISODate()`/`getTodayISO()` dùng **UTC** (sai ngày trong khoảng 00:00–07:00 giờ VN; `ScheduleClient` đang dùng `getTodayISO()` làm ngày mặc định). **Chuẩn:** ngày/giờ nghiệp vụ lấy từ chuỗi API (`date`, `startTime` dạng `HH:mm`), không tự quy đổi; khi cần "hôm nay" dùng ngày địa phương theo giờ Việt Nam (như `localToday` trong `CourtGrid`), không dùng `getTodayISO()`.
+4. **Nhãn trạng thái:** lấy từ `src/config/app.ts`; thuật ngữ hiển thị thống nhất theo `UI-screens.md` §2.5 ("Đã hủy", "Bị khóa", "Chưa lập hóa đơn"...).
+5. **Màu thương hiệu:** dùng `emerald-*` (§2.1.A).
 
 ---
 
-### 5.5 Biểu đồ Doanh thu (RevenueChart)
-- **File mã nguồn:** `src/components/admin/RevenueChart.tsx`.
-- **Thư viện:** Recharts (`ResponsiveContainer`, `BarChart`, `Bar`, `XAxis`, `YAxis`, `Tooltip`).
-- **Quy cách hiển thị:**
-  - Cột doanh thu: Màu xanh dương `#3b82f6` (`blue-500`), bo góc trên `radius={[4, 4, 0, 0]}`, độ rộng cột `barSize={32}`.
-  - Trục tọa độ: Font `var(--font-jetbrains-mono)` cỡ 10px, màu `#64748b`.
-  - Tooltip: Bo góc `8px`, viền `#e2e8f0`, format đơn vị tiền tệ VNĐ chuẩn xác.
-  - Nghiệp vụ: **Chỉ cộng doanh thu từ các hóa đơn đã thanh toán (`Paid`)**, không tính hóa đơn chưa thanh toán hay đã hủy.
+## 8. CÁC ĐIỂM BẢN 1.0 ĐÃ SAI VÀ ĐƯỢC SỬA
 
----
-
-### 5.6 Dòng thời gian lịch sử trạng thái (Status Timeline)
-- **Áp dụng tại:** Trang chi tiết đơn đặt sân (`WF-11`) và theo dõi đặt sân (`WF-17`).
-- **Cấu trúc thị giác:**
-  - Dạng cột dọc: Trục kẻ xám mảnh nối các nút tròn trạng thái.
-  - Nút tròn: Đổi màu theo trạng thái (Vàng cho Chờ xác nhận, Xanh dương cho Đã xác nhận, Xanh lá cho Hoàn thành, Đỏ cho Đã hủy).
-  - Nội dung mỗi mốc:
-    - Trạng thái: `Cũ → Mới`.
-    - Thời điểm: Giờ Việt Nam `dd/MM/yyyy HH:mm` (`font-mono text-xs`).
-    - Tác nhân: Badge `System` / `Employee` / `Customer` kèm họ tên người thực hiện.
-    - **Lý do thay đổi:** Bắt buộc hiển thị chữ nghiêng màu xám khi đơn bị Hủy hoặc Từ chối (`BR-13`).
-
----
-
-### 5.7 Modal Xác minh Email OTP 6 ô rời (Modal M-01)
-- **Áp dụng tại:** Đăng ký tài khoản (`WF-01`), Quên mật khẩu (`WF-03`), Khách vãng lai đặt nhanh (`WF-04`).
-- **Quy cách thiết kế mục tiêu:**
-  - 6 ô input số độc lập: `w-11 h-13 text-center text-xl font-mono font-bold border border-gray-300 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20`.
-  - Tự động nhảy con trỏ sang ô tiếp theo khi nhập số.
-  - Tự động xóa lùi khi bấm Backspace.
-  - Hỗ trợ sự kiện Paste: Tự động phân tách chuỗi 6 ký tự số vào 6 ô.
-  - Đếm ngược gửi lại mã: Bộ đếm 60 giây dạng `Gửi lại mã (59s)`.
-  - Hạn sử dụng: 10 phút; nhập sai quá 5 lần thì tự động vô hiệu hóa mã và hiển thị banner thông báo lỗi.
-
----
-
-### 5.8 Widget Trợ lý ảo AI (ChatWidget.tsx - WF-08)
-- **Áp dụng tại:** Tất cả các màn hình thuộc Cổng Khách hàng (ẩn hoàn toàn ở Cổng Quản trị theo chuẩn `G-11`).
-- **Kết nối Backend:** Endpoint `src/app/api/chat/route.ts` sử dụng Claude 3.5 Sonnet / Haiku của Anthropic SDK.
-- **Quy cách thị giác:**
-  - **Nút kích hoạt tròn nổi (Floating Trigger):**
-    - Vị trí: `fixed bottom-6 right-6 z-50`.
-    - Kích thước: `w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg hover:shadow-xl flex items-center justify-center transition-all cursor-pointer`.
-    - Icon: Material Symbol `smart_toy` (size 28px).
-  - **Khung hội thoại mở rộng (Chat Panel):**
-    - Vị trí: `fixed bottom-24 right-6 z-[60] w-[380px] max-w-[90vw] h-[520px] max-h-[80vh] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden`.
-    - **Header:** Chiều cao 56px, nền `#1a1f2e` (Dark Navy), chữ trắng `font-display font-bold text-sm`, nút thu nhỏ/đóng icon `close`.
-    - **Danh sách tin nhắn (Message Thread):** Vùng cuộn `flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50`.
-      - Tin nhắn khách hàng: Căn phải, `bg-emerald-500 text-white rounded-2xl rounded-tr-none px-4 py-2.5 text-sm`.
-      - Tin nhắn AI: Căn trái, `bg-white border border-gray-200 text-slate-800 rounded-2xl rounded-tl-none px-4 py-2.5 text-sm shadow-sm`.
-      - Hiệu ứng phản hồi: 3 chấm nhảy sinh động (`animate-bounce`) khi đang gọi API Claude.
-    - **Gợi ý nhanh (Quick Chips):** Thanh trượt ngang chứa các câu hỏi mẫu (`text-xs font-mono bg-white border border-emerald-200 text-emerald-700 px-3 py-1 rounded-full hover:bg-emerald-50 cursor-pointer`).
-    - **Input Footer:** Ô nhập câu hỏi `font-sans text-sm bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 focus:bg-white` và nút Gửi màu xanh ngọc.
-
----
-
-## 6. HỆ THỐNG PHẢN HỒI TRẠNG THÁI & THÔNG BÁO (FEEDBACK & STATES)
-
-### 6.1 Thông báo Toast (Sonner)
-Cấu hình trong `src/app/providers.tsx`:
-```tsx
-<Toaster position="top-right" richColors closeButton toastOptions={{ duration: 3000 }} />
-```
-- **Toast Thành công (`toast.success`):** Nền xanh lá nhạt, icon check. Sử dụng cho: *"Đăng nhập thành công"*, *"Lưu thông tin thành công"*, *"Xác nhận đặt sân thành công"*.
-- **Toast Thất bại (`toast.error`):** Nền đỏ nhạt, icon lỗi. Sử dụng cho lỗi mạng, lỗi validate hệ thống.
-- **Nguyên tắc nghiệp vụ:** **Không dùng toast cho lỗi nghiệp vụ nghiêm trọng** (ví dụ tài khoản bị khóa do đăng nhập sai quá 5 lần, hoặc vi phạm bảo vệ QTV cuối cùng) – những trường hợp này bắt buộc dùng Banner lỗi cố định trong trang hoặc trong Modal.
-
-### 6.2 Trạng thái Trống (Empty State)
-- Áp dụng khi danh sách không có dữ liệu (không có đơn đặt sân, bảng khách hàng rỗng, audit log không khớp bộ lọc).
-- Cấu trúc: Khung căn giữa, icon kích thước lớn màu xám nhạt (`text-gray-300 text-[48px]`), tiêu đề trung tính (`text-gray-600 font-medium text-sm`), và nút hành động gợi ý nếu người dùng có thể tạo dữ liệu mới.
-
-### 6.3 Trạng thái Đang tải (Loading Skeleton)
-- Sử dụng hiệu ứng xung nhịp (`animate-pulse`) với màu nền xám nhạt `bg-slate-200/60 rounded-md`.
-- Độ cao skeleton khớp với độ cao của dòng bảng thực tế để tránh nhảy layout (layout shift) khi dữ liệu tải xong.
-
----
-
-## 7. TIÊU CHUẨN KHẢ NĂNG TIẾP CẬN & QUY TẮC LẬP TRÌNH UI
-
-### 7.1 Chuẩn tiếp cận Web (Accessibility - WCAG AA)
-1. **Độ tương phản màu sắc (Contrast Ratio):** Mọi văn bản hiển thị phải đạt độ tương phản tối thiểu `4.5:1` so với màu nền.
-2. **Hỗ trợ Screen Reader:**
-   - Mọi nút bấm chỉ chứa icon (như nút sửa, xóa, toggle mật khẩu) bắt buộc phải có thuộc tính `aria-label` hoặc thẻ `<span className="sr-only">`.
-   - Các bảng dữ liệu bắt buộc có thẻ `<thead>`, `<th>` kèm `scope="col"`.
-3. **Điều hướng bàn phím (Keyboard Navigation):**
-   - Hỗ trợ phím `Tab` tuần tự qua các ô input.
-   - Phím `Enter` để kích hoạt submit form.
-   - Phím `Escape` để đóng ngay lập tức bất kỳ Modal / Dialog / Popover nào đang mở.
-
-### 7.2 Quy tắc Lập trình UI trong Codebase
-1. **Hợp nhất lớp CSS (Class Merging):** Bắt buộc sử dụng hàm tiện ích `cn()` từ `src/utils/index.ts`:
-   ```typescript
-   export function cn(...inputs: ClassValue[]): string {
-     return twMerge(clsx(inputs));
-   }
-   ```
-2. **Không viết style inline tùy tiện:** Chỉ sử dụng style inline cho các giá trị động được tính toán theo thời gian thực (ví dụ: tọa độ `x`, `y` của popover, vị trí phần trăm `nowFrac` của Now Marker). Toàn bộ kiểu dáng còn lại phải sử dụng lớp Tailwind chuẩn.
-3. **Định dạng dữ liệu thống nhất:**
-   - Tiền tệ: Bắt buộc dùng `formatCurrency(amount)` (sinh chuỗi VND có dấu phân cách hàng nghìn).
-   - Ngày tháng: Bắt buộc dùng `formatDate(date)` (`dd/MM/yyyy`) hoặc `formatDateTime(date)` (`dd/MM/yyyy HH:mm`) theo múi giờ Việt Nam (UTC+7).
-
----
-
-*Tài liệu được biên soạn đồng bộ, kiểm duyệt nghiêm ngặt dựa trên mã nguồn thực tế và hệ thống tiêu chuẩn kỹ thuật của ShuttleVN.*
+| # | Bản 1.0 | Thực tế / Chuẩn |
+|---|---|---|
+| 1 | Next.js 15, Tailwind "v3" ngầm định; font từ `@next/font/google` | Next.js 16, Tailwind v4 (`@import "tailwindcss"` + `@config`); font từ `next/font/google` |
+| 2 | `primary-500` → "nút chính `bg-emerald-500`" | Hai thang màu khác mã; `primary-*` gần như không dùng, component dùng `emerald-*` |
+| 3 | Marker giờ hiện tại và chấm xanh "nhấp nháy" trên lưới | Marker **không được vẽ**; chấm xanh tĩnh |
+| 4 | Cột tên sân `w-[140px] z-10` | `min-width 130px`, `z-[5]` |
+| 5 | `SlotPopup` "đã bổ sung mốc 30 phút"; nền popup xanh | Chỉ 60–180 phút; popup nền tối `#1f2937`; `z-[200]` |
+| 6 | Dropdown `UserMenu` `z-20`; popup `z-[100]`; modal `z-[110]` | `UserMenu` `z-60`; modal admin `z-[100]`; `ConfirmDialog` `z-[110]`; `SlotPopup` `z-[200]`; dialog chi tiết đặt sân `z-50` |
+| 7 | Header khách "fixed" và nội dung `max-w-7xl` chung | Header `sticky`; mỗi trang tự đặt bề rộng (1400/960/560) |
+| 8 | Vùng nội dung admin `bg-slate-50`, `overflow-y-auto` | `bg-gray-100`, `overflow-auto` |
+| 9 | Admin "9 mục / 4 nhóm" có "Đặt sân toàn hệ thống" | Chuẩn 10 mục; "Tất cả đặt sân" là tab, thêm "Tài khoản & Phân quyền"; code hiện 8 mục / 3 nhóm |
+| 10 | Route admin `/schedule`, `/booking-requests`, `/bookings`… | Route mục tiêu `/admin/*` (`UI-screens.md` §2.6) |
+| 11 | `CustomDatePicker` có "Hôm nay", "Ngày mai"; nhãn "Thứ 2" | Chỉ "Hôm nay"/"Đóng"; nhãn `T2`, `CN` |
+| 12 | `Button` không nói rõ bề ngang | Mặc định `w-full` |
+| 13 | Hero chữ 24–30px; bo `BookingCard`/`CourtCardGrid` là 14px/8px | Hero 34px; cả hai `rounded-xl` |
+| 14 | Widget AI dùng "Claude 3.5 Sonnet / Haiku", mô tả như đã có | Chưa có widget; model đặt trong route; đây là chuẩn mục tiêu |
+| 15 | Esc đóng modal, `scope="col"`, `sr-only`, toast `z-[9999]`, skeleton phổ biến | Là chuẩn mục tiêu; hiện chưa có (toast do Sonner quản lý z-index) |
+| 16 | `formatDate`/`formatDateTime` theo múi giờ Việt Nam | Theo múi giờ trình duyệt; `getTodayISO` theo UTC (lưu ý ở §7.2) |
+| 17 | Còn tham chiếu `UI-screens.md` v2.0, modal `M-01…M-19` | Đồng bộ `UI-screens.md` v3.1; mã modal giữ đúng Wireframes |
+| 18 | Biểu đồ doanh thu thuộc Dashboard | Gỡ khỏi Dashboard (QĐ-06), dùng ở Báo cáo WF-18 |

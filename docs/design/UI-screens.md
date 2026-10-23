@@ -323,7 +323,7 @@ Route mục tiêu `/admin/bookings/[id]` · **chưa có route** · UC-15, UC-16,
 | Hạng mục | Trạng thái | Hiện trạng → Chuẩn mục tiêu |
 |---|---|---|
 | Bố cục | ⚠ | Hiện: **timeline ngang**, mỗi sân một hàng, 05:00–22:00, khối đặt tính theo %. Wireframes vẽ lưới dọc (mỗi sân một cột). Hướng bố cục không phải ràng buộc nghiệp vụ; giữ timeline ngang nếu đủ nội dung bên dưới |
-| Chọn ngày | ⚠ | Hiện: `CustomDatePicker`. → Chuẩn: `[<]` `[>]`, ô ngày, **Hôm nay** |
+| Chọn ngày | ⚠ | Hiện: `CustomDatePicker`; ngày mặc định lấy từ `getTodayISO()` (**UTC**, sai ngày trước 07:00 giờ VN). → Chuẩn: `[<]` `[>]`, ô ngày, **Hôm nay**; ngày mặc định theo giờ địa phương Việt Nam |
 | Lọc theo sân | ❌ | Chuẩn: chọn một sân hoặc Tất cả |
 | Chú giải | ❌ | Chuẩn: Chờ xác nhận `[CXN]`, Đã xác nhận `[ĐXN]`, Hoàn thành `[HT]` (vẫn giữ chỗ), Trống, Bảo trì/Đóng — **có chữ, không chỉ màu** |
 | Ô đã đặt | ⚠ | Hiện: chỉ ghi "Đã đặt" + giờ, mỗi ô 30 phút là một khối riêng, **không click được**. → Chuẩn: hiện **tên khách, mã đơn, nhãn trạng thái**; đơn nhiều slot gộp một khối; **bấm mở WF-11** (BR-28). Dữ liệu `courts/grid` chỉ trả `bookingId` → cần API lịch cho nhân viên |
@@ -500,7 +500,7 @@ Mã giữ đúng Wireframes; "—" là hộp thoại chưa có mã riêng. Phụ
 
 ---
 
-## 6. Các điểm tài liệu 2.0 đã sai và được sửa trong 3.0
+## 6. Các điểm bản 2.0 đã sai và được sửa (bản 3.0/3.1)
 
 | # | Nội dung bản 2.0 | Thực tế / Chuẩn |
 |---|---|---|
