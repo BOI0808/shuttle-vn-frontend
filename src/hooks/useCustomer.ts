@@ -9,6 +9,7 @@ import {
 import { customerService } from "@/services";
 import { QUERY_KEYS } from "@/config/app";
 import {
+  CreateCustomerRequest,
   CustomerSearchParams,
   PaginationParams,
   UpdateProfileRequest,
@@ -89,5 +90,16 @@ export function useUnlockCustomerAccount() {
     mutationFn: ({ accountId }: CustomerAccountVariables) =>
       customerService.unlockAccount(accountId),
     onSuccess: (_data, { customerId }) => invalidate(customerId),
+  });
+}
+
+export function useCreateCustomer() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: CreateCustomerRequest) =>
+      customerService.createCustomer(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.customers });
+    },
   });
 }

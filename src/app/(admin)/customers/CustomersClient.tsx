@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { CustomerFormModal } from "@/components/admin/CustomerFormModal";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Pagination } from "@/components/ui/Pagination";
@@ -33,6 +34,15 @@ export default function CustomersClient() {
     pageNumber,
     pageSize: PAGE_SIZE,
   });
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpenModal = () => setIsAddModalOpen(true);
+    window.addEventListener("open-add-customer", handleOpenModal);
+    return () =>
+      window.removeEventListener("open-add-customer", handleOpenModal);
+  }, []);
 
   const items = data?.items ?? [];
 
@@ -156,6 +166,9 @@ export default function CustomersClient() {
       </div>
 
       {data && <Pagination page={data} onPageChange={setPageNumber} />}
+      {isAddModalOpen && (
+        <CustomerFormModal onClose={() => setIsAddModalOpen(false)} />
+      )}
     </div>
   );
 }

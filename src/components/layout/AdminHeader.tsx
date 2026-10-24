@@ -28,6 +28,7 @@ export function AdminHeader() {
 
   const isEmployeesPage =
     pathname.startsWith("/employees") || pathname.startsWith("/staff");
+  const isCustomersPage = pathname.startsWith("/customers");
 
   return (
     <header className="h-[52px] bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm">
@@ -35,7 +36,7 @@ export function AdminHeader() {
         {getTitle()}
       </span>
 
-      <div id="admin-header-actions" className="flex items-center gap-3">
+            <div id="admin-header-actions" className="flex items-center gap-3">
         {isEmployeesPage && (
           <button
             type="button"
@@ -48,6 +49,21 @@ export function AdminHeader() {
               person_add
             </span>
             Thêm nhân viên
+          </button>
+        )}
+
+        {isCustomersPage && (
+          <button
+            type="button"
+            onClick={() =>
+              window.dispatchEvent(new CustomEvent("open-add-customer"))
+            }
+            className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-gray-700 bg-white border border-gray-300 rounded-[8px] hover:bg-gray-50 hover:border-gray-400 shadow-sm transition-all cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[17px] text-gray-600">
+              person_add
+            </span>
+            Thêm khách hàng
           </button>
         )}
       </div>
