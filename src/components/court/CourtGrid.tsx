@@ -28,9 +28,11 @@ function slotKey(i: number) {
 
 interface CourtGridProps {
   date: string;
+  showBookingDetails?: boolean;
+  readOnly?: boolean;
 }
 
-export function CourtGrid({ date }: CourtGridProps) {
+export function CourtGrid({ date, showBookingDetails = false, readOnly = false }: CourtGridProps) {
   const router = useRouter();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { data, isLoading, isError } = useCourtGrid(date) as {
@@ -255,10 +257,19 @@ export function CourtGrid({ date }: CourtGridProps) {
                         startMinutes={totalMin}
                         isPast={slotIsPast}
                         courtName={court.court.name}
-                        onClickAvailable={(e, name, min) =>
+                        onClickAvailable={readOnly ? undefined : (e, name, min) =>
                           handleClickAvailable(e, court.court.courtId, name, min, court.slots)
                         }
-                      />
+                      >
+                        {showBookingDetails && slotFound?.displayStatus === "BOOKED" && (
+                          <div className="text-center leading-tight text-gray-700">
+                            <p className="text-[10px] font-semibold">Đã đặt</p>
+                            <p className="mt-1 font-mono text-[8px]">
+                              {slotFound.startTime}–{slotFound.endTime}
+                            </p>
+                          </div>
+                        )}
+                      </CourtSlotCell>
                     );
                   })}
                 </tr>
@@ -287,7 +298,7 @@ export function CourtGrid({ date }: CourtGridProps) {
                 border: "1px solid #d1d5db",
               },
             },
-          ].map((item) => (
+          ].filter((item) => !readOnly || item.label !== "Đặt của bạn").map((item) => (
             <div
               key={item.label}
               className="flex items-center gap-1.5 text-[11px] text-gray-500"
@@ -303,7 +314,7 @@ export function CourtGrid({ date }: CourtGridProps) {
       </div>
 
       {/* Popup */}
-      {popup && (
+      {!readOnly && popup && (
         <SlotPopup
           state={popup}
           selectedDuration={selectedDuration}
