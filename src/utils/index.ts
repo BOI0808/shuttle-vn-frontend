@@ -23,6 +23,25 @@ export function formatDateTime(dateStr: string): string {
   return format(new Date(dateStr), "dd/MM/yyyy HH:mm", { locale: vi });
 }
 
+export function formatDateTimeVN(dateStr: string): string {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date(dateStr));
+  const pick = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value ?? "";
+  return `${pick("day")}/${pick("month")}/${pick("year")} ${pick("hour")}:${pick("minute")}`;
+}
+
+export function hasBookingEnded(date: string, endTime: string): boolean {
+  return new Date(`${date}T${endTime}:00+07:00`).getTime() <= Date.now();
+}
+
 export function toISODate(date: Date): string {
   return date.toISOString().split("T")[0];
 }

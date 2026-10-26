@@ -36,6 +36,17 @@ export interface Customer {
   updatedAt: string;
 }
 
+export interface CustomerListItem extends Customer {
+  hasAccount: boolean;
+  accountStatus: AccountStatus | null;
+}
+
+export interface CustomerSearchParams {
+  keyword?: string;
+  pageNumber?: number;
+  pageSize?: number;
+}
+
 // ── Requests ──────────────────────────────────────────────────────────────────
 
 export interface LoginRequest {
