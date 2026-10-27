@@ -1,5 +1,6 @@
 "use client";
 
+import { format, parseISO } from "date-fns";
 import {
   BarChart,
   Bar,
@@ -10,11 +11,29 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { formatCurrency } from "@/utils";
-import type { RevenueStats } from "@/types";
+import type { RevenueGroupBy, RevenueStats } from "@/types";
 
-export function RevenueChart({ data }: { data: RevenueStats[] }) {
+interface RevenueChartProps {
+  data: Pick<RevenueStats, "date" | "revenue">[];
+  title?: string;
+  description?: string;
+  groupBy?: RevenueGroupBy;
+}
+
+function formatAxisLabel(date: string, groupBy?: RevenueGroupBy): string {
+  if (groupBy === "Month") return format(parseISO(date), "MM/yyyy");
+  if (groupBy === "Day") return format(parseISO(date), "dd/MM");
+  return new Date(date).toLocaleDateString("vi-VN", { weekday: "short" });
+}
+
+export function RevenueChart({
+  data,
+  title = "Doanh thu 7 ngày gần nhất",
+  description = "Dựa trên các hoá đơn đã thanh toán",
+  groupBy,
+}: RevenueChartProps) {
   const chartData = data.map((item) => ({
-    name: new Date(item.date).toLocaleDateString("vi-VN", { weekday: "short" }),
+    name: formatAxisLabel(item.date, groupBy),
     revenue: item.revenue,
   }));
 
@@ -22,8 +41,8 @@ export function RevenueChart({ data }: { data: RevenueStats[] }) {
     <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] h-[350px]">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h3 className="text-[15px] font-bold text-slate-900">Doanh thu 7 ngày gần nhất</h3>
-          <p className="text-xs text-slate-500">Dựa trên các hoá đơn đã thanh toán</p>
+          <h3 className="text-[15px] font-bold text-slate-900">{title}</h3>
+          <p className="text-xs text-slate-500">{description}</p>
         </div>
       </div>
       <div className="h-[250px] w-full">
@@ -53,7 +72,7 @@ export function RevenueChart({ data }: { data: RevenueStats[] }) {
               }}
               formatter={(val: number) => [formatCurrency(val), "Doanh thu"]}
             />
-            <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={32} />
+            <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={32} />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -1,9 +1,17 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+
+import { QuickLookupModal } from "@/components/booking/QuickLookupModal";
 
 export function AdminHeader() {
   const pathname = usePathname();
+  const [isLookupOpen, setIsLookupOpen] = useState(false);
+
+  useEffect(() => {
+    setIsLookupOpen(false);
+  }, [pathname]);
 
   const getTitle = () => {
     if (pathname.startsWith("/employees") || pathname.startsWith("/staff"))
@@ -17,7 +25,7 @@ export function AdminHeader() {
 
     // --- Bổ sung thêm các dòng bên dưới ---
     if (pathname.startsWith("/booking-requests")) return "Yêu cầu đặt sân";
-    if (pathname.startsWith("/statistics")) return "Thống kê"; 
+    if (pathname.startsWith("/statistics")) return "Báo cáo & Thống kê"; 
     if (pathname.startsWith("/all-bookings") || pathname.startsWith("/bookings"))
       return "Đặt sân toàn hệ thống";
     if (pathname.startsWith("/audits")) return "Nhật ký hoạt động";
@@ -37,6 +45,17 @@ export function AdminHeader() {
       </span>
 
             <div id="admin-header-actions" className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setIsLookupOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-gray-700 bg-white border border-gray-300 rounded-[8px] hover:bg-gray-50 hover:border-gray-400 shadow-sm transition-all cursor-pointer"
+        >
+          <span className="material-symbols-outlined text-[17px] text-gray-600">
+            search
+          </span>
+          Tra cứu nhanh
+        </button>
+
         {isEmployeesPage && (
           <button
             type="button"
@@ -67,6 +86,10 @@ export function AdminHeader() {
           </button>
         )}
       </div>
+
+      {isLookupOpen && (
+        <QuickLookupModal onClose={() => setIsLookupOpen(false)} />
+      )}
     </header>
   );
 }

@@ -2501,6 +2501,62 @@
         }
       }
     },
+    "/api/quick-lookup": {
+      "get": {
+        "tags": [
+          "QuickLookup"
+        ],
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuickLookupResultDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuickLookupResultDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuickLookupResultDtoApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/admin/statistics/court-usage": {
       "get": {
         "tags": [
@@ -2541,6 +2597,60 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BadmintonCourtListApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/statistics/revenue": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "groupBy",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/RevenueGroupBy"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevenueSummaryDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevenueSummaryDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevenueSummaryDtoApiResponse"
                 }
               }
             }
@@ -4296,6 +4406,59 @@
         },
         "additionalProperties": false
       },
+      "QuickLookupMatchType": {
+        "enum": [
+          "BookingCode",
+          "Email",
+          "Phone"
+        ],
+        "type": "string"
+      },
+      "QuickLookupResultDto": {
+        "type": "object",
+        "properties": {
+          "matchType": {
+            "$ref": "#/components/schemas/QuickLookupMatchType"
+          },
+          "customers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerListItemDto"
+            },
+            "nullable": true
+          },
+          "bookings": {
+            "$ref": "#/components/schemas/BookingListItemDtoPagedResult"
+          }
+        },
+        "additionalProperties": false
+      },
+      "QuickLookupResultDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/QuickLookupResultDto"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "RegisterDto": {
         "type": "object",
         "properties": {
@@ -4349,6 +4512,89 @@
           },
           "password": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevenueGroupBy": {
+        "enum": [
+          "Day",
+          "Month"
+        ],
+        "type": "string"
+      },
+      "RevenuePeriodDto": {
+        "type": "object",
+        "properties": {
+          "periodStart": {
+            "type": "string",
+            "format": "date"
+          },
+          "invoiceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "revenue": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevenueSummaryDto": {
+        "type": "object",
+        "properties": {
+          "fromDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "groupBy": {
+            "$ref": "#/components/schemas/RevenueGroupBy"
+          },
+          "totalInvoices": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalRevenue": {
+            "type": "number",
+            "format": "double"
+          },
+          "periods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RevenuePeriodDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevenueSummaryDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RevenueSummaryDto"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
             "nullable": true
           }
         },
@@ -4501,6 +4747,9 @@
     },
     {
       "name": "Profile"
+    },
+    {
+      "name": "QuickLookup"
     },
     {
       "name": "Statistics"

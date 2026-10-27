@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
+
 import { RoleGuard } from "@/components/auth/RoleGuard";
+import StatisticsClient from "./StatisticsClient";
 
 export const metadata: Metadata = { title: "Thống kê báo cáo" };
 
 export default function StatisticsPage() {
   return (
     <RoleGuard allowedRoles={["Admin"]}>
-      <div className="flex flex-col gap-6">
-        <div className="bg-white p-8 rounded-xl border border-slate-200 text-center text-slate-500">
-          Chức năng thống kê báo cáo đang được phát triển.
-        </div>
-      </div>
+      <StatisticsClient />
     </RoleGuard>
   );
 }

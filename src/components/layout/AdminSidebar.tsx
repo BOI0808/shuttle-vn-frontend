@@ -26,7 +26,7 @@ const NAV_GROUPS: readonly NavGroup[] = [
     label: "Tổng quan",
     links: [
       { href: "/dashboard", label: "Bảng điều khiển", icon: "space_dashboard", roles: ADMIN_ONLY },
-      { href: "/statistics", label: "Thống kê", icon: "monitoring", roles: ADMIN_ONLY },
+      { href: "/statistics", label: "Báo cáo & Thống kê", icon: "monitoring", roles: ADMIN_ONLY },
     ],
   },
   {

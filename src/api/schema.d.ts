@@ -1946,6 +1946,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/quick-lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    keyword?: string;
+                    pageNumber?: number;
+                    pageSize?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["QuickLookupResultDtoApiResponse"];
+                        "application/json": components["schemas"]["QuickLookupResultDtoApiResponse"];
+                        "text/json": components["schemas"]["QuickLookupResultDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/statistics/court-usage": {
         parameters: {
             query?: never;
@@ -1974,6 +2015,47 @@ export interface paths {
                         "text/plain": components["schemas"]["BadmintonCourtListApiResponse"];
                         "application/json": components["schemas"]["BadmintonCourtListApiResponse"];
                         "text/json": components["schemas"]["BadmintonCourtListApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/statistics/revenue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    fromDate?: string;
+                    toDate?: string;
+                    groupBy?: components["schemas"]["RevenueGroupBy"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["RevenueSummaryDtoApiResponse"];
+                        "application/json": components["schemas"]["RevenueSummaryDtoApiResponse"];
+                        "text/json": components["schemas"]["RevenueSummaryDtoApiResponse"];
                     };
                 };
             };
@@ -2580,6 +2662,21 @@ export interface components {
             email?: string | null;
             verificationCode?: string | null;
         };
+        /** @enum {string} */
+        QuickLookupMatchType: "BookingCode" | "Email" | "Phone";
+        QuickLookupResultDto: {
+            matchType?: components["schemas"]["QuickLookupMatchType"];
+            customers?: components["schemas"]["CustomerListItemDto"][] | null;
+            bookings?: components["schemas"]["BookingListItemDtoPagedResult"];
+        };
+        QuickLookupResultDtoApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["QuickLookupResultDto"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
         RegisterDto: {
             fullName?: string | null;
             phone?: string | null;
@@ -2595,6 +2692,36 @@ export interface components {
             email?: string | null;
             code?: string | null;
             password?: string | null;
+        };
+        /** @enum {string} */
+        RevenueGroupBy: "Day" | "Month";
+        RevenuePeriodDto: {
+            /** Format: date */
+            periodStart?: string;
+            /** Format: int32 */
+            invoiceCount?: number;
+            /** Format: double */
+            revenue?: number;
+        };
+        RevenueSummaryDto: {
+            /** Format: date */
+            fromDate?: string;
+            /** Format: date */
+            toDate?: string;
+            groupBy?: components["schemas"]["RevenueGroupBy"];
+            /** Format: int32 */
+            totalInvoices?: number;
+            /** Format: double */
+            totalRevenue?: number;
+            periods?: components["schemas"]["RevenuePeriodDto"][] | null;
+        };
+        RevenueSummaryDtoApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["RevenueSummaryDto"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
         };
         SavePricingRuleDto: {
             pricingRules?: components["schemas"]["SavePricingRuleItemDto"][] | null;

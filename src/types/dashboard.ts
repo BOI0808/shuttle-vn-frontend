@@ -1,4 +1,9 @@
+import type { components } from "@/api/schema";
+
+import type { DateRangeParams } from "./api";
 import type { BookingDetail } from "./booking";
+
+export type RevenueGroupBy = components["schemas"]["RevenueGroupBy"];
 
 export interface RevenueStats {
   date: string; // ISO yyyy-MM-dd
@@ -29,4 +34,23 @@ export interface DashboardSummary {
   occupancyByCourtToday: CourtOccupancyStats[];
   recentBookings: BookingDetail[];
   pendingBookingsList: BookingDetail[];
+}
+
+export interface RevenueReportParams extends DateRangeParams {
+  groupBy: RevenueGroupBy;
+}
+
+export interface RevenuePeriod {
+  periodStart: string;
+  invoiceCount: number;
+  revenue: number;
+}
+
+export interface RevenueReport {
+  fromDate: string;
+  toDate: string;
+  groupBy: RevenueGroupBy;
+  totalInvoices: number;
+  totalRevenue: number;
+  periods: RevenuePeriod[];
 }
