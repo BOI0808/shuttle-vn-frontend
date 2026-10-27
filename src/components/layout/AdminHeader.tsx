@@ -25,7 +25,7 @@ export function AdminHeader() {
 
     // --- Bổ sung thêm các dòng bên dưới ---
     if (pathname.startsWith("/booking-requests")) return "Yêu cầu đặt sân";
-    if (pathname.startsWith("/statistics")) return "Thống kê"; 
+    if (pathname.startsWith("/statistics")) return "Báo cáo & Thống kê"; 
     if (pathname.startsWith("/all-bookings") || pathname.startsWith("/bookings"))
       return "Đặt sân toàn hệ thống";
     if (pathname.startsWith("/audits")) return "Nhật ký hoạt động";
