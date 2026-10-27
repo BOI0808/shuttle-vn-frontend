@@ -1,12 +1,5 @@
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  InternalAxiosRequestConfig,
-} from "axios";
-import { APP_CONFIG } from "@/config/app";
-import { useAuthStore } from "@/stores/auth.store";
-
-const BASE_URL = `${APP_CONFIG.apiBaseUrl}`;
+import axios, {AxiosError, AxiosInstance, InternalAxiosRequestConfig,} from "axios";
+import {useAuthStore} from "@/stores/auth.store";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: "/api",
