@@ -117,8 +117,8 @@ export const QUERY_KEYS = {
   employee: (id: string) => ["employee", id] as const,
 
   dashboard: ["dashboard"] as const,
-  revenueStats: (from: string, to: string) =>
-    ["revenue-stats", from, to] as const,
+  revenueStats: (from: string, to: string, groupBy: string) =>
+    ["revenue-stats", from, to, groupBy] as const,
 
   auditLogs: ["audit-logs"] as const,
 } as const;

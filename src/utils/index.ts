@@ -1,8 +1,10 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
 import { isAxiosError } from "axios";
+
+import type { RevenueGroupBy } from "@/types";
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
@@ -48,6 +50,21 @@ export function toISODate(date: Date): string {
 
 export function getTodayISO(): string {
   return toISODate(new Date());
+}
+
+export function getTodayVN(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Ho_Chi_Minh",
+  }).format(new Date());
+}
+
+export function formatRevenuePeriod(
+  periodStart: string,
+  groupBy: RevenueGroupBy
+): string {
+  return format(parseISO(periodStart), groupBy === "Month" ? "MM/yyyy" : "dd/MM/yyyy", {
+    locale: vi,
+  });
 }
 
 interface ApiErrorBody {

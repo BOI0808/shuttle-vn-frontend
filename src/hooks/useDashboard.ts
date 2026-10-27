@@ -1,9 +1,9 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { skipToken, useQuery } from '@tanstack/react-query';
 import { dashboardService } from '@/services';
 import { QUERY_KEYS } from '@/config/app';
-import { DateRangeParams } from '@/types';
+import { RevenueReportParams } from '@/types';
 
 export function useDashboardSummary() {
   return useQuery({
@@ -13,10 +13,14 @@ export function useDashboardSummary() {
   });
 }
 
-export function useRevenueStats(params: DateRangeParams) {
+export function useRevenueStats(params: RevenueReportParams | null) {
   return useQuery({
-    queryKey: QUERY_KEYS.revenueStats(params.fromDate, params.toDate),
-    queryFn: () => dashboardService.getRevenueStats(params),
-    enabled: !!params.fromDate && !!params.toDate,
+    queryKey: QUERY_KEYS.revenueStats(
+      params?.fromDate ?? '',
+      params?.toDate ?? '',
+      params?.groupBy ?? 'Day'
+    ),
+    queryFn: params ? () => dashboardService.getRevenueStats(params) : skipToken,
+    retry: false,
   });
 }
