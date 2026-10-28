@@ -66,8 +66,8 @@
 | Hạng mục | Hiện trạng | Chuẩn mục tiêu |
 |---|---|---|
 | Menu | Logo, "Đặt sân", "Lịch sử đặt sân" (chỉ khi đăng nhập, G-03), "Tra cứu đơn"; chưa đăng nhập chỉ có nút "Đăng Nhập" (`LoginButton`) | Giữ menu. Chưa đăng nhập có **cả "Đăng nhập" và "Đăng ký"** (wireframe 4.1) — thiếu nút Đăng ký |
-| Chân trang | ❌ không có | Footer: `© ShuttleVN` và **Hotline** lấy từ cấu hình (G-06) |
-| Hotline | Hard-code `1900 1234` ở `BookingLookupResult` | Dùng một hằng cấu hình duy nhất, dùng chung nav, footer, banner khóa, tra cứu, chat |
+| Chân trang | Footer `© ShuttleVN` và Hotline (`HotlineLink`) trong `(customer)/layout.tsx` | Giữ nguyên (G-06) |
+| Hotline | Hằng `APP_CONFIG.hotline` ở `src/config/app.ts`, hiển thị qua `HotlineLink` ở footer và `BookingLookupResult` | Dùng một hằng cấu hình duy nhất, dùng chung nav, footer, banner khóa, tra cứu, chat |
 | Mã thừa | State `menuOpen` và lớp phủ không dùng | Xóa |
 
 ### 2.3 Sidebar khu quản trị (`AdminSidebar`)

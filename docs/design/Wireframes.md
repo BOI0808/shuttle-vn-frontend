@@ -65,7 +65,7 @@ Dữ liệu trong wireframe (tên, mã đơn, giá, giờ) chỉ là **dữ li�
 
 ### 0.2. Thành phần chung của Cổng Khách hàng
 
-**Header (`CustomerNav.tsx`).** Cổng Khách hàng **không có footer**; hotline chỉ hiển thị ở WF-06. Trang đăng ký/đăng nhập/quên mật khẩu (nhóm `(auth)`) không có header, chỉ có thẻ ở giữa nền xám nhạt.
+**Header (`CustomerNav.tsx`).** CổngCổng Khách hàng có footer `© ShuttleVN` kèm hotline lấy từ cấu hình `[G-06]`; hotline cũng hiển thị ở WF-06. Trang đăng ký/đăng nhập/quên mật khẩu (nhóm `(auth)`) không có header, chỉ có thẻ ở giữa nền xám nhạt.
 
 Khách chưa đăng nhập: Đặt sân (`/courts`), Tra cứu đơn (`/lookup`), Đăng nhập, Đăng ký. Mục "Lịch sử đặt sân" chỉ dành cho khách thành viên nên được ẩn với khách vãng lai `[G-03]`.
 
@@ -2684,7 +2684,7 @@ Nguyên tắc: SRS 1.7 và UC 1.5 là nguồn chuẩn về nghiệp vụ; mã ng
 | G-03 | Header của khách chưa đăng nhập có hiện "Lịch sử đặt sân" hay không | Ẩn, vì lịch sử chỉ dành cho khách thành viên. Dễ đổi thành hiện và dẫn tới Đăng nhập nếu bạn muốn |
 | G-04 | "05:00–22:00" là khung mẫu. Quy tắc thật là giờ mở cửa cấu hình theo từng sân, từng ngày trong tuần | Lưới lấy cột theo giờ mở cửa thực tế |
 | G-05 | Nhãn thanh toán cho đơn Đã hủy chưa được SRS nêu | Hiển thị "—" |
-| G-06 | Số hotline chưa có trong SRS/UC; code đang gắn cứng `1900 1234` ở trang tra cứu | Dùng placeholder `{Hotline}`, lấy từ cấu hình |
+| G-06 | Số hotline chưa có trong SRS/UC | Đã giải quyết: nhóm chốt số `1900 1234`, lưu ở một hằng cấu hình `APP_CONFIG.hotline`; `{Hotline}` lấy từ hằng này |
 | G-07 | Trường Xác nhận mật khẩu mới ở Quên mật khẩu chưa có trong UC-04 | Thêm theo cách đã làm ở Đăng ký (chỉ kiểm tra ở giao diện). Bỏ được nếu muốn bám sát UC |
 | G-08 | Báo "email đã có tài khoản" lúc đăng ký (BR-11) với yêu cầu không tiết lộ tài khoản tồn tại ở luồng gửi mã công khai (BR-26) | Vẽ banner dẫn tới Đăng nhập/Quên mật khẩu theo BR-11. Cần xác nhận thời điểm báo (trước hay sau khi xác minh OTP) |
 | G-09 | Khung "Chi tiết đơn" ở Lịch sử chưa có trong mockup HTML | Thêm khung chi tiết gọn, chỉ gồm thông tin đã có trên thẻ |
