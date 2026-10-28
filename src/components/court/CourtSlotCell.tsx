@@ -10,7 +10,8 @@ interface CourtSlotCellProps {
   startMinutes: number;
   isPast?: boolean;
   courtName: string;
-  onClickAvailable: (
+  children?: React.ReactNode;
+  onClickAvailable?: (
     e: React.MouseEvent,
     courtName: string,
     startMin: number
@@ -24,6 +25,7 @@ export function CourtSlotCell({
   startMinutes,
   isPast = false,
   courtName,
+  children,
   onClickAvailable,
 }: CourtSlotCellProps) {
   return (
@@ -42,8 +44,9 @@ export function CourtSlotCell({
             : status === "BOOKED"
             ? "slot-booked"
             : status === "AVAILABLE"
-            ? "slot-available"
-            : "slot-mine"
+            ? onClickAvailable ? "slot-available" : "bg-white border-gray-200"
+            : "slot-mine",
+          !onClickAvailable && "!cursor-default"
         )}
         title={
           isPast
@@ -53,15 +56,17 @@ export function CourtSlotCell({
             : status === "BOOKED"
             ? "Đã đặt"
             : status === "AVAILABLE"
-            ? "Còn trống – click để đặt"
+            ? onClickAvailable ? "Còn trống – click để đặt" : "Còn trống"
             : "Đặt của bạn"
         }
         onClick={
-          !isClosed && status === "AVAILABLE"
+          !isClosed && status === "AVAILABLE" && onClickAvailable
             ? (e) => onClickAvailable(e, courtName, startMinutes)
             : undefined
         }
-      ></div>
+      >
+        {children}
+      </div>
     </td>
   );
 }
