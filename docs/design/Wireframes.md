@@ -2704,7 +2704,7 @@ Nguyên tắc: SRS 1.7 và UC 1.5 là nguồn chuẩn về nghiệp vụ; mã ng
 | G-23 | UC-40 lọc theo ngày, sân, trạng thái, khách hàng; yêu cầu thiết kế có thêm "trạng thái thanh toán" | WF-17 là mục menu riêng "Đặt sân toàn hệ thống" (`/bookings`) như Design-System. Giữ bộ lọc thanh toán |
 | G-24 | Mockup thống kê có nhóm theo tuần, so sánh kỳ trước, lọc theo sân, tab Tình trạng sân (O-01 b) | Chỉ vẽ nhóm theo Ngày/Tháng (QT-17) |
 | G-25 | Nhật ký ở mockup có cột IP, sự kiện đăng nhập, cảnh báo hệ thống | Không vẽ (X-04, O-01 b) |
-| G-26 | Tra cứu nhanh theo mã đặt sân/SĐT/email (UC-30, M-12) chưa có màn hình riêng | Thanh tìm kiếm WF-14 phủ tìm khách. Tìm theo mã đặt sân chưa vẽ |
+| G-26 | Tra cứu nhanh theo mã đặt sân/SĐT/email (UC-30, M-12) chưa có màn hình riêng | Đã giải quyết: M-12 là modal "Tra cứu nhanh" mở từ nút ở `AdminHeader` cho Nhân viên và QTV; tìm theo số điện thoại, email hoặc mã đặt sân |
 | G-27 | SRS chưa nêu giới hạn cho thời điểm thu và thời điểm hoàn tiền | Đề xuất đã áp dụng: thời điểm thu (Xác nhận đặt sân, Ghi nhận hoàn thành, Thu tiền) không sau thời điểm hiện tại của máy chủ. Thời điểm hoàn không sau thời điểm hiện tại và không trước thời điểm thu của hóa đơn gốc. Máy chủ kiểm tra, nên bổ sung vào SRS |
 | G-28 | Nút "Xác nhận đã thu" ở thẻ Hóa đơn của WF-11 có trong mockup nhưng chưa có xử lý (D-09) | Vẽ nút mở cùng modal Thu tiền của WF-13 |
 
