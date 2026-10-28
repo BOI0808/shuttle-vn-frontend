@@ -65,7 +65,7 @@ Dữ liệu trong wireframe (tên, mã đơn, giá, giờ) chỉ là **dữ li�
 
 ### 0.2. Thành phần chung của Cổng Khách hàng
 
-**Header (`CustomerNav.tsx`).** Cổng Khách hàng **không có footer**; hotline chỉ hiển thị ở WF-06. Trang đăng ký/đăng nhập/quên mật khẩu (nhóm `(auth)`) không có header, chỉ có thẻ ở giữa nền xám nhạt.
+**Header (`CustomerNav.tsx`).** CổngCổng Khách hàng có footer `© ShuttleVN` kèm hotline lấy từ cấu hình `[G-06]`; hotline cũng hiển thị ở WF-06. Trang đăng ký/đăng nhập/quên mật khẩu (nhóm `(auth)`) không có header, chỉ có thẻ ở giữa nền xám nhạt.
 
 Khách chưa đăng nhập: Đặt sân (`/courts`), Tra cứu đơn (`/lookup`), Đăng nhập, Đăng ký. Mục "Lịch sử đặt sân" chỉ dành cho khách thành viên nên được ẩn với khách vãng lai `[G-03]`.
 
@@ -2684,7 +2684,7 @@ Nguyên tắc: SRS 1.7 và UC 1.5 là nguồn chuẩn về nghiệp vụ; mã ng
 | G-03 | Header của khách chưa đăng nhập có hiện "Lịch sử đặt sân" hay không | Ẩn, vì lịch sử chỉ dành cho khách thành viên. Dễ đổi thành hiện và dẫn tới Đăng nhập nếu bạn muốn |
 | G-04 | "05:00–22:00" là khung mẫu. Quy tắc thật là giờ mở cửa cấu hình theo từng sân, từng ngày trong tuần | Lưới lấy cột theo giờ mở cửa thực tế |
 | G-05 | Nhãn thanh toán cho đơn Đã hủy chưa được SRS nêu | Hiển thị "—" |
-| G-06 | Số hotline chưa có trong SRS/UC; code đang gắn cứng `1900 1234` ở trang tra cứu | Dùng placeholder `{Hotline}`, lấy từ cấu hình |
+| G-06 | Số hotline chưa có trong SRS/UC | Đã giải quyết: nhóm chốt số `1900 1234`, lưu ở một hằng cấu hình `APP_CONFIG.hotline`; `{Hotline}` lấy từ hằng này |
 | G-07 | Trường Xác nhận mật khẩu mới ở Quên mật khẩu chưa có trong UC-04 | Thêm theo cách đã làm ở Đăng ký (chỉ kiểm tra ở giao diện). Bỏ được nếu muốn bám sát UC |
 | G-08 | Báo "email đã có tài khoản" lúc đăng ký (BR-11) với yêu cầu không tiết lộ tài khoản tồn tại ở luồng gửi mã công khai (BR-26) | Vẽ banner dẫn tới Đăng nhập/Quên mật khẩu theo BR-11. Cần xác nhận thời điểm báo (trước hay sau khi xác minh OTP) |
 | G-09 | Khung "Chi tiết đơn" ở Lịch sử chưa có trong mockup HTML | Thêm khung chi tiết gọn, chỉ gồm thông tin đã có trên thẻ |
@@ -2704,7 +2704,7 @@ Nguyên tắc: SRS 1.7 và UC 1.5 là nguồn chuẩn về nghiệp vụ; mã ng
 | G-23 | UC-40 lọc theo ngày, sân, trạng thái, khách hàng; yêu cầu thiết kế có thêm "trạng thái thanh toán" | WF-17 là mục menu riêng "Đặt sân toàn hệ thống" (`/bookings`) như Design-System. Giữ bộ lọc thanh toán |
 | G-24 | Mockup thống kê có nhóm theo tuần, so sánh kỳ trước, lọc theo sân, tab Tình trạng sân (O-01 b) | Chỉ vẽ nhóm theo Ngày/Tháng (QT-17) |
 | G-25 | Nhật ký ở mockup có cột IP, sự kiện đăng nhập, cảnh báo hệ thống | Không vẽ (X-04, O-01 b) |
-| G-26 | Tra cứu nhanh theo mã đặt sân/SĐT/email (UC-30, M-12) chưa có màn hình riêng | Thanh tìm kiếm WF-14 phủ tìm khách. Tìm theo mã đặt sân chưa vẽ |
+| G-26 | Tra cứu nhanh theo mã đặt sân/SĐT/email (UC-30, M-12) chưa có màn hình riêng | Đã giải quyết: M-12 là modal "Tra cứu nhanh" mở từ nút ở `AdminHeader` cho Nhân viên và QTV; tìm theo số điện thoại, email hoặc mã đặt sân |
 | G-27 | SRS chưa nêu giới hạn cho thời điểm thu và thời điểm hoàn tiền | Đề xuất đã áp dụng: thời điểm thu (Xác nhận đặt sân, Ghi nhận hoàn thành, Thu tiền) không sau thời điểm hiện tại của máy chủ. Thời điểm hoàn không sau thời điểm hiện tại và không trước thời điểm thu của hóa đơn gốc. Máy chủ kiểm tra, nên bổ sung vào SRS |
 | G-28 | Nút "Xác nhận đã thu" ở thẻ Hóa đơn của WF-11 có trong mockup nhưng chưa có xử lý (D-09) | Vẽ nút mở cùng modal Thu tiền của WF-13 |
 
