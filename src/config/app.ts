@@ -3,6 +3,7 @@ export const APP_CONFIG = {
   description: "Hệ thống quản lý sân cầu lông",
   apiBaseUrl:
     process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000/api",
+  hotline: { display: "1900 1234", tel: "19001234" },
 } as const;
 
 export const BOOKING_STATUS_LABEL: Record<string, string> = {
@@ -117,8 +118,11 @@ export const QUERY_KEYS = {
   employee: (id: string) => ["employee", id] as const,
 
   dashboard: ["dashboard"] as const,
-  revenueStats: (from: string, to: string) =>
-    ["revenue-stats", from, to] as const,
+  revenueStats: (from: string, to: string, groupBy: string) =>
+    ["revenue-stats", from, to, groupBy] as const,
+
+  quickLookup: (keyword: string, pageNumber: number) =>
+    ["quick-lookup", keyword, pageNumber] as const,
 
   auditLogs: ["audit-logs"] as const,
 } as const;

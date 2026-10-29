@@ -983,7 +983,7 @@ Lệch UI: D-29 (chưa có lọc theo sân; chú giải chưa đủ trạng thá
 
 ### F-NV-12 Tra cứu nhanh
 
-- **Use-case:** UC-30 · **Yêu cầu:** NV-22 · **Màn hình:** **[Chưa có màn hình riêng]** (M-12)
+- **Use-case:** UC-30 · **Yêu cầu:** NV-22 · **Màn hình:** M-12 — modal "Tra cứu nhanh" mở từ nút ở `AdminHeader` (Nhân viên và QTV)
 
 | # | Tác nhân | Thao tác / phản hồi |
 | --- | --- | --- |

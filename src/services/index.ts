@@ -5,3 +5,4 @@ export * from './dashboard.service';
 export * from './customer.service';
 export * from './employee.service';
 export * from './booking-admin.service';
+export * from './quick-lookup.service';

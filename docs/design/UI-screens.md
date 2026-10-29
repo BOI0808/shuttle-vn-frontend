@@ -44,7 +44,7 @@
 | WF-15 | Quản lý sân & bảng giá | Admin | `/manage-courts` | `/admin/courts` | ⚠ | ⚠ có CRUD, status, schedule, pricing; ❌ xóa mềm |
 | WF-16 | Nhân viên & Phân quyền | Admin | `/employees` | `/admin/staff`, `/admin/accounts` | ⚠ | ⚠ có CRUD, lock; ❌ đổi vai trò |
 | WF-17 | Đặt sân toàn hệ thống | Admin | — | `/admin/bookings`, hiển thị là tab "Tất cả đặt sân" trong WF-10 (G-23) | ❌ | ✅ `admin/bookings` |
-| WF-18 | Báo cáo & Thống kê | Admin | `/statistics` (placeholder) | `/admin/reports` | ❌ | ⚠ chỉ có `statistics/court-usage`; ❌ doanh thu |
+| WF-18 | Báo cáo & Thống kê | Admin | `/statistics` (placeholder) | `/admin/reports` | ❌ | ⚠ có `statistics/court-usage`; ✅ doanh thu `admin/statistics/revenue` |
 | WF-19 | Nhật ký hoạt động | Admin | `/audits` (placeholder) | `/admin/audit-log` | ❌ | ✅ `audits` |
 
 ---
@@ -66,8 +66,8 @@
 | Hạng mục | Hiện trạng | Chuẩn mục tiêu |
 |---|---|---|
 | Menu | Logo, "Đặt sân", "Lịch sử đặt sân" (chỉ khi đăng nhập, G-03), "Tra cứu đơn"; chưa đăng nhập chỉ có nút "Đăng Nhập" (`LoginButton`) | Giữ menu. Chưa đăng nhập có **cả "Đăng nhập" và "Đăng ký"** (wireframe 4.1) — thiếu nút Đăng ký |
-| Chân trang | ❌ không có | Footer: `© ShuttleVN` và **Hotline** lấy từ cấu hình (G-06) |
-| Hotline | Hard-code `1900 1234` ở `BookingLookupResult` | Dùng một hằng cấu hình duy nhất, dùng chung nav, footer, banner khóa, tra cứu, chat |
+| Chân trang | Footer `© ShuttleVN` và Hotline (`HotlineLink`) trong `(customer)/layout.tsx` | Giữ nguyên (G-06) |
+| Hotline | Hằng `APP_CONFIG.hotline` ở `src/config/app.ts`, hiển thị qua `HotlineLink` ở footer và `BookingLookupResult` | Dùng một hằng cấu hình duy nhất, dùng chung nav, footer, banner khóa, tra cứu, chat |
 | Mã thừa | State `menuOpen` và lớp phủ không dùng | Xóa |
 
 ### 2.3 Sidebar khu quản trị (`AdminSidebar`)
@@ -446,7 +446,7 @@ Route `/admin/bookings`, hiển thị là tab "Tất cả đặt sân" cạnh ta
 | Doanh thu (UC-41) | Chỉ hóa đơn **Đã thanh toán hợp lệ**, tính theo **thời điểm thu**. Bảng: Kỳ · Số hóa đơn đã thu · Doanh thu; có dòng **Tổng** và biểu đồ cột. Ghi chú: hoàn tiền sau đó có thể làm đổi doanh thu kỳ cũ |
 | Đặt sân (UC-42) | Theo **ngày sử dụng**, **không tính Đã hủy**. Bảng: Kỳ · Lượt đặt · Giờ đặt · Lượt hoàn thành · Giờ hoàn thành; có dòng Tổng |
 | Không có | **Tỷ lệ lấp đầy**, xuất báo cáo (backend `court-usage` còn trả `occupancyRate` — không hiển thị) |
-| API | ⚠ Chỉ có `statistics/court-usage`; **chưa có** thống kê doanh thu theo kỳ |
+| API | ⚠ Có `statistics/court-usage`; ✅ doanh thu: `GET /api/admin/statistics/revenue?fromDate=&toDate=&groupBy=Day hoặc Month` (AdminOnly) || ⚠ Chỉ có `statistics/court-usage`; **chưa có** thống kê doanh thu theo kỳ |
 
 ### WF-19 Nhật ký hoạt động
 
@@ -588,5 +588,5 @@ Tên endpoint là đề xuất; backend có thể đặt tên khác, miễn gi�
 | Đổi vai trò (WF-16B) | `PATCH /api/employees/{id}/role` (AdminOnly) | Bảo vệ Admin `Active` cuối cùng; cho phép khóa/xóa Admin khác (hiện chặn mọi Admin) |
 | Xóa tài khoản khách (WF-16B) | `DELETE /api/accounts/{id}` (AdminOnly) | BR-15: hard-delete tài khoản, giữ hồ sơ, đơn, hóa đơn, nhật ký |
 | Dashboard (WF-09) | `GET /api/admin/dashboard` | 3 chỉ số + danh sách đơn Chờ xác nhận, giờ chơi gần nhất trước |
-| Báo cáo (WF-18) | `GET /api/statistics/revenue?from=&to=&groupBy=day hoặc month`, `GET /api/statistics/bookings?...` | Doanh thu theo thời điểm thu; đặt sân theo ngày sử dụng, loại Đã hủy; không trả tỷ lệ lấp đầy |
+| Báo cáo (WF-18) | `GET /api/admin/statistics/revenue?fromDate=&toDate=&groupBy=Day hoặc Month` (đã có), `GET /api/statistics/bookings?...` | Doanh thu theo thời điểm thu; đặt sân theo ngày sử dụng, loại Đã hủy; không trả tỷ lệ lấp đầy |
 | Đổi mật khẩu (WF-07) | Đã có `PUT /api/profile/change-password` | Bổ sung giới hạn 8–128 ở máy chủ nếu chưa có |

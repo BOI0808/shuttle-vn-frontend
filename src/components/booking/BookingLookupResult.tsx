@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/Badge";
+import { HotlineLink } from "@/components/ui/HotlineLink";
 import { BOOKING_STATUS_LABEL } from "@/config/app";
 import { formatCurrency, formatDate, formatDateTime } from "@/utils";
 import type { BookingDetail } from "@/types";
@@ -119,13 +120,7 @@ export function BookingLookupResult({
           <p className="text-xs text-gray-400 mb-1.5">
             Cần hỗ trợ về đơn đặt sân này?
           </p>
-          <a
-            href="tel:19001234"
-            className="inline-flex items-center gap-1.5 text-emerald-500 text-[13px] font-semibold no-underline hover:text-emerald-600"
-          >
-            <span className="material-symbols-outlined text-[16px]">call</span>
-            Hotline: 1900 1234
-          </a>
+          <HotlineLink className="text-emerald-500 text-[13px] font-semibold no-underline hover:text-emerald-600" />
         </div>
       </div>
 
