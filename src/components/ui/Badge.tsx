@@ -12,7 +12,8 @@ type BadgeStatus =
   | "Closed"
   | "IN_USE"
   | "Unpaid"
-  | "Paid";
+  | "Paid"
+  | "Refunded";
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   status: BadgeStatus;
@@ -30,6 +31,7 @@ const STATUS_CLASSES: Record<BadgeStatus, string> = {
   IN_USE: "bg-blue-50 text-blue-600 border-blue-200",
   Unpaid: "bg-amber-50 text-amber-600 border-amber-200",
   Paid: "bg-green-50 text-green-600 border-green-200",
+  Refunded: "bg-slate-50 text-slate-600 border-slate-200",
 };
 
 export function Badge({ status, className, children, ...props }: BadgeProps) {

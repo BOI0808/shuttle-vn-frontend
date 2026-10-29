@@ -1,8 +1,9 @@
 import type { ActorType } from "./audit";
+import type { ApiPaths, ApiSchemas } from "./api";
 
 export type BookingStatus = "Pending" | "Confirmed" | "Completed" | "Cancelled";
 
-export type InvoiceStatus = "Unpaid" | "Paid" | "Cancelled";
+export type InvoiceStatus = ApiSchemas["InvoiceStatus"];
 
 export type PaymentMethod = "Bank" | "Cash";
 
@@ -20,6 +21,8 @@ export interface Booking {
   totalCost: number; // snapshot tại thời điểm tạo (BR-11)
   createdAt: string;
   updatedAt: string;
+  expectedState?: string | null;
+  priceSegments?: ApiSchemas["BookingDto"]["priceSegments"];
 }
 
 export interface BookingStatusHistory {
@@ -89,6 +92,14 @@ export interface BookingAdminDetail extends BookingListItem {
 
 // ── Requests ──────────────────────────────────────────────────────────────────
 
+export type BookingPricePreviewParams = NonNullable<
+  ApiPaths["/api/bookings/price-preview"]["get"]["parameters"]["query"]
+>;
+export type RescheduleBookingRequest = ApiSchemas["RescheduleBookingDto"];
+export type ReschedulePreview = ApiSchemas["ReschedulePreviewDto"];
+export type CancelBookingRequest = ApiSchemas["CancelBookingDto"];
+export type RefundPaymentRequest = ApiSchemas["RefundPaymentDto"];
+
 export interface CreateBookingRequest {
   courtId: number;
   date: string;
@@ -103,6 +114,7 @@ export interface ConfirmBookingRequest {
   paymentMethod?: PaymentMethod;
   paidAt?: string; // ISO UTC, bắt buộc khi isPaid
   note?: string;
+  amount?: number | null;
 }
 
 export interface RejectBookingRequest {

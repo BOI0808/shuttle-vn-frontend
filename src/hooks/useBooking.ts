@@ -9,6 +9,9 @@ import {
 import { bookingService } from "@/services";
 import { BookingAdminQueryParams, QUERY_KEYS } from "@/config/app";
 import {
+  BookingPricePreviewParams,
+  CancelBookingRequest,
+  RescheduleBookingRequest,
   ConfirmPaymentRequest,
   CreateBookingRequest,
   CreateGuestBookingRequest,
@@ -104,15 +107,46 @@ export function useBookingInvoice(id: string, enabled = true) {
   });
 }
 
-export function useCancelBooking() {
+function useInvalidateBookingChange() {
   const queryClient = useQueryClient();
+  return (id: string) => Promise.all([
+    QUERY_KEYS.myBookings,
+    QUERY_KEYS.bookings,
+    QUERY_KEYS.booking(id),
+    QUERY_KEYS.bookingDetail(id),
+    QUERY_KEYS.adminBookingsAll,
+    QUERY_KEYS.pendingBookingsAll,
+    QUERY_KEYS.courtGrids,
+    QUERY_KEYS.invoices,
+    QUERY_KEYS.dashboard,
+    ["booking-reschedule-preview", id],
+  ].map((queryKey) => queryClient.invalidateQueries({ queryKey })));
+}
+
+export function useReschedulePreview(id: string, params: BookingPricePreviewParams) {
+  return useQuery({
+    queryKey: ["booking-reschedule-preview", id, params],
+    queryFn: () => bookingService.getReschedulePreview(id, params),
+    enabled: !!id && (params.courtId ?? 0) > 0 && !!params.date &&
+      !!params.startTime && !!params.endTime && params.endTime > params.startTime,
+  });
+}
+
+export function useRescheduleBooking() {
+  const invalidate = useInvalidateBookingChange();
   return useMutation({
-    mutationFn: ({ id, reason, idempotencyKey }: { id: string; reason: string; idempotencyKey: string }) =>
-      bookingService.cancelBooking(id, reason, idempotencyKey),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.myBookings });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.bookings });
-    },
+    mutationFn: ({ id, payload, idempotencyKey }: { id: string; payload: RescheduleBookingRequest; idempotencyKey: string }) =>
+      bookingService.rescheduleBooking(id, payload, idempotencyKey),
+    onSettled: (_data, _error, { id }) => invalidate(id),
+  });
+}
+
+export function useCancelBooking() {
+  const invalidate = useInvalidateBookingChange();
+  return useMutation({
+    mutationFn: ({ id, payload, idempotencyKey }: { id: string; payload: CancelBookingRequest; idempotencyKey: string }) =>
+      bookingService.cancelBooking(id, payload, idempotencyKey),
+    onSettled: (_data, _error, { id }) => invalidate(id),
   });
 }
 

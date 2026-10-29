@@ -32,7 +32,12 @@ export function BookingHistoryList() {
   async function handleCancel(id: string) {
     if (!window.confirm("Xác nhận hủy đặt sân này?")) return;
     try {
-      await cancel.mutateAsync({ id, reason: "Khách yêu cầu hủy trên website", idempotencyKey: crypto.randomUUID() });
+      const booking = bookings.find((item) => item.bookingId === id);
+      await cancel.mutateAsync({
+        id,
+        payload: { reason: "Khách yêu cầu hủy trên website", expectedState: booking?.expectedState },
+        idempotencyKey: crypto.randomUUID(),
+      });
       toast.success("Đã hủy đặt sân.");
     } catch (error) {
       toast.error(getErrorMessage(error));

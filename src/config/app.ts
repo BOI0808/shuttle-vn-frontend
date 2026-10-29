@@ -24,6 +24,7 @@ export const INVOICE_STATUS_LABEL: Record<string, string> = {
   Unpaid: "Chưa thanh toán",
   Paid: "Đã thanh toán",
   Cancelled: "Đã huỷ",
+  Refunded: "Đã hoàn tiền",
 };
 
 export const PAYMENT_METHOD_LABEL: Record<string, string> = {

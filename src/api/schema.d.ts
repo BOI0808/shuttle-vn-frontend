@@ -584,9 +584,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["StringApiResponse"];
-                        "application/json": components["schemas"]["StringApiResponse"];
-                        "text/json": components["schemas"]["StringApiResponse"];
+                        "text/plain": components["schemas"]["ObjectApiResponse"];
+                        "application/json": components["schemas"]["ObjectApiResponse"];
+                        "text/json": components["schemas"]["ObjectApiResponse"];
                     };
                 };
             };
@@ -853,6 +853,97 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/bookings/{bookingId}/reschedule-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    courtId?: number;
+                    date?: string;
+                    startTime?: string;
+                    endTime?: string;
+                };
+                header?: never;
+                path: {
+                    bookingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ReschedulePreviewDtoApiResponse"];
+                        "application/json": components["schemas"]["ReschedulePreviewDtoApiResponse"];
+                        "text/json": components["schemas"]["ReschedulePreviewDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings/{bookingId}/reschedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: never;
+                header: {
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    bookingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RescheduleBookingDto"];
+                    "text/json": components["schemas"]["RescheduleBookingDto"];
+                    "application/*+json": components["schemas"]["RescheduleBookingDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDtoApiResponse"];
+                        "application/json": components["schemas"]["BookingDtoApiResponse"];
+                        "text/json": components["schemas"]["BookingDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
     "/api/bookings/{bookingId}/cancel": {
         parameters: {
             query?: never;
@@ -953,6 +1044,45 @@ export interface paths {
                 header?: never;
                 path: {
                     bookingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["BookingDtoApiResponse"];
+                        "application/json": components["schemas"]["BookingDtoApiResponse"];
+                        "text/json": components["schemas"]["BookingDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bookings/code/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    code: string;
                 };
                 cookie?: never;
             };
@@ -1775,6 +1905,173 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    status?: components["schemas"]["InvoiceStatus"];
+                    code?: string;
+                    pageNumber?: number;
+                    pageSize?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["InvoiceDetailDtoPagedResultApiResponse"];
+                        "application/json": components["schemas"]["InvoiceDetailDtoPagedResultApiResponse"];
+                        "text/json": components["schemas"]["InvoiceDetailDtoPagedResultApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/invoices/{invoiceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    invoiceId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["InvoiceDetailDtoApiResponse"];
+                        "application/json": components["schemas"]["InvoiceDetailDtoApiResponse"];
+                        "text/json": components["schemas"]["InvoiceDetailDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/invoices/{invoiceId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    invoiceId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["InvoiceDetailDtoIReadOnlyListApiResponse"];
+                        "application/json": components["schemas"]["InvoiceDetailDtoIReadOnlyListApiResponse"];
+                        "text/json": components["schemas"]["InvoiceDetailDtoIReadOnlyListApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/invoices/{invoiceId}/pay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: never;
+                header: {
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    invoiceId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["PayInvoiceDto"];
+                    "text/json": components["schemas"]["PayInvoiceDto"];
+                    "application/*+json": components["schemas"]["PayInvoiceDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["InvoiceDetailDtoApiResponse"];
+                        "application/json": components["schemas"]["InvoiceDetailDtoApiResponse"];
+                        "text/json": components["schemas"]["InvoiceDetailDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
     "/api/courts/{id}/pricing-rules": {
         parameters: {
             query?: never;
@@ -2259,6 +2556,7 @@ export interface components {
             createdAt?: string;
             priceSegments?: components["schemas"]["BookingPriceSegmentDto"][] | null;
             invoice?: components["schemas"]["InvoiceDto"];
+            expectedState?: string | null;
         };
         BookingDtoApiResponse: {
             success?: boolean;
@@ -2367,7 +2665,9 @@ export interface components {
             } | null;
         };
         CancelBookingDto: {
+            expectedState?: string | null;
             reason?: string | null;
+            refund?: components["schemas"]["RefundPaymentDto"];
         };
         ChangePasswordDto: {
             currentPassword?: string | null;
@@ -2386,6 +2686,8 @@ export interface components {
             /** Format: date-time */
             paidAt?: string | null;
             note?: string | null;
+            /** Format: double */
+            amount?: number | null;
         };
         CourtDto: {
             /** Format: int32 */
@@ -2568,6 +2870,83 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
         };
+        InvoiceDetailDto: {
+            /** Format: uuid */
+            invoiceId?: string;
+            invoiceCode?: string | null;
+            /** Format: uuid */
+            bookingId?: string;
+            bookingCode?: string | null;
+            status?: components["schemas"]["InvoiceStatus"];
+            /** Format: double */
+            totalCost?: number;
+            /** Format: uuid */
+            issuedByEmployee?: string | null;
+            /** Format: date-time */
+            issuedAt?: string;
+            /** Format: uuid */
+            paidByEmployee?: string | null;
+            /** Format: date-time */
+            paidAt?: string | null;
+            /** Format: double */
+            paidAmount?: number | null;
+            paymentMethod?: components["schemas"]["PaymentMethod"];
+            /** Format: date-time */
+            cancelledAt?: string | null;
+            cancellationActorType?: components["schemas"]["ActorType"];
+            /** Format: uuid */
+            cancelledByEmployee?: string | null;
+            /** Format: uuid */
+            cancelledByCustomer?: string | null;
+            cancellationReason?: string | null;
+            /** Format: uuid */
+            refundedByEmployee?: string | null;
+            /** Format: date-time */
+            refundedAt?: string | null;
+            refundMethod?: components["schemas"]["PaymentMethod"];
+            /** Format: double */
+            refundAmount?: number | null;
+            refundReason?: string | null;
+            /** Format: uuid */
+            replacesInvoiceId?: string | null;
+            note?: string | null;
+            expectedState?: string | null;
+        };
+        InvoiceDetailDtoApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["InvoiceDetailDto"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
+        InvoiceDetailDtoIReadOnlyListApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["InvoiceDetailDto"][] | null;
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
+        InvoiceDetailDtoPagedResult: {
+            items?: components["schemas"]["InvoiceDetailDto"][] | null;
+            /** Format: int32 */
+            pageNumber?: number;
+            /** Format: int32 */
+            pageSize?: number;
+            /** Format: int32 */
+            totalCount?: number;
+            /** Format: int32 */
+            readonly totalPages?: number;
+        };
+        InvoiceDetailDtoPagedResultApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["InvoiceDetailDtoPagedResult"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
         InvoiceDto: {
             /** Format: uuid */
             invoiceId?: string;
@@ -2592,7 +2971,7 @@ export interface components {
             } | null;
         };
         /** @enum {string} */
-        InvoiceStatus: "Unpaid" | "Paid" | "Cancelled";
+        InvoiceStatus: "Unpaid" | "Paid" | "Cancelled" | "Refunded";
         LoginDto: {
             email?: string | null;
             password?: string | null;
@@ -2604,6 +2983,14 @@ export interface components {
             errors?: {
                 [key: string]: string[];
             } | null;
+        };
+        PayInvoiceDto: {
+            expectedState?: string | null;
+            /** Format: double */
+            amount?: number;
+            paymentMethod?: components["schemas"]["PaymentMethod"];
+            /** Format: date-time */
+            paidAt?: string;
         };
         /** @enum {string} */
         PaymentMethod: "Bank" | "Cash";
@@ -2677,6 +3064,14 @@ export interface components {
                 [key: string]: string[];
             } | null;
         };
+        RefundPaymentDto: {
+            /** Format: double */
+            amount?: number;
+            method?: components["schemas"]["PaymentMethod"];
+            /** Format: date-time */
+            refundedAt?: string;
+            reason?: string | null;
+        };
         RegisterDto: {
             fullName?: string | null;
             phone?: string | null;
@@ -2687,6 +3082,37 @@ export interface components {
         };
         RejectBookingDto: {
             reason?: string | null;
+        };
+        RescheduleBookingDto: {
+            /** Format: int32 */
+            courtId?: number;
+            /** Format: date */
+            date?: string;
+            /** Format: time */
+            startTime?: string;
+            /** Format: time */
+            endTime?: string;
+            /** Format: double */
+            totalCost?: number | null;
+            quoteFingerprint?: string | null;
+            expectedState?: string | null;
+            reason?: string | null;
+            refund?: components["schemas"]["RefundPaymentDto"];
+        };
+        ReschedulePreviewDto: {
+            expectedState?: string | null;
+            quote?: components["schemas"]["PricePreviewResponse"];
+            requiresRefund?: boolean;
+            /** Format: uuid */
+            invoiceId?: string | null;
+        };
+        ReschedulePreviewDtoApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["ReschedulePreviewDto"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
         };
         ResetPasswordDto: {
             email?: string | null;
@@ -2731,14 +3157,6 @@ export interface components {
             startTime?: string;
             /** Format: double */
             pricePerHour?: number;
-        };
-        StringApiResponse: {
-            success?: boolean;
-            data?: string | null;
-            message?: string | null;
-            errors?: {
-                [key: string]: string[];
-            } | null;
         };
         UpdateCourtDto: {
             name?: string | null;
