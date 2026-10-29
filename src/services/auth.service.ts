@@ -45,11 +45,9 @@ export const authService = {
     async sendVerificationCode(payload: IssueCodeRequest): Promise<void> {
         if (IS_MOCK) {
             await mockDelay();
-            console.log("Mock verification code sent to:", payload.email);
             return;
         }
-        const {data} = await axiosInstance.post<ApiResponse<string>>("/auth/issue-code", payload);
-        console.log(data.data);
+        await axiosInstance.post("/auth/issue-code", payload);
     },
 
     async logout(): Promise<void> {
