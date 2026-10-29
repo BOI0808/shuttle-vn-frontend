@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
     },
   },
   async rewrites() {
-    const backendUrl = process.env.BACKEND_API_URL;
+    const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "");
     return backendUrl
       ? [{ source: "/api/:path*", destination: `${backendUrl}/:path*` }]
       : [];
