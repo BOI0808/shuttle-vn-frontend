@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   devIndicators: false,
   images: {
     remotePatterns: [
@@ -17,12 +18,10 @@ const nextConfig: NextConfig = {
     },
   },
   async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: process.env.NEXT_PUBLIC_API_BASE_URL + "/:path*",
-      },
-    ];
+    const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "");
+    return backendUrl
+      ? [{ source: "/api/:path*", destination: `${backendUrl}/:path*` }]
+      : [];
   },
 };
 

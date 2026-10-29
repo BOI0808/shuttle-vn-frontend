@@ -6,6 +6,10 @@ import {
   BookingAdminDetail,
   BookingDetail,
   BookingListItem,
+  BookingPricePreviewParams,
+  CancelBookingRequest,
+  RescheduleBookingRequest,
+  ReschedulePreview,
   ConfirmPaymentRequest,
   CreateBookingRequest,
   CreateGuestBookingRequest,
@@ -38,6 +42,8 @@ function toBookingDetail(
     totalCost: dto.totalCost ?? 0,
     createdAt: dto.createdAt ?? "",
     updatedAt: dto.createdAt ?? "",
+    expectedState: "expectedState" in dto ? dto.expectedState : undefined,
+    priceSegments: "priceSegments" in dto ? dto.priceSegments : undefined,
     invoice: invoice ? {
       invoiceCode: invoice.invoiceCode ?? "",
       status: invoice.status ?? "Unpaid",
@@ -100,12 +106,7 @@ function getMockAdminBookings(
 
 export const bookingService = {
   // Customer
-  async getPricePreview(params: {
-    courtId: number;
-    date: string;
-    startTime: string;
-    endTime: string;
-  }): Promise<PricePreviewDto> {
+  async getPricePreview(params: BookingPricePreviewParams): Promise<PricePreviewDto> {
     const { data } = await axiosInstance.get<ApiResponse<PricePreviewDto>>(
       "/bookings/price-preview",
       { params }
@@ -130,12 +131,12 @@ export const bookingService = {
         updatedAt: new Date().toISOString(),
       };
     }
-    const { data } = await axiosInstance.post<ApiResponse<Booking>>(
+    const { data } = await axiosInstance.post<ApiResponse<ApiSchemas["BookingDto"]>>(
       "/bookings",
       payload,
       { headers: { "Idempotency-Key": idempotencyKey } }
     );
-    return data.data;
+    return toBookingDetail(data.data);
   },
 
   async createGuestBooking(
@@ -161,12 +162,12 @@ export const bookingService = {
         updatedAt: new Date().toISOString(),
       };
     }
-    const { data } = await axiosInstance.post<ApiResponse<Booking>>(
+    const { data } = await axiosInstance.post<ApiResponse<ApiSchemas["BookingDto"]>>(
       "/bookings/quick",
       payload,
       { headers: { "Idempotency-Key": idempotencyKey } }
     );
-    return data.data;
+    return toBookingDetail(data.data);
   },
 
   async getMyBookings(
@@ -216,7 +217,7 @@ export const bookingService = {
       if (!booking) throw new Error("Booking not found");
       return booking;
     }
-    const { data } = await axiosInstance.get<ApiResponse<ApiSchemas["BookingDetailDto"]>>(
+    const { data } = await axiosInstance.get<ApiResponse<ApiSchemas["BookingDto"]>>(
       `/bookings/${id}`
     );
     return toBookingDetail(data.data);
@@ -229,17 +230,41 @@ export const bookingService = {
       if (!booking) throw new Error("Booking not found");
       return booking;
     }
-    const { data } = await axiosInstance.get<ApiResponse<BookingDetail>>(
-      `/bookings/code/${code}`
+    const { data } = await axiosInstance.get<ApiResponse<ApiSchemas["BookingDto"]>>(
+      `/bookings/code/${encodeURIComponent(code)}`
+    );
+    return toBookingDetail(data.data);
+  },
+
+  async getReschedulePreview(
+    id: string,
+    params: BookingPricePreviewParams
+  ): Promise<ReschedulePreview> {
+    const { data } = await axiosInstance.get<ApiResponse<ReschedulePreview>>(
+      `/bookings/${id}/reschedule-preview`,
+      { params }
     );
     return data.data;
   },
 
-  async cancelBooking(id: string, reason: string, idempotencyKey: string): Promise<void> {
+  async rescheduleBooking(
+    id: string,
+    payload: RescheduleBookingRequest,
+    idempotencyKey: string
+  ): Promise<BookingDetail> {
+    const { data } = await axiosInstance.patch<ApiResponse<ApiSchemas["BookingDto"]>>(
+      `/bookings/${id}/reschedule`,
+      payload,
+      { headers: { "Idempotency-Key": idempotencyKey } }
+    );
+    return toBookingDetail(data.data);
+  },
+
+  async cancelBooking(id: string, payload: CancelBookingRequest, idempotencyKey: string): Promise<BookingDetail> {
     if (IS_MOCK) {
       await mockDelay();
       const booking = mockBookings.find((b) => b.bookingId === id);
-      if (!booking) return;
+      if (!booking) throw new Error("Booking not found");
 
       const oldStatus = booking.status;
       booking.status = "Cancelled";
@@ -252,14 +277,17 @@ export const bookingService = {
         actorType: "Customer",
         actorName: null,
         changedAt: new Date().toISOString(),
-        reason: "Người dùng yêu cầu hủy trên web",
+        reason: payload.reason ?? null,
       });
 
-      return;
+      return booking;
     }
-    await axiosInstance.patch(`/bookings/${id}/cancel`, { reason }, {
-      headers: { "Idempotency-Key": idempotencyKey },
-    });
+    const { data } = await axiosInstance.patch<ApiResponse<ApiSchemas["BookingDto"]>>(
+      `/bookings/${id}/cancel`, payload, {
+        headers: { "Idempotency-Key": idempotencyKey },
+      }
+    );
+    return toBookingDetail(data.data);
   },
 
   async getBookingInvoice(id: string) {

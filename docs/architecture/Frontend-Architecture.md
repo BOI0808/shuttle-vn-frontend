@@ -403,6 +403,8 @@ Mọi yêu cầu gửi tới `/api/...` từ trình duyệt được Next.js ser
 
 ## 7. HỆ THỐNG KIỂU DỮ LIỆU & TYPE SAFETY (TYPE SYSTEM)
 
+Booking dùng `BookingDto` cho tạo, tra cứu, hủy và đổi lịch. Service giữ `expectedState`, `priceSegments` khi chuyển sang domain model. Hủy gửi `CancelBookingRequest` (`expectedState`, `reason`, `refund`); đổi lịch dùng `GET /api/bookings/{bookingId}/reschedule-preview` và `PATCH /api/bookings/{bookingId}/reschedule`, kèm `Idempotency-Key` cho mutation. Hooks tương ứng: `useReschedulePreview`, `useRescheduleBooking`, `useCancelBooking`. Xác nhận/hoàn thành đơn hỗ trợ thêm `amount`. Các contract court không đổi so với Swagger trước đó.
+
 ShuttleVN thiết lập hệ thống kiểu dữ liệu phân cấp 2 tầng chặt chẽ:
 
 ```mermaid
@@ -417,7 +419,7 @@ flowchart LR
    - Được sinh tự động từ tài liệu Swagger JSON của Backend thông qua công cụ `openapi-typescript`.
    - Chứa định nghĩa chính xác cấu trúc request, response, enum của toàn bộ API.
 2. **Tầng Domain Models (`src/types/`):**
-   - [booking.ts](file:///d:/Shuttle-VN/shuttle-vn-frontend/src/types/booking.ts): Định nghĩa `BookingStatus` (`Pending | Confirmed | Completed | Cancelled`), `InvoiceStatus` (`Unpaid | Paid | Cancelled`), `PaymentMethod`, `Booking`, `Invoice`, `BookingStatusHistory`.
+   - [booking.ts](file:///d:/Shuttle-VN/shuttle-vn-frontend/src/types/booking.ts): Định nghĩa `BookingStatus` (`Pending | Confirmed | Completed | Cancelled`), `InvoiceStatus` (`Unpaid | Paid | Cancelled | Refunded`), `PaymentMethod`, `Booking`, `Invoice`, `BookingStatusHistory`.
    - [court.ts](file:///d:/Shuttle-VN/shuttle-vn-frontend/src/types/court.ts): Định nghĩa `CourtStatus`, `SlotDisplayStatus` (`AVAILABLE | BOOKED | CLOSED`), `CourtSlot`, `CourtGridResponse`.
    - [auth.ts](file:///d:/Shuttle-VN/shuttle-vn-frontend/src/types/auth.ts): Định nghĩa `UserRole` (`Admin | Employee | Customer`), `AccountStatus`.
    - [api.ts](file:///d:/Shuttle-VN/shuttle-vn-frontend/src/types/api.ts): Định nghĩa cấu trúc bọc chuẩn `ApiResponse<T>` và `PaginatedResponse<T>`.

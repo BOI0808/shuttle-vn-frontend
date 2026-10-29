@@ -55,8 +55,8 @@ export function RegisterForm() {
     try {
       await sendVerificationCode(getValues("email"), "VerifyEmail");
       toast.success("Mã xác thực đã được gửi đến email của bạn");
-    } catch (error) {
-      toast.error(getErrorMessage(error));
+    } catch {
+      toast.error("Không thể yêu cầu mã xác thực. Vui lòng thử lại.");
     }
   };
 
