@@ -8,14 +8,16 @@ import { toast } from "sonner";
 import { BookingDetailView } from "@/components/booking/BookingDetailView";
 import { ConfirmBookingModal } from "@/components/booking/ConfirmBookingModal";
 import { RejectBookingModal } from "@/components/booking/RejectBookingModal";
+import { RescheduleBookingModal } from "@/components/booking/RescheduleBookingModal";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useBookingDetail, useCompleteBooking } from "@/hooks";
-import { getErrorMessage, hasBookingEnded } from "@/utils";
+import { canRescheduleBooking, getErrorMessage, hasBookingEnded } from "@/utils";
 
 type ActiveModal =
   | "confirm"
   | "reject"
+  | "reschedule"
   | "completePending"
   | "completeConfirmed"
   | null;
@@ -103,6 +105,11 @@ export default function BookingDetailClient({ id }: BookingDetailClientProps) {
               </Button>
             </>
           )}
+          {canRescheduleBooking(booking, true) && (
+            <Button type="button" variant="outline" className="w-auto" onClick={() => setModal("reschedule")}>
+              Đổi lịch
+            </Button>
+          )}
           {canComplete && (
             <Button
               type="button"
@@ -128,6 +135,9 @@ export default function BookingDetailClient({ id }: BookingDetailClientProps) {
           action="confirm"
           onClose={() => setModal(null)}
         />
+      )}
+      {modal === "reschedule" && (
+        <RescheduleBookingModal booking={booking} isStaff onClose={() => setModal(null)} />
       )}
       {modal === "reject" && (
         <RejectBookingModal booking={booking} onClose={() => setModal(null)} />

@@ -4,7 +4,7 @@ import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
 import { isAxiosError } from "axios";
 
-import type { RevenueGroupBy } from "@/types";
+import type { BookingAdminDetail, BookingDetail, RevenueGroupBy } from "@/types";
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
@@ -42,6 +42,20 @@ export function formatDateTimeVN(dateStr: string): string {
 
 export function hasBookingEnded(date: string, endTime: string): boolean {
   return new Date(`${date}T${endTime}:00+07:00`).getTime() <= Date.now();
+}
+
+export function isBeforeBookingChangeDeadline(date: string, startTime: string, now = Date.now()): boolean {
+  return new Date(`${date}T${startTime.slice(0, 5)}:00+07:00`).getTime() - now >= 3600000;
+}
+
+export function canRescheduleBooking(
+  booking: BookingDetail | BookingAdminDetail,
+  isStaff = false,
+  now = Date.now()
+): boolean {
+  return (booking.status === "Pending" || booking.status === "Confirmed") &&
+    (isStaff || (booking.paymentStatus ?? booking.invoice?.status) !== "Paid") &&
+    isBeforeBookingChangeDeadline(booking.date, booking.startTime, now);
 }
 
 export function toISODate(date: Date): string {
