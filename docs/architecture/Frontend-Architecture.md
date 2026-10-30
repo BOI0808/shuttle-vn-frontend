@@ -122,7 +122,7 @@ shuttle-vn-frontend/
 │   │   │   ├── dashboard/page.tsx    # WF-09 (Bảng điều khiển QTV)
 │   │   │   ├── employees/page.tsx    # WF-16 (Quản lý nhân viên)
 │   │   │   ├── manage-courts/        # WF-15 (Quản lý sân & bảng giá)
-│   │   │   ├── payments/page.tsx     # Placeholder WF-13 (Quản lý thanh toán)
+│   │   │   ├── payments/page.tsx     # US-16: danh sách, chi tiết, lịch sử hóa đơn và thu tiền
 │   │   │   ├── schedule/page.tsx     # WF-12 (Quản lý lịch sân)
 │   │   │   ├── statistics/page.tsx   # Placeholder WF-18 (Báo cáo & thống kê)
 │   │   │   └── layout.tsx            # Admin Layout Shell (AdminSidebar + AdminHeader)
@@ -482,7 +482,10 @@ Dựa trên đối chiếu giữa kiến trúc thực tế và hồ sơ nghiệp
 - [ ] Xây dựng trang Quên mật khẩu `/forgot-password` (`WF-03`).
 - [ ] Xây dựng trang Tiếp nhận yêu cầu đặt sân `/admin/booking-requests` (`WF-10`, US-11).
 - [ ] Xây dựng trang Chi tiết đơn và dòng thời gian `/admin/bookings/[id]` (`WF-11`, US-12).
-- [ ] Hiện thực hóa trang Quản lý thanh toán từ placeholder `/admin/payments` (`WF-13`).
+- [x] US-16: `/payments` dùng `invoiceService` và `useInvoice` cho danh sách phân trang, lọc trạng thái/mã, chi tiết/chứng cứ, chuỗi hóa đơn và thu đủ tiền qua `PATCH /api/invoices/{invoiceId}/pay`. Gửi `expectedState`, `Idempotency-Key`; giữ nguyên nội dung khi thử lại do chưa xác định kết quả.
+- [x] US-6: `RescheduleBookingModal` dùng chung cho `/my-bookings` và `/bookings/[id]`. Xem báo giá rồi xác nhận tổng tiền; khách chỉ đổi đơn chưa thanh toán, nhân viên nhập chứng cứ hoàn đủ khi báo giá yêu cầu. Xung đột phải xem báo giá và xác nhận lại. Lưu thất bại làm mới cache đơn/lịch/hóa đơn vì máy chủ có thể đã chốt đơn độc lập.
+
+Kiểm tra TypeScript: `npm run type-check` (không chạy lint).
 - [ ] Hiện thực hóa trang Báo cáo & Thống kê từ placeholder `/admin/statistics` (`WF-18`).
 - [ ] Hiện thực hóa trang Nhật ký hoạt động chỉ đọc từ placeholder `/admin/audits` (`WF-19`).
 - [ ] Tạo component giao diện nổi `src/components/chatbot/ChatWidget.tsx` (`WF-08`) kết nối API route `api/chat`.
