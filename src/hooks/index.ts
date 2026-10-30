@@ -6,3 +6,4 @@ export * from "./useEmployee";
 export * from "./useBookingAdmin";
 export * from "./useCustomer";
 export * from "./useQuickLookup";
+export * from "./useInvoice";

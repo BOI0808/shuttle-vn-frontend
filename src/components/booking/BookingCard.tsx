@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/Badge";
-import { cn, formatCurrency } from "@/utils";
+import { canRescheduleBooking, cn, formatCurrency } from "@/utils";
 import { BOOKING_STATUS_LABEL } from "@/config/app";
 import type { BookingDetail } from "@/types";
 
@@ -10,6 +11,7 @@ interface BookingCardProps {
   onViewDetail: (id: string) => void;
   onCancel: (id: string) => void;
   onViewInvoice: (id: string) => void;
+  onReschedule: (booking: BookingDetail) => void;
 }
 
 export function BookingCard({
@@ -17,14 +19,23 @@ export function BookingCard({
   onViewDetail,
   onCancel,
   onViewInvoice,
+  onReschedule,
 }: BookingCardProps) {
   const muted =
     booking.status === "Completed" || booking.status === "Cancelled";
 
-  const canCancel =
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    const deadline = new Date(`${booking.date}T${booking.startTime.slice(0, 5)}:00+07:00`).getTime() - 3600000;
+    const delay = deadline - Date.now() + 1;
+    if (!Number.isFinite(delay) || delay <= 0) return;
+    const timer = setTimeout(() => setNow(Date.now()), Math.min(delay, 2147483647));
+    return () => clearTimeout(timer);
+  }, [booking.date, booking.startTime, now]);
+  const canChangeBooking =
     (booking.status === "Pending" || booking.status === "Confirmed") &&
-    booking.paymentStatus !== "Paid" &&
-    new Date(`${booking.date}T${booking.startTime.slice(0, 5)}:00+07:00`).getTime() - Date.now() >= 60 * 60 * 1000;
+    (booking.paymentStatus ?? booking.invoice?.status) !== "Paid";
+  const canChangeNow = canRescheduleBooking(booking, false, now);
   const canViewInvoice = booking.paymentStatus !== null && booking.paymentStatus !== undefined;
 
   return (
@@ -121,10 +132,23 @@ export function BookingCard({
             </button>
           )}
 
-          {canCancel && (
+          {canChangeBooking && (
             <button
-              onClick={() => onCancel(booking.bookingId)}
-              className="inline-flex items-center gap-1 px-[13px] py-[7px] rounded-md text-xs font-medium border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 hover:border-red-300 transition-colors"
+              disabled={!canChangeNow}
+              title={!canChangeNow ? "Chỉ được đổi lịch trước giờ bắt đầu ít nhất 1 tiếng." : undefined}
+              onClick={() => { if (canRescheduleBooking(booking)) onReschedule(booking); }}
+              className="inline-flex items-center gap-1 rounded-md border border-gray-200 bg-white px-[13px] py-[7px] text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Đổi lịch
+            </button>
+          )}
+
+          {canChangeBooking && (
+            <button
+              disabled={!canChangeNow}
+              title={!canChangeNow ? "Chỉ được hủy trước giờ bắt đầu ít nhất 1 tiếng." : undefined}
+              onClick={() => { if (canRescheduleBooking(booking)) onCancel(booking.bookingId); }}
+              className="inline-flex items-center gap-1 px-[13px] py-[7px] rounded-md text-xs font-medium border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 hover:border-red-300 transition-colors disabled:cursor-not-allowed disabled:opacity-40"
             >
               <span className="material-symbols-outlined text-[15px]">
                 cancel
