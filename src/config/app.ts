@@ -54,7 +54,10 @@ export const SLOT_DISPLAY_STATUS_LABEL: Record<string, string> = {
 export const ACCOUNT_STATUS_LABEL: Record<string, string> = {
   Active: "Hoạt động",
   Disabled: "Vô hiệu hoá",
+  PendingActivation: "Chờ kích hoạt",
 };
+
+export const EMAIL_SEND_TIMEOUT_MS = 35000;
 
 export const USER_ROLE_LABEL: Record<string, string> = {
   Admin: "Quản trị viên",

@@ -2068,6 +2068,90 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/set-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["SetPasswordDto"];
+                    "text/json": components["schemas"]["SetPasswordDto"];
+                    "application/*+json": components["schemas"]["SetPasswordDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ObjectApiResponse"];
+                        "text/json": components["schemas"]["ObjectApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/resend-setup-link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ResendSetupLinkDto"];
+                    "text/json": components["schemas"]["ResendSetupLinkDto"];
+                    "application/*+json": components["schemas"]["ResendSetupLinkDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ObjectApiResponse"];
+                        "text/json": components["schemas"]["ObjectApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2112,7 +2196,7 @@ export interface components {
             } | null;
         };
         /** @enum {string} */
-        AccountStatus: "Active" | "Disabled";
+        AccountStatus: "Active" | "Disabled" | "PendingActivation";
         /** @enum {string} */
         AccountType: "Customer" | "Employee";
         /** @enum {string} */
@@ -2379,7 +2463,7 @@ export interface components {
             type?: components["schemas"]["CodeType"];
         };
         /** @enum {string} */
-        CodeType: "VerifyEmail" | "ResetPassword" | "QuickBooking";
+        CodeType: "VerifyEmail" | "ResetPassword" | "QuickBooking" | "SetPassword";
         ConfirmBookingDto: {
             isPaid?: boolean;
             paymentMethod?: components["schemas"]["PaymentMethod"];
@@ -2758,6 +2842,15 @@ export interface components {
         UpdateProfileDto: {
             fullName?: string | null;
             phone?: string | null;
+        };
+        SetPasswordDto: {
+            email?: string | null;
+            token?: string | null;
+            password?: string | null;
+            confirmPassword?: string | null;
+        };
+        ResendSetupLinkDto: {
+            email?: string | null;
         };
     };
     responses: never;

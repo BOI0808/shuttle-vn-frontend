@@ -92,6 +92,21 @@ export function getErrorMessage(error: unknown): string {
   return "Đã có lỗi xảy ra, vui lòng thử lại.";
 }
 
+export function hasApiFieldError(error: unknown, field: string): boolean {
+  if (!isAxiosError<ApiErrorBody>(error)) return false;
+  const errors = error.response?.data?.errors;
+  if (!errors || typeof errors !== "object") return false;
+  return Object.keys(errors).some(
+    (key) => key.toLowerCase() === field.toLowerCase()
+  );
+}
+
+export function getRetryAfterSeconds(error: unknown): number | null {
+  if (!isAxiosError(error) || error.response?.status !== 429) return null;
+  const seconds = Number(error.response.headers?.["retry-after"]);
+  return Number.isFinite(seconds) && seconds > 0 ? Math.ceil(seconds) : null;
+}
+
 export function calcHourDiff(startTime: string, endTime: string): number {
   const [sh, sm] = startTime.split(":").map(Number);
   const [eh, em] = endTime.split(":").map(Number);
