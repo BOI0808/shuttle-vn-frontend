@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/register", "/courts", "/lookup"];
+const PUBLIC_PATHS = [
+  "/login",
+  "/register",
+  "/set-password",
+  "/courts",
+  "/lookup",
+];
 const AUTH_COOKIE_NAME = "shuttlevn.auth";
 
 export function proxy(request: NextRequest) {
