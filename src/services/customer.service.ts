@@ -3,13 +3,13 @@ import {
   ApiResponse,
   BookingListItem,
   CreateCustomerRequest,
-  Customer,
   CustomerListItem,
   CustomerSearchParams,
   PaginatedResponse,
   PaginationParams,
   UpdateProfileRequest,
 } from "@/types";
+import { EMAIL_SEND_TIMEOUT_MS } from "@/config/app";
 import { IS_MOCK, mockDelay } from "@/mocks/config";
 import { mockAdminBookings, mockCustomers } from "@/mocks/data";
 
@@ -81,20 +81,25 @@ export const customerService = {
     return data.data;
   },
 
-  async createCustomer(payload: CreateCustomerRequest): Promise<Customer> {
+  async createCustomer(
+    payload: CreateCustomerRequest
+  ): Promise<CustomerListItem> {
     if (IS_MOCK) {
       await mockDelay();
       return {
         customerId: `CUST-${Math.floor(Math.random() * 1000)}`,
-        accountId: null,
+        accountId: `ACC-${Math.floor(Math.random() * 1000)}`,
         ...payload,
+        hasAccount: true,
+        accountStatus: "PendingActivation",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
     }
-    const { data } = await axiosInstance.post<ApiResponse<Customer>>(
-        `/accounts/customers`,
-        payload
+    const { data } = await axiosInstance.post<ApiResponse<CustomerListItem>>(
+      `/accounts/customers`,
+      payload,
+      { timeout: EMAIL_SEND_TIMEOUT_MS }
     );
     return data.data;
   },
