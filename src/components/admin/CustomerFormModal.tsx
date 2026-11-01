@@ -39,7 +39,7 @@ export function CustomerFormModal({ onClose }: CustomerFormModalProps) {
   const onSubmit = (data: CreateCustomerFormData) => {
     createMutation.mutate(data, {
       onSuccess: () => {
-        toast.success("Đã thêm khách hàng thành công");
+        toast.success("Đã tạo tài khoản và gửi email thiết lập mật khẩu cho khách hàng");
         onClose();
       },
       onError: (error) => {
@@ -89,6 +89,14 @@ export function CustomerFormModal({ onClose }: CustomerFormModalProps) {
                 error={errors.email?.message}
                 {...register("email")}
               />
+            </div>
+            <div className="flex gap-2.5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+              <span className="material-symbols-outlined text-[18px]">mail</span>
+              <p>
+                Hệ thống gửi email thiết lập mật khẩu (liên kết hiệu lực 24 giờ)
+                tới khách hàng. Tài khoản ở trạng thái &quot;Chờ kích hoạt&quot;
+                cho đến khi khách đặt mật khẩu.
+              </p>
             </div>
           </div>
 
