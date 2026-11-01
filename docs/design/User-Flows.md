@@ -953,18 +953,18 @@ Lệch UI: D-29 (chưa có lọc theo sân; chú giải chưa đủ trạng thá
 
 **A. Tạo tài khoản khách (UC-26)**
 
-- **Trạng thái triển khai (X-06):** theo kế hoạch dự án (Quyết định D6 trong Plan; tài liệu này không có trong các file đính kèm để đối chiếu), tuần này hoãn UC-26; hiện chỉ tạo hồ sơ khách chưa gắn tài khoản.
+- **Trạng thái triển khai (X-06):** UC-26 đã triển khai: tài khoản khách tạo ra ở trạng thái Chờ kích hoạt, khách tự đặt mật khẩu qua liên kết email hiệu lực 24 giờ (UC-42).
 - **Tiền điều kiện:** email chưa là email đăng nhập của tài khoản nào; hồ sơ cùng email (nếu có) chưa liên kết tài khoản.
 
 | # | Tác nhân | Thao tác / phản hồi |
 | --- | --- | --- |
-| 1 | Nhân viên | Nhập họ tên, số điện thoại, email và thông tin tài khoản |
+| 1 | Nhân viên | Nhập họ tên, số điện thoại, email (không nhập mật khẩu) |
 | 2 | Hệ thống | Kiểm tra dữ liệu |
 | 3 | Hệ thống | Tìm hồ sơ theo email: có và chưa liên kết thì dùng lại; chưa có thì tạo hồ sơ mới |
-| 4 | Hệ thống | Trong một giao dịch: tạo tài khoản, liên kết hồ sơ, ghi nhật ký |
+| 4 | Hệ thống | Trong một giao dịch: tạo tài khoản ở trạng thái Chờ kích hoạt, liên kết hồ sơ, ghi nhật ký, gửi email liên kết thiết lập mật khẩu (24 giờ) |
 
 - E1: dữ liệu không hợp lệ → nêu trường lỗi. E2: email đã là email đăng nhập hoặc hồ sơ đã có tài khoản → từ chối. E3: xung đột đồng thời → hoàn tác, không để lại tài khoản/hồ sơ mồ côi.
-- Nhân viên chỉ tạo tài khoản khách; tài khoản nội bộ do QTV tạo (F-QT-04). Cách cấp mật khẩu ban đầu cho tài khoản khách chưa chốt (O-04).
+- Nhân viên chỉ tạo tài khoản khách; tài khoản nội bộ do QTV tạo (F-QT-04). Mật khẩu ban đầu của tài khoản khách do chính khách đặt qua liên kết email (X-06, UC-42); E4: gửi email lỗi → hoàn tác, không tạo tài khoản. Khách quá 24 giờ chưa đặt mật khẩu tự yêu cầu gửi lại liên kết ở trang `/set-password` hoặc `/login`; hồ sơ và lịch sử đặt sân giữ nguyên.
 
 **B. Khóa / mở khóa tài khoản khách (UC-27)**
 
@@ -1305,7 +1305,7 @@ Bảng liệt kê các chỗ file HTML khác SRS 1.7 / UC 1.5, hoặc có chức
 | X-03 | `TraCuuDon` thuộc phạm vi. Bắt buộc nhập cặp mã đặt sân + số điện thoại (hoặc email); không khớp báo "Không tìm thấy đơn đặt sân phù hợp"; chỉ hiển thị tóm tắt đơn | F-KH-14, D-14 |
 | X-04 | Loại khỏi giao diện: phiên đăng nhập/thiết bị (D-18), khách tự vô hiệu hóa tài khoản (D-19), chỉ số Tỉ lệ lấp đầy (D-20, D-27, D-34), ca làm việc/ngày nghỉ/giờ vào làm của nhân viên (D-32), cảnh báo phần cứng/CPU/sao lưu trong nhật ký (D-35). Giữ lại: trường Xác nhận mật khẩu khi đăng ký (D-37), tab Đổi mật khẩu trong hồ sơ (D-17; tạm ẩn nếu chưa có phần máy chủ) | Mục 10; F-KH-01, F-KH-12, F-QT-04, F-QT-06, F-QT-07 |
 | X-05 | "Email đã xác minh" trong UC-20 (NV-10) nghĩa là nhân viên đã trực tiếp xác thực thông tin liên hệ với khách; luồng nhân viên tạo đơn hộ không gửi mã OTP | F-NV-09 |
-| X-06 | QTV nhập mật khẩu ban đầu trực tiếp khi tạo tài khoản nội bộ (UC-36), 8–128 ký tự theo BR-11. Tạo tài khoản khách từ phía nhân viên (UC-26) hoãn trong tuần này theo kế hoạch dự án; hiện chỉ tạo hồ sơ khách chưa gắn tài khoản | F-QT-04, F-NV-11 |
+| X-06 | QTV nhập mật khẩu ban đầu trực tiếp khi tạo tài khoản nội bộ (UC-36), 8–128 ký tự theo BR-11. Tài khoản khách do nhân viên tạo (UC-26) không có mật khẩu ban đầu: ở trạng thái Chờ kích hoạt, khách tự đặt mật khẩu qua liên kết email 24 giờ (UC-42) | F-QT-04, F-NV-11 |
 | X-07 | Đặt nhanh: khách chọn ô trên lưới rồi chọn thời lượng; có thể điền thẻ đặt nhanh trước hoặc sau khi mở popup. Khi bấm "Đặt sân · giá": thẻ chưa đủ hoặc không hợp lệ thì báo lỗi; đã đủ thì gửi mã xác minh 6 chữ số về email (F-KH-02) trước khi tạo đơn | F-KH-07 |
 
 ### 12.2 Điểm còn mở
@@ -1317,6 +1317,6 @@ Các điểm dưới đây SRS, UC, HTML và các quyết định ở 12.1 chưa
 | O-01 | Các điểm ở mục 10 ghi "chưa có quyết định riêng". (a) Nhóm lệch quy tắc, hiện áp dụng nguyên tắc X-01 là sửa UI theo SRS/UC, cần xác nhận: D-04, D-09, D-10, D-11, D-23, D-24, D-25, D-26, D-28, D-29, D-38 và phần lệch quy tắc của D-31, D-33, D-34, D-35, D-36. (b) Nhóm chức năng hoặc trường chỉ có trên giao diện, cần quyết giữ hay loại: nút Hóa đơn của khách (D-13); ảnh đại diện, thống kê cá nhân, "Thành viên từ" (D-17); đăng xuất ở khu quản trị (D-21) và ở khu khách (D-37); Loại sân, Loại sàn, Kích thước (D-22); ghi chú nội bộ của khách (D-31); đặt lại mật khẩu bởi nhân viên/QTV (D-32, D-33); xuất PDF/Excel/CSV, so sánh kỳ trước, nhóm theo tuần, lọc theo sân, IP và sự kiện đăng nhập trong nhật ký (D-34, D-35); ghi chú từ khách (D-36) |
 | O-02 | X-03 chưa có use-case trong SRS/UC, và SRS 2.2 nêu biết mã đặt sân hoặc email không tạo ra quyền truy cập, mục 3.2 bước 1 nêu mã đơn của người khác trả Không tìm thấy. Cần bổ sung use-case tra cứu và điều chỉnh SRS 2.2 cho thống nhất với quy tắc cặp mã + số điện thoại/email |
 | O-03 | X-02: (i) nhân viên vào `XacNhanDatSan` hay `QuanLyLichSan` (quyết định ghi "hoặc"); (ii) mục Khách hàng của nhân viên được mô tả "chỉ tra cứu và khóa/mở khóa", trong khi NV-16, NV-24 và UC-24 cho nhân viên cập nhật thông tin khách (không đổi email); (iii) tên menu "Yêu cầu đặt sân" khác nhãn "Xác nhận đặt sân" trong HTML |
-| O-04 | X-06: cách cấp mật khẩu ban đầu cho tài khoản khách (UC-26) chưa chốt. SRS/UC không có mật khẩu mặc định hay bắt đổi mật khẩu ở lần đăng nhập đầu; mật khẩu mặc định cố định (ví dụ trong phản hồi) sẽ là thông tin đăng nhập dùng chung nên cần cân nhắc trước khi đưa vào SRS. Quyết định D6 trong Plan chưa có trong các file đính kèm để đối chiếu |
+| O-04 | Đã giải quyết (01/11/2026): mật khẩu ban đầu của tài khoản khách do khách tự đặt qua liên kết email hiệu lực 24 giờ (UC-42, SRS 2.1); không dùng mật khẩu mặc định |
 | O-05 | `BangDieuKhien` là màn hình đích của QTV nhưng SRS/UC không mô tả nghiệp vụ của màn hình này; ngoài chỉ số Tỉ lệ lấp đầy đã loại, các thành phần còn lại (thẻ số liệu, biểu đồ, danh sách chờ xác nhận, đặt sân gần đây, Xuất báo cáo, chuông thông báo) cần được mô tả hoặc loại |
 | O-06 | Tab Đổi mật khẩu trong hồ sơ (D-17): SRS/UC chưa có use-case nên tài liệu chưa mô tả luồng; cần bổ sung use-case và yêu cầu trước khi bỏ trạng thái tạm ẩn |

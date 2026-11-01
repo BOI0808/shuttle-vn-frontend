@@ -2081,7 +2081,7 @@ Chi tiết hiển thị cả chuỗi hóa đơn bị hủy và hóa đơn thay t
 
 > **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
 > - *Codebase hiện tại:* `CustomersClient.tsx` có bảng 5 cột (Khách hàng kèm mã, Liên hệ, Loại Thành viên/Vãng lai, Ngày đăng ký, Chi tiết) và nút Thêm khách hàng; chưa có ô tìm kiếm, phân trang; hai nút chưa gắn handler.
-> - *Chuẩn Wireframe tương lai:* Bổ sung thanh tìm kiếm nhanh (UC-30) và thao tác Khóa/Mở khóa tài khoản khách (UC-27, BR-27) reset bộ đếm sai về 0 (BR-12). Modal tạo hồ sơ khách hàng mới (UC-26).
+> - *Chuẩn Wireframe tương lai:* Bổ sung thanh tìm kiếm nhanh (UC-30) và thao tác Khóa/Mở khóa tài khoản khách (UC-27, BR-27) reset bộ đếm sai về 0 (BR-12). Modal tạo tài khoản khách hàng (UC-26): nhập họ tên, SĐT, email; hệ thống gửi email liên kết thiết lập mật khẩu 24 giờ (UC-42).
 
 ### 14.1. Wireframe
 
