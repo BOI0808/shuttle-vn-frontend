@@ -6,8 +6,11 @@ import {
   IssueCodeRequest,
   UpdateProfileRequest,
   ChangePasswordRequest,
+  ResendSetupLinkRequest,
+  SetPasswordRequest,
   UserAccount,
 } from "@/types";
+import {EMAIL_SEND_TIMEOUT_MS} from "@/config/app";
 import {AuthUser} from "@/stores/auth.store";
 import {IS_MOCK, mockDelay} from "@/mocks/config";
 import {mockCustomer, mockUserAccounts} from "@/mocks/data";
@@ -85,6 +88,29 @@ export const authService = {
             payload
         );
         return mapAccountToAuthUser(data.data);
+    },
+
+    async setPassword(payload: SetPasswordRequest): Promise<void> {
+        if (IS_MOCK) {
+            await mockDelay();
+            return;
+        }
+        await axiosInstance.post<ApiResponse<{ message: string }>>(
+            "/auth/set-password",
+            payload
+        );
+    },
+
+    async resendSetupLink(payload: ResendSetupLinkRequest): Promise<void> {
+        if (IS_MOCK) {
+            await mockDelay();
+            return;
+        }
+        await axiosInstance.post<ApiResponse<{ message: string }>>(
+            "/auth/resend-setup-link",
+            payload,
+            {timeout: EMAIL_SEND_TIMEOUT_MS}
+        );
     },
 
     async changePassword(payload: ChangePasswordRequest): Promise<void> {

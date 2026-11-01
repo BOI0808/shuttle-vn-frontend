@@ -128,7 +128,8 @@ shuttle-vn-frontend/
 │   │   │   └── layout.tsx            # Admin Layout Shell (AdminSidebar + AdminHeader)
 │   │   ├── (auth)/                   # Route Group Xác thực
 │   │   │   ├── login/page.tsx        # WF-02 (Đăng nhập)
-│   │   │   └── register/page.tsx     # WF-01 (Đăng ký tài khoản)
+│   │   │   ├── register/page.tsx     # WF-01 (Đăng ký tài khoản)
+│   │   │   └── set-password/page.tsx # WF-03A (Đặt mật khẩu từ liên kết email)
 │   │   ├── (customer)/               # Route Group Cổng Khách hàng
 │   │   │   ├── booking/              # Placeholder trang đặt sân
 │   │   │   ├── courts/page.tsx       # WF-04 (Lưới sân & đặt sân đang chạy)
@@ -143,7 +144,7 @@ shuttle-vn-frontend/
 │   │   └── providers.tsx             # React Query, AuthProvider, Sonner Toaster
 │   ├── components/                   # Thư viện React Components
 │   │   ├── admin/                    # Components quản trị (CourtTable, RevenueChart, PricingTimeline)
-│   │   ├── auth/                     # LoginForm, RegisterForm, RoleGuard
+│   │   ├── auth/                     # LoginForm, RegisterForm, SetPasswordForm, ResendSetupLinkButton, RoleGuard
 │   │   ├── booking/                  # BookingCard, BookingLookupForm, WalkInBookingForm
 │   │   ├── court/                    # CourtGrid, CourtSlotCell, SlotPopup
 │   │   ├── layout/                   # CustomerNav, AdminSidebar, AdminHeader, AuthProvider
@@ -152,7 +153,7 @@ shuttle-vn-frontend/
 │   ├── config/                       # Hằng số cấu hình hệ thống
 │   │   └── app.ts                    # APP_CONFIG, Labels, Query Keys, Status colors
 │   ├── hooks/                        # Custom React Hooks & TanStack Query Hooks
-│   │   ├── useAuth.ts                # Auth mutations (login, register, logout)
+│   │   ├── useAuth.ts                # Auth mutations (login, register, setPassword, resendSetupLink, logout)
 │   │   ├── useBooking.ts             # Booking queries & mutations
 │   │   ├── useCourt.ts               # Court queries & mutations
 │   │   ├── useDashboard.ts           # Dashboard stats query
@@ -199,6 +200,7 @@ Dự án áp dụng cơ chế **Route Groups** của Next.js App Router (đượ
 URL Browser           File Hệ Thống
 /login            --> src/app/(auth)/login/page.tsx
 /register         --> src/app/(auth)/register/page.tsx
+/set-password     --> src/app/(auth)/set-password/page.tsx
 /courts           --> src/app/(customer)/courts/page.tsx
 /my-bookings      --> src/app/(customer)/my-bookings/page.tsx
 /lookup           --> src/app/(customer)/lookup/page.tsx

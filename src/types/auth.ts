@@ -74,6 +74,17 @@ export interface ResetPasswordRequest {
   password: string;
 }
 
+export interface SetPasswordRequest {
+  email: string;
+  token: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface ResendSetupLinkRequest {
+  email: string;
+}
+
 export interface CreateEmployeeRequest {
   fullName: string;
   phone: string;

@@ -24,6 +24,7 @@ export function CustomerAccountCard({ customer }: CustomerAccountCardProps) {
   const unlockMutation = useUnlockCustomerAccount();
 
   const isActive = customer.accountStatus === "Active";
+  const isPending = customer.accountStatus === "PendingActivation";
   const mutation = isActive ? lockMutation : unlockMutation;
 
   const handleConfirm = () => {
@@ -47,26 +48,37 @@ export function CustomerAccountCard({ customer }: CustomerAccountCardProps) {
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
       <h3 className="mb-3 text-[15px] font-bold text-slate-900">Tài khoản</h3>
       {customer.hasAccount && customer.accountStatus ? (
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="text-[13px] text-slate-500">Trạng thái:</span>
-            <Badge status={customer.accountStatus}>
-              {ACCOUNT_STATUS_LABEL[customer.accountStatus]}
-            </Badge>
+        <>
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-[13px] text-slate-500">Trạng thái:</span>
+              <Badge status={customer.accountStatus}>
+                {ACCOUNT_STATUS_LABEL[customer.accountStatus]}
+              </Badge>
+            </div>
+            {!isPending && (
+              <Button
+                type="button"
+                variant="outline"
+                className={
+                  isActive
+                    ? "w-auto border-red-300 text-red-600 hover:bg-red-50"
+                    : "w-auto"
+                }
+                onClick={() => setIsConfirmOpen(true)}
+              >
+                {isActive ? "Khóa tài khoản" : "Mở khóa tài khoản"}
+              </Button>
+            )}
           </div>
-          <Button
-            type="button"
-            variant="outline"
-            className={
-              isActive
-                ? "w-auto border-red-300 text-red-600 hover:bg-red-50"
-                : "w-auto"
-            }
-            onClick={() => setIsConfirmOpen(true)}
-          >
-            {isActive ? "Khóa tài khoản" : "Mở khóa tài khoản"}
-          </Button>
-        </div>
+          {isPending && (
+            <p className="mt-3 text-[13px] text-slate-500">
+              Khách chưa đặt mật khẩu nên chưa thể khóa hoặc mở khóa. Liên kết
+              thiết lập có hiệu lực 24 giờ; khi hết hạn, khách tự yêu cầu gửi
+              lại liên kết mới.
+            </p>
+          )}
+        </>
       ) : (
         <p className="text-[13px] text-slate-500">
           Khách vãng lai, chưa có tài khoản đăng nhập.
