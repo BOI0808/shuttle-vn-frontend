@@ -407,7 +407,7 @@ Nút chỉ có icon **bắt buộc** có `aria-label`.
 - Dùng trong `CourtOperationsModal` (tab T2–CN). **Chuẩn:** lưu lịch và lưu giá đi qua bước **Xem trước** (Wireframes 15.4/15.5) — hiện là hai nút lưu riêng.
 
 ### 5.5 Biểu đồ doanh thu — `admin/RevenueChart.tsx`
-- **Hiện trạng:** Recharts `BarChart` trong khung `bg-white border border-slate-200 rounded-xl p-5 h-[350px]`, tiêu đề "Doanh thu 7 ngày gần nhất" (`text-[15px] font-bold`), cột `#3b82f6` `radius={[4,4,0,0]}` `barSize={32}`, lưới `#f1f5f9`, tooltip bo 8px viền `#e2e8f0` định dạng `formatCurrency`. Đang đặt trên Dashboard.
+- **Hiện trạng:** Recharts `BarChart` trong khung `bg-white border border-slate-200 rounded-xl p-5 h-[350px]`, tiêu đề theo kỳ ngày/tháng (`text-[15px] font-bold`), cột `#3b82f6` `radius={[4,4,0,0]}` `barSize={32}`, lưới `#f1f5f9`, tooltip bo 8px viền `#e2e8f0` định dạng `formatCurrency`. Đặt ở trang Báo cáo & Thống kê (WF-18).
 - **Chuẩn** (`UI-screens.md` QĐ-06): **gỡ khỏi Dashboard**, dùng lại ở **Báo cáo & Thống kê (WF-18)** làm biểu đồ cột theo kỳ (ngày/tháng).
 - **Quy tắc nghiệp vụ:** doanh thu chỉ cộng hóa đơn **Đã thanh toán**, tính theo **thời điểm thu**; không tính hóa đơn Chưa thanh toán hay Đã hủy. Số liệu do API trả, không tự cộng ở FE.
 - ⚠ Sửa `fontFamily` trục thành `var(--font-jetbrains)`.
