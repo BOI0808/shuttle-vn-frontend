@@ -92,7 +92,7 @@ export default function AuditsClient() {
     EntityName: applied.entityName || undefined,
     Action: applied.action || undefined,
     FromDate: applied.fromDate || undefined,
-    ToDate: applied.toDate || undefined,
+    ToDate: applied.toDate ? `${applied.toDate}T23:59:59.999Z` : undefined,
     PageNumber: pageNumber,
     PageSize: PAGE_SIZE,
   });
