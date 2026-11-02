@@ -385,6 +385,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["DashboardSummaryDtoApiResponse"];
+                        "application/json": components["schemas"]["DashboardSummaryDtoApiResponse"];
+                        "text/json": components["schemas"]["DashboardSummaryDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/audits": {
         parameters: {
             query?: never;
@@ -618,6 +655,92 @@ export interface paths {
                     "application/json": components["schemas"]["ResetPasswordDto"];
                     "text/json": components["schemas"]["ResetPasswordDto"];
                     "application/*+json": components["schemas"]["ResetPasswordDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ObjectApiResponse"];
+                        "application/json": components["schemas"]["ObjectApiResponse"];
+                        "text/json": components["schemas"]["ObjectApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/set-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["SetPasswordDto"];
+                    "text/json": components["schemas"]["SetPasswordDto"];
+                    "application/*+json": components["schemas"]["SetPasswordDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ObjectApiResponse"];
+                        "application/json": components["schemas"]["ObjectApiResponse"];
+                        "text/json": components["schemas"]["ObjectApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/resend-setup-link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ResendSetupLinkDto"];
+                    "text/json": components["schemas"]["ResendSetupLinkDto"];
+                    "application/*+json": components["schemas"]["ResendSetupLinkDto"];
                 };
             };
             responses: {
@@ -2296,6 +2419,7 @@ export interface paths {
                 query?: {
                     fromDate?: string;
                     toDate?: string;
+                    groupBy?: components["schemas"]["RevenueGroupBy"];
                 };
                 header?: never;
                 path?: never;
@@ -2309,9 +2433,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["BadmintonCourtListApiResponse"];
-                        "application/json": components["schemas"]["BadmintonCourtListApiResponse"];
-                        "text/json": components["schemas"]["BadmintonCourtListApiResponse"];
+                        "text/plain": components["schemas"]["CourtUsageSummaryDtoApiResponse"];
+                        "application/json": components["schemas"]["CourtUsageSummaryDtoApiResponse"];
+                        "text/json": components["schemas"]["CourtUsageSummaryDtoApiResponse"];
                     };
                 };
             };
@@ -2359,90 +2483,6 @@ export interface paths {
         };
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/auth/set-password": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": components["schemas"]["SetPasswordDto"];
-                    "text/json": components["schemas"]["SetPasswordDto"];
-                    "application/*+json": components["schemas"]["SetPasswordDto"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ObjectApiResponse"];
-                        "text/json": components["schemas"]["ObjectApiResponse"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/auth/resend-setup-link": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": components["schemas"]["ResendSetupLinkDto"];
-                    "text/json": components["schemas"]["ResendSetupLinkDto"];
-                    "application/*+json": components["schemas"]["ResendSetupLinkDto"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ObjectApiResponse"];
-                        "text/json": components["schemas"]["ObjectApiResponse"];
-                    };
-                };
-            };
-        };
         delete?: never;
         options?: never;
         head?: never;
@@ -2550,14 +2590,6 @@ export interface components {
         BadmintonCourtApiResponse: {
             success?: boolean;
             data?: components["schemas"]["BadmintonCourt"];
-            message?: string | null;
-            errors?: {
-                [key: string]: string[];
-            } | null;
-        };
-        BadmintonCourtListApiResponse: {
-            success?: boolean;
-            data?: components["schemas"]["BadmintonCourt"][] | null;
             message?: string | null;
             errors?: {
                 [key: string]: string[];
@@ -2850,6 +2882,56 @@ export interface components {
         };
         /** @enum {string} */
         CourtStatus: "Active" | "Maintenance" | "Closed";
+        CourtUsageCourtDto: {
+            /** Format: int32 */
+            courtId?: number;
+            courtName?: string | null;
+            /** Format: int32 */
+            bookingCount?: number;
+            /** Format: double */
+            bookedHours?: number;
+            /** Format: int32 */
+            completedCount?: number;
+            /** Format: double */
+            completedHours?: number;
+        };
+        CourtUsagePeriodDto: {
+            /** Format: date */
+            periodStart?: string;
+            /** Format: int32 */
+            bookingCount?: number;
+            /** Format: double */
+            bookedHours?: number;
+            /** Format: int32 */
+            completedCount?: number;
+            /** Format: double */
+            completedHours?: number;
+        };
+        CourtUsageSummaryDto: {
+            /** Format: date */
+            fromDate?: string;
+            /** Format: date */
+            toDate?: string;
+            groupBy?: components["schemas"]["RevenueGroupBy"];
+            /** Format: int32 */
+            bookingCount?: number;
+            /** Format: double */
+            bookedHours?: number;
+            /** Format: int32 */
+            completedCount?: number;
+            /** Format: double */
+            completedHours?: number;
+            periods?: components["schemas"]["CourtUsagePeriodDto"][] | null;
+            courts?: components["schemas"]["CourtUsageCourtDto"][] | null;
+        };
+        CourtUsageSummaryDtoApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["CourtUsageSummaryDto"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
+        };
         CreateBookingDto: {
             /** Format: int32 */
             courtId?: number;
@@ -2939,6 +3021,34 @@ export interface components {
             fullName?: string | null;
             phone?: string | null;
             email?: string | null;
+        };
+        DashboardSummaryDto: {
+            /** Format: date */
+            date?: string;
+            /** Format: double */
+            revenue?: number;
+            /** Format: int32 */
+            paidInvoiceCount?: number;
+            /** Format: int32 */
+            bookingCount?: number;
+            /** Format: double */
+            bookedHours?: number;
+            /** Format: int32 */
+            completedCount?: number;
+            /** Format: double */
+            completedHours?: number;
+            /** Format: int32 */
+            pendingCount?: number;
+            courts?: components["schemas"]["CourtUsageCourtDto"][] | null;
+            pendingBookings?: components["schemas"]["BookingListItemDto"][] | null;
+        };
+        DashboardSummaryDtoApiResponse: {
+            success?: boolean;
+            data?: components["schemas"]["DashboardSummaryDto"];
+            message?: string | null;
+            errors?: {
+                [key: string]: string[];
+            } | null;
         };
         Employee: {
             /** Format: uuid */
@@ -3198,6 +3308,9 @@ export interface components {
                 [key: string]: string[];
             } | null;
         };
+        ResendSetupLinkDto: {
+            email?: string | null;
+        };
         ResetPasswordDto: {
             email?: string | null;
             code?: string | null;
@@ -3242,6 +3355,12 @@ export interface components {
             /** Format: double */
             pricePerHour?: number;
         };
+        SetPasswordDto: {
+            email?: string | null;
+            token?: string | null;
+            password?: string | null;
+            confirmPassword?: string | null;
+        };
         UpdateCourtDto: {
             name?: string | null;
             description?: string | null;
@@ -3260,15 +3379,6 @@ export interface components {
         UpdateProfileDto: {
             fullName?: string | null;
             phone?: string | null;
-        };
-        SetPasswordDto: {
-            email?: string | null;
-            token?: string | null;
-            password?: string | null;
-            confirmPassword?: string | null;
-        };
-        ResendSetupLinkDto: {
-            email?: string | null;
         };
     };
     responses: never;
