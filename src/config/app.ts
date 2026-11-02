@@ -124,6 +124,9 @@ export const QUERY_KEYS = {
   dashboard: ["dashboard"] as const,
   revenueStats: (from: string, to: string, groupBy: string) =>
     ["revenue-stats", from, to, groupBy] as const,
+  courtUsageStatsAll: ["court-usage-stats"] as const,
+  courtUsageStats: (from: string, to: string, groupBy: string) =>
+    ["court-usage-stats", from, to, groupBy] as const,
 
   quickLookup: (keyword: string, pageNumber: number) =>
     ["quick-lookup", keyword, pageNumber] as const,

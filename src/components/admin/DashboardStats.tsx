@@ -1,50 +1,76 @@
-import { formatCurrency } from "@/utils";
+import Link from "next/link";
+
+import { cn, formatCurrency } from "@/utils";
 import type { DashboardSummary } from "@/types";
 
+interface DashboardStat {
+  label: string;
+  value: string;
+  hint: string;
+  color: string;
+  href?: string;
+}
+
 export function DashboardStats({ summary }: { summary: DashboardSummary }) {
-  const stats = [
+  const stats: DashboardStat[] = [
     {
       label: "Doanh thu hôm nay",
-      value: formatCurrency(summary.todayRevenue),
+      value: formatCurrency(summary.revenue),
+      hint: `${summary.paidInvoiceCount} hóa đơn đã thu`,
       color: "text-blue-600",
-      trend: summary.revenueTrend || "--",
-      icon: "trending_up",
     },
     {
-      label: "Đặt sân hôm nay",
-      value: summary.todayBookings.toString(),
-      color: "text-purple-600",
-      trend: summary.bookingsTrend || "--",
-      icon: "trending_up",
-    },
-    {
-      label: "Chờ xác nhận",
-      value: summary.pendingBookings.toString(),
+      label: "Đơn chờ duyệt",
+      value: summary.pendingCount.toString(),
+      hint: "Xem đơn chờ xác nhận",
       color: "text-amber-600",
-      trend: "Cần xử lý",
-      icon: "warning",
+      href: "/booking-requests",
     },
     {
-      label: "Tỷ lệ lấp đầy",
-      value: `${summary.occupancyRateToday}%`,
-      color: "text-emerald-600",
-      trend: summary.occupancyTrend || "--",
-      icon: "trending_up",
+      label: "Lượt sân đặt trong ngày",
+      value: summary.bookingCount.toString(),
+      hint: `${summary.completedCount} lượt hoàn thành`,
+      color: "text-purple-600",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      {stats.map((s, i) => (
-        <div key={i} className="bg-white border border-slate-200 rounded-xl p-[18px] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-          <p className="text-[11px] text-slate-500 uppercase tracking-wider font-mono mb-1.5">{s.label}</p>
-          <p className={`text-2xl font-bold font-mono tracking-tight ${s.color}`}>{s.value}</p>
-          <div className="flex items-center gap-1 mt-1 text-[11px] font-mono text-emerald-600">
-            <span className="material-symbols-outlined text-[13px]">{s.icon}</span>
-            {s.trend}
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {stats.map((stat) => {
+        const content = (
+          <>
+            <p className="mb-1.5 font-mono text-[11px] uppercase tracking-wider text-slate-500">
+              {stat.label}
+            </p>
+            <p
+              className={cn(
+                "font-mono text-2xl font-bold tracking-tight",
+                stat.color,
+              )}
+            >
+              {stat.value}
+            </p>
+            <p className="mt-1 font-mono text-[11px] text-slate-500">
+              {stat.hint}
+            </p>
+          </>
+        );
+        const className =
+          "block rounded-xl border border-slate-200 bg-white p-[18px] shadow-[0_1px_3px_rgba(0,0,0,0.04)]";
+        return stat.href ? (
+          <Link
+            key={stat.label}
+            href={stat.href}
+            className={cn(className, "transition-colors hover:bg-slate-50")}
+          >
+            {content}
+          </Link>
+        ) : (
+          <div key={stat.label} className={className}>
+            {content}
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

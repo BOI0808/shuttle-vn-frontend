@@ -1,6 +1,8 @@
 import axiosInstance from "@/lib/axios";
 import {
   ApiResponse,
+  CourtUsageReport,
+  CourtUsageReportParams,
   DashboardSummary,
   RevenueReport,
   RevenueReportParams,
@@ -15,7 +17,7 @@ export const dashboardService = {
       return mockDashboardSummary;
     }
     const { data } = await axiosInstance.get<ApiResponse<DashboardSummary>>(
-      "/admin/dashboard/summary"
+      "/admin/dashboard"
     );
     return data.data;
   },
@@ -23,6 +25,16 @@ export const dashboardService = {
   async getRevenueStats(params: RevenueReportParams): Promise<RevenueReport> {
     const { data } = await axiosInstance.get<ApiResponse<RevenueReport>>(
       "/admin/statistics/revenue",
+      { params }
+    );
+    return data.data;
+  },
+
+  async getCourtUsageStats(
+    params: CourtUsageReportParams
+  ): Promise<CourtUsageReport> {
+    const { data } = await axiosInstance.get<ApiResponse<CourtUsageReport>>(
+      "/admin/statistics/court-usage",
       { params }
     );
     return data.data;

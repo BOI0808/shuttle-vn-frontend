@@ -35,6 +35,7 @@ function useInvalidateBookingQueries() {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.bookingDetail(id) }),
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.courtGrids }),
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.dashboard }),
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.courtUsageStatsAll }),
     ]);
 }
 

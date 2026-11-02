@@ -119,6 +119,7 @@ function useInvalidateBookingChange() {
     QUERY_KEYS.courtGrids,
     QUERY_KEYS.invoices,
     QUERY_KEYS.dashboard,
+    QUERY_KEYS.courtUsageStatsAll,
     ["booking-reschedule-preview", id],
   ].map((queryKey) => queryClient.invalidateQueries({ queryKey })));
 }

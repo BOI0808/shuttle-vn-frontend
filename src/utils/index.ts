@@ -17,6 +17,10 @@ export function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
+export function formatHours(hours: number): string {
+  return new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 1 }).format(hours);
+}
+
 export function formatDate(dateStr: string): string {
   return format(new Date(dateStr), "dd/MM/yyyy", { locale: vi });
 }
