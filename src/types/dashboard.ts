@@ -1,39 +1,13 @@
 import type { components } from "@/api/schema";
 
 import type { DateRangeParams } from "./api";
-import type { BookingDetail } from "./booking";
+import type { BookingListItem } from "./booking";
 
 export type RevenueGroupBy = components["schemas"]["RevenueGroupBy"];
 
-export interface RevenueStats {
-  date: string; // ISO yyyy-MM-dd
+export interface RevenueChartPoint {
+  date: string;
   revenue: number;
-  bookingCount: number;
-}
-
-export interface CourtOccupancyStats {
-  courtId: number;
-  courtName: string;
-  totalSlots: number;
-  bookedSlots: number;
-  occupancyRate: number; // 0–100
-}
-
-export interface DashboardSummary {
-  todayRevenue: number;
-  todayBookings: number;
-  monthRevenue: number;
-  monthBookings: number;
-  pendingBookings: number; // trạng thái Pending cần xử lý
-  unpaidInvoices: number; // hoá đơn Unpaid
-  occupancyRateToday: number; // % tổng sân hôm nay
-  revenueTrend?: string;
-  bookingsTrend?: string;
-  occupancyTrend?: string;
-  revenueChart: RevenueStats[];
-  occupancyByCourtToday: CourtOccupancyStats[];
-  recentBookings: BookingDetail[];
-  pendingBookingsList: BookingDetail[];
 }
 
 export interface RevenueReportParams extends DateRangeParams {
@@ -53,4 +27,39 @@ export interface RevenueReport {
   totalInvoices: number;
   totalRevenue: number;
   periods: RevenuePeriod[];
+}
+
+export type CourtUsageReportParams = RevenueReportParams;
+
+export interface CourtUsageMetrics {
+  bookingCount: number;
+  bookedHours: number;
+  completedCount: number;
+  completedHours: number;
+}
+
+export interface CourtUsagePeriod extends CourtUsageMetrics {
+  periodStart: string;
+}
+
+export interface CourtUsageCourt extends CourtUsageMetrics {
+  courtId: number;
+  courtName: string;
+}
+
+export interface CourtUsageReport extends CourtUsageMetrics {
+  fromDate: string;
+  toDate: string;
+  groupBy: RevenueGroupBy;
+  periods: CourtUsagePeriod[];
+  courts: CourtUsageCourt[];
+}
+
+export interface DashboardSummary extends CourtUsageMetrics {
+  date: string;
+  revenue: number;
+  paidInvoiceCount: number;
+  pendingCount: number;
+  courts: CourtUsageCourt[];
+  pendingBookings: BookingListItem[];
 }

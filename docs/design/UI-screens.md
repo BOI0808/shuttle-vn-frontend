@@ -36,7 +36,7 @@
 | WF-06 | Tra cứu đơn | Tất cả | `/lookup` | `/lookup` | ⚠ | ❌ FE gọi `bookings/code/{code}`, backend chưa có |
 | WF-07 | Hồ sơ cá nhân | Thành viên | `/profile` | `/profile` | ⚠ | ✅ `profile`, `profile/change-password` |
 | WF-08 | Widget Trợ lý AI | Tất cả | — | widget toàn site | ❌ | route FE `api/chat` có; không có tool |
-| WF-09 | Bảng điều khiển | Admin | `/dashboard` | `/admin/dashboard` | ⚠ | ❌ FE gọi `admin/dashboard/summary`, backend chưa có |
+| WF-09 | Bảng điều khiển | Admin | `/dashboard` | `/admin/dashboard` | ✅ | ✅ `GET /api/admin/dashboard` |
 | WF-10 | Yêu cầu đặt sân | NV, Admin | — | `/admin/booking-requests` | ❌ | ✅ `booking-requests` (list, confirm, reject) |
 | WF-11 | Chi tiết đặt sân & xử lý | NV, Admin | — | `/admin/bookings/[id]` | ❌ | ⚠ có detail, confirm, reject, complete; ❌ đổi lịch, hoàn tiền |
 | WF-12 | Lịch sân & đặt tại quầy | NV, Admin | `/schedule` | `/admin/court-schedule` | ⚠ | ⚠ có `courts/grid`, status; ❌ đặt thay khách |
@@ -45,7 +45,7 @@
 | WF-15 | Quản lý sân & bảng giá | Admin | `/manage-courts` | `/admin/courts` | ⚠ | ⚠ có CRUD, status, schedule, pricing; ❌ xóa mềm |
 | WF-16 | Nhân viên & Phân quyền | Admin | `/employees` | `/admin/staff`, `/admin/accounts` | ⚠ | ⚠ có CRUD, lock; ❌ đổi vai trò |
 | WF-17 | Đặt sân toàn hệ thống | Admin | — | `/admin/bookings`, hiển thị là tab "Tất cả đặt sân" trong WF-10 (G-23) | ❌ | ✅ `admin/bookings` |
-| WF-18 | Báo cáo & Thống kê | Admin | `/statistics` (placeholder) | `/admin/reports` | ❌ | ⚠ có `statistics/court-usage`; ✅ doanh thu `admin/statistics/revenue` |
+| WF-18 | Báo cáo & Thống kê | Admin | `/statistics` | `/admin/reports` | ✅ | ✅ doanh thu `GET /api/admin/statistics/revenue` + đặt sân `GET /api/admin/statistics/court-usage` |
 | WF-19 | Nhật ký hoạt động | Admin | `/audits` (placeholder) | `/admin/audit-log` | ❌ | ✅ `audits` |
 
 ---
@@ -275,15 +275,15 @@ Widget nổi toàn site (góc dưới phải) · UC-13 · **chưa có UI**
 
 ### WF-09 Bảng điều khiển
 
-`/dashboard` → `/admin/dashboard` (chỉ Admin) · `app/(admin)/dashboard/DashboardClient.tsx`, `components/admin/DashboardStats.tsx`, `RevenueChart.tsx` · X-02, G-14
+`/dashboard` → `/admin/dashboard` (chỉ Admin) · `app/(admin)/dashboard/DashboardClient.tsx`, `components/admin/DashboardStats.tsx` · X-02, G-14
 
 | Hạng mục | Trạng thái | Hiện trạng → Chuẩn mục tiêu |
 |---|---|---|
-| Thẻ chỉ số | ⚠ | Hiện **4 thẻ**: Doanh thu hôm nay · Đặt sân hôm nay · Chờ xác nhận · **Tỷ lệ lấp đầy**. → Chuẩn: **3 thẻ** — **Doanh thu hôm nay** (hóa đơn Đã thanh toán, tính theo thời điểm thu) · **Đơn chờ duyệt** · **Lượt sân đặt trong ngày** (ngày sử dụng = hôm nay, **không tính Đã hủy**). **Bỏ "Tỷ lệ lấp đầy"**. Theo bảng 9.2 và khung 9.1 (`QĐ-09`); đoạn chú thích đầu mục WF-09 trong Wireframes ghi "Đơn hoàn thành hôm nay" là sai lệch nội bộ của Wireframes |
-| Danh sách cần xử lý | ⚠ | Hiện: danh sách "Chờ xác nhận" chỉ có tên, sân, giờ; nút "Xem tất cả →" **chưa có sự kiện**; mỗi dòng ghi cố định "Hôm nay". → Chuẩn: "Đơn cần xử lý gấp" — đơn Chờ xác nhận, **giờ chơi gần nhất trước** (tiêu chí "gấp" là đề xuất, G-14); nút **Chi tiết** → WF-11; bấm thẻ "Đơn chờ duyệt" → WF-10. Rỗng: "Không có yêu cầu nào đang chờ xác nhận."; mỗi thẻ có thể lỗi độc lập |
-| Biểu đồ 7 ngày, bảng "Đặt sân gần đây" | ⚠ | **Gỡ khỏi dashboard** (`QĐ-06`): Wireframes G-14 không vẽ; doanh thu theo kỳ thuộc WF-18 (tái dùng `RevenueChart` tại đó); danh sách đặt sân thuộc WF-10/WF-17; API tương ứng cũng chưa có |
-| Nhãn trạng thái | ⚠ | `STATUS_LABELS` khai báo lại cục bộ → dùng `BOOKING_STATUS_LABEL` trong `config/app.ts` |
-| API | ❌ | `dashboardService` gọi `admin/dashboard/summary`; backend chưa có (hiện chạy bằng mock) |
+| Thẻ chỉ số | ✅ | **3 thẻ** — **Doanh thu hôm nay** (hóa đơn Đã thanh toán, tính theo thời điểm thu) · **Đơn chờ duyệt** · **Lượt sân đặt trong ngày** (ngày sử dụng = hôm nay, **không tính Đã hủy**). Không có "Tỷ lệ lấp đầy". Theo bảng 9.2 và khung 9.1 (`QĐ-09`) |
+| Danh sách cần xử lý | ✅ | "Đơn cần xử lý gấp" — đơn Chờ xác nhận, **giờ chơi gần nhất trước** (G-14); nút **Chi tiết** mở modal `BookingDetailModal`; bấm thẻ "Đơn chờ duyệt" → `/booking-requests`; nút "Xem tất cả →" dẫn tới `/booking-requests`. Rỗng: "Không có đơn chờ xác nhận" |
+| Biểu đồ 7 ngày, bảng "Đặt sân gần đây" | ✅ | **Đã gỡ khỏi dashboard** (`QĐ-06`): Wireframes G-14 không vẽ; doanh thu theo kỳ thuộc WF-18; danh sách đặt sân thuộc WF-10/WF-17 |
+| Nhãn trạng thái | ✅ | Dùng `BOOKING_STATUS_LABEL` trong `config/app.ts` |
+| API | ✅ | `GET /api/admin/dashboard` (AdminOnly) |
 
 ### WF-10 Yêu cầu đặt sân (chờ xác nhận)
 
@@ -454,15 +454,15 @@ Route `/admin/bookings`, hiển thị là tab "Tất cả đặt sân" cạnh ta
 
 ### WF-18 Báo cáo & Thống kê
 
-`/statistics` → `/admin/reports` · hiện **placeholder** ("Chức năng thống kê báo cáo đang được phát triển.") · UC-41, UC-42
+`/statistics` → `/admin/reports` · UC-38, UC-39
 
 | Hạng mục | Quy tắc |
 |---|---|
 | Bộ lọc | Từ ngày – Đến ngày · Nhóm theo **Ngày / Tháng** · **Xem báo cáo** |
-| Doanh thu (UC-41) | Chỉ hóa đơn **Đã thanh toán hợp lệ**, tính theo **thời điểm thu**. Bảng: Kỳ · Số hóa đơn đã thu · Doanh thu; có dòng **Tổng** và biểu đồ cột. Ghi chú: hoàn tiền sau đó có thể làm đổi doanh thu kỳ cũ |
-| Đặt sân (UC-42) | Theo **ngày sử dụng**, **không tính Đã hủy**. Bảng: Kỳ · Lượt đặt · Giờ đặt · Lượt hoàn thành · Giờ hoàn thành; có dòng Tổng |
-| Không có | **Tỷ lệ lấp đầy**, xuất báo cáo (backend `court-usage` còn trả `occupancyRate` — không hiển thị) |
-| API | ⚠ Có `statistics/court-usage`; ✅ doanh thu: `GET /api/admin/statistics/revenue?fromDate=&toDate=&groupBy=Day hoặc Month` (AdminOnly) || ⚠ Chỉ có `statistics/court-usage`; **chưa có** thống kê doanh thu theo kỳ |
+| Doanh thu (UC-38) | Chỉ hóa đơn **Đã thanh toán hợp lệ**, tính theo **thời điểm thu**. Bảng: Kỳ · Số hóa đơn đã thu · Doanh thu; có dòng **Tổng** và biểu đồ cột. Ghi chú: hoàn tiền sau đó có thể làm đổi doanh thu kỳ cũ |
+| Đặt sân (UC-39) | Theo **ngày sử dụng**, **không tính Đã hủy**. Bảng: Kỳ · Lượt đặt · Giờ đặt · Lượt hoàn thành · Giờ hoàn thành; có dòng Tổng |
+| Không có | **Tỷ lệ lấp đầy**, xuất báo cáo, phân bố theo giờ |
+| API | ✅ `GET /api/admin/statistics/revenue` và `GET /api/admin/statistics/court-usage` (`fromDate`, `toDate`, `groupBy`) |
 
 ### WF-19 Nhật ký hoạt động
 
@@ -524,7 +524,7 @@ Mã giữ đúng Wireframes; "—" là hộp thoại chưa có mã riêng. Phụ
 | 2 | Tồn tại `WalkInBookingForm.tsx` (email tùy chọn) | Không có file này; đặt nhanh dùng `/booking/guest`, **email bắt buộc** (KH-11, BR-10) |
 | 3 | Chi tiết/Hủy/Đổi lịch là `console.log` | Chi tiết, Hủy, Hóa đơn đã chạy; chỉ **Đổi lịch** chưa có |
 | 4 | Hủy bắt buộc nhập lý do | Wireframes `M-06` không có ô lý do; FE gửi lý do hệ thống |
-| 5 | Dashboard 3 thẻ gồm "Đơn hoàn thành hôm nay" | Chuẩn: Doanh thu hôm nay · Đơn chờ duyệt · Lượt sân đặt trong ngày; code hiện 4 thẻ có "Tỷ lệ lấp đầy" |
+| 5 | Dashboard 3 thẻ gồm "Đơn hoàn thành hôm nay" | Chuẩn: Doanh thu hôm nay · Đơn chờ duyệt · Lượt sân đặt trong ngày (đã triển khai chuẩn 3 thẻ) |
 | 6 | Admin 9 mục / "4 nhóm", có "Đặt sân toàn hệ thống" | Admin **10 mục**; không có mục "Đặt sân toàn hệ thống" (là tab); thêm "Tài khoản & Phân quyền" |
 | 7 | WF-10 có bộ lọc sân/ngày/loại khách | Không có trong Wireframes |
 | 7b | WF-14 nhân viên chỉ mở khóa tài khoản | Khóa **và** mở khóa, nhưng chỉ tài khoản **khách hàng** |
@@ -604,5 +604,5 @@ Tên endpoint là đề xuất; backend có thể đặt tên khác, miễn gi�
 | Đổi vai trò (WF-16B) | `PATCH /api/employees/{id}/role` (AdminOnly) | Bảo vệ Admin `Active` cuối cùng; cho phép khóa/xóa Admin khác (hiện chặn mọi Admin) |
 | Xóa tài khoản khách (WF-16B) | `DELETE /api/accounts/{id}` (AdminOnly) | BR-15: hard-delete tài khoản, giữ hồ sơ, đơn, hóa đơn, nhật ký |
 | Dashboard (WF-09) | `GET /api/admin/dashboard` | 3 chỉ số + danh sách đơn Chờ xác nhận, giờ chơi gần nhất trước |
-| Báo cáo (WF-18) | `GET /api/admin/statistics/revenue?fromDate=&toDate=&groupBy=Day hoặc Month` (đã có), `GET /api/statistics/bookings?...` | Doanh thu theo thời điểm thu; đặt sân theo ngày sử dụng, loại Đã hủy; không trả tỷ lệ lấp đầy |
+| Báo cáo (WF-18) | `GET /api/admin/statistics/revenue?fromDate=&toDate=&groupBy=Day hoặc Month` (đã có), `GET /api/admin/statistics/court-usage?fromDate=&toDate=&groupBy=Day hoặc Month` | Doanh thu theo thời điểm thu; đặt sân theo ngày sử dụng, loại Đã hủy; không trả tỷ lệ lấp đầy |
 | Đổi mật khẩu (WF-07) | Đã có `PUT /api/profile/change-password` | Bổ sung giới hạn 8–128 ở máy chủ nếu chưa có |

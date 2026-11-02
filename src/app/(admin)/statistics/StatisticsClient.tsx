@@ -4,15 +4,16 @@ import { FormEvent, useState } from "react";
 
 import { differenceInCalendarDays, parseISO } from "date-fns";
 
-import { RevenueChart } from "@/components/admin/RevenueChart";
-import { RevenueReportTable } from "@/components/admin/RevenueReportTable";
+import { CourtUsageReportView } from "@/components/admin/CourtUsageReportView";
+import { ReportSection } from "@/components/admin/ReportSection";
+import { RevenueReportView } from "@/components/admin/RevenueReportView";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
-import { useRevenueStats } from "@/hooks";
+import { useCourtUsageStats, useRevenueStats } from "@/hooks";
 
 import type { RevenueGroupBy, RevenueReportParams } from "@/types";
-import { formatCurrency, getErrorMessage, getTodayVN } from "@/utils";
+import { getTodayVN } from "@/utils";
 
 const MAX_RANGE_DAYS = 366;
 const LABEL_CLASS = "grid gap-1 text-xs font-semibold text-slate-600";
@@ -47,22 +48,14 @@ function isSameFilters(a: RevenueReportParams, b: RevenueReportParams): boolean 
   );
 }
 
-function ReportSkeleton() {
-  return (
-    <div className="flex flex-col gap-6" aria-busy="true">
-      <div className="h-[350px] animate-pulse rounded-xl bg-slate-200/60" />
-      <div className="h-[220px] animate-pulse rounded-xl bg-slate-200/60" />
-    </div>
-  );
-}
-
 export default function StatisticsClient() {
   const [draft, setDraft] = useState<RevenueReportParams>(createDefaultFilters);
   const [applied, setApplied] = useState<RevenueReportParams | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  const { data, isLoading, isFetching, isError, error, refetch } =
-    useRevenueStats(applied);
+  const revenue = useRevenueStats(applied);
+  const usage = useCourtUsageStats(applied);
+  const isFetching = revenue.isFetching || usage.isFetching;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -70,7 +63,8 @@ export default function StatisticsClient() {
     setValidationError(message);
     if (message) return;
     if (applied && isSameFilters(applied, draft)) {
-      refetch();
+      revenue.refetch();
+      usage.refetch();
       return;
     }
     setApplied(draft);
@@ -144,77 +138,27 @@ export default function StatisticsClient() {
         </p>
       )}
 
-      {applied && isLoading && <ReportSkeleton />}
-
-      {applied && isError && (
-        <div
-          role="alert"
-          className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-        >
-          <span>{getErrorMessage(error)}</span>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="w-auto"
-            onClick={() => refetch()}
-          >
-            Thử lại
-          </Button>
-        </div>
-      )}
-
-      {data && !isError && (
+      {applied && (
         <>
-          <p className="text-[13px] text-slate-600">
-            Tổng doanh thu:{" "}
-            <span className="font-mono font-bold text-slate-900">
-              {formatCurrency(data.totalRevenue)}
-            </span>{" "}
-            ·{" "}
-            <span className="font-mono font-bold text-slate-900">
-              {data.totalInvoices}
-            </span>{" "}
-            hóa đơn đã thu
-          </p>
+          <ReportSection
+            title="Báo cáo doanh thu"
+            isLoading={revenue.isLoading}
+            isError={revenue.isError}
+            error={revenue.error}
+            onRetry={() => revenue.refetch()}
+          >
+            {revenue.data && <RevenueReportView data={revenue.data} />}
+          </ReportSection>
 
-          {data.totalInvoices === 0 ? (
-            <p className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
-              Không có dữ liệu trong khoảng đã chọn.
-            </p>
-          ) : (
-            <>
-              <RevenueChart
-                title={
-                  data.groupBy === "Month"
-                    ? "Doanh thu theo tháng"
-                    : "Doanh thu theo ngày"
-                }
-                groupBy={data.groupBy}
-                data={data.periods.map((period) => ({
-                  date: period.periodStart,
-                  revenue: period.revenue,
-                }))}
-              />
-              <RevenueReportTable
-                periods={data.periods}
-                groupBy={data.groupBy}
-                totalInvoices={data.totalInvoices}
-                totalRevenue={data.totalRevenue}
-              />
-              <div className="flex flex-col gap-1 text-xs text-slate-500">
-                <p>
-                  Doanh thu tính theo thời điểm thu của hóa đơn Đã thanh toán
-                  hợp lệ, không gồm hóa đơn đã hủy/hoàn. Hoàn tiền hoặc hủy hóa
-                  đơn sau đó có thể làm thay đổi doanh thu của kỳ cũ. Đây không
-                  phải báo cáo dòng tiền thu/hoàn.
-                </p>
-                {data.groupBy === "Month" && (
-                  <p>Tháng đầu/cuối chỉ tính phần nằm trong khoảng đã chọn.</p>
-                )}
-              </div>
-            </>
-          )}
+          <ReportSection
+            title="Thống kê tình trạng sử dụng sân"
+            isLoading={usage.isLoading}
+            isError={usage.isError}
+            error={usage.error}
+            onRetry={() => usage.refetch()}
+          >
+            {usage.data && <CourtUsageReportView data={usage.data} />}
+          </ReportSection>
         </>
       )}
     </div>

@@ -11,24 +11,22 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { formatCurrency } from "@/utils";
-import type { RevenueGroupBy, RevenueStats } from "@/types";
+import type { RevenueChartPoint, RevenueGroupBy } from "@/types";
 
 interface RevenueChartProps {
-  data: Pick<RevenueStats, "date" | "revenue">[];
-  title?: string;
+  data: RevenueChartPoint[];
+  title: string;
   description?: string;
-  groupBy?: RevenueGroupBy;
+  groupBy: RevenueGroupBy;
 }
 
-function formatAxisLabel(date: string, groupBy?: RevenueGroupBy): string {
-  if (groupBy === "Month") return format(parseISO(date), "MM/yyyy");
-  if (groupBy === "Day") return format(parseISO(date), "dd/MM");
-  return new Date(date).toLocaleDateString("vi-VN", { weekday: "short" });
+function formatAxisLabel(date: string, groupBy: RevenueGroupBy): string {
+  return format(parseISO(date), groupBy === "Month" ? "MM/yyyy" : "dd/MM");
 }
 
 export function RevenueChart({
   data,
-  title = "Doanh thu 7 ngày gần nhất",
+  title,
   description = "Dựa trên các hoá đơn đã thanh toán",
   groupBy,
 }: RevenueChartProps) {

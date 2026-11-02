@@ -34,7 +34,7 @@
 | WF-15 | Quản lý sân & Bảng giá | Quản trị viên | `/manage-courts` | Đang chạy: `CourtStats`, chuyển Thẻ/Danh sách, `CourtFormModal`, `CourtStatusModal`, `CourtOperationsModal` (lịch tuần + `PricingTimeline`) |
 | WF-16 | Quản lý nhân viên & Phân quyền | Quản trị viên | `/employees` | Đang chạy (`EmployeesClient.tsx`, `EmployeeFormModal.tsx`): 3 thẻ số liệu, lọc, bảng, Sửa, Khóa/Mở khóa, Xóa. API `/employees` đầy đủ |
 | WF-17 | Theo dõi đặt sân toàn hệ thống | Quản trị viên | `/bookings` (sẽ tạo) | Chưa có route FE. API `GET /bookings` đã có |
-| WF-18 | Báo cáo & Thống kê | Quản trị viên | `/statistics` | Placeholder. API mới có `GET /admin/statistics/court-usage` |
+| WF-18 | Báo cáo & Thống kê | Quản trị viên | `/statistics` | Đang chạy (`StatisticsClient.tsx`): bộ lọc chung (Từ ngày – Đến ngày, Nhóm theo Ngày/Tháng), Thống kê tình trạng sử dụng sân và Báo cáo doanh thu |
 | WF-19 | Nhật ký hoạt động | Quản trị viên | `/audits` | Placeholder. API `GET /audits` đã có |
 
 ---
@@ -2735,5 +2735,5 @@ Nguyên tắc: SRS 1.7 và UC 1.5 là nguồn chuẩn về nghiệp vụ; mã ng
 | WF-15 | Quản lý sân | `manage-courts/*`, `CourtFormModal.tsx`, `CourtStatusModal.tsx`, `CourtOperationsModal.tsx`, `PricingTimeline.tsx` | Thẻ/Danh sách, form, đổi trạng thái, Lịch & giá chạy | Xem trước khi thêm sân (BR-25); chọn trạng thái ban đầu; xóa mềm sân (UC-33); bỏ ô Lý do ở đổi trạng thái |
 | WF-16 | Nhân viên | `employees/EmployeesClient.tsx`, `EmployeeFormModal.tsx` | Bảng + form + Khóa/Xóa chạy | Ô Vai trò trong form (UC-38); SĐT 8–15; bảo vệ QTV cuối (BR-27); không ca làm việc (X-04) |
 | WF-17 | Toàn HT | *Chưa có file*; API `admin/bookings` | Chưa có trang | Trang `/bookings` lọc đa tiêu chí cho QTV (UC-40) |
-| WF-18 | Thống kê | `statistics/page.tsx` | Placeholder | Báo cáo Doanh thu (HĐ Đã thanh toán, Ngày/Tháng, QT-17) và Đặt sân; không Tỷ lệ lấp đầy (X-04) |
+| WF-18 | Thống kê | `statistics/page.tsx` | Đang chạy | Báo cáo Doanh thu (HĐ Đã thanh toán, Ngày/Tháng, QT-17) và Đặt sân; không Tỷ lệ lấp đầy (X-04) |
 | WF-19 | Nhật ký | `audits/page.tsx`; API `audits` | Placeholder | Bảng audit bất biến, chỉ đọc, không cột lý do (BR-14), giá trị Trước/Sau |
