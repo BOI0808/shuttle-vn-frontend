@@ -126,7 +126,11 @@ export function QuickLookupModal({ onClose }: QuickLookupModalProps) {
                 error={errors.keyword?.message}
                 {...register("keyword")}
               />
-              <Button type="submit" className="w-auto" loading={isFetching}>
+              <Button
+                type="submit"
+                className="w-auto h-11 shrink-0"
+                loading={isFetching}
+              >
                 Tra cứu
               </Button>
             </form>
