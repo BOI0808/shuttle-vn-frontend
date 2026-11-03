@@ -1,10 +1,24 @@
 # ShuttleVN Frontend
 
-Ứng dụng Web giao diện người dùng cho hệ thống Quản lý và Đặt sân Cầu lông trực tuyến **ShuttleVN**, bao gồm Cổng Khách hàng (Customer Portal), Phân hệ Vận hành & Quản trị (Staff & Admin Dashboard) cùng Tích hợp Trợ lý AI.
+Ứng dụng Web giao diện người dùng cho hệ thống Quản lý và Đặt sân Cầu lông trực tuyến **ShuttleVN**.
 
 ---
 
-## 🛠 Công nghệ & Thư viện (Tech Stack)
+## Mục lục (Table of Contents)
+
+* [Công nghệ sử dụng](#công-nghệ-sử-dụng)
+* [Cấu trúc Thư mục](#cấu-trúc-thư-mục)
+* [Hướng dẫn Cài đặt và Khởi chạy](#hướng-dẫn-cài-đặt-và-khởi-chạy)
+  * [1. Yêu cầu môi trường](#1-yêu-cầu-môi-trường)
+  * [2. Cài đặt các gói phụ thuộc](#2-cài-đặt-các-gói-phụ-thuộc)
+  * [3. Cấu hình biến môi trường](#3-cấu-hình-biến-môi-trường)
+  * [4. Khởi chạy môi trường phát triển](#4-khởi-chạy-môi-trường-phát-triển)
+* [Các lệnh thông dụng](#các-lệnh-thông-dụng)
+* [Các tính năng nổi bật](#các-tính-năng-nổi-bật)
+
+---
+
+## Công nghệ sử dụng (Tech stack)
 
 * **Framework**: [Next.js](https://nextjs.org/) (App Router, Standalone build) & [React 19](https://react.dev/)
 * **Ngôn ngữ**: [TypeScript 5](https://www.typescriptlang.org/)
@@ -24,7 +38,7 @@
 
 ---
 
-## 📁 Cấu trúc Thư mục (Project Layout)
+## Cấu trúc Thư mục
 
 ```text
 src/
@@ -47,7 +61,7 @@ src/
 
 ---
 
-## 🚀 Hướng dẫn Cài đặt & Khởi chạy (Getting Started)
+## Hướng dẫn Cài đặt & Khởi chạy 
 
 ### 1. Yêu cầu môi trường
 * [Node.js](https://nodejs.org/) (Khuyến nghị phiên bản 20 LTS trở lên)
@@ -79,7 +93,7 @@ NEXT_PUBLIC_USE_MOCKS=false
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
 ```
 
-### 4. Khởi chạy môi trường phát triển (Development)
+### 4. Khởi chạy môi trường phát triển 
 ```bash
 npm run dev
 ```
@@ -88,7 +102,7 @@ npm run dev
 
 ---
 
-## 📜 Các lệnh thông dụng (NPM Scripts)
+## Các lệnh thông dụng 
 
 | Lệnh | Mục đích |
 | :--- | :--- |
@@ -100,7 +114,7 @@ npm run dev
 
 ---
 
-## 🌟 Các tính năng nổi bật
+## Các tính năng nổi bật
 
 * **Cổng Khách hàng**:
   * Tra cứu lưới lịch sân trực quan theo thời gian thực.
@@ -114,4 +128,3 @@ npm run dev
 * **Bảo mật & Phân quyền**:
   * Bảo vệ trang bằng `RoleGuard` phân định chặt chẽ quyền truy cập giữa `Admin`, `Employee` và `Customer`.
   * Cơ chế tự động điều hướng và xóa session khi hết hạn token (401).
-
