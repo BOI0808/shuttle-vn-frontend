@@ -98,8 +98,7 @@ export function useCreateCustomer() {
   return useMutation({
     mutationFn: (payload: CreateCustomerRequest) =>
       customerService.createCustomer(payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.customers });
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.customers }),
   });
 }

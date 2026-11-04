@@ -63,8 +63,8 @@ export default function StatisticsClient() {
     setValidationError(message);
     if (message) return;
     if (applied && isSameFilters(applied, draft)) {
-      revenue.refetch();
-      usage.refetch();
+      void revenue.refetch();
+      void usage.refetch();
       return;
     }
     setApplied(draft);

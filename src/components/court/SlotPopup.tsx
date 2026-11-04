@@ -163,7 +163,7 @@ export function SlotPopup({
                 : "border-transparent"
             )}
             style={{
-              background: i === selectedDuration ? "#374151" : "#374151",
+              background: "#374151",
             }}
             onMouseEnter={(e) =>
               ((e.currentTarget as HTMLElement).style.background = "#4b5563")

@@ -46,7 +46,7 @@ export function CourtSlotCell({
             : status === "AVAILABLE"
             ? onClickAvailable ? "slot-available" : "bg-white border-gray-200"
             : "slot-mine",
-          !onClickAvailable && "!cursor-default"
+          !onClickAvailable && "cursor-default!"
         )}
         title={
           isPast

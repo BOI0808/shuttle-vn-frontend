@@ -86,7 +86,10 @@ export function ProfileInfoForm() {
       >
         {/* Họ và tên */}
         <div>
-          <label className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono">
+          <label
+            htmlFor="fullName"
+            className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono"
+          >
             Họ và tên
           </label>
           <div className="relative">
@@ -94,6 +97,7 @@ export function ProfileInfoForm() {
               person
             </span>
             <input
+              id="fullName"
               disabled={!isEditing}
               className={inputClass}
               type="text"
@@ -112,7 +116,10 @@ export function ProfileInfoForm() {
 
         {/* Email */}
         <div>
-          <label className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono">
+          <label
+            htmlFor="email"
+            className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono"
+          >
             Email
             <span className="ml-1.5 bg-blue-50 text-blue-600 border border-blue-200 rounded px-1.5 py-px text-[10px] normal-case tracking-normal">
               Dùng để đăng nhập
@@ -123,6 +130,7 @@ export function ProfileInfoForm() {
               mail
             </span>
             <input
+              id="email"
               disabled
               className={inputClass}
               type="email"
@@ -134,7 +142,10 @@ export function ProfileInfoForm() {
 
         {/* Số điện thoại */}
         <div>
-          <label className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono">
+          <label
+            htmlFor="phone"
+            className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono"
+          >
             Số điện thoại
           </label>
           <div className="relative">
@@ -142,6 +153,7 @@ export function ProfileInfoForm() {
               phone
             </span>
             <input
+              id="phone"
               disabled={!isEditing}
               className={inputClass}
               type="tel"
