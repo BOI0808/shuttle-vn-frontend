@@ -80,10 +80,14 @@ export function ChangePasswordForm() {
       >
         {/* Mật khẩu hiện tại */}
         <div>
-          <label className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono">
+          <label
+            htmlFor="oldPassword"
+            className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono"
+          >
             Mật khẩu hiện tại
           </label>
           <Input
+            id="oldPassword"
             type="password"
             placeholder="Nhập mật khẩu hiện tại"
             icon={
@@ -98,10 +102,14 @@ export function ChangePasswordForm() {
 
         {/* Mật khẩu mới */}
         <div>
-          <label className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono">
+          <label
+            htmlFor="newPassword"
+            className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono"
+          >
             Mật khẩu mới
           </label>
           <Input
+            id="newPassword"
             type="password"
             placeholder="Ít nhất 8 ký tự"
             icon={
@@ -138,10 +146,14 @@ export function ChangePasswordForm() {
 
         {/* Xác nhận mật khẩu */}
         <div>
-          <label className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono">
+          <label
+            htmlFor="confirmPassword"
+            className="block text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500 mb-1.5 font-mono"
+          >
             Xác nhận mật khẩu mới
           </label>
           <Input
+            id="confirmPassword"
             type="password"
             placeholder="Nhập lại mật khẩu mới"
             icon={

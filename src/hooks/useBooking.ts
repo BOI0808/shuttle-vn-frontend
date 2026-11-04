@@ -86,9 +86,8 @@ export function useCreateBooking() {
   return useMutation({
     mutationFn: ({ payload, idempotencyKey }: { payload: CreateBookingRequest; idempotencyKey: string }) =>
       bookingService.createBooking(payload, idempotencyKey),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.myBookings });
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.myBookings }),
   });
 }
 
@@ -156,9 +155,9 @@ export function useConfirmPayment() {
   return useMutation({
     mutationFn: (payload: ConfirmPaymentRequest) =>
       bookingService.confirmPayment(payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.bookings });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.dashboard });
-    },
+    onSuccess: () => Promise.all([
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.bookings }),
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.dashboard }),
+    ]),
   });
 }

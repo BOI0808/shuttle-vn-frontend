@@ -50,7 +50,10 @@ export function BookingLookupForm({ onSubmit }: BookingLookupFormProps) {
       <form onSubmit={handleSubmit}>
         {/* Booking code */}
         <div className="mb-4">
-          <label className="block text-[11px] font-semibold uppercase tracking-[0.07em] text-gray-500 mb-1.5 font-mono">
+          <label
+            htmlFor="bookingCode"
+            className="block text-[11px] font-semibold uppercase tracking-[0.07em] text-gray-500 mb-1.5 font-mono"
+          >
             Mã đặt sân *
           </label>
           <div className="relative">
@@ -58,6 +61,7 @@ export function BookingLookupForm({ onSubmit }: BookingLookupFormProps) {
               confirmation_number
             </span>
             <input
+              id="bookingCode"
               value={code}
               onChange={(e) => {
                 setCode(e.target.value.toUpperCase());
@@ -84,7 +88,10 @@ export function BookingLookupForm({ onSubmit }: BookingLookupFormProps) {
 
         {/* Contact (optional) */}
         <div className="mb-3.5">
-          <label className="block text-[11px] font-semibold uppercase tracking-[0.07em] text-gray-500 mb-1.5 font-mono">
+          <label
+            htmlFor="contact"
+            className="block text-[11px] font-semibold uppercase tracking-[0.07em] text-gray-500 mb-1.5 font-mono"
+          >
             Số điện thoại hoặc Email (Không bắt buộc)
           </label>
           <div className="relative">
@@ -92,6 +99,7 @@ export function BookingLookupForm({ onSubmit }: BookingLookupFormProps) {
               {contactIcon}
             </span>
             <input
+              id="contact"
               value={contact}
               onChange={(e) => setContact(e.target.value)}
               type="text"

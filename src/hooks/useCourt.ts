@@ -36,10 +36,11 @@ export function useCourt(id: number) {
 
 function useInvalidateCourts() {
   const queryClient = useQueryClient();
-  return () => {
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.courts });
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.courtGrids });
-  };
+  return () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.courts }),
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.courtGrids }),
+    ]);
 }
 
 export function useCreateCourt() {

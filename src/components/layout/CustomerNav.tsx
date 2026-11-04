@@ -84,14 +84,6 @@ export function CustomerNav() {
           )}
         </div>
       </header>
-
-      {/* Overlay to close menu */}
-      {menuOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
     </>
   );
 }
