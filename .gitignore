@@ -57,3 +57,6 @@ design-htmls/
 
 # AI
 .github/agents/
+
+# Sonarqube
+.scannerwork/
