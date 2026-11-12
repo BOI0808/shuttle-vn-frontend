@@ -8,3 +8,4 @@ export * from './booking-admin.service';
 export * from './quick-lookup.service';
 export * from './invoice.service';
 export * from './audit.service';
+export * from './chat.service';
