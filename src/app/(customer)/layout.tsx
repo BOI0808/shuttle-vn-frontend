@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { ChatWidget } from "@/components/chatbot/ChatWidget";
 import { CustomerNav } from "@/components/layout/CustomerNav";
 import { HotlineLink } from "@/components/ui/HotlineLink";
 
@@ -11,6 +12,7 @@ export default function CustomerLayout({ children }: { children: ReactNode }) {
         <span>© ShuttleVN</span>
         <HotlineLink className="font-semibold text-emerald-500 hover:text-emerald-600" />
       </footer>
+      <ChatWidget />
     </div>
   );
 }
