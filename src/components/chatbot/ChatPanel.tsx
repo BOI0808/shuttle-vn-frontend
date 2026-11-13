@@ -61,7 +61,7 @@ export function ChatPanel({
   return (
     <div
       onKeyDown={handleKeyDown}
-      className="fixed bottom-24 right-6 z-[60] flex h-[520px] max-h-[80vh] w-[380px] max-w-[90vw] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl"
+      className="fixed bottom-32 right-6 z-[60] flex h-[520px] max-h-[80vh] w-[380px] max-w-[90vw] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl"
     >
       <div className="flex h-14 shrink-0 items-center justify-between bg-[#1a1f2e] px-4 text-white">
         <h2 className="font-display text-sm font-bold">Trợ lý AI ShuttleVN</h2>
