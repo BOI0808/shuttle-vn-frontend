@@ -39,7 +39,7 @@ Mọi tệp tin và thư mục trong dự án phải tuân thủ nghiêm ngặt 
 |---|---|---|---|
 | **React Components** | `PascalCase` | `.tsx` | `BookingCard.tsx`, `CourtGrid.tsx`, `SlotPopup.tsx`, `ConfirmDialog.tsx` |
 | **Next.js Pages / Layouts** | `kebab-case` / lowercase | `.tsx` | `page.tsx`, `layout.tsx`, `providers.tsx` |
-| **Next.js API Routes** | lowercase | `.ts` | `src/app/api/chat/route.ts` |
+| **Next.js API Routes** | lowercase | `.ts` | `route.ts` (hiện codebase không còn Route Handler nào) |
 | **Route Groups (Next.js)** | `(kebab-case)` | Thư mục | `(auth)`, `(customer)`, `(admin)` |
 | **Custom Hooks** | `useCamelCase` | `.ts` | `useAuth.ts`, `useBooking.ts`, `useCourt.ts`, `useEmployee.ts` |
 | **Zustand Stores** | `kebab-case.store` | `.ts` | `auth.store.ts`, `booking-cart.store.ts` |
@@ -398,6 +398,8 @@ Trước khi tạo Pull Request hoặc hoàn tất công việc, lập trình vi
 - [ ] **Sử dụng đúng hàm tiện ích:** Mọi className ghép nối đều qua hàm `cn()`.
 - [ ] **Định dạng tiền & ngày:** Đã dùng `formatCurrency()`, `formatDate()` / `formatDateTime()`.
 - [ ] **Không hardcode chuỗi API:** Mọi endpoint đều gọi qua Service Layer và `axiosInstance`.
+
+> **Ngoại lệ:** luồng SSE của Trợ lý AI (`src/services/chat.service.ts`) dùng `fetch` vì cần đọc `ReadableStream`; base URL vẫn lấy từ `axiosInstance.defaults.baseURL`, không hardcode chuỗi API.
 
 ---
 

@@ -68,7 +68,7 @@ Giao diện chia thành **hai cổng** với đặc trưng thị giác riêng.
 | Chữ nhấn | `emerald-600`, `emerald-700` | Liên kết nhỏ, chữ nút thao tác |
 | Focus input | `border-emerald-500` + bóng `rgba(16,185,129,0.12)` | `Input` |
 | Màu inline | `#10b981`, hover `#059669` | `.slot-mine`, nút "Đặt sân" trong `SlotPopup` |
-| Nền tối cổng khách | `#1a1f2e` | `CustomerNav`, header khung chat (mục tiêu) |
+| Nền tối cổng khách | `#1a1f2e` | `CustomerNav`, header khung chat |
 | Popup chọn giờ | `#1f2937`, mục `#374151`, hover `#4b5563` | `SlotPopup` |
 | Sidebar admin | nền `#FBFBFA`, viền `#EAEAEA`, mục đang chọn `bg-[#EDF3EC] text-[#346538]`, nhãn nhóm `#9B9A97` | `AdminSidebar` |
 
@@ -231,7 +231,7 @@ Trạng thái chọn/active: `style={{ fontVariationSettings: "'FILL' 1" }}` (m�
 | `visibility` / `visibility_off` | Hiện/Ẩn mật khẩu |
 | `sync` | Đổi trạng thái sân |
 | `person`, `logout` | Menu người dùng |
-| `smart_toy` | Nút trợ lý AI — ❌ **chưa dùng** (chưa có widget) |
+| `smart_toy` | Nút trợ lý AI (`ChatWidget`) |
 
 Nút chỉ có icon **bắt buộc** có `aria-label`.
 
@@ -261,9 +261,9 @@ Nút chỉ có icon **bắt buộc** có `aria-label`.
 | Nội dung | `z-0` | Văn bản, bảng, thẻ |
 | Cố định trong nội dung | `z-10` | Cột/hàng sticky của lưới và bảng |
 | Popover nhỏ | `z-20` | `CustomDatePicker` |
-| Header, nút nổi | `z-50` | `CustomerNav`, nút tròn AI (mục tiêu) |
-| Dropdown/panel | `z-[60]` | `UserMenu`, khung chat AI (mục tiêu) |
-| Modal | `z-[100]` | Mọi modal và dialog chi tiết (⚠ sửa dialog đang `z-50` trong `BookingHistoryList`) |
+| Header, nút nổi | `z-50` | `CustomerNav`, nút tròn AI |
+| Dropdown/panel | `z-[60]` | `UserMenu`, khung chat AI |
+| Modal | `z-[100]` | Mọi modal và dialog chi tiết |
 | Xác nhận trên modal | `z-[110]` | `ConfirmDialog` |
 | Popup neo trên lưới | `z-[200]` | `SlotPopup` (giữ nguyên, không xuất hiện cùng modal) |
 | Toast | do Sonner | Không đặt phần tử khác cao hơn |
@@ -423,14 +423,14 @@ Nút chỉ có icon **bắt buộc** có `aria-label`.
   - 6 ô số độc lập `w-11 h-12 text-center text-xl font-mono font-bold border border-gray-300 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20`; tự nhảy ô khi nhập; Backspace lùi ô; hỗ trợ dán chuỗi 6 số.
   - Đếm ngược gửi lại **60 giây** (`Gửi lại mã (59s)`); mã hiệu lực **10 phút**; sai **5 lần** thì vô hiệu mã và hiện banner lỗi.
 
-### 5.8 Widget Trợ lý AI — ❌ chưa có (`WF-08`)
-- **Hiện trạng:** chỉ có route `src/app/api/chat/route.ts` (system prompt cố định; model đặt trong route). Chưa có component widget và chưa dùng icon `smart_toy`.
+### 5.8 Widget Trợ lý AI — ✅ đã có (`WF-08`)
+- **Hiện trạng:** `src/components/chatbot/` (`ChatWidget`, `ChatPanel`, `ChatMessageItem`, `ChatQuickPrompts`) gắn ở `(customer)/layout.tsx`, gọi Backend `POST /api/assistant/chat/stream`, dùng icon `smart_toy`. Không còn route Next gọi nhà cung cấp AI.
 - **Chuẩn:**
   - Hiện trên mọi trang Cổng Khách hàng, **ẩn ở Cổng Quản trị** (G-11).
   - Nút nổi: `fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg`, icon `smart_toy` 28px.
-  - Khung chat: `fixed bottom-24 right-6 z-[60] w-[380px] max-w-[90vw] h-[520px] max-h-[80vh] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden`; header 56px nền `#1a1f2e` chữ trắng `font-display font-bold text-sm`, nút `close`.
+  - Khung chat: `fixed bottom-24 right-6 z-[60] w-[380px] max-w-[90vw] h-[520px] max-h-[80vh] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden`; header 56px nền `#1a1f2e` chữ trắng `font-display font-bold text-sm`, hai nút `remove` (Thu nhỏ: về nút nổi, giữ hội thoại) và `close` (Đóng: về nút nổi, xóa hội thoại và hủy yêu cầu đang chạy), mỗi nút có `aria-label`.
   - Tin khách: căn phải `bg-emerald-500 text-white rounded-2xl rounded-tr-none px-4 py-2.5 text-sm`; tin AI: căn trái `bg-white border border-gray-200 text-slate-800 rounded-2xl rounded-tl-none px-4 py-2.5 text-sm shadow-sm`; đang trả lời: 3 chấm `animate-bounce`.
-  - **Banner cố định** đầu khung: AI chỉ tư vấn thông tin công khai, không đặt/hủy/đổi sân, không thu tiền, không xem dữ liệu cá nhân. Gợi ý nhanh (chip): Hướng dẫn đặt sân · Giá theo giờ · Gợi ý giờ còn trống · Hotline. Giá nêu là tham khảo; không có thông tin thì chỉ về hotline.
+  - **Banner cố định** đầu khung: AI chỉ tư vấn thông tin công khai, không đặt/hủy/đổi sân, không thu tiền, không xem dữ liệu cá nhân. Gợi ý nhanh (chip): Hướng dẫn đặt sân · Giá theo giờ · Gợi ý giờ còn trống · Hotline. Giá nêu là tham khảo; không có thông tin thì chỉ về hotline. Chân khung cố định: câu "Giá và chỗ trống chỉ mang tính tham khảo, được kiểm tra lại khi đặt." và liên kết hotline.
 
 ---
 
@@ -497,7 +497,7 @@ Cấu hình `src/app/providers.tsx`: `<Toaster position="top-right" richColors c
 | 11 | `CustomDatePicker` có "Hôm nay", "Ngày mai"; nhãn "Thứ 2" | Chỉ "Hôm nay"/"Đóng"; nhãn `T2`, `CN` |
 | 12 | `Button` không nói rõ bề ngang | Mặc định `w-full` |
 | 13 | Hero chữ 24–30px; bo `BookingCard`/`CourtCardGrid` là 14px/8px | Hero 34px; cả hai `rounded-xl` |
-| 14 | Widget AI dùng "Claude 3.5 Sonnet / Haiku", mô tả như đã có | Chưa có widget; model đặt trong route; đây là chuẩn mục tiêu |
+| 14 | Widget AI dùng "Claude 3.5 Sonnet / Haiku", mô tả như đã có | Widget đã có (`ChatWidget`), gọi Backend `/assistant/chat/stream`; FE không có route gọi nhà cung cấp AI hay tên mô hình |
 | 15 | Esc đóng modal, `scope="col"`, `sr-only`, toast `z-[9999]`, skeleton phổ biến | Là chuẩn mục tiêu; hiện chưa có (toast do Sonner quản lý z-index) |
 | 16 | `formatDate`/`formatDateTime` theo múi giờ Việt Nam | Theo múi giờ trình duyệt; `getTodayISO` theo UTC (lưu ý ở §7.2) |
 | 17 | Còn tham chiếu `UI-screens.md` v2.0, modal `M-01…M-19` | Đồng bộ `UI-screens.md` v3.1; mã modal giữ đúng Wireframes |

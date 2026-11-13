@@ -31,7 +31,7 @@
 6. [Tầng Tích hợp Dịch vụ & Dữ liệu (API & Data Integration Layer)](#6-tầng-tích-hợp-dịch-vụ--dữ-liệu-api--data-integration-layer)
    - [6.1 Cấu hình HTTP Client (Axios Instance & Interceptors)](#61-cấu-hình-http-client-axios-instance--interceptors)
    - [6.2 Tầng Dịch vụ (Service Layer) & Chế độ Mocking](#62-tầng-dịch-vụ-service-layer--chế-độ-mocking)
-   - [6.3 Tích hợp API Route Handler Nội bộ (Anthropic Claude API)](#63-tích-hợp-api-route-handler-nội-bộ-anthropic-claude-api)
+   - [6.3 Tích hợp Trợ lý AI qua Backend (SSE)](#63-tích-hợp-trợ-lý-ai-qua-backend-sse)
    - [6.4 Cơ chế Rewrite / Proxy Ngăn ngừa Lỗi CORS](#64-cơ-chế-rewrite--proxy-ngăn-ngừa-lỗi-cors)
 7. [Hệ thống Kiểu dữ liệu & Type Safety (Type System)](#7-hệ-thống-kiểu-dữ-liệu--type-safety-type-system)
 8. [Tối ưu hóa Hiệu năng Giao diện (Performance Optimization)](#8-tối-ưu-hóa-hiệu-năng-giao-diện-performance-optimization)
@@ -57,23 +57,23 @@ flowchart TD
         ZustandAuth["Zustand Auth Store (Phiên & Phân quyền)"]
         ZustandCart["Zustand Cart Store (Giỏ slot đặt sân)"]
         RHF["React Hook Form + Zod (Validation Form)"]
+        ChatHook["useChat (hội thoại trong bộ nhớ, abort, retry)"]
     end
 
     subgraph Service_Layer ["Tầng Dịch Vụ & Mạng (Service & Network Layer)"]
         Services["Domain Services (auth, booking, court, customer, employee)"]
         Axios["Axios Instance (CSRF, withCredentials, 401 Interceptor)"]
         NextProxy["Next.js Rewrite Proxy (/api/:path* -> Backend)"]
-        ClaudeRoute["Next.js Route Handler (/api/chat -> Anthropic API)"]
+        ChatService["chat.service (fetch + đọc SSE, gọi /api/assistant/chat/stream)"]
     end
 
     subgraph Backend_Layer ["Hệ Thống Phía Sau (External & Backend)"]
         DotNetAPI[".NET Core Web API (ShuttleVN Backend)"]
-        AnthropicClaude["Anthropic Claude Cloud API"]
     end
 
     CustomerPortal --> RQ
     CustomerPortal --> ZustandCart
-    CustomerPortal --> ClaudeRoute
+    CustomerPortal --> ChatHook
     AdminPortal --> RQ
     AdminPortal --> ZustandAuth
     UIComponents --> CustomerPortal
@@ -84,7 +84,8 @@ flowchart TD
     Services --> Axios
     Axios --> NextProxy
     NextProxy --> DotNetAPI
-    ClaudeRoute --> AnthropicClaude
+    ChatHook --> ChatService
+    ChatService --> NextProxy
 ```
 
 ### Các nguyên tắc kiến trúc cốt lõi:
@@ -137,8 +138,6 @@ shuttle-vn-frontend/
 │   │   │   ├── my-bookings/page.tsx  # WF-05 (Lịch sử đặt sân của thành viên)
 │   │   │   ├── profile/page.tsx      # WF-07 (Hồ sơ cá nhân)
 │   │   │   └── layout.tsx            # Customer Layout Shell (CustomerNav)
-│   │   ├── api/                      # Next.js Internal Route Handlers
-│   │   │   └── chat/route.ts         # Route Handler kết nối Anthropic Claude API
 │   │   ├── globals.css               # Global CSS, Tailwind v4 @import, Slot classes
 │   │   ├── layout.tsx                # Root Layout (Fonts, Toaster, Providers)
 │   │   └── providers.tsx             # React Query, AuthProvider, Sonner Toaster
@@ -146,6 +145,7 @@ shuttle-vn-frontend/
 │   │   ├── admin/                    # Components quản trị (CourtTable, RevenueChart, PricingTimeline)
 │   │   ├── auth/                     # LoginForm, RegisterForm, SetPasswordForm, ResendSetupLinkButton, RoleGuard
 │   │   ├── booking/                  # BookingCard, BookingLookupForm, WalkInBookingForm
+│   │   ├── chatbot/                  # ChatWidget, ChatPanel, ChatMessageItem, ChatQuickPrompts
 │   │   ├── court/                    # CourtGrid, CourtSlotCell, SlotPopup
 │   │   ├── layout/                   # CustomerNav, AdminSidebar, AdminHeader, AuthProvider
 │   │   ├── profile/                  # ProfileInfoForm, ProfileSidebar, ChangePasswordForm
@@ -379,13 +379,26 @@ if (IS_MOCK) {
 ```
 Cờ này được kích hoạt thông qua biến môi trường `NEXT_PUBLIC_USE_MOCKS === "true"`, cho phép đội ngũ Frontend phát triển và kiểm thử giao diện độc lập ngay cả khi Backend chưa chạy.
 
-### 6.3 Tích hợp API Route Handler Nội bộ (Anthropic Claude API)
-- **Tệp mã nguồn:** `src/app/api/chat/route.ts`.
-- **Vai trò:** Hoạt động như một Backend-For-Frontend (BFF) trung gian.
-- **Bảo mật Khóa API:** Biến môi trường bí mật `ANTHROPIC_API_KEY` được lưu trữ ở máy chủ Node.js và **không bao giờ bị lộ ra client**.
-- **Cấu hình Trợ lý AI:**
-  - Endpoint gửi trực tiếp yêu cầu sang `https://api.anthropic.com/v1/messages`.
-  - System Prompt bằng Tiếng Việt thân thiện, giới hạn phạm vi trả lời riêng cho dịch vụ đặt sân của ShuttleVN.
+### 6.3 Tích hợp Trợ lý AI qua Backend (SSE)
+- **Tệp mã nguồn:** `src/types/chat.ts`, `src/services/chat.service.ts`, `src/hooks/useChat.ts`, `src/components/chatbot/` (`ChatWidget`, `ChatPanel`, `ChatMessageItem`, `ChatQuickPrompts`); hằng cấu hình `CHAT_CONFIG` trong `src/config/app.ts`.
+- **Luồng:** `ChatWidget` → `useChat` → `chatService.stream` (`fetch` + đọc SSE) → `POST /api/assistant/chat/stream` (rewrite của Next hoặc nginx) → Backend gọi mô hình AI và hai tool `list_courts`, `get_court_availability`. FE không gọi nhà cung cấp AI trực tiếp và không giữ khóa API.
+- **Vì sao dùng `fetch` thay vì `axiosInstance`:** cần đọc `ReadableStream` của luồng SSE; base URL vẫn lấy từ `axiosInstance.defaults.baseURL` (`/api`).
+- **Phạm vi hiển thị:** `ChatWidget` gắn ở `src/app/(customer)/layout.tsx`; chỉ hiện khi đã xong tải phiên và (chưa đăng nhập hoặc `role === "Customer"`).
+- **Trạng thái hội thoại:** chỉ lưu trong bộ nhớ (`useChat`), không dùng `localStorage`; xóa khi bấm Đóng hoặc khi `accountId` đổi; hủy yêu cầu đang chạy khi đóng hoặc unmount.
+- **Yêu cầu gửi lên:** `{"messages":[{"role":"user|assistant","content":"…"}]}` — tối đa 20 tin, mỗi tin ≤ 2000 ký tự (mọi role), tin cuối là `user`. `CHAT_CONFIG.maxMessages` và `CHAT_CONFIG.maxMessageLength` phải đồng bộ với `Assistant:MaxMessages` và `Assistant:MaxMessageLength` của Backend.
+- **Lỗi trước khi luồng bắt đầu** (ánh xạ chỉ theo mã trạng thái): `400` → `validation` (không có nút Thử lại); `429` → `rate_limited` (đọc `Retry-After`, mặc định 60 giây); mọi mã khác → `unavailable`.
+- **Sự kiện SSE** (`event: <tên>` + `data: <json>`):
+
+| Sự kiện | Dữ liệu | Cách FE xử lý |
+|---|---|---|
+| `tool` | `{"name":"list_courts"|"get_court_availability","status":"done"}` | Hiện nhãn "đang tra cứu" theo `name`; xóa text đang stream; bỏ qua `status` (luôn là `"done"`) |
+| `delta` | `{"text":"…"}` | Nối vào tin đang stream (chưa qua guardrail của Backend) |
+| `done` | `{"reply":"…"}` | Thay toàn bộ nội dung bằng `reply` — nội dung cuối cùng đã qua guardrail |
+| `error` | `{"code":"…","message":"…"}` | Xóa text dở dang, hiện lỗi `unavailable` kèm nút Thử lại; không có `done` sau `error` |
+
+- **Gián đoạn và hết thời gian chờ:** luồng đóng mà không có `done`/`error`, lỗi mạng, hoặc không nhận được byte nào trong `CHAT_CONFIG.idleTimeoutMs` (45 giây) → `unavailable`.
+- **Lịch sử gửi Backend:** chỉ các tin có `status = "done"`, cắt mỗi tin ≤ 2000 ký tự, lấy tối đa 20 tin cuối và bắt đầu bằng tin `user`.
+- **Văn bản cố định của FE:** lời chào, banner, câu "Giá và chỗ trống chỉ mang tính tham khảo, được kiểm tra lại khi đặt." và hotline (`APP_CONFIG.hotline`) không phụ thuộc AI.
 
 ### 6.4 Cơ chế Rewrite / Proxy Ngăn ngừa Lỗi CORS
 Trong môi trường phát triển (Development), tệp [next.config.ts](file:///d:/Shuttle-VN/shuttle-vn-frontend/next.config.ts) cấu hình rewrite động:
@@ -490,7 +503,7 @@ Dựa trên đối chiếu giữa kiến trúc thực tế và hồ sơ nghiệp
 Kiểm tra TypeScript: `npm run type-check` (không chạy lint).
 - [ ] Hiện thực hóa trang Báo cáo & Thống kê từ placeholder `/admin/statistics` (`WF-18`).
 - [ ] Hiện thực hóa trang Nhật ký hoạt động chỉ đọc từ placeholder `/admin/audits` (`WF-19`).
-- [ ] Tạo component giao diện nổi `src/components/chatbot/ChatWidget.tsx` (`WF-08`) kết nối API route `api/chat`.
+- [x] Tạo component giao diện nổi `src/components/chatbot/ChatWidget.tsx` (`WF-08`) gọi Backend `POST /api/assistant/chat/stream` (SSE) qua `chat.service.ts`.
 
 ---
 
