@@ -24,7 +24,7 @@
 | WF-05 | Lịch sử đặt sân | Khách thành viên | `/my-bookings` | Đang chạy: `BookingHistoryList.tsx`, `BookingCard.tsx`, `BookingListToolBar.tsx`, 10 đơn/trang. Có Chi tiết (modal), Hóa đơn, Hủy đặt (xác nhận bằng hộp thoại trình duyệt). Chưa có Đổi lịch |
 | WF-06 | Tra cứu đơn đặt sân | Khách vãng lai, thành viên | `/lookup` | Đang chạy (`LookupClient.tsx`, `BookingLookupForm.tsx`, `BookingLookupResult.tsx`): có nút DEMO, ô liên hệ chưa bắt buộc, hotline `1900 1234` gắn cứng |
 | WF-07 | Hồ sơ cá nhân | Khách thành viên | `/profile` | Đang chạy (`ProfileClient.tsx`): cột trái `ProfileSidebar` (avatar, thống kê), cột phải 2 tab "Thông tin" và "Bảo mật" (đổi mật khẩu, `PUT /profile/change-password`). Email khóa; SĐT validate 10 số |
-| WF-08 | Widget Trợ lý AI | Khách vãng lai, thành viên | Widget nổi | Có API route `/api/chat`; chưa có component giao diện |
+| WF-08 | Widget Trợ lý AI | Khách vãng lai, thành viên | Widget nổi | Đang chạy (`ChatWidget.tsx`, `ChatPanel.tsx`, `useChat.ts`): gọi Backend `POST /api/assistant/chat/stream` (SSE); hiện ở mọi trang Cổng Khách hàng, ẩn với Nhân viên và Quản trị viên |
 | WF-09 | Bảng điều khiển | Quản trị viên | `/dashboard` | Đang chạy (`DashboardClient.tsx`): 4 thẻ số liệu (còn "Tỷ lệ lấp đầy"), `RevenueChart`, danh sách Chờ xác nhận, bảng Đặt sân gần đây |
 | WF-10 | Tiếp nhận yêu cầu đặt sân | Nhân viên, Quản trị viên | `/booking-requests` (sẽ tạo) | Chưa có route FE. API `GET /booking-requests`, `POST /booking-requests/{id}/confirm|reject|complete` đã có |
 | WF-11 | Chi tiết đặt sân & Xử lý đơn | Nhân viên, Quản trị viên | `/bookings/[id]` (sẽ tạo) | Chưa có route FE. API `GET /booking-requests/{id}`, `GET /bookings/{id}`, `PATCH /bookings/{id}/cancel` đã có; chưa có API đổi lịch |
@@ -1250,15 +1250,15 @@ Theo phạm vi đã loại bỏ, hồ sơ **không** có tab quản lý thiết 
 | Mã màn hình | WF-08 Widget Trợ lý AI |
 | Use-case | UC-13 Trò chuyện với trợ lý AI |
 | Đối tượng | Khách vãng lai và khách thành viên (không cần đăng nhập) |
-| Route Codebase hiện tại | API backend: `src/app/api/chat/route.ts` |
+| Route Codebase hiện tại | Không có route trang; gọi API Backend `POST /api/assistant/chat/stream` |
 | Route Wireframe mục tiêu | *(Widget nổi trên các trang Cổng Khách hàng)* |
-| Component Codebase | `src/components/chatbot/ChatWidget.tsx` (cần tạo mới) |
-| Tình trạng Codebase | Backend API đã có / Chưa có UI Widget |
+| Component Codebase | `src/components/chatbot/ChatWidget.tsx`, `ChatPanel.tsx`, `ChatMessageItem.tsx`, `ChatQuickPrompts.tsx` |
+| Tình trạng Codebase | Đã có Widget và đã kết nối Backend |
 | Điều hướng ra | – |
 
-> **Hiện trạng Codebase & Định hướng hoàn thiện tương lai:**
-> - *Codebase hiện tại:* Backend API route `/api/chat` đã hoàn thiện tích hợp Anthropic Claude SDK; giao diện frontend chưa có widget nổi.
-> - *Chuẩn Wireframe tương lai:* Xây dựng component `ChatWidget.tsx` hiển thị nút tròn nổi góc dưới phải trên các trang Cổng Khách hàng (ẩn ở Cổng Quản trị theo G-11).
+> **Hiện trạng Codebase:**
+> - Widget nổi đã được gắn ở `src/app/(customer)/layout.tsx`, hiển thị trên mọi trang Cổng Khách hàng và ẩn ở Cổng Quản trị (G-11).
+> - Widget gọi trực tiếp Backend `POST /api/assistant/chat/stream` (SSE); Backend gọi mô hình AI và các tool đọc danh sách sân, lịch trống và giá.
 
 ### 8.1. Wireframe (khung chat mở ở góc dưới phải)
 
@@ -1298,7 +1298,8 @@ Theo phạm vi đã loại bỏ, hồ sơ **không** có tab quản lý thiết 
 | Cảnh báo cố định | Luôn hiện đầu khung: AI chỉ tư vấn thông tin công khai, **không có quyền** đặt, hủy, đổi sân, thu tiền hoặc xem dữ liệu cá nhân |
 | Gợi ý nhanh | Hướng dẫn đặt sân, Giá theo giờ, Gợi ý giờ còn trống, Hotline |
 | Nội dung trả lời | Giải đáp câu hỏi thường gặp, hướng dẫn đặt sân, gợi ý giờ/giá công khai. Giá và chỗ trống chỉ mang tính tham khảo, được kiểm tra lại khi đặt |
-| Ô nhập | Không gửi tin rỗng. Giới hạn độ dài chưa được quy định `[G-11]` |
+| Ô nhập | Không gửi tin rỗng. Tối đa 2000 ký tự mỗi tin (theo Backend) `[G-11]` |
+| Chân khung | Luôn hiện cuối khung: "Giá và chỗ trống chỉ mang tính tham khảo, được kiểm tra lại khi đặt." và liên kết hotline lấy từ `APP_CONFIG.hotline` |
 
 | Trạng thái | Hiển thị |
 |---|---|
@@ -2689,7 +2690,7 @@ Nguyên tắc: SRS 1.7 và UC 1.5 là nguồn chuẩn về nghiệp vụ; mã ng
 | G-08 | Báo "email đã có tài khoản" lúc đăng ký (BR-11) với yêu cầu không tiết lộ tài khoản tồn tại ở luồng gửi mã công khai (BR-26) | Vẽ banner dẫn tới Đăng nhập/Quên mật khẩu theo BR-11. Cần xác nhận thời điểm báo (trước hay sau khi xác minh OTP) |
 | G-09 | Khung "Chi tiết đơn" ở Lịch sử chưa có trong mockup HTML | Thêm khung chi tiết gọn, chỉ gồm thông tin đã có trên thẻ |
 | G-10 | Mockup HTML cũ (UI-MockUp) chỉ là bản phác thảo ban đầu | Wireframe lấy mã nguồn Next.js hiện tại và Design-System làm căn cứ giao diện, SRS 1.7/UC 1.5 làm căn cứ nghiệp vụ |
-| G-11 | Widget AI hiện trên các trang Cổng Khách hàng, ẩn ở Cổng Quản trị; giới hạn độ dài câu hỏi chưa quy định | Giả định: widget hiện ở mọi trang Cổng Khách hàng và ẩn ở Cổng Quản trị |
+| G-11 | Widget AI hiện trên các trang Cổng Khách hàng, ẩn ở Cổng Quản trị; giới hạn độ dài câu hỏi chưa quy định | Đã giải quyết: widget hiện ở mọi trang Cổng Khách hàng, ẩn ở Cổng Quản trị và với Nhân viên, Quản trị viên; mỗi tin tối đa 2000 ký tự theo Backend |
 | G-12 | Ô "Đặt của bạn" trên lưới có bấm được không | Không bấm được, chỉ tooltip |
 | G-13 | Sân Bảo trì/Đóng hiển thị thế nào trên lưới khi chú giải chỉ có 4 trạng thái | Cả hàng hiện ô Đóng cửa + badge trạng thái sân trên nhãn hàng |
 | G-14 | Bảng điều khiển không có use-case trong SRS/UC (O-05). Tiêu chí "đơn cần xử lý gấp" chưa được định nghĩa | Giữ bố cục đang chạy (3 thẻ, biểu đồ doanh thu 7 ngày, thẻ Chờ xác nhận, Đặt sân gần đây); bỏ Tỷ lệ lấp đầy. Chờ xác nhận xếp giờ chơi gần nhất trước (đề xuất). Không có chuông, xuất báo cáo. Cần xác nhận giữ biểu đồ |
@@ -2725,7 +2726,7 @@ Nguyên tắc: SRS 1.7 và UC 1.5 là nguồn chuẩn về nghiệp vụ; mã ng
 | WF-05 | Lịch sử | `my-bookings/page.tsx`, `BookingHistoryList.tsx`, `BookingCard.tsx` | Tab, tìm kiếm, phân trang 10, Chi tiết, Hóa đơn, Hủy | Bỏ nút Hóa đơn (D-13); nhãn "Chưa lập hóa đơn" (D-12); Modal Hủy có lý do (M-06) thay hộp thoại trình duyệt; thêm Đổi lịch |
 | WF-06 | Tra cứu | `lookup/LookupClient.tsx`, `BookingLookupForm.tsx` | Tra cứu chạy, có nút DEMO | Bắt buộc cặp Mã đơn + SĐT/Email (X-03); xóa DEMO; hotline từ cấu hình |
 | WF-07 | Hồ sơ | `profile/ProfileClient.tsx`, `ProfileInfoForm.tsx`, `ChangePasswordForm.tsx` | Hồ sơ + tab Bảo mật chạy | SĐT 8–15 số (BR-26); mật khẩu mới 8–128; không có quản lý phiên/thiết bị (X-04) |
-| WF-08 | Trợ lý AI | `app/api/chat` | Có API | Component `ChatWidget.tsx` nổi ở Cổng Khách hàng |
+| WF-08 | Trợ lý AI | `components/chatbot/*`, `hooks/useChat.ts`, `services/chat.service.ts` | Widget nổi chạy, gọi Backend SSE | Không có khoảng cách |
 | WF-09 | Dashboard | `dashboard/DashboardClient.tsx`, `DashboardStats.tsx`, `RevenueChart.tsx` | Chạy đủ 4 thẻ + biểu đồ + 2 danh sách | Bỏ thẻ Tỷ lệ lấp đầy (X-04); dòng Chờ xác nhận mở WF-11 |
 | WF-10 | Yêu cầu đặt | *Chưa có file*; API `booking-requests` | Chưa có trang | Trang `/booking-requests`, cũ nhất trước (NV-03) |
 | WF-11 | Xử lý đơn | *Chưa có file*; API confirm/reject/complete/cancel | Chưa có trang | Trang `/bookings/[id]` có timeline lý do (BR-13) và các modal xử lý; cần API đổi lịch |

@@ -1,17 +1,29 @@
-export type MessageRole = "user" | "assistant";
+export type ChatRole = "user" | "assistant";
+
+export type ChatMessageStatus = "streaming" | "done" | "error";
+
+export type ChatErrorKind = "validation" | "rate_limited" | "unavailable";
 
 export interface ChatMessage {
   id: string;
-  role: MessageRole;
+  role: ChatRole;
   content: string;
-  createdAt: string;
+  status: ChatMessageStatus;
+  errorKind?: ChatErrorKind;
+  retryAfterSeconds?: number;
 }
 
-export interface ChatRequest {
-  message: string;
-  history: Pick<ChatMessage, "role" | "content">[];
+export interface AssistantChatMessage {
+  role: ChatRole;
+  content: string;
 }
 
-export interface ChatResponse {
-  reply: string;
+export interface AssistantChatRequest {
+  messages: AssistantChatMessage[];
 }
+
+export type ChatStreamEvent =
+  | { type: "tool"; name: string }
+  | { type: "delta"; text: string }
+  | { type: "done"; reply: string }
+  | { type: "error"; code: string; message: string };

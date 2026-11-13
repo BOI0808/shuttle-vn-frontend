@@ -6,6 +6,42 @@ export const APP_CONFIG = {
   hotline: { display: "1900 1234", tel: "19001234" },
 } as const;
 
+export const CHAT_CONFIG = {
+  maxMessageLength: 2000,
+  maxMessages: 20,
+  idleTimeoutMs: 45000,
+  welcomeMessage:
+    "Xin chào! Tôi có thể hướng dẫn đặt sân, tư vấn giá và gợi ý giờ trống.",
+  noticeText:
+    "AI chỉ tư vấn thông tin công khai. AI KHÔNG thể đặt, hủy, đổi sân, thu tiền hay xem dữ liệu cá nhân.",
+  priceDisclaimer:
+    "Giá và chỗ trống chỉ mang tính tham khảo, được kiểm tra lại khi đặt.",
+  quickPrompts: [
+    {
+      label: "Hướng dẫn đặt sân",
+      prompt: "Hướng dẫn mình cách đặt sân trên website.",
+    },
+    {
+      label: "Giá theo giờ",
+      prompt: "Giá thuê sân hôm nay theo từng khung giờ là bao nhiêu?",
+    },
+    {
+      label: "Gợi ý giờ còn trống",
+      prompt: "Gợi ý giúp mình các khung giờ còn trống hôm nay.",
+    },
+  ],
+  toolLabels: {
+    list_courts: "Đang xem danh sách sân…",
+    get_court_availability: "Đang kiểm tra lịch trống và giá…",
+    default: "Đang tra cứu thông tin…",
+  },
+  errorMessages: {
+    validation: "Tin nhắn chưa hợp lệ. Vui lòng kiểm tra nội dung và thử lại.",
+    rate_limited: "Bạn gửi quá nhanh. Vui lòng thử lại sau {seconds} giây.",
+    unavailable: "Trợ lý tạm thời không phản hồi. Vui lòng thử lại.",
+  },
+} as const;
+
 export const BOOKING_STATUS_LABEL: Record<string, string> = {
   Pending: "Chờ xác nhận",
   Confirmed: "Đã xác nhận",

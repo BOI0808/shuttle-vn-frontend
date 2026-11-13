@@ -610,8 +610,8 @@ Quyết định xử lý giao diện (X-01, X-04): khóa ô Email (D-15); số �
 
 ### F-KH-13 Trò chuyện với trợ lý AI
 
-- **Use-case:** UC-13 · **Yêu cầu:** KH-22, KH-23; BR-28; NFR-10
-- **Người dùng:** Khách vãng lai, Khách thành viên · Không yêu cầu đăng nhập · **Màn hình:** **[Chưa có màn hình]** (M-07)
+- **Use-case:** UC-13 · **Yêu cầu:** KH-16, KH-17; BR-28; NFR-02
+- **Người dùng:** Khách vãng lai, Khách thành viên · Không yêu cầu đăng nhập · **Màn hình:** `ChatWidget` (M-07)
 
 | # | Tác nhân | Thao tác / phản hồi |
 | --- | --- | --- |
@@ -1281,7 +1281,7 @@ Bảng liệt kê các chỗ file HTML khác SRS 1.7 / UC 1.5, hoặc có chức
 | M-04 | KH-07 | Hiển thị đơn giá theo khung giờ của từng sân |
 | M-05 | UC-07, UC-08, UC-10 | Báo giá mới để xác nhận lại; hiển thị mã đặt sân sau khi đặt thành công |
 | M-06 | UC-09, UC-10 (khách) | Hộp thoại xác nhận hủy; màn hình/hộp thoại nhập lịch mới và xác nhận tổng tiền (nút "Hủy đặt", "Đổi lịch" hiện chưa có xử lý) |
-| M-07 | UC-13 | Khung trò chuyện với trợ lý AI |
+| M-07 | UC-13 | Khung trò chuyện với trợ lý AI — đã có (`ChatWidget`) |
 | M-08 | UC-18 | Ghi nhận lượt sử dụng (chuyển Hoàn thành) |
 | M-09 | UC-20 | Biểu mẫu tạo đặt sân thay khách (nút "Tạo lịch đặt" chưa có xử lý) |
 | M-10 | UC-21 | Hủy do sự cố vận hành: lý do sự cố, xác nhận khách chưa sử dụng |
