@@ -6,13 +6,6 @@ interface BookingLookupFormProps {
   onSubmit: (code: string, contact: string) => void;
 }
 
-const DEMO_CODES = [
-  { key: "confirmed", label: "Đã xác nhận", code: "DS-10294" },
-  { key: "pending", label: "Chờ xác nhận", code: "DS-10312" },
-  { key: "completed", label: "Hoàn thành", code: "DS-10218" },
-  { key: "notfound", label: "Không tìm thấy", code: "DS-99999" },
-];
-
 export function BookingLookupForm({ onSubmit }: BookingLookupFormProps) {
   const [code, setCode] = useState("");
   const [contact, setContact] = useState("");
@@ -33,13 +26,6 @@ export function BookingLookupForm({ onSubmit }: BookingLookupFormProps) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     validateAndSubmit(code, contact);
-  }
-
-  function fillDemo(demoCode: string) {
-    setCode(demoCode);
-    setContact("");
-    setError("");
-    validateAndSubmit(demoCode, "");
   }
 
   return (
@@ -129,21 +115,6 @@ export function BookingLookupForm({ onSubmit }: BookingLookupFormProps) {
           <span className="material-symbols-outlined text-[17px]">search</span>
           TRA CỨU ĐƠN
         </button>
-
-        {/* Demo shortcuts */}
-        <div className="flex gap-1.5 flex-wrap justify-center items-center mt-4">
-          <span className="text-[11px] text-gray-400">Demo:</span>
-          {DEMO_CODES.map((d) => (
-            <button
-              key={d.key}
-              type="button"
-              onClick={() => fillDemo(d.code)}
-              className="bg-slate-50 border border-gray-200 rounded-md px-2.5 py-1 text-[11px] text-gray-500 font-mono transition-colors duration-100 hover:bg-slate-100 hover:text-gray-700 hover:border-gray-300"
-            >
-              {d.label}
-            </button>
-          ))}
-        </div>
       </form>
     </div>
   );

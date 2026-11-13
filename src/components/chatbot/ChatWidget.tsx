@@ -43,7 +43,7 @@ export function ChatWidget() {
         onClick={handleToggle}
         aria-label={isOpen ? "Thu nhỏ trợ lý AI" : "Mở trợ lý AI"}
         aria-expanded={isOpen}
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg hover:bg-emerald-600"
+        className="fixed bottom-16 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg hover:bg-emerald-600"
       >
         <span
           className="material-symbols-outlined text-[28px]"
