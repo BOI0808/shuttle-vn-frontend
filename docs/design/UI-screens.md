@@ -35,7 +35,7 @@
 | WF-05 | Lịch sử đặt sân | Thành viên | `/my-bookings` | `/my-bookings` | ⚠ | ⚠ có `bookings/me`, `PATCH cancel`; ❌ đổi lịch |
 | WF-06 | Tra cứu đơn | Tất cả | `/lookup` | `/lookup` | ⚠ | ❌ FE gọi `bookings/code/{code}`, backend chưa có |
 | WF-07 | Hồ sơ cá nhân | Thành viên | `/profile` | `/profile` | ⚠ | ✅ `profile`, `profile/change-password` |
-| WF-08 | Widget Trợ lý AI | Tất cả | — | widget toàn site | ❌ | route FE `api/chat` có; không có tool |
+| WF-08 | Widget Trợ lý AI | Tất cả | — | widget toàn site | ✅ | ✅ `POST /api/assistant/chat/stream` (SSE) |
 | WF-09 | Bảng điều khiển | Admin | `/dashboard` | `/admin/dashboard` | ✅ | ✅ `GET /api/admin/dashboard` |
 | WF-10 | Yêu cầu đặt sân | NV, Admin | — | `/admin/booking-requests` | ❌ | ✅ `booking-requests` (list, confirm, reject) |
 | WF-11 | Chi tiết đặt sân & xử lý | NV, Admin | — | `/admin/bookings/[id]` | ❌ | ⚠ có detail, confirm, reject, complete; ❌ đổi lịch, hoàn tiền |
@@ -260,13 +260,13 @@ Luồng 3 bước, tất cả trên một trang: **(1) Nhập email → (2) moda
 
 ### WF-08 Widget Trợ lý AI
 
-Widget nổi toàn site (góc dưới phải) · UC-13 · **chưa có UI**
+Widget nổi toàn site (góc dưới phải) · UC-13 · **đã có UI**
 
 | Hạng mục | Trạng thái | Hiện trạng → Chuẩn mục tiêu |
 |---|---|---|
-| Giao diện | ❌ | Chưa có component |
-| Route FE `app/api/chat/route.ts` | ⚠ | Hiện: gọi Anthropic với system prompt cố định, **không có tool/function** để đọc lịch hay giá. Hợp đồng không khớp type `ChatRequest/ChatResponse` (route nhận `{messages}` trả `{message}`) |
-| Phạm vi hiển thị | — | Hiện trên **mọi trang Cổng Khách hàng**, **ẩn ở Cổng Quản trị** (G-11, giả định) |
+| Giao diện | ✅ | `components/chatbot/` (`ChatWidget`, `ChatPanel`, `ChatMessageItem`, `ChatQuickPrompts`), gắn ở `(customer)/layout.tsx` |
+| Kết nối Backend | ✅ | `chat.service.ts` gọi `POST /api/assistant/chat/stream` (SSE); FE không còn route Next gọi nhà cung cấp AI |
+| Phạm vi hiển thị | ✅ | Hiện trên **mọi trang Cổng Khách hàng**, **ẩn ở Cổng Quản trị** và với Nhân viên, Quản trị viên (G-11) |
 | Chuẩn | — | Banner cố định: "AI chỉ tư vấn thông tin công khai; KHÔNG thể đặt, hủy, đổi sân, thu tiền hay xem dữ liệu cá nhân." Gợi ý nhanh: Hướng dẫn đặt sân · Giá theo giờ · Gợi ý giờ còn trống · Hotline. Không có thông tin → "Vui lòng liên hệ nhân viên: {Hotline}". Giá nêu là **tham khảo**, kiểm tra lại khi đặt |
 
 ---
@@ -534,7 +534,7 @@ Mã giữ đúng Wireframes; "—" là hộp thoại chưa có mã riêng. Phụ
 | 11 | Tra cứu hiển thị trạng thái thanh toán | Code **chưa hiển thị**; chuẩn bắt buộc có |
 | 12 | Tab Đổi mật khẩu "tạm ẩn nếu chưa có backend" | Wireframes G-02 vẽ tạm ẩn vì thiếu UC (O-06); backend nay **đã có** `profile/change-password` → **giữ hiển thị** (`QĐ-12`) |
 | 13 | `DashboardStats` ở `components/dashboard/` | Thực tế `components/admin/DashboardStats.tsx` |
-| 14 | Chat dùng function-calling server-side | Route chỉ gọi Anthropic với system prompt cố định, không có tool |
+| 14 | Chat dùng function-calling server-side | Đã xử lý: widget gọi Backend `POST /api/assistant/chat/stream`; Backend gọi tool `list_courts`, `get_court_availability`; route Next gọi trực tiếp nhà cung cấp AI đã xóa |
 | 15 | URL admin ghi `/admin/...` nhưng đường dẫn file `(admin)/...` | Route group không sinh `/admin`; đã chốt chuyển sang `/admin/*` (`QĐ-01`, §2.6) |
 | 16 | Đánh lại mã modal M-01…M-19 | Trùng mã với Wireframes → dùng đúng mã Wireframes |
 
@@ -557,7 +557,7 @@ Mã giữ đúng Wireframes; "—" là hộp thoại chưa có mã riêng. Phụ
 | P2 | WF-13 Thanh toán (chờ API) · WF-18 · WF-19 · WF-17 | |
 | P2 | Dashboard: 3 thẻ + danh sách cần xử lý; gỡ biểu đồ và bảng đặt sân gần đây | WF-09 |
 | P2 | Form sân có Xem trước, xóa mềm sân, đổi vai trò, tách WF-16B | WF-15, 16 |
-| P2 | Footer Hotline cấu hình, widget AI | §2.2, WF-08 |
+| P2 | Footer Hotline cấu hình | §2.2 |
 | Dọn mã | Xóa `menuOpen`, `showDeactivateModal`, mô tả sân giả, mục "Đặt của bạn" chết (cho tới khi backend trả `isMine`) | — |
 | Dọn giao diện | Gỡ nút/modal Hóa đơn phía khách, upload avatar + thẻ thống kê hồ sơ, thẻ thống kê trang nhân viên, trường "Lý do" ở modal đổi trạng thái sân | WF-05, 07, 14, 16A, 12 |
 
