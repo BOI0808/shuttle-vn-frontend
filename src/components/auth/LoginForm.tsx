@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ResendSetupLinkButton } from "@/components/auth/ResendSetupLinkButton";
 import { useAuth } from "@/hooks/useAuth";
-import { getErrorMessage } from "@/utils";
+import { getApiFieldErrors, getErrorMessage } from "@/utils";
 
 const loginSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
@@ -27,6 +27,7 @@ export function LoginForm() {
     const {
         register,
         handleSubmit,
+        setError,
         formState: {errors},
     } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
@@ -45,7 +46,16 @@ export function LoginForm() {
                         setPendingEmail(data.email.trim());
                         return;
                     }
-                    toast.error(getErrorMessage(error));
+                    const fieldErrors = getApiFieldErrors(error);
+                    const shown = (["email", "password"] as const).filter((field) => {
+                        const message = fieldErrors[field];
+                        if (!message) return false;
+                        setError(field, {type: "server", message});
+                        return true;
+                    });
+                    if (shown.length === 0) {
+                        toast.error(getErrorMessage(error));
+                    }
                 },
             }
         );

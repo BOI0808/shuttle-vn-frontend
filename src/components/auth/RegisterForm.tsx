@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/Label";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/hooks/useAuth";
-import { getErrorMessage } from "@/utils";
+import { getApiFieldErrors, getErrorMessage } from "@/utils";
 
 const registerSchema = z
   .object({
@@ -28,6 +28,17 @@ const registerSchema = z
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
+/** Map tên field backend trả về (key trong body.errors) sang field của form. */
+const API_FIELD_MAP: Record<string, keyof RegisterFormData> = {
+  fullname: "fullName",
+  phone: "phone",
+  email: "email",
+  code: "code",
+  verificationcode: "code",
+  password: "password",
+  confirmpassword: "confirmPassword",
+};
+
 export function RegisterForm() {
   const {
     register: registerUser,
@@ -41,6 +52,7 @@ export function RegisterForm() {
     watch,
     getValues,
     trigger,
+    setError,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -55,8 +67,8 @@ export function RegisterForm() {
     try {
       await sendVerificationCode(getValues("email"), "VerifyEmail");
       toast.success("Mã xác thực đã được gửi đến email của bạn");
-    } catch {
-      toast.error("Không thể yêu cầu mã xác thực. Vui lòng thử lại.");
+    } catch (error) {
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -71,7 +83,18 @@ export function RegisterForm() {
         confirmPassword: data.confirmPassword,
       },
       {
-        onError: (error) => toast.error(getErrorMessage(error)),
+        onError: (error) => {
+          const fieldErrors = getApiFieldErrors(error);
+          const shown = Object.entries(fieldErrors).filter(([key, message]) => {
+            const field = API_FIELD_MAP[key];
+            if (!field) return false;
+            setError(field, {type: "server", message});
+            return true;
+          });
+          if (shown.length === 0) {
+            toast.error(getErrorMessage(error));
+          }
+        },
       }
     );
   };

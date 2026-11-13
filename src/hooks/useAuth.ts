@@ -12,7 +12,7 @@ import {
   ResendSetupLinkRequest,
   SetPasswordRequest,
 } from "@/types";
-import { mapAccountToAuthUser } from "@/utils";
+import { getErrorMessage, mapAccountToAuthUser } from "@/utils";
 
 export function useAuth() {
   const router = useRouter();
@@ -65,6 +65,7 @@ export function useAuth() {
 
   const logoutMutation = useMutation({
     mutationFn: () => authService.logout(),
+    onError: (error) => toast.error(getErrorMessage(error)),
     onSettled: () => {
       clearAuth();
       queryClient.clear();

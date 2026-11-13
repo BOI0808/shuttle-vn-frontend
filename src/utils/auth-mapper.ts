@@ -4,7 +4,7 @@ import { UserAccount } from "@/types";
 export function mapAccountToAuthUser(userAccount: UserAccount): AuthUser {
   if (userAccount.accountType === "Customer") {
     if (userAccount.customer === null) {
-      throw new Error("Customer profile is null");
+      throw new Error("Không tìm thấy hồ sơ khách hàng của tài khoản này.");
     }
     return {
       accountId: userAccount.accountId,
@@ -16,7 +16,7 @@ export function mapAccountToAuthUser(userAccount: UserAccount): AuthUser {
   }
 
   if (userAccount.employee === null) {
-    throw new Error("Employee profile is null");
+    throw new Error("Không tìm thấy hồ sơ nhân viên của tài khoản này.");
   }
   return {
     accountId: userAccount.accountId,

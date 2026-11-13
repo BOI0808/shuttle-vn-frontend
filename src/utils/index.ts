@@ -2,7 +2,6 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
-import { isAxiosError } from "axios";
 
 import type { BookingAdminDetail, BookingDetail, InvoiceDetail, PaymentAttempt, PayInvoice, RevenueGroupBy } from "@/types";
 
@@ -85,46 +84,6 @@ export function formatRevenuePeriod(
   });
 }
 
-interface ApiErrorBody {
-  message?: string | null;
-  errors?: Record<string, string[]> | null;
-}
-
-function getApiErrorMessage(error: unknown): string | null {
-  if (!isAxiosError<ApiErrorBody>(error)) return null;
-  const body = error.response?.data;
-  if (!body || typeof body !== "object") return null;
-
-  const details = Object.values(body.errors ?? {}).flat();
-  const parts = [body.message, ...details].filter(
-    (part): part is string => typeof part === "string" && part.length > 0
-  );
-  return parts.length > 0 ? Array.from(new Set(parts)).join(" ") : null;
-}
-
-export function getErrorMessage(error: unknown): string {
-  const apiMessage = getApiErrorMessage(error);
-  if (apiMessage) return apiMessage;
-  if (error instanceof Error) return error.message;
-  if (typeof error === "string") return error;
-  return "Đã có lỗi xảy ra, vui lòng thử lại.";
-}
-
-export function hasApiFieldError(error: unknown, field: string): boolean {
-  if (!isAxiosError<ApiErrorBody>(error)) return false;
-  const errors = error.response?.data?.errors;
-  if (!errors || typeof errors !== "object") return false;
-  return Object.keys(errors).some(
-    (key) => key.toLowerCase() === field.toLowerCase()
-  );
-}
-
-export function getRetryAfterSeconds(error: unknown): number | null {
-  if (!isAxiosError(error) || error.response?.status !== 429) return null;
-  const seconds = Number(error.response.headers?.["retry-after"]);
-  return Number.isFinite(seconds) && seconds > 0 ? Math.ceil(seconds) : null;
-}
-
 export function calcHourDiff(startTime: string, endTime: string): number {
   const [sh, sm] = startTime.split(":").map(Number);
   const [eh, em] = endTime.split(":").map(Number);
@@ -158,4 +117,5 @@ export function clearPaymentAttempt(id: string) {
   sessionStorage.removeItem(`invoice-payment:${id}`);
 }
 
+export * from "./api-error";
 export * from "./auth-mapper";

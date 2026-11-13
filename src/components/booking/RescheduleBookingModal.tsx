@@ -32,7 +32,7 @@ export function RescheduleBookingModal({ booking, isStaff = false, onClose }: Re
   const [error, setError] = useState("");
   const [uncertain, setUncertain] = useState(false);
   const attempt = useRef<{ payload: RescheduleBookingRequest; idempotencyKey: string } | null>(null);
-  const { data: courts = [], isLoading: courtsLoading, isError: courtsError } = useCourts();
+  const { data: courts = [], isLoading: courtsLoading, isError: courtsError, error: courtsErrorDetail } = useCourts();
   const reschedule = useRescheduleBooking();
   const busy = loadingPreview || reschedule.isPending;
   const eligible = canRescheduleBooking(booking, isStaff);
@@ -140,7 +140,7 @@ export function RescheduleBookingModal({ booking, isStaff = false, onClose }: Re
             <label className="space-y-1 text-sm sm:col-span-2"><span>Lý do đổi lịch</span><textarea value={reason} onChange={(event) => setReason(event.target.value)} className={fieldClass} /></label>
           </fieldset>
           {courtsLoading && <p className="text-sm text-gray-600">Đang tải danh sách sân...</p>}
-          {courtsError && <p role="alert" className="text-sm text-red-700">Không thể tải danh sách sân. Vui lòng mở lại.</p>}
+          {courtsError && <p role="alert" className="text-sm text-red-700">{getErrorMessage(courtsErrorDetail)}</p>}
           {preview && <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm"><p>Tổng tiền cũ: {formatCurrency(booking.totalCost)}</p><p className="mt-2 font-semibold">Tổng tiền mới: {formatCurrency(preview.quote!.totalCost!)}</p>{preview.requiresRefund && <p className="mt-2 text-amber-800">Phải hoàn đủ {formatCurrency(booking.totalCost)} ngoài hệ thống. Hóa đơn thay thế chưa thanh toán; thu mới là thao tác riêng.</p>}</div>}
           {preview?.requiresRefund && isStaff && <fieldset disabled={busy || uncertain} className="space-y-3">
             <legend className="mb-2 font-medium">Chứng cứ hoàn tiền</legend>
