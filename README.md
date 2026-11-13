@@ -46,8 +46,7 @@ src/
 ├── app/          # Next.js App Router
 │   ├── (auth)/        # Luồng đăng nhập, đăng ký, kích hoạt tài khoản (/set-password)
 │   ├── (customer)/    # Luồng khách hàng: xem sân, đặt lịch, lịch sử đặt sân
-│   ├── (admin)/       # Phân hệ Admin/Nhân viên: /dashboard, /statistics, /schedule...
-│   └── api/           # API Route handlers (Next.js server-side, VD: AI assistant)
+│   └── (admin)/       # Phân hệ Admin/Nhân viên: /dashboard, /statistics, /schedule...
 ├── components/   # UI components dùng chung (admin, auth, ui, layout...)
 ├── config/       # Cấu hình hằng số ứng dụng, navigation, query keys
 ├── hooks/        # Custom React Query hooks (useBooking, useDashboard, useAuth...)
@@ -88,9 +87,6 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:5062/api
 # - 'true': chạy độc lập với dữ liệu mẫu (không cần bật Backend)
 # - 'false': gọi trực tiếp API Backend thực tế
 NEXT_PUBLIC_USE_MOCKS=false
-
-# Anthropic API Key (nếu sử dụng tính năng Trợ lý AI server-side)
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
 ```
 
 ### 4. Khởi chạy môi trường phát triển 
@@ -120,6 +116,7 @@ npm run dev
   * Tra cứu lưới lịch sân trực quan theo thời gian thực.
   * Đặt sân trực tuyến, xem trước giá theo khung giờ linh hoạt.
   * Quản lý thông tin cá nhân và lịch sử đặt sân.
+  * Trợ lý AI dạng khung trò chuyện nổi: tư vấn sân, giá, giờ trống, hướng dẫn đặt sân; không cần đăng nhập, không đặt/hủy thay khách.
 * **Cổng Vận hành & Quản trị**:
   * **Bảng điều khiển (Dashboard)**: Theo dõi doanh thu hôm nay, tỷ lệ lấp đầy, các đơn chờ xác nhận.
   * **Báo cáo & Thống kê**: Biểu đồ doanh thu linh hoạt theo ngày/tháng, báo cáo tần suất sử dụng sân.
