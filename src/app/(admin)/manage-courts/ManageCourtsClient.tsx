@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Court } from "@/types";
 import { useCourts } from "@/hooks";
-import { cn } from "@/utils";
+import { cn, getErrorMessage } from "@/utils";
 import { CourtStatusModal } from "@/components/admin/CourtStatusModal";
 import { CourtFormModal } from "@/components/admin/CourtFormModal";
 import { CourtStats } from "@/components/admin/CourtStats";
@@ -13,7 +13,7 @@ import { CourtTable } from "@/components/admin/CourtTable";
 import { CourtOperationsModal } from "@/components/admin/CourtOperationsModal";
 
 export default function ManageCourtsClient() {
-  const { data: courts = [], isLoading, isError } = useCourts();
+  const { data: courts = [], isLoading, isError, error } = useCourts();
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
   const [statusCourt, setStatusCourt] = useState<Court | null>(null);
   const [formCourt, setFormCourt] = useState<Court | "create" | null>(null);
@@ -81,7 +81,7 @@ export default function ManageCourtsClient() {
       {isLoading ? (
         <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500 font-mono text-sm">Đang tải dữ liệu sân...</div>
       ) : isError ? (
-        <div className="bg-white border border-red-200 rounded-xl p-12 text-center text-red-600 text-sm">Không thể tải danh sách sân.</div>
+        <div className="bg-white border border-red-200 rounded-xl p-12 text-center text-red-600 text-sm">{getErrorMessage(error)}</div>
       ) : courts.length === 0 ? (
         <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500 text-sm">Chưa có sân nào.</div>
       ) : viewMode === "card" ? (

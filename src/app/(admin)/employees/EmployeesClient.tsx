@@ -46,7 +46,10 @@ export default function EmployeesClient() {
       window.removeEventListener("open-add-employee", handleOpenModal);
   }, []);
 
-  const { data, isLoading } = useEmployees({ pageNumber: 1, pageSize: 100 });
+  const { data, isLoading, isError, error } = useEmployees({
+    pageNumber: 1,
+    pageSize: 100,
+  });
   const employees = (data?.items ?? []).filter((e) => e.employee !== null);
 
   const lockMutation = useLockEmployee();
@@ -189,7 +192,17 @@ export default function EmployeesClient() {
                 </td>
               </tr>
             )}
-            {!isLoading && filtered.length === 0 && (
+            {isError && (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="text-center py-8 text-red-500 text-sm"
+                >
+                  {getErrorMessage(error)}
+                </td>
+              </tr>
+            )}
+            {!isLoading && !isError && filtered.length === 0 && (
               <tr>
                 <td
                   colSpan={5}

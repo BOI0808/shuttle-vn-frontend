@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
+import { toast } from "sonner";
 import { authService } from "@/services";
 import { useAuthStore } from "@/stores/auth.store";
-import { mapAccountToAuthUser } from "@/utils";
+import { getErrorMessage, isUnauthorizedError } from "@/utils";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const setUser = useAuthStore((state) => state.setUser);
@@ -18,8 +19,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .then((authUser) => {
         if (active) setUser(authUser);
       })
-      .catch(() => {
-        if (active) clearAuth();
+      .catch((error: unknown) => {
+        if (!active) return;
+        clearAuth();
+        // 401 = chưa đăng nhập (khách vãng lai) -> không cần báo.
+        // Lỗi khác (mạng, máy chủ) -> báo để người dùng biết vì sao trang trống.
+        if (!isUnauthorizedError(error)) {
+          toast.error(getErrorMessage(error));
+        }
       })
       .finally(() => {
         if (active) setLoading(false);

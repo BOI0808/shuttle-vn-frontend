@@ -8,6 +8,7 @@ import { SlotDisplayStatus, CourtGridResponse, CourtSlot } from "@/types";
 import { DAY_OF_WEEK_LABEL } from "@/config/app";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth.store";
+import { getErrorMessage } from "@/utils";
 import { toast } from "sonner";
 
 const START_HOUR = 5;
@@ -35,10 +36,11 @@ interface CourtGridProps {
 export function CourtGrid({ date, showBookingDetails = false, readOnly = false }: CourtGridProps) {
   const router = useRouter();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const { data, isLoading, isError } = useCourtGrid(date) as {
+  const { data, isLoading, isError, error } = useCourtGrid(date) as {
     data: CourtGridResponse | undefined;
     isLoading: boolean;
     isError: boolean;
+    error: unknown;
   };
 
   const [popup, setPopup] = useState<SlotPopupState | null>(null);
@@ -141,7 +143,7 @@ export function CourtGrid({ date, showBookingDetails = false, readOnly = false }
   if (isError || !data) {
     return (
       <div className="bg-white rounded-2xl h-40 flex items-center justify-center text-sm text-red-400">
-        Không thể tải lịch sân. Vui lòng thử lại.
+        {getErrorMessage(error)}
       </div>
     );
   }

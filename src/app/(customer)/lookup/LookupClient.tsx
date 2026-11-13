@@ -5,14 +5,17 @@ import { BookingLookupForm } from "@/components/booking/BookingLookupForm";
 import { BookingLookupResult } from "@/components/booking/BookingLookupResult";
 import { useBookingLookup } from "@/hooks/useBooking";
 import type { BookingDetail } from "@/types";
+import { getErrorMessage, isNotFoundError } from "@/utils";
 
 export default function LookupClient() {
   const [notFoundCode, setNotFoundCode] = useState<string | null>(null);
   const [foundBooking, setFoundBooking] = useState<BookingDetail | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { mutate: lookup } = useBookingLookup();
 
   function handleSubmit(code: string, contact: string) {
+    setErrorMessage(null);
     lookup(code, {
       onSuccess: (booking) => {
         const contactMatch = !contact || booking.customerPhone === contact;
@@ -24,9 +27,14 @@ export default function LookupClient() {
           setNotFoundCode(code);
         }
       },
-      onError: () => {
+      onError: (error) => {
         setFoundBooking(null);
-        setNotFoundCode(code);
+        if (isNotFoundError(error)) {
+          setNotFoundCode(code);
+          return;
+        }
+        setNotFoundCode(null);
+        setErrorMessage(getErrorMessage(error));
       },
     });
   }
@@ -51,6 +59,15 @@ export default function LookupClient() {
       </div>
 
       <BookingLookupForm onSubmit={handleSubmit} />
+
+      {errorMessage && (
+        <div
+          role="alert"
+          className="mt-5 rounded-[14px] border border-red-200 bg-red-50 px-5 py-4 text-[13px] text-red-700"
+        >
+          {errorMessage}
+        </div>
+      )}
 
       {hasResult && (
         <BookingLookupResult

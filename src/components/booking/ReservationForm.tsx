@@ -6,7 +6,7 @@ import axios from "axios";
 import { useCreateBooking, useCreateGuestBooking, usePricePreview } from "@/hooks/useBooking";
 import { authService } from "@/services";
 import type { ApiResponse, PricePreviewDto } from "@/types";
-import { formatCurrency } from "@/utils";
+import { formatCurrency, getErrorMessage } from "@/utils";
 
 export function ReservationForm({ guest = false }: { guest?: boolean }) {
   const params = useSearchParams();
@@ -35,8 +35,8 @@ export function ReservationForm({ guest = false }: { guest?: boolean }) {
     try {
       await authService.sendVerificationCode({ email, type: "QuickBooking" });
       setCodeRequested(true);
-    } catch {
-      setError("Không thể yêu cầu mã xác minh. Vui lòng thử lại.");
+    } catch (cause) {
+      setError(getErrorMessage(cause));
     }
   }
 
@@ -65,7 +65,7 @@ export function ReservationForm({ guest = false }: { guest?: boolean }) {
           return;
         }
       }
-      setError("Không thể đặt sân. Vui lòng kiểm tra thông tin và thử lại.");
+      setError(getErrorMessage(cause));
     }
   }
 
@@ -82,6 +82,6 @@ export function ReservationForm({ guest = false }: { guest?: boolean }) {
     {replacementQuote && <div role="alert" className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm">Giá đã thay đổi. Giá mới: <strong>{formatCurrency(replacementQuote.totalCost ?? 0)}</strong>. Xác nhận giá mới để tiếp tục.<button disabled={pending} onClick={() => submit(replacementQuote)} className="mt-3 block rounded-lg bg-amber-700 px-4 py-2 text-white disabled:opacity-50">Đồng ý giá mới</button></div>}
     {error && <p role="alert" className="mt-4 text-sm text-red-700">{error}</p>}
     {!replacementQuote && <button disabled={!quote || pending || (guest && (!name || !phone || !email || !verificationCode || !codeRequested))} onClick={() => submit()} className="mt-6 w-full rounded-lg bg-emerald-700 px-5 py-3 font-medium text-white disabled:opacity-50">{pending ? "Đang gửi..." : "Xác nhận đặt sân"}</button>}
-    {quoteQuery.isError && <p className="mt-3 text-sm text-red-700">Không thể tải giá sân. Vui lòng quay lại thử lại.</p>}
+    {quoteQuery.isError && <p className="mt-3 text-sm text-red-700">{getErrorMessage(quoteQuery.error)}</p>}
   </section>;
 }

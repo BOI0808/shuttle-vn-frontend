@@ -214,7 +214,7 @@ export const bookingService = {
     if (IS_MOCK) {
       await mockDelay();
       const booking = mockBookings.find((b) => b.bookingId === id);
-      if (!booking) throw new Error("Booking not found");
+      if (!booking) throw new Error("Không tìm thấy đơn đặt sân");
       return booking;
     }
     const { data } = await axiosInstance.get<ApiResponse<ApiSchemas["BookingDto"]>>(
@@ -227,7 +227,7 @@ export const bookingService = {
     if (IS_MOCK) {
       await mockDelay();
       const booking = mockBookings.find((b) => b.bookingCode === code);
-      if (!booking) throw new Error("Booking not found");
+      if (!booking) throw new Error("Không tìm thấy đơn đặt sân");
       return booking;
     }
     const { data } = await axiosInstance.get<ApiResponse<ApiSchemas["BookingDto"]>>(
@@ -264,7 +264,7 @@ export const bookingService = {
     if (IS_MOCK) {
       await mockDelay();
       const booking = mockBookings.find((b) => b.bookingId === id);
-      if (!booking) throw new Error("Booking not found");
+      if (!booking) throw new Error("Không tìm thấy đơn đặt sân");
 
       const oldStatus = booking.status;
       booking.status = "Cancelled";

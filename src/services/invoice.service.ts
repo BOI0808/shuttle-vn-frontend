@@ -1,10 +1,12 @@
 import axiosInstance from "@/lib/axios";
 import type { ApiSchemas, InvoiceDetail, InvoiceQuery, PayInvoice } from "@/types";
+import { ApiBusinessError } from "@/utils";
 type InvoicePage = ApiSchemas["InvoiceDetailDtoPagedResult"];
 
-function unwrap<T>(response: { success?: boolean; data?: T | null; message?: string | null }): T {
+function unwrap<T>(response: { success?: boolean; data?: T | null; message?: string | null; errors?: Record<string, string[]> | null }): T {
   if (!response.success || response.data == null) {
-    throw new Error(response.message || "Không nhận được dữ liệu hóa đơn.");
+    const message = response.message ?? "Không nhận được dữ liệu hóa đơn.";
+    throw new ApiBusinessError(message, { message, errors: response.errors });
   }
   return response.data;
 }

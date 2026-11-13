@@ -21,7 +21,9 @@ export default function ProfileClient() {
     // TODO: gọi useDeactivateAccount() mutation khi có endpoint
     setShowDeactivateModal(false);
     clearAuth();
-    toast.error("Tài khoản đã được vô hiệu hóa");
+    toast.warning(
+      "Tính năng vô hiệu hóa tài khoản chưa được hỗ trợ. Bạn đã đăng xuất khỏi tài khoản này."
+    );
     router.push("/login");
   }
 
