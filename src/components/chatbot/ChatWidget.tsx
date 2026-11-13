@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { ChatPanel } from "@/components/chatbot/ChatPanel";
 
@@ -11,6 +11,7 @@ export function ChatWidget() {
   const user = useAuthStore((state) => state.user);
   const isLoading = useAuthStore((state) => state.isLoading);
   const [isOpen, setIsOpen] = useState(false);
+  const launcherRef = useRef<HTMLButtonElement>(null);
   const { messages, isStreaming, toolLabel, send, retry, reset } = useChat();
 
   const accountId = user?.accountId ?? null;
@@ -22,7 +23,10 @@ export function ChatWidget() {
 
   const handleToggle = () => setIsOpen((value) => !value);
 
-  const handleMinimize = () => setIsOpen(false);
+  const handleMinimize = () => {
+    setIsOpen(false);
+    launcherRef.current?.focus();
+  };
 
   const handleClose = () => {
     reset();
@@ -33,18 +37,8 @@ export function ChatWidget() {
 
   return (
     <>
-      {isOpen && (
-        <ChatPanel
-          messages={messages}
-          isStreaming={isStreaming}
-          toolLabel={toolLabel}
-          onSend={send}
-          onRetry={retry}
-          onMinimize={handleMinimize}
-          onClose={handleClose}
-        />
-      )}
       <button
+        ref={launcherRef}
         type="button"
         onClick={handleToggle}
         aria-label={isOpen ? "Thu nhỏ trợ lý AI" : "Mở trợ lý AI"}
@@ -58,6 +52,17 @@ export function ChatWidget() {
           smart_toy
         </span>
       </button>
+      {isOpen && (
+        <ChatPanel
+          messages={messages}
+          isStreaming={isStreaming}
+          toolLabel={toolLabel}
+          onSend={send}
+          onRetry={retry}
+          onMinimize={handleMinimize}
+          onClose={handleClose}
+        />
+      )}
     </>
   );
 }
