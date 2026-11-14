@@ -313,9 +313,10 @@ const FIELD_LABELS: Record<string, string> = {
 };
 
 function normalize(text: string): string {
-  // trim() đã bỏ khoảng trắng cuối nên chỉ cần cắt dấu chấm: tránh regex
-  // `[.\s]+$` có thời gian chạy siêu tuyến tính khi chuỗi dài.
-  return text.trim().replace(/\s+/g, " ").replace(/\.+$/, "").toLowerCase();
+  const compact = text.trim().replace(/\s+/g, " ").toLowerCase();
+  let end = compact.length;
+  while (end > 0 && compact[end - 1] === ".") end--;
+  return compact.slice(0, end);
 }
 
 function fieldLabel(field: string): string {
