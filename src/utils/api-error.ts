@@ -313,7 +313,10 @@ const FIELD_LABELS: Record<string, string> = {
 };
 
 function normalize(text: string): string {
-  return text.trim().replace(/\s+/g, " ").replace(/[.\s]+$/, "").toLowerCase();
+  const compact = text.trim().replace(/\s+/g, " ").toLowerCase();
+  let end = compact.length;
+  while (end > 0 && compact[end - 1] === ".") end--;
+  return compact.slice(0, end);
 }
 
 function fieldLabel(field: string): string {
@@ -433,12 +436,10 @@ export function getApiFieldErrors(error: unknown): Record<string, string> {
   const result: Record<string, string> = {};
 
   for (const [field, values] of Object.entries(body?.errors ?? {})) {
-    for (const value of values ?? []) {
-      const translated =
-        translateApiMessage(value) ?? `${fieldLabel(field)}: giá trị không hợp lệ.`;
-      result[field.trim().toLowerCase()] = translated;
-      break;
-    }
+    const value = values?.[0];
+    if (value === undefined) continue;
+    result[field.trim().toLowerCase()] =
+      translateApiMessage(value) ?? `${fieldLabel(field)}: giá trị không hợp lệ.`;
   }
 
   return result;

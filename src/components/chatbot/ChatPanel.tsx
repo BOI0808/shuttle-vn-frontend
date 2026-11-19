@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 import { ChatMessageItem } from "@/components/chatbot/ChatMessageItem";
 import { ChatQuickPrompts } from "@/components/chatbot/ChatQuickPrompts";
@@ -47,6 +47,16 @@ export function ChatPanel({
     if (list) list.scrollTop = list.scrollHeight;
   }, [messages, toolLabel]);
 
+  // Escape nghe ở document: khung chat là div không tương tác, gắn onKeyDown
+  // trực tiếp lên nó vi phạm quy tắc a11y typescript:S6848.
+  useEffect(() => {
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") onMinimize();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onMinimize]);
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!canSubmit) return;
@@ -54,13 +64,10 @@ export function ChatPanel({
     setDraft("");
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Escape") onMinimize();
-  };
-
   return (
     <div
-      onKeyDown={handleKeyDown}
+      role="dialog"
+      aria-label="Trợ lý AI ShuttleVN"
       className="fixed bottom-32 right-6 z-[60] flex h-[520px] max-h-[80vh] w-[380px] max-w-[90vw] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl"
     >
       <div className="flex h-14 shrink-0 items-center justify-between bg-[#1a1f2e] px-4 text-white">
