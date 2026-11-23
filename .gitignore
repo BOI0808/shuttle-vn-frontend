@@ -1,3 +1,9 @@
+.agents/
+.agent/
+.claude/
+.codex/
+.gemini/
+
 # Dependencies
 node_modules/
 .pnp
