@@ -3,6 +3,7 @@
 .claude/
 .codex/
 .gemini/
+skills-lock.json
 
 # Dependencies
 node_modules/
