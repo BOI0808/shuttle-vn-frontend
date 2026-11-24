@@ -168,44 +168,41 @@ Toàn bộ cặp màu trong Design System đều được đo kiểm dựa trên
 ## 3. HỆ THỐNG KIỂU CHỮ (TYPOGRAPHY SYSTEM)
 
 ### 3.1 Bộ Phông chữ Quy chuẩn (Font Families)
-Hệ thống kết hợp 3 phông chữ chuẩn hóa có vai trò rành mạch:
+Hệ thống chuẩn hóa trên 2 họ phông chữ cốt lõi (tối ưu tải trang và đồng bộ 100% với Figma Variables):
 1. **Phông Tiêu đề & Nhận diện (Display / Brand):** `Be Vietnam Pro` (fallback: `Hanken Grotesk`, `system-ui`).
    - *Lý do:* Trong Figma approved design (`3314:28` và `3314:39`), toàn bộ tiêu đề trang (`24px SemiBold`) và tiêu đề mục (`18px Medium`) được thiết lập bằng `Be Vietnam Pro`. Đây là phông chữ hình học hiện đại được tối ưu hóa bản địa cho tiếng Việt, hiển thị dấu thanh hoàn hảo, không bị vỡ dấu hay lệch khoảng cách ký tự.
    - *Biến CSS:* `--font-display`.
-2. **Phông Giao diện, Form & Văn bản (Interface & Body):** `Inter` (sans-serif).
-   - *Lý do:* Tối ưu độ dễ đọc ở kích thước nhỏ (12px - 14px), hỗ trợ đầy đủ font features (`rlig`, `calt`).
+2. **Phông Giao diện, Form, Văn bản, Dữ liệu, Thời gian & Mã số (Interface, Body, Data & Time):** `Inter` (sans-serif) kết hợp OpenType feature `tabular-nums` (`font-feature-settings: "tnum" 1`).
+   - *Lý do:* Đúng theo định nghĩa gốc trong Figma Variables (`ShuttleVN/data`: `Font(family: "Inter", size: 14)` và `ShuttleVN/code`: `Font(family: "Inter", size: 12)`). Toàn bộ ngày giờ `18:00–19:30`, giá tiền `150.000 đ`, mã đơn `DS-XXXXX` và số liệu biểu đồ đều dùng phông chữ `Inter` đồng bộ, sử dụng tính năng số học độ rộng đồng đều (`tabular-nums` / `tnum`) để số căn thẳng hàng tuyệt đối mà không cần tải thêm phông Monospace riêng biệt, giúp giảm thiểu dung lượng gói tải font và tăng tính hiện đại, liền mạch của giao diện.
    - *Biến CSS:* `--font-sans` hoặc `--font-inter`.
-3. **Phông Dữ liệu, Thời gian & Mã số (Data & Numerics):** `JetBrains Mono` (monospace).
-   - *Lý do:* Toàn bộ mã đơn `DS-XXXXX`, giờ giấc `18:00–19:30`, bảng giá `150.000 đ` và số liệu trục biểu đồ phải sử dụng độ rộng ký tự cố định (`tabular-nums`) để căn thẳng hàng tuyệt đối.
-   - *Biến CSS:* `--font-jetbrains` (bí danh chuẩn hóa: `--font-mono`).
 
 ---
 
 ### 3.2 Thang Phông chữ & Phân cấp Thị giác (Type Scale & Hierarchy)
 
 ```
-[KPI Metric]       32px / Leading 40px / SemiBold (600)  / Inter
+[KPI Metric]       32px / Leading 40px / SemiBold (600)  / Inter (tabular-nums)
 [Page Title]       24px / Leading 32px / SemiBold (600)  / Be Vietnam Pro
 [Section Title]    18px / Leading 26px / Medium (500)    / Be Vietnam Pro
 [Body / Control]   14px / Leading 20px / Regular (400)   / Inter
 [Control Strong]   14px / Leading 20px / SemiBold (600)  / Inter
-[Data Numeric]     14px / Leading 20px / Medium (500)    / Inter (tabular-nums) / JetBrains Mono
+[Data Numeric]     14px / Leading 20px / Medium (500)    / Inter (tabular-nums)
 [Label / Header]   12px / Leading 16px / SemiBold (600)  / Inter
 [Caption / Helper] 12px / Leading 16px / Regular (400)   / Inter
-[Code / Badge]     12px / Leading 16px / Regular (400)   / JetBrains Mono / Inter
+[Code / Badge]     12px / Leading 16px / Regular (400)   / Inter (tabular-nums)
 ```
 
 | Tên Style Token | Phông chữ áp dụng | Cỡ chữ / Dòng (Size / Line Height) | Độ đậm (Weight) | Khoảng cách ký tự (Tracking) | Vai trò & Nơi sử dụng |
 |:---|:---|:---:|:---:|:---:|:---|
-| `display-kpi` | `Inter` | 32px / 40px | SemiBold (600) | Normal (`0`) | Số liệu doanh thu, số lượt đặt lớn trong Statistic Card. |
+| `display-kpi` | `Inter` | 32px / 40px | SemiBold (600) | Normal (`tabular-nums`) | Số liệu doanh thu, số lượt đặt lớn trong Statistic Card. |
 | `heading-page` | `Be Vietnam Pro` | 24px / 32px | SemiBold (600) | Normal (`0`) | Tiêu đề chính của màn hình (`Page heading`). |
 | `heading-section` | `Be Vietnam Pro` | 18px / 26px | Medium (500) | Normal (`0`) | Tiêu đề khối card, bảng biểu, nhóm chức năng. |
 | `body-regular` | `Inter` | 14px / 20px | Regular (400) | Normal (`0`) | Nội dung đoạn văn, giá trị ô dữ liệu trong bảng. |
 | `body-strong` | `Inter` | 14px / 20px | SemiBold (600) | Normal (`0`) | Chữ nút bấm, nhãn input, liên kết tác vụ, hàng Total. |
-| `data-numeric` | `Inter` / `Mono` | 14px / 20px | Medium (500) | Normal (`tabular-nums`) | Giá tiền (`150.000 đ`), khung giờ chơi (`18:00–19:30`). |
+| `data-numeric` | `Inter` | 14px / 20px | Medium (500) | Normal (`tabular-nums`) | Giá tiền (`150.000 đ`), khung giờ chơi (`18:00–19:30`). |
 | `label-strong` | `Inter` | 12px / 16px | SemiBold (600) | Normal / Wide (`0.05em`) | Tiêu đề cột bảng, nhãn nhóm Sidebar viết hoa (`QUẢN TRỊ`). |
 | `caption-regular`| `Inter` | 12px / 16px | Regular (400) | Normal (`0`) | Dòng giải thích phụ trong card, chú thích biểu đồ, helper text. |
-| `code-mono` | `JetBrains Mono`| 12px / 16px | Regular (400) | Normal (`0`) | Mã đơn `DS-XXXXX`, mã hóa đơn `HD-YYYYMMDD-seq`. |
+| `code-mono` | `Inter` | 12px / 16px | Regular (400) | Normal (`tabular-nums`) | Mã đơn `DS-XXXXX`, mã hóa đơn `HD-YYYYMMDD-seq`. |
 
 > [!WARNING]
 > **Giới hạn Cỡ chữ Tối thiểu (Minimum Font Size Rule):** Nghiêm cấm hoàn toàn cỡ chữ dưới `12px` (loại bỏ `9px`, `10px`, `11px` cũ). Cỡ chữ tối thiểu cho nhãn là `12px` (`text-xs`), cho nội dung đọc được là `14px` (`text-sm`).
@@ -581,9 +578,9 @@ Lưới sân là trái tim nghiệp vụ của ShuttleVN, hoạt động từ 05
   - Đường lưới ngang: Nét đứt mảnh màu `#F1F5F9`.
   - Đường trục tọa độ đáy (Baseline): Nét liền 1px màu `#E2E8F0`.
 - **Phông chữ Trục tọa độ (X/Y Axis & Tooltip):**
-  - Bắt buộc dùng font số học cố định `var(--font-jetbrains)` kết hợp `tabular-nums`.
+  - Đồng bộ dùng phông `Inter` kết hợp thuộc tính số học `tabular-nums` (`font-sans tabular-nums` / `fontFeatureSettings: "'tnum' 1"`).
   - Màu chữ nhãn trục: `text-[#475569]` (`slate-600`), cỡ chữ `12px`.
-  - *(Khắc phục triệt để lỗi gọi sai biến `--font-jetbrains-mono`)*.
+  - *(Giải quyết triệt để lỗi gọi sai biến font cũ, không cần nạp thêm phông monospace riêng)*.
 - **Tooltip Doanh thu:** Nền thẻ trắng bo góc 8px, viền `#E2E8F0`, đổ bóng `shadow-md`, số tiền định dạng tiền tệ Việt Nam: `Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })`.
 
 ---
@@ -613,7 +610,7 @@ Hệ thống thiết kế ShuttleVN đã được đối soát toàn diện vớ
 | **7** | **Animation** | MEDIUM | **100% ĐẠT:** Thời lượng 150-200ms ease-out. Loại bỏ bounce animation giật cục. Hỗ trợ đầy đủ `prefers-reduced-motion`. |
 | **8** | **Forms & Feedback** | MEDIUM | **100% ĐẠT:** 100% form dùng component chuẩn Base UI (chấm dứt lỗi ReservationForm). Nhãn rõ ràng, hiển thị trang trọng Tên sân. Toast Sonner góc trên. |
 | **9** | **Navigation Patterns** | HIGH | **100% ĐẠT:** Phím tắt `Ctrl+K` tra cứu nhanh. Bổ sung Breadcrumb cho các trang con chi tiết. Menu active chỉ thị bằng màu `#ECFDF5` và `#047857`. |
-| **10**| **Charts & Data** | LOW | **100% ĐẠT:** Recharts cột xanh ngọc `#059669` bo đỉnh 4px. Trục tọa độ JetBrains Mono chuẩn xác. Tooltip định dạng tiền tệ VND rõ ràng. |
+| **10**| **Charts & Data** | LOW | **100% ĐẠT:** Recharts cột xanh ngọc `#059669` bo đỉnh 4px. Trục tọa độ Inter (tabular-nums) chuẩn xác. Tooltip định dạng tiền tệ VND rõ ràng. |
 
 ---
 
@@ -630,7 +627,7 @@ graph TD
         D4["4. Admin Sidebar: Rộng 240px (Figma) vs 220px (Codebase cũ)"]
         D5["5. Bo góc Controls: 8px chuẩn (Figma) vs 7px/14px dị biệt (Code cũ)"]
         D6["6. Độ rộng Button: Intrinsic Auto (Figma) vs w-full cứng (Code cũ)"]
-        D7["7. Biến Font Mono: --font-jetbrains (Root) vs --font-jetbrains-mono (Chart)"]
+        D7["7. Font Số liệu & Mã đơn: Inter (tabular-nums) thay vì JetBrains Mono"]
     end
 ```
 
@@ -676,11 +673,13 @@ graph TD
   - Figma Component `Button`: Bề rộng co giãn tự nhiên (`content-stretch flex items-center justify-center px-4 py-3`).
 - **Quyết định Kỹ thuật:** **Gỡ bỏ class `w-full` khỏi component Button gốc**. Thêm prop `fullWidth?: boolean` khi cần kéo dài 100%.
 
-#### 7. Tên Biến Phông Monospace trong Recharts
+#### 7. Kiểu chữ cho Ngày giờ, Số liệu và Mã đơn: `Inter (tabular-nums)` thay vì `JetBrains Mono`
 - **Hiện trạng mâu thuẫn:**
-  - `RevenueChart.tsx`: Gọi `fontFamily: "var(--font-jetbrains-mono)"` dẫn đến lỗi trục tọa độ bị rơi về phông mặc định của trình duyệt.
-  - `layout.tsx`: Xuất ra biến `--font-jetbrains`.
-- **Quyết định Kỹ thuật:** Trong cấu hình Tailwind và `globals.css`, định nghĩa bí danh: `--font-mono: var(--font-jetbrains)`. Cập nhật `RevenueChart.tsx` gọi đúng `var(--font-jetbrains)`.
+  - Codebase cũ và `DESIGN_DIRECTIONS.md` đề xuất nạp phông Monospace `JetBrains Mono` (`--font-jetbrains`) cho mã đơn và số liệu.
+  - Thiết kế Figma thực tế (`MUuo3IYucmshw5lvdIS38e`): Trong danh mục Variables, cả `ShuttleVN/data` (`150.000 đ · 18:00–19:30`) và `ShuttleVN/code` đều được thiết lập bằng **`Inter`** (`Font(family: "Inter", style: Medium/Regular)`).
+- **Quyết định Kỹ thuật (Đã được Người dùng Phê duyệt):**
+  - **Chuyển toàn bộ Date, Time, Giá tiền và Mã đơn sang `Inter` kết hợp class `tabular-nums` (`font-feature-settings: "tnum" 1`)**.
+  - **Lợi ích:** Đồng bộ 100% với Figma Variables, loại bỏ 1 request nạp font thừa (`JetBrains_Mono` trong `layout.tsx`), giúp tối ưu tốc độ tải trang (LCP), giao diện hiển thị tinh tế, hiện đại và số liệu vẫn căn thẳng hàng hoàn hảo.
 
 ---
 
@@ -738,8 +737,9 @@ Cập nhật file `globals.css` để nạp toàn bộ biến token chuẩn hóa
     font-family: var(--font-display), var(--font-sans), sans-serif;
   }
   .font-mono-data {
-    font-family: var(--font-jetbrains), monospace;
+    font-family: var(--font-inter), var(--font-sans), sans-serif;
     font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
   }
 }
 ```
@@ -784,7 +784,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "var(--font-inter)", "sans-serif"],
-        mono: ["var(--font-jetbrains)", "monospace"],
+        mono: ["var(--font-inter)", "monospace"], // Inter kết hợp tabular-nums cho số học và mã đơn
       },
       borderRadius: {
         sm: "4px",
@@ -807,7 +807,7 @@ export default config;
 
 | Thành phần Cần Refactor | File Mã nguồn Hiện tại | Nhiệm vụ Chuẩn hóa Cụ thể |
 |:---|:---|:---|
-| **Layout Root & Fonts** | `src/app/layout.tsx` | Nạp `Be_Vietnam_Pro` gán vào `--font-display`. Giữ `--font-inter` và `--font-jetbrains`. |
+| **Layout Root & Fonts** | `src/app/layout.tsx` | Nạp `Be_Vietnam_Pro` gán vào `--font-display` và `Inter` gán vào `--font-inter`. Loại bỏ nạp `JetBrains_Mono` thừa. |
 | **Admin Shell & Sidebar** | `src/components/layout/AdminSidebar.tsx` | Đổi rộng `w-[240px]`, nền `bg-[#F8FAFC]`, viền `#E2E8F0`. Bổ sung Mobile Drawer backdrop. |
 | **Admin Header & Lookup** | `src/components/layout/AdminHeader.tsx` | Tích hợp thanh `QuickLookup` 334px với phím tắt `Ctrl K` và icon kính lúp. |
 | **Base Button** | `src/components/ui/Button.tsx` | Gỡ bỏ `w-full` mặc định, chuẩn hóa bo góc `rounded-[8px]`, màu primary `#047857`. |
@@ -815,7 +815,7 @@ export default config;
 | **Base Input & Label** | `src/components/ui/Input.tsx`, `Label.tsx` | Bo góc `rounded-[8px]`, viền `#CBD5E1`. Label đổi chữ thường 13px font Inter. |
 | **Form Xác nhận Đặt sân**| `src/components/booking/ReservationForm.tsx`| **Thay thế 100% mã HTML thô bằng Base UI**: Hiển thị trang trọng Tên sân, giá từng mốc. |
 | **Lưới sân & Popup** | `CourtGrid.tsx`, `SlotPopup.tsx` | Đổi listener chuột sang `{ passive: true }`. Popup di động chuyển sang Bottom Sheet. |
-| **Biểu đồ Doanh thu** | `src/components/admin/RevenueChart.tsx` | Đổi màu cột sang `#059669`, bo góc `[4,4,0,0]`, sửa biến font thành `var(--font-jetbrains)`. |
+| **Biểu đồ Doanh thu** | `src/components/admin/RevenueChart.tsx` | Đổi màu cột sang `#059669`, bo góc `[4,4,0,0]`, dùng font `Inter` với `tabular-nums`. |
 | **Timeline Bảng giá** | `src/components/admin/PricingTimeline.tsx` | Đổi màu 4 phân đoạn giờ sang chuẩn Emerald/Amber/Blue. Tăng hitbox nút kéo lên 44px. |
 | **Trợ lý AI nổi** | `src/components/chatbot/ChatMessageItem.tsx` | Thay `animate-bounce` bằng `animate-pulse`. Thêm focus trap cho cửa sổ chat. |
 
@@ -829,7 +829,7 @@ Trước khi bàn giao bất kỳ màn hình nào, coding agent phải đối ch
 - [ ] Màn hình Quản trị hiển thị hoàn hảo trên điện thoại di động (Drawer trượt mở êm ái).
 - [ ] Màn hình Xác nhận Đặt sân `/booking` hiển thị rõ ràng Tên sân và bảng giá minh bạch.
 - [ ] Toàn bộ modal đóng được bằng phím `Escape` và có thuộc tính `role="dialog"`.
-- [ ] Biểu đồ Recharts hiển thị đúng cột màu xanh ngọc và font số học JetBrains Mono.
+- [ ] Biểu đồ Recharts hiển thị đúng cột màu xanh ngọc và font số học Inter căn tabular-nums.
 - [ ] Lệnh `npm run type-check` (`tsc --noEmit`) đạt 0 lỗi (Exit code 0).
 - [ ] Lệnh `npm run check:api-error` đạt 17/17 kịch bản (Exit code 0).
 - [ ] Lệnh `npm run build` (`next build`) biên dịch thành công 100%.
