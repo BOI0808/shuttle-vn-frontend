@@ -72,7 +72,7 @@ Toàn bộ hệ thống mã màu được trích xuất trực tiếp từ Figma
 ┌───────────────────────┐ ┌───────────────────────┐ ┌───────────────────────┐
 │ #E2E8F0 (Slate 200)   │ │ #B91C1C (Red 700)     │ │ #FEF2F2 (Red 50)      │
 │ #CBD5E1 (Slate 300)   │ │ #B45309 (Amber 700)   │ │ #FFFBEB (Amber 50)    │
-│ #94A3B8 (Slate 400)   │ │ #1D4ED8 (Blue 700)    │ │ #EFF6FF (Blue 50)     │
+│ #059669 (Focus Ring)  │ │ #1D4ED8 (Blue 700)    │ │ #EFF6FF (Blue 50)     │
 └───────────────────────┘ └───────────────────────┘ └───────────────────────┘
 ```
 
@@ -192,17 +192,17 @@ Hệ thống chuẩn hóa trên 2 họ phông chữ cốt lõi (tối ưu tải 
 [Code / Badge]     12px / Leading 16px / Regular (400)   / Inter (tabular-nums)
 ```
 
-| Tên Style Token | Phông chữ áp dụng | Cỡ chữ / Dòng (Size / Line Height) | Độ đậm (Weight) | Khoảng cách ký tự (Tracking) | Vai trò & Nơi sử dụng |
-|:---|:---|:---:|:---:|:---:|:---|
-| `display-kpi` | `Inter` | 32px / 40px | SemiBold (600) | Normal (`tabular-nums`) | Số liệu doanh thu, số lượt đặt lớn trong Statistic Card. |
-| `heading-page` | `Be Vietnam Pro` | 24px / 32px | SemiBold (600) | Normal (`0`) | Tiêu đề chính của màn hình (`Page heading`). |
-| `heading-section` | `Be Vietnam Pro` | 18px / 26px | Medium (500) | Normal (`0`) | Tiêu đề khối card, bảng biểu, nhóm chức năng. |
-| `body-regular` | `Inter` | 14px / 20px | Regular (400) | Normal (`0`) | Nội dung đoạn văn, giá trị ô dữ liệu trong bảng. |
-| `body-strong` | `Inter` | 14px / 20px | SemiBold (600) | Normal (`0`) | Chữ nút bấm, nhãn input, liên kết tác vụ, hàng Total. |
-| `data-numeric` | `Inter` | 14px / 20px | Medium (500) | Normal (`tabular-nums`) | Giá tiền (`150.000 đ`), khung giờ chơi (`18:00–19:30`). |
-| `label-strong` | `Inter` | 12px / 16px | SemiBold (600) | Normal / Wide (`0.05em`) | Tiêu đề cột bảng, nhãn nhóm Sidebar viết hoa (`QUẢN TRỊ`). |
-| `caption-regular`| `Inter` | 12px / 16px | Regular (400) | Normal (`0`) | Dòng giải thích phụ trong card, chú thích biểu đồ, helper text. |
-| `code-mono` | `Inter` | 12px / 16px | Regular (400) | Normal (`tabular-nums`) | Mã đơn `DS-XXXXX`, mã hóa đơn `HD-YYYYMMDD-seq`. |
+| Tên Style Token | Figma Variable Gốc | Phông chữ áp dụng | Cỡ chữ / Dòng (Size / Line Height) | Độ đậm (Weight) | Khoảng cách ký tự (Tracking) | Vai trò & Nơi sử dụng |
+|:---|:---|:---|:---:|:---:|:---:|:---|
+| `display-kpi` | `ShuttleVN/kpi` | `Inter` | 32px / 40px | SemiBold (600) | Normal (`tabular-nums`) | Số liệu doanh thu, số lượt đặt lớn trong Statistic Card. |
+| `heading-page` | `ShuttleVN/page` | `Be Vietnam Pro` | 24px / 32px | SemiBold (600) | Normal (`0`) | Tiêu đề chính của màn hình (`Page heading`). |
+| `heading-section` | `ShuttleVN/section` | `Be Vietnam Pro` | 18px / 26px | Medium (500) | Normal (`0`) | Tiêu đề khối card, bảng biểu, nhóm chức năng. |
+| `body-regular` | `ShuttleVN/body` | `Inter` | 14px / 20px | Regular (400) | Normal (`0`) | Nội dung đoạn văn, giá trị ô dữ liệu trong bảng. |
+| `body-strong` | `ShuttleVN/strong` | `Inter` | 14px / 20px | SemiBold (600) | Normal (`0`) | Chữ nút bấm, nhãn input, liên kết tác vụ, hàng Total. |
+| `data-numeric` | `ShuttleVN/data` | `Inter` | 14px / 20px | Medium (500) | Normal (`tabular-nums`) | Giá tiền (`150.000 đ`), khung giờ chơi (`18:00–19:30`). |
+| `label-strong` | `ShuttleVN/label` | `Inter` | 12px / 16px | SemiBold (600) | Normal / Wide (`0.05em`) | Tiêu đề cột bảng, nhãn nhóm Sidebar viết hoa (`QUẢN TRỊ`). |
+| `caption-regular`| `ShuttleVN/caption` | `Inter` | 12px / 16px | Regular (400) | Normal (`0`) | Dòng giải thích phụ trong card, chú thích biểu đồ, helper text. |
+| `code-mono` | `ShuttleVN/code` | `Inter` | 12px / 16px | Regular (400) | Normal (`tabular-nums`) | Mã đơn `DS-XXXXX`, mã hóa đơn `HD-YYYYMMDD-seq`. |
 
 > [!WARNING]
 > **Giới hạn Cỡ chữ Tối thiểu (Minimum Font Size Rule):** Nghiêm cấm hoàn toàn cỡ chữ dưới `12px` (loại bỏ `9px`, `10px`, `11px` cũ). Cỡ chữ tối thiểu cho nhãn là `12px` (`text-xs`), cho nội dung đọc được là `14px` (`text-sm`).
@@ -282,9 +282,25 @@ Giải quyết dứt điểm xung đột z-index ghi nhận từ đợt kiểm �
 
 #### 1. Cổng Quản trị (`(admin)`)
 - **Desktop (>= 1024px):**
-  - **Sidebar:** Cố định `w-[240px]`, chiều cao `h-screen`, nền `bg-[#F8FAFC]`, viền phải `border-r border-[#E2E8F0]`.
-  - **Header:** Chiều cao cố định `h-[56px]`, nền `bg-white`, viền dưới `border-b border-[#E2E8F0]`. Chứa tiêu đề Breadcrumb mềm bên trái và Ô tra cứu nhanh `QuickLookup` (`334px`) bên phải.
-  - **Workspace:** Trải rộng co giãn tự do `flex-1 overflow-y-auto p-6 lg:p-8 bg-[#F8FAFC]`.
+  - **Sidebar (Trích xuất nguyên mẫu từ Figma node `3314:28`):**
+    - Chiều rộng cố định: `w-[240px]`, chiều cao `h-screen`, nền `bg-[#F8FAFC]`, viền phải `border-r border-[#E2E8F0]`.
+    - Phần đầu (Logo header): Icon vợt cầu lông (`Icon / racket` 28px) tại `left: 24px, top: 21px` + Tên thương hiệu "ShuttleVN" (font `Be Vietnam Pro` Medium 18px text `#0F172A` tại `left: 64px, top: 20px`).
+    - Nhóm 1 `TỔNG QUAN` (nhãn font `Inter` SemiBold 12px text `#64748B`):
+      * Bảng điều khiển (Active mặc định: `bg-[#ECFDF5]` text `#047857`, icon `dashboard`).
+      * Báo cáo & Thống kê (icon `chart`).
+    - Nhóm 2 `VẬN HÀNH` (nhãn font `Inter` SemiBold 12px text `#64748B`):
+      * Lịch sân (icon `calendar`).
+      * Yêu cầu đặt sân (icon `inbox`).
+      * Thanh toán (icon `money`).
+      * Quản lý sân (icon `court`).
+    - Nhóm 3 `QUẢN TRỊ` (nhãn font `Inter` SemiBold 12px text `#64748B`):
+      * Khách hàng (icon `users`).
+      * Nhân viên (icon `employee`).
+      * Đặt sân toàn hệ thống (icon `calendar`).
+      * Nhật ký hoạt động (icon `history`).
+    - Chân trang Sidebar (Footer): Divider 1px `#E2E8F0` tại top 936px, dòng chính "ShuttleVN Admin" (font `Inter` SemiBold 14px text `#0F172A`), dòng phụ "Quản lý cơ sở cầu lông" (font `Inter` Regular 12px text `#475569`).
+  - **Header:** Chiều cao cố định `h-[56px]`, nền `bg-white`, viền dưới `border-b border-[#E2E8F0]`. Chứa tiêu đề Breadcrumb mềm bên trái ("Không gian quản trị" font `Inter` 14px text `#475569`) và Ô tra cứu nhanh `QuickLookup` (`334px` viền `#CBD5E1`) bên phải.
+  - **Workspace:** Trải rộng co giãn tự do `flex-1 overflow-y-auto p-6 lg:p-8 bg-[#F8FAFC]`. Chứa tiêu đề trang 24px `Be Vietnam Pro`, huy hiệu `Today` date badge (272px), và lưới 3 thẻ KPI.
 - **Mobile / Tablet (< 1024px):**
   - Sidebar ẩn khỏi luồng bố cục chính, chuyển thành **Slide-over Drawer** kích hoạt bằng nút Hamburger trên Topbar.
   - Topbar thu gọn chiều cao `h-14`, chứa nút mở Drawer và icon tìm kiếm nhanh.
@@ -388,6 +404,14 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 ---
 
+### 5.5b Huy hiệu Ngày Hiện tại (`TodayDateBadge`)
+Được trích xuất từ Figma Page Heading (`3314:252`).
+- Kích thước: Rộng `272px`, cao `44px`, bo góc `rounded-[8px]`, nền `bg-white`, viền `border border-[#E2E8F0]`, padding `px-3.5 py-2.5 flex items-center gap-3`.
+- Icon lịch: Material symbol `calendar` 20px, màu `#0F172A`.
+- Văn bản ngày giờ: Font Inter Medium `text-[14px] text-[#0F172A]` hiển thị ngày định dạng tiếng Việt đầy đủ (ví dụ: `Thứ Hai, 23/11/2026`).
+
+---
+
 ### 5.6 Mẫu Bảng Dữ liệu Chuẩn mực (`DataTable`)
 Được trích xuất từ Figma Daily Court Table (`3314:37`).
 - **Container bọc ngoài:** Nền `bg-white`, viền bao `border border-[#E2E8F0]`, bo góc `rounded-[12px]`, `overflow-hidden`.
@@ -457,6 +481,26 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
    - Khối thông báo thành công: Chiều cao 96px, bo góc `rounded-[8px]`, nền `bg-white`, viền `border border-[#E2E8F0]`, icon thành công trong ô 32px nền `#ECFDF5` (`#047857`).
    - Tiêu đề: Font Inter `text-[14px] font-semibold text-[#0F172A]`.
    - Chú thích: Font Inter `text-[12px] text-[#475569]`.
+
+---
+
+### 5.10 Thẻ Hàng Chờ Đơn Cần Xử Lý Gấp (`UrgentBookingsCard`)
+Được trích xuất từ Figma Admin Dashboard (`3314:34`).
+- **Khung chứa tổng thể (Container):**
+  - Chiều rộng: `w-full` (hoặc `1136px`), chiều cao: `148px`.
+  - Nền: `bg-white`, viền bao: `border border-[#E2E8F0]`, bo góc: `rounded-[12px]`.
+- **Phần Đầu Thẻ (Card Header - Chiều cao 76px):**
+  - **Tiêu đề nhóm:** Font `Be Vietnam Pro` Medium `text-[18px] leading-[26px] text-[#0F172A]` ("Đơn cần xử lý gấp").
+  - **Huy hiệu số lượng (`CountBadge`):** Kích thước `28x24px`, bo góc `rounded-[4px]`, nền `bg-[#F1F5F9]`, chữ font `Inter` Regular `text-[12px] text-[#0F172A]` căn giữa (`0`).
+  - **Dòng định hướng:** Font `Inter` Regular `text-[12px] leading-[16px] text-[#475569]` ("Ưu tiên theo giờ chơi gần nhất").
+  - **Liên kết hành động bên phải:** Font `Inter` SemiBold `text-[14px] leading-[20px] text-[#047857]` ("Xem tất cả yêu cầu") kèm icon mũi tên 20px màu `#047857` (`hover:underline`).
+  - **Đường phân cách (Divider):** Nét liền 1px màu `#E2E8F0` tại vị trí top 76px chia tách header và thân thẻ.
+- **Thân Thẻ khi Hàng Chờ Rỗng (`Empty Queue State`):**
+  - **Ô biểu tượng:** Kích thước `32x32px`, bo góc `rounded-[6px]`, nền `bg-[#ECFDF5]`, chứa icon Material Symbol màu `#047857` (kích thước 20px).
+  - **Dòng thông báo chính:** Font `Inter` SemiBold `text-[14px] leading-[20px] text-[#0F172A]` ("Không có đơn chờ xác nhận").
+  - **Dòng diễn giải phụ:** Font `Inter` Regular `text-[12px] leading-[16px] text-[#475569]` ("Các yêu cầu cần xử lý sẽ xuất hiện tại đây.").
+- **Thân Thẻ khi Có Đơn Chờ (`Active Queue State`):**
+  - Hiển thị danh sách ngang hoặc danh sách cuộn các thẻ đơn gọn: Mỗi đơn hiển thị Mã đơn (`Inter tabular-nums`), Tên khách, Tên sân, Khung giờ chơi và 2 nút tác vụ nhanh ("Duyệt" `bg-[#047857]` và "Xem" `variant="outline"`).
 
 ---
 
@@ -571,17 +615,31 @@ Lưới sân là trái tim nghiệp vụ của ShuttleVN, hoạt động từ 05
 
 ### 8.2 Biểu đồ Doanh thu Recharts (`RevenueChart`)
 Được trích xuất từ Figma Admin Dashboard (`3314:35`).
-- **Thư viện:** Recharts v2.12.
-- **Màu sắc Cột (Bar Fill):** Đồng bộ tuyệt đối về sắc xanh ngọc thương hiệu `#059669` (`emerald-600`), loại bỏ hoàn toàn màu xanh dương `#3b82f6` lạc điệu.
-- **Bo góc Cột:** Bo tròn 4px hai góc trên đỉnh cột: `radius={[4, 4, 0, 0]}`.
-- **Đường chuẩn tham chiếu (Grid & Baseline):**
-  - Đường lưới ngang: Nét đứt mảnh màu `#F1F5F9`.
-  - Đường trục tọa độ đáy (Baseline): Nét liền 1px màu `#E2E8F0`.
-- **Phông chữ Trục tọa độ (X/Y Axis & Tooltip):**
-  - Đồng bộ dùng phông `Inter` kết hợp thuộc tính số học `tabular-nums` (`font-sans tabular-nums` / `fontFeatureSettings: "'tnum' 1"`).
-  - Màu chữ nhãn trục: `text-[#475569]` (`slate-600`), cỡ chữ `12px`.
-  - *(Giải quyết triệt để lỗi gọi sai biến font cũ, không cần nạp thêm phông monospace riêng)*.
-- **Tooltip Doanh thu:** Nền thẻ trắng bo góc 8px, viền `#E2E8F0`, đổ bóng `shadow-md`, số tiền định dạng tiền tệ Việt Nam: `Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })`.
+- **Khung chứa tổng thể (Container):**
+  - Kích thước chuẩn: Rộng `704px` (hoặc co giãn theo cột grid), cao `248px`.
+  - Nền: `bg-white`, viền: `border border-[#E2E8F0]`, bo góc: `rounded-[12px]`.
+- **Phần Đầu Thẻ (Header - Chiều cao 76px):**
+  - Tiêu đề khối: Font `Be Vietnam Pro` Medium `text-[18px] leading-[26px] text-[#0F172A]` ("Doanh thu thực thu").
+  - Phụ đề: Font `Inter` Regular `text-[12px] text-[#475569]` ("Chỉ tính hóa đơn đã thu tiền").
+  - Liên kết xem báo cáo: Font `Inter` SemiBold `text-[14px] text-[#047857]` ("Xem báo cáo") kèm icon Material Symbol 20px `#047857`.
+  - Đường phân cách: Nét liền 1px màu `#E2E8F0` tại top 76px.
+- **Thanh Chọn Khoảng Thời Gian (`ReportDateFilter`):**
+  - Khung pill kích thước `274x32px`, viền `border border-[#E2E8F0]`, bo góc `rounded-[6px]`.
+  - Hiển thị ngày: Font `Inter` Regular `text-[12px] text-[#0F172A]` (`23/11/2026`).
+  - Đường chia dọc: 1px cao 20px màu `#E2E8F0`.
+  - Dropdown chọn kiểu: Font `Inter` Regular `text-[12px] text-[#475569]` ("Theo ngày") kèm icon dropdown 16px.
+- **Thư viện & Cấu hình Biểu đồ Recharts v2.12:**
+  - **Số liệu Doanh thu Tổng:** Font `Inter` Medium `text-[18px] text-[#0F172A]` ("0 đ").
+  - **Màu sắc Cột (Bar Fill):** Đồng bộ tuyệt đối về sắc xanh ngọc thương hiệu `#059669` (`emerald-600`), loại bỏ hoàn toàn màu xanh dương `#3b82f6` lạc điệu.
+  - **Bo góc Cột:** Bo tròn 4px hai góc trên đỉnh cột: `radius={[4, 4, 0, 0]}`.
+  - **Đường chuẩn tham chiếu (Grid & Baseline):**
+    * Đường lưới ngang: Nét đứt mảnh màu `#F1F5F9`.
+    * Đường trục tọa độ đáy (Baseline): Nét liền 1px màu `#E2E8F0`.
+  - **Phông chữ Trục tọa độ (X/Y Axis & Tooltip):**
+    * Đồng bộ dùng phông `Inter` kết hợp thuộc tính số học `tabular-nums` (`font-sans tabular-nums` / `fontFeatureSettings: "'tnum' 1"`).
+    * Màu chữ nhãn trục: `text-[#475569]` (`slate-600`), cỡ chữ `12px`.
+  - **Trạng thái Trống (Empty Chart):** Dòng chữ font `Inter` Regular `text-[14px] text-[#475569]` căn giữa biểu đồ ("Chưa có doanh thu trong ngày").
+  - **Tooltip Doanh thu:** Nền thẻ trắng bo góc 8px, viền `#E2E8F0`, đổ bóng `shadow-md`, số tiền định dạng tiền tệ Việt Nam: `Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })`.
 
 ---
 
@@ -592,6 +650,35 @@ Giải quyết vấn đề phân mảnh màu pastel cũ, đồng bộ dải 4 ph
 - **Khung giờ Vàng Cao điểm (16:00 - 20:00):** Nền `bg-[#FFFBEB]` (`amber-50`), viền `border-[#FDE68A]`, nhãn `text-[#B45309]`.
 - **Khung giờ Tối muộn (20:00 - 22:00):** Nền `bg-[#F1F5F9]` (`slate-100`), viền `border-[#CBD5E1]`, nhãn `text-[#475569]`.
 - **Nút Kéo Mốc Giờ (Slider Thumbs):** Chiều rộng 18px, thanh kéo thẳng đứng màu `#047857`, vùng cảm ứng chạm tối thiểu 44px hỗ trợ kéo mượt mà trên iPad/máy tính bảng tại quầy.
+
+---
+
+### 8.4 Biểu đồ Tiến độ Giờ Sử Dụng Sân (`CourtUsageCard`)
+Được trích xuất từ Figma Admin Dashboard (`3314:36`).
+- **Khung chứa tổng thể (Container):**
+  - Kích thước: Rộng `408px` (hoặc co giãn theo grid), cao `248px`.
+  - Nền: `bg-white`, viền bao: `border border-[#E2E8F0]`, bo góc: `rounded-[12px]`.
+- **Phần Đầu Thẻ (Header - Chiều cao 76px):**
+  - **Tiêu đề khối:** Font `Be Vietnam Pro` Medium `text-[18px] leading-[26px] text-[#0F172A]` ("Giờ sử dụng sân").
+  - **Phụ đề:** Font `Inter` Regular `text-[12px] leading-[16px] text-[#475569]` ("Trong ngày 23/11/2026").
+  - **Đường phân cách (Divider):** Nét liền 1px màu `#E2E8F0` tại top 76px.
+- **Thân Thẻ (Progress Rows):**
+  - **Hàng 1 (Tên Sân & Tổng thời lượng):**
+    * Tên sân: Font `Inter` Regular `text-[14px] text-[#0F172A]` ("Sân 1").
+    * Tổng giờ: Font `Inter` Regular `text-[14px] text-[#475569]` ("0 giờ").
+  - **Hàng 2 (Tiến độ Giờ đặt - Booked Hours):**
+    * Nhãn: Font `Inter` Regular `text-[12px] text-[#475569]` ("Giờ đặt").
+    * Thanh ray (Track bar): Rộng `224px`, cao `6px`, bo góc tròn `rounded-full`, nền `bg-[#F1F5F9]`.
+    * Điểm mốc / Tiến độ: Màu `bg-[#64748B]` (`slate-500`) (vạch chỉ báo 2x10px khi ở mốc 0, hoặc thanh tiến độ co giãn khi có giờ đặt).
+    * Giá trị số: Font `Inter` Regular `text-[14px] text-[#0F172A] tabular-nums` căn phải (`0`).
+  - **Hàng 3 (Tiến độ Hoàn thành - Completed Hours):**
+    * Nhãn: Font `Inter` Regular `text-[12px] text-[#475569]` ("Hoàn thành").
+    * Thanh ray (Track bar): Rộng `224px`, cao `6px`, bo góc tròn `rounded-full`, nền `bg-[#F1F5F9]`.
+    * Điểm mốc / Tiến độ: Màu `bg-[#059669]` (`emerald-600`) (vạch chỉ báo 2x10px khi ở mốc 0, hoặc dải màu xanh ngọc khi hoàn thành).
+    * Giá trị số: Font `Inter` Regular `text-[14px] text-[#0F172A] tabular-nums` căn phải (`0`).
+- **Chân Thẻ (Footer):**
+  - Đường phân cách 1px màu `#E2E8F0` tại top 202px.
+  - Ghi chú: Font `Inter` Regular `text-[12px] text-[#475569]` ("Chưa có giờ đặt hoặc giờ hoàn thành.").
 
 ---
 
@@ -779,6 +866,12 @@ const config: Config = {
         line: {
           DEFAULT: "#E2E8F0", // Slate 200
           input: "#CBD5E1",   // Slate 300
+        },
+        status: {
+          success: { DEFAULT: "#047857", soft: "#ECFDF5" },
+          warning: { DEFAULT: "#B45309", soft: "#FFFBEB" },
+          danger: { DEFAULT: "#B91C1C", soft: "#FEF2F2" },
+          info: { DEFAULT: "#1D4ED8", soft: "#EFF6FF" },
         },
       },
       fontFamily: {
