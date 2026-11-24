@@ -3,6 +3,7 @@
 .claude/
 .codex/
 .gemini/
+.impeccable/
 skills-lock.json
 
 # Dependencies
