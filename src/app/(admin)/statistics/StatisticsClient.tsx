@@ -82,7 +82,7 @@ export default function StatisticsClient() {
           Báo cáo &amp; Thống kê
         </h1>
         <p className="mt-1 font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
-          Doanh thu thực thu và tần suất sử dụng sân · Giờ Việt Nam (UTC+7)
+          Doanh thu thực thu và tần suất sử dụng sân
         </p>
       </div>
 

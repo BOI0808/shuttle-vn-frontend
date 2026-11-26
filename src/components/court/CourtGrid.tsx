@@ -59,13 +59,6 @@ export function CourtGrid({ date, showBookingDetails = false, readOnly = false }
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const handleWheel = (event: WheelEvent) => {
-      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-      event.preventDefault();
-      container.scrollLeft += event.deltaY * 1.2;
-    };
-    container.addEventListener("wheel", handleWheel, { passive: false });
-
     if (autoScrolledDateRef.current !== date) {
       const firstAllowedMinute = date === localToday
         ? Math.ceil((nowTotalMin + 1) / SLOT_MIN) * SLOT_MIN
@@ -74,8 +67,6 @@ export function CourtGrid({ date, showBookingDetails = false, readOnly = false }
       container.scrollLeft = slotIndex * 72;
       autoScrolledDateRef.current = date;
     }
-
-    return () => container.removeEventListener("wheel", handleWheel);
   }, [date, data, localToday, nowTotalMin]);
 
   const dateObj = new Date(`${date}T00:00:00`);
@@ -134,16 +125,57 @@ export function CourtGrid({ date, showBookingDetails = false, readOnly = false }
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-2xl h-40 flex items-center justify-center text-sm text-gray-400">
-        Đang tải lịch sân...
+      <div
+        aria-busy="true"
+        className="overflow-hidden rounded-[12px] border border-line bg-white"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
+          <div>
+            <p className="font-display text-[18px] font-medium leading-[26px] text-ink">
+              Lịch sân theo ngày
+            </p>
+            <p className="font-sans text-[12px] leading-[16px] text-ink-secondary">
+              Đang tải lịch sân…
+            </p>
+          </div>
+          <p className="font-sans text-[12px] leading-[16px] text-ink-secondary tabular-nums">
+            34 khung giờ · 05:00–22:00
+          </p>
+        </div>
+        <div className="flex items-center gap-3 p-5">
+          <div className="w-[120px] shrink-0 space-y-2">
+            <div className="h-[16px] w-16 animate-pulse rounded-[4px] bg-line" />
+            <div className="h-[12px] w-24 animate-pulse rounded-[4px] bg-surface-soft" />
+          </div>
+          <div className="grid flex-1 grid-cols-6 gap-2 sm:grid-cols-10">
+            {Array.from({ length: 10 }, (_, idx) => (
+              <div
+                key={idx}
+                className="flex h-[56px] items-center justify-center rounded-[6px] border border-line bg-surface-soft font-sans text-[14px] font-medium text-ink-secondary"
+              >
+                —
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
 
   if (isError || !data) {
     return (
-      <div className="bg-white rounded-2xl h-40 flex items-center justify-center text-sm text-red-400">
-        {getErrorMessage(error)}
+      <div
+        role="alert"
+        className="flex items-center gap-3 rounded-[12px] border border-line bg-white p-5"
+      >
+        <div className="flex size-[40px] shrink-0 items-center justify-center rounded-[8px] bg-status-danger-soft text-status-danger">
+          <span className="material-symbols-outlined text-[22px]" aria-hidden="true">
+            warning
+          </span>
+        </div>
+        <p className="font-sans text-[14px] text-ink-secondary">
+          {getErrorMessage(error)}
+        </p>
       </div>
     );
   }
@@ -152,47 +184,42 @@ export function CourtGrid({ date, showBookingDetails = false, readOnly = false }
 
   return (
     <>
-      <div
-        className="bg-white rounded-2xl overflow-hidden"
-        style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
-      >
+      <div className="overflow-hidden rounded-[12px] border border-line bg-white">
         {/* Header */}
-        <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-3">
-          <div>
-            <span className="font-display text-[15px] font-bold text-gray-900">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
+          <div className="flex items-baseline gap-2">
+            <span className="font-display text-[18px] font-medium leading-[26px] text-ink">
               {dayLabel}
             </span>
-            <span className="font-mono text-[13px] text-gray-400 ml-1.5">
+            <span className="font-sans text-[14px] font-medium text-ink-secondary tabular-nums">
               {dateLabel}
             </span>
           </div>
-          <div className="ml-auto flex items-center gap-1.5 font-mono text-[11px] text-gray-500">
-            <span
-              className="w-[7px] h-[7px] rounded-full bg-green-500 inline-block"
-              style={{ animation: "pulse 2s infinite" }}
-            />
-            Cập nhật mỗi 30 giây
+          <div className="flex flex-wrap items-center gap-4 font-sans text-[12px] text-ink-secondary">
+            <span className="tabular-nums">34 khung giờ · 05:00–22:00</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span
+                className="inline-block size-[7px] animate-pulse rounded-full bg-brand"
+                aria-hidden="true"
+              />
+              Cập nhật mỗi 30 giây
+            </span>
           </div>
         </div>
 
         {/* Scrollable grid */}
         <div
           ref={scrollContainerRef}
-          className="overflow-x-auto [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full"
+          className="overflow-x-auto"
         >
           <table className="border-collapse" style={{ tableLayout: "fixed" }}>
             <thead>
               <tr>
                 {/* Corner */}
                 <th
-                  className="font-mono text-[11px] font-semibold text-gray-400 uppercase tracking-[0.06em] border-b-2 border-b-gray-200 border-r border-r-gray-200 sticky left-0 z-[11]"
-                  style={{
-                    width: 148,
-                    minWidth: 148,
-                    padding: "12px 16px",
-                    background: "#fafafa",
-                    textAlign: "left",
-                  }}
+                  scope="col"
+                  className="sticky left-0 z-[11] border-b border-line border-r border-line bg-surface-bg px-4 py-3 text-left font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary"
+                  style={{ width: 148, minWidth: 148 }}
                 >
                   Sân
                 </th>
@@ -202,17 +229,13 @@ export function CourtGrid({ date, showBookingDetails = false, readOnly = false }
                   return (
                     <th
                       key={i}
-                      className={`font-mono text-[11px] font-medium text-gray-400 border-b-2 border-b-gray-200 whitespace-nowrap text-center ${
+                      scope="col"
+                      className={`whitespace-nowrap border-b border-line bg-surface-bg py-2.5 text-center font-sans text-[12px] leading-[16px] tabular-nums ${
                         isHour
-                          ? "font-semibold text-gray-500 border-r border-r-gray-300"
-                          : "border-r border-r-gray-200"
+                          ? "border-r border-line-strong font-semibold text-ink"
+                          : "border-r border-line font-normal text-ink-secondary"
                       }`}
-                      style={{
-                        width: 72,
-                        minWidth: 72,
-                        padding: "10px 0",
-                        background: "#fafafa",
-                      }}
+                      style={{ width: 72, minWidth: 72 }}
                     >
                       {slotKey(i)}
                     </th>
@@ -225,15 +248,17 @@ export function CourtGrid({ date, showBookingDetails = false, readOnly = false }
                 <tr key={court.court.courtId}>
                   {/* Court info cell */}
                   <td
-                    className="border-b border-b-gray-100 border-r border-r-gray-200 bg-white sticky left-0 z-[5]"
-                    style={{ padding: "10px 16px", height: 56, minWidth: 130 }}
+                    className="sticky left-0 z-[5] border-b border-line border-r border-line bg-white px-4 py-2.5"
+                    style={{ height: 56, minWidth: 148 }}
                   >
-                    <div className="text-[13px] font-semibold text-gray-900 leading-snug">
+                    <div className="font-sans text-[14px] font-semibold leading-[20px] text-ink">
                       {court.court.name}
                     </div>
-                    <div className="font-mono text-[10px] text-gray-400 mt-px">
-                      {court.court.description}
-                    </div>
+                    {court.court.description && (
+                      <div className="truncate font-sans text-[12px] leading-[16px] text-ink-secondary">
+                        {court.court.description}
+                      </div>
+                    )}
                   </td>
 
                   {Array.from({ length: TOTAL_SLOTS }, (_, i) => {
@@ -244,9 +269,12 @@ export function CourtGrid({ date, showBookingDetails = false, readOnly = false }
                     );
                     const slotIsPast = date < localToday ||
                       (date === localToday && totalMin <= now.getHours() * 60 + now.getMinutes());
-                    const slotStatus: SlotDisplayStatus = slotIsPast
-                      ? "CLOSED"
-                      : slotFound?.displayStatus ?? "CLOSED";
+                    const slotStatus: SlotDisplayStatus =
+                      slotFound?.displayStatus === "BOOKED"
+                        ? "BOOKED"
+                        : slotIsPast
+                        ? "CLOSED"
+                        : slotFound?.displayStatus ?? "CLOSED";
 
                     return (
                       <CourtSlotCell
@@ -264,12 +292,12 @@ export function CourtGrid({ date, showBookingDetails = false, readOnly = false }
                         }
                       >
                         {showBookingDetails && slotFound?.displayStatus === "BOOKED" && (
-                          <div className="text-center leading-tight text-gray-700">
-                            <p className="text-[10px] font-semibold">Đã đặt</p>
-                            <p className="mt-1 font-mono text-[8px]">
-                              {slotFound.startTime}–{slotFound.endTime}
-                            </p>
-                          </div>
+                          <span
+                            title={`${slotFound.startTime}–${slotFound.endTime}`}
+                            className="font-sans text-[12px] font-medium text-ink-secondary"
+                          >
+                            Đã đặt
+                          </span>
                         )}
                       </CourtSlotCell>
                     );
@@ -281,32 +309,35 @@ export function CourtGrid({ date, showBookingDetails = false, readOnly = false }
         </div>
 
         {/* Legend */}
-        <div className="flex items-center gap-[18px] px-5 py-2.5 border-t border-gray-100 justify-end">
+        <div className="flex flex-wrap items-center justify-end gap-5 border-t border-line px-5 py-3">
           {[
             {
               label: "Còn trống",
-              style: { background: "#fff", border: "1px solid #d1d5db" },
+              style: { background: "#FFFFFF", border: "1px solid #B9C8D6" },
             },
             {
               label: "Đã đặt",
-              style: { background: "#e5e7eb", border: "1px solid #d1d5db" },
+              style: { background: "#EDF2F6", border: "1px solid #DCE5ED" },
             },
-            { label: "Đặt của bạn", style: { background: "#10b981" } },
             {
-              label: "Đóng cửa",
+              label: "Đặt của bạn",
+              style: { background: "#087F5B", border: "1px solid #066649" },
+            },
+            {
+              label: "Đóng / quá giờ",
               style: {
                 backgroundImage:
-                  "repeating-linear-gradient(-45deg,#d1d5db 0px,#d1d5db 1.5px,#e5e7eb 1.5px,#e5e7eb 8px)",
-                border: "1px solid #d1d5db",
+                  "repeating-linear-gradient(-45deg,#DCE5ED 0px,#DCE5ED 1.5px,#EDF2F6 1.5px,#EDF2F6 8px)",
+                border: "1px solid #DCE5ED",
               },
             },
           ].filter((item) => !readOnly || item.label !== "Đặt của bạn").map((item) => (
             <div
               key={item.label}
-              className="flex items-center gap-1.5 text-[11px] text-gray-500"
+              className="flex items-center gap-2 font-sans text-[12px] leading-[16px] text-ink-secondary"
             >
               <div
-                className="w-5 h-3.5 rounded-[4px] flex-shrink-0"
+                className="h-3.5 w-5 shrink-0 rounded-[4px]"
                 style={item.style}
               />
               {item.label}

@@ -117,7 +117,7 @@ export default function DashboardClient() {
             Bảng điều khiển
           </h1>
           <p className="mt-1 font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
-            Tổng quan vận hành trong ngày · Giờ Việt Nam (UTC+7)
+            Tổng quan vận hành trong ngày 
           </p>
         </div>
 

@@ -32,29 +32,31 @@ export function CourtSlotCell({
     <td
       style={{ contentVisibility: "auto", containIntrinsicSize: "72px 56px" }}
       className={cn(
-        "w-[72px] min-w-[72px] h-14 p-[5px_3px] border-b border-b-gray-100 vertical-middle relative",
-        isHourSep ? "border-r border-r-gray-300" : "border-r border-r-gray-200"
+        "relative h-14 w-[72px] min-w-[72px] border-b border-line p-[5px_3px] align-middle",
+        isHourSep ? "border-r border-line-strong" : "border-r border-line"
       )}
     >
       <div
         className={cn(
-          "w-full h-full rounded-[5px] border border-transparent flex items-center justify-center relative overflow-hidden",
+          "relative flex h-full w-full items-center justify-center overflow-hidden rounded-[6px] border border-transparent",
           isClosed
             ? "slot-closed"
             : status === "BOOKED"
             ? "slot-booked"
             : status === "AVAILABLE"
-            ? onClickAvailable ? "slot-available" : "bg-white border-gray-200"
+            ? onClickAvailable
+              ? "slot-available"
+              : "border-line bg-white"
             : "slot-mine",
           !onClickAvailable && "cursor-default!"
         )}
         title={
-          isPast
+          status === "BOOKED"
+            ? "Đã đặt"
+            : isPast
             ? "Đã qua"
             : isClosed
             ? "Đóng cửa"
-            : status === "BOOKED"
-            ? "Đã đặt"
             : status === "AVAILABLE"
             ? onClickAvailable ? "Còn trống – click để đặt" : "Còn trống"
             : "Đặt của bạn"
