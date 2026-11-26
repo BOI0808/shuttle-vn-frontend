@@ -2,10 +2,10 @@
 ## Tài liệu Quy chuẩn Duy nhất cho Triển khai Frontend (Single Source of Truth)
 
 * **Dự án:** ShuttleVN (Hệ thống quản lý cơ sở sân cầu lông tích hợp Trợ lý AI)
-* **Phiên bản:** v1.0.0 (Final Approved Design System)
-* **Thời điểm lập:** 24/11/2026
+* **Phiên bản:** v1.1.0 (Final Approved Design System - Synced with Updated Figma)
+* **Thời điểm lập:** 26/11/2026
 * **Căn cứ pháp lý & kỹ thuật:** 
-  - Figma Approved Design: File `MUuo3IYucmshw5lvdIS38e` (Admin Dashboard `3314:28`, Thành phần dùng chung `3314:39`)
+  - Figma Approved Design: File `oKgloxLTqAdsZG599iDolt` (`Nhật Khôi's team library (Copy)`: Admin Dashboard `3314:28`, Thành phần dùng chung `3314:39`, và các phân hệ `01 · Xác thực` `3325:112`, `02 · Khách hàng` `3325:113`, `03 · Vận hành` `3325:114`, `04 · Quản trị` `3325:115`, `05 · Thành phần & phản hồi vận hành` `3325:116`)
   - Định hướng thiết kế: `DESIGN_DIRECTIONS.md` (Định hướng 1: Athletic Kinetic lai tạo)
   - Khảo sát hiện trạng: `FRONTEND_DISCOVERY.md`
   - Báo cáo kiểm định: `UI_UX_BASELINE_AUDIT.md`
@@ -33,13 +33,13 @@
 
 ### 1.1 Triết lý Thiết kế: Athletic Kinetic (Thể thao Lai tạo Tinh chuẩn)
 Hệ thống thiết kế ShuttleVN được xây dựng trên triết lý **Athletic Kinetic** kết hợp tinh chuẩn công nghiệp và lòng hiếu khách thể thao:
-1. **Tinh thần Thể thao Năng động (Athletic Energy):** Sử dụng dải màu xanh ngọc thương hiệu (`Emerald 600 #059669` và `Emerald 700 #047857`) chuẩn sân thi đấu BWF quốc tế, mang lại cảm giác tươi mới, chính xác, sắc nét và đáng tin cậy.
-2. **Kỷ luật Vận hành & Mật độ Tinh chỉnh (Precision Density):** Cổng Quản trị áp dụng cơ chế nén mật độ thông tin thông minh (chiều cao dòng bảng 40-44px, thẻ KPI 128px, phím tắt `Ctrl+K`), giúp nhân viên quầy và chủ cơ sở quét mắt tức thì, không click trượt.
+1. **Tinh thần Thể thao Năng động (Athletic Energy):** Sử dụng dải màu xanh ngọc thương hiệu (`#087F5B` và `#066649`) chuẩn sân thi đấu BWF quốc tế kết hợp nền ấm nhẹ (`#FDF8F8`) và chữ xanh hải quân sâu (`#172F4D`), mang lại cảm giác tươi mới, chính xác, sắc nét và đáng tin cậy.
+2. **Kỷ luật Vận hành & Mật độ Tinh chỉnh (Precision Density):** Cổng Quản trị áp dụng cơ chế nén mật độ thông tin thông minh (chiều cao dòng bảng 44px, thẻ KPI 128px, phím tắt `Ctrl+K`), giúp nhân viên quầy và chủ cơ sở quét mắt tức thì, không click trượt.
 3. **Hiếu khách & An tâm (Hospitality & Peace of Mind):** Cổng Khách hàng tập trung giảm ma sát đặt sân dưới 60 giây, minh bạch tuyệt đối tên sân và báo giá theo từng phút, cung cấp Thẻ vé vào sân (Match Ticket) kèm mã QR an tâm sau khi hoàn tất.
 
 ### 1.2 Nguồn Tham chiếu & Quyền ưu tiên (Hierarchy of Truth)
 Khi có sự khác biệt giữa các nguồn tài liệu, thứ tự ưu tiên tuyệt đối được áp dụng như sau:
-1. **Mức 1 (Tối cao về Trực quan & Tokens):** Thiết kế Figma đã duyệt (`MUuo3IYucmshw5lvdIS38e`, node `3314:28` và `3314:39`).
+1. **Mức 1 (Tối cao về Trực quan & Tokens):** Thiết kế Figma đã duyệt (`oKgloxLTqAdsZG599iDolt`, bao gồm `3314:28`, `3314:39` và các section `3325:112`–`3325:116`).
 2. **Mức 2 (Nguyên tắc & Định hướng tổng thể):** `DESIGN_DIRECTIONS.md`.
 3. **Mức 3 (Ràng buộc Nghiệp vụ & An toàn Kỹ thuật):** `FRONTEND_DISCOVERY.md` & `UI_UX_BASELINE_AUDIT.md`.
 4. **BỎ QUA TOÀN BỘ:** Mọi tài liệu cũ trong `docs/design/legacy/` (`Design-System.md`, `UI-screens.md`, `Wireframes.md`).
@@ -64,37 +64,37 @@ Toàn bộ hệ thống mã màu được trích xuất trực tiếp từ Figma
 ```
         BRAND                     SURFACES                  CONTENT / TEXT
 ┌───────────────────────┐ ┌───────────────────────┐ ┌───────────────────────┐
-│ #059669 (Emerald 600) │ │ #FFFFFF (White Pure)  │ │ #0F172A (Slate 900)   │
-│ #047857 (Emerald 700) │ │ #F8FAFC (Slate 50)    │ │ #475569 (Slate 600)   │
-│ #ECFDF5 (Emerald 50)  │ │ #F1F5F9 (Slate 100)   │ │ #64748B (Slate 500)   │
+│ #087F5B (Brand)       │ │ #FFFFFF (White Pure)  │ │ #172F4D (Ink Navy)    │
+│ #066649 (BrandStrong) │ │ #FDF8F8 (Warm Canvas) │ │ #40556B (Secondary)   │
+│ #E8F6EF (BrandSoft)   │ │ #EDF2F6 (Soft Slate)  │ │ #596D80 (Muted Slate) │
 └───────────────────────┘ └───────────────────────┘ └───────────────────────┘
         BORDERS                    STATUS                   FEEDBACK TINTS
 ┌───────────────────────┐ ┌───────────────────────┐ ┌───────────────────────┐
-│ #E2E8F0 (Slate 200)   │ │ #B91C1C (Red 700)     │ │ #FEF2F2 (Red 50)      │
-│ #CBD5E1 (Slate 300)   │ │ #B45309 (Amber 700)   │ │ #FFFBEB (Amber 50)    │
-│ #059669 (Focus Ring)  │ │ #1D4ED8 (Blue 700)    │ │ #EFF6FF (Blue 50)     │
+│ #DCE5ED (Line)        │ │ #B42332 (Red)         │ │ #FFF0F1 (Red Soft)    │
+│ #B9C8D6 (Strong)      │ │ #A45A0B (Amber)       │ │ #FFF4E2 (Amber Soft)  │
+│ #087F5B (Focus Ring)  │ │ #245B99 (Blue)        │ │ #EBF2FA (Blue Soft)   │
 └───────────────────────┘ └───────────────────────┘ └───────────────────────┘
 ```
 
-| Tên Token Figma | Mã HEX | Tương đương Tailwind CSS | Mục đích & Ngữ cảnh sử dụng |
+| Tên Token Figma | Mã HEX | Tương đương / Vai trò | Mục đích & Ngữ cảnh sử dụng |
 |:---|:---:|:---|:---|
-| `ShuttleVN/brand` | `#059669` | `emerald-600` | Màu thương hiệu chính, điểm nhấn biểu đồ, icon chỉ báo hoạt động. |
-| `ShuttleVN/brandStrong` | `#047857` | `emerald-700` | Nền nút bấm Primary, chữ active navigation, liên kết hành động nổi bật. |
-| `ShuttleVN/brandSoft` | `#ECFDF5` | `emerald-50` | Nền item navigation active, nền nhãn Đã thu tiền, nền icon thành công. |
-| `ShuttleVN/white` | `#FFFFFF` | `white` | Nền thẻ Card, Header, Modal, Bảng dữ liệu, nút Outline. |
-| `ShuttleVN/bg` | `#F8FAFC` | `slate-50` | Nền toàn bộ không gian làm việc (Canvas), nền Sidebar, nền hàng tiêu đề bảng. |
-| `ShuttleVN/soft` | `#F1F5F9` | `slate-100` | Nền skeleton tải dữ liệu, nền badge Chưa lập hóa đơn, nền phím tắt `Ctrl K`. |
-| `ShuttleVN/line` | `#E2E8F0` | `slate-200` | Viền thẻ Card, đường phân cách dòng bảng, đường kẻ divider 1px. |
-| `ShuttleVN/border-input` | `#CBD5E1` | `slate-300` | Viền ô nhập liệu (Input), viền nút Outline. *(Bổ sung từ Figma node `3314:243`)* |
-| `ShuttleVN/ink` | `#0F172A` | `slate-900` | Tiêu đề chính, số liệu KPI lớn (32px), giá trị dữ liệu trong bảng. |
-| `ShuttleVN/secondary` | `#475569` | `slate-600` | Nhãn phụ, phụ đề, tiêu đề cột bảng (12px), văn bản nút Outline/Ghost. |
-| `ShuttleVN/muted` | `#64748B` | `slate-500` | Tiêu đề nhóm Sidebar (`QUẢN TRỊ`), vạch đo giờ sân, timestamp phụ. |
-| `ShuttleVN/amber` | `#B45309` | `amber-700` | Chữ trạng thái Chờ xác nhận, cảnh báo rủi ro, sân đang bảo trì. |
-| `ShuttleVN/amberSoft` | `#FFFBEB` | `amber-50` | Nền nhãn Chờ xác nhận, nền ô slot bảo trì. |
-| `ShuttleVN/red` | `#B91C1C` | `red-700` | Chữ trạng thái Đã hủy, sân đóng cửa, cảnh báo lỗi, nút nguy hiểm. |
-| `ShuttleVN/redSoft` | `#FEF2F2` | `red-50` | Nền thông báo lỗi hệ thống, nền nhãn Đã hủy. |
-| `ShuttleVN/blue` | `#1D4ED8` | `blue-700` | Chữ trạng thái Đã xác nhận, liên kết thông tin. |
-| `ShuttleVN/blueSoft` | `#EFF6FF` | `blue-50` | Nền nhãn Đã xác nhận. |
+| `ShuttleVN/brand` | `#087F5B` | Brand Primary | Màu thương hiệu chính, điểm nhấn biểu đồ, mốc hoàn thành sân, focus ring. |
+| `ShuttleVN/brandStrong` | `#066649` | Brand Strong | Nền nút bấm Primary, chữ active navigation, liên kết hành động, số KPI doanh thu. |
+| `ShuttleVN/brandSoft` | `#E8F6EF` | Brand Soft | Nền item navigation active, nền nhãn Đã thu tiền, nền thẻ KPI Doanh thu, nền icon thành công. |
+| `ShuttleVN/white` | `#FFFFFF` | Pure White | Nền thẻ Card, Header, Modal, ô Input, nút Outline, hàng tổng kết bảng. |
+| `ShuttleVN/bg` | `#FDF8F8` | Canvas / Sidebar | Nền toàn bộ không gian làm việc (Canvas), nền Sidebar, nền item nav inactive, nền skeleton. |
+| `ShuttleVN/soft` | `#EDF2F6` | Soft Surface | Nền badge Chưa lập hóa đơn, nền input Disabled, nền phím tắt `Ctrl K`, thanh ray tiến độ sân, ô slot Unknown. |
+| `ShuttleVN/line` | `#DCE5ED` | Hairline Border | Viền thẻ Card, đường phân cách dòng bảng, đường kẻ divider 1px, viền skeleton. |
+| `ShuttleVN/strong` | `#B9C8D6` | Control Border | Viền ô nhập liệu (Input), viền nút Outline, viền thanh `QuickLookup`. *(Figma variable `ShuttleVN/strong`)* |
+| `ShuttleVN/ink` | `#172F4D` | Deep Navy Ink | Tiêu đề chính, giá trị dữ liệu trong bảng, nền thanh điều hướng Khách hàng (`CustomerNav`). |
+| `ShuttleVN/secondary` | `#40556B` | Secondary Text | Nhãn phụ, phụ đề, tiêu đề cột bảng (12px), văn bản nút Outline/Ghost, text mặc định trong bảng/chart. |
+| `ShuttleVN/muted` | `#596D80` | Muted Text | Tiêu đề nhóm Sidebar (`TỔNG QUAN`, `VẬN HÀNH`, `QUẢN TRỊ`), placeholder ô nhập, mốc giờ đặt bằng 0. |
+| `ShuttleVN/amber` | `#A45A0B` | Warning / Pending | Chữ trạng thái Chờ xác nhận, số KPI Đơn chờ duyệt, cảnh báo rủi ro, sân đang bảo trì. |
+| `ShuttleVN/amberSoft` | `#FFF4E2` | Amber Soft Tint | Nền nhãn Chờ xác nhận, nền thẻ KPI Đơn chờ duyệt, nền ô slot bảo trì. |
+| `ShuttleVN/red` | `#B42332` | Danger / Error | Chữ trạng thái Đã hủy, viền & thông báo lỗi Input, cảnh báo lỗi, nút nguy hiểm. |
+| `ShuttleVN/redSoft` | `#FFF0F1` | Red Soft Tint | Nền thông báo lỗi hệ thống, nền nhãn Đã hủy, nền phản hồi lỗi thao tác. |
+| `ShuttleVN/blue` | `#245B99` | Info / Confirmed | Chữ trạng thái Đã xác nhận, số KPI Lượt sân đặt trong ngày, liên kết thông tin. |
+| `ShuttleVN/blueSoft` | `#EBF2FA` | Blue Soft Tint | Nền nhãn Đã xác nhận, nền thẻ KPI Lượt sân đặt, nền hàng tiêu đề cột bảng (`Column headers`). |
 
 ---
 
@@ -103,41 +103,41 @@ Toàn bộ hệ thống mã màu được trích xuất trực tiếp từ Figma
 ```css
 :root {
   /* Brand Semantics */
-  --color-brand-primary: #059669;       /* Emerald 600 */
-  --color-brand-hover: #047857;         /* Emerald 700 - dùng làm background nút primary */
-  --color-brand-active: #065f46;        /* Emerald 800 */
-  --color-brand-subtle: #ECFDF5;        /* Emerald 50 */
-  --color-brand-ring: rgba(5, 150, 105, 0.25);
+  --color-brand-primary: #087F5B;
+  --color-brand-hover: #066649;         /* brandStrong - dùng làm background nút primary */
+  --color-brand-active: #05523A;
+  --color-brand-subtle: #E8F6EF;        /* brandSoft */
+  --color-brand-ring: rgba(8, 127, 91, 0.25);
 
   /* Surface & Canvas */
-  --color-surface-base: #F8FAFC;        /* Slate 50 - nền canvas chung */
-  --color-surface-card: #FFFFFF;        /* White pure - nền thẻ card & modal */
-  --color-surface-subtle: #F1F5F9;      /* Slate 100 - skeleton & shortcut pills */
-  --color-surface-sidebar: #F8FAFC;     /* Slate 50 - nền sidebar theo Figma */
-  --color-surface-header: #FFFFFF;      /* White - header quản trị */
+  --color-surface-base: #FDF8F8;        /* bg - nền canvas chung */
+  --color-surface-card: #FFFFFF;        /* white - nền thẻ card & modal */
+  --color-surface-subtle: #EDF2F6;      /* soft - skeleton & shortcut pills */
+  --color-surface-sidebar: #FDF8F8;     /* bg - nền sidebar theo Figma */
+  --color-surface-header: #FFFFFF;      /* white - header quản trị */
 
   /* Text & Typography */
-  --color-text-primary: #0F172A;        /* Slate 900 - chữ chính */
-  --color-text-secondary: #475569;      /* Slate 600 - chữ phụ & header bảng */
-  --color-text-muted: #64748B;          /* Slate 500 - nhãn nhóm & timestamp */
+  --color-text-primary: #172F4D;        /* ink - chữ chính */
+  --color-text-secondary: #40556B;      /* secondary - chữ phụ & header bảng */
+  --color-text-muted: #596D80;          /* muted - nhãn nhóm & placeholder */
   --color-text-inverse: #FFFFFF;        /* Trắng trên nền đậm */
 
   /* Borders & Dividers */
-  --color-border-subtle: #E2E8F0;       /* Slate 200 - viền card & bảng */
-  --color-border-input: #CBD5E1;        /* Slate 300 - viền ô nhập & nút outline */
-  --color-border-focus: #059669;        /* Emerald 600 */
+  --color-border-subtle: #DCE5ED;       /* line - viền card & bảng */
+  --color-border-input: #B9C8D6;        /* strong - viền ô nhập & nút outline */
+  --color-border-focus: #087F5B;        /* brand */
 
   /* Status Colors */
-  --color-status-success-text: #047857; /* Emerald 700 */
-  --color-status-success-bg: #ECFDF5;   /* Emerald 50 */
-  --color-status-warning-text: #B45309; /* Amber 700 */
-  --color-status-warning-bg: #FFFBEB;   /* Amber 50 */
-  --color-status-danger-text: #B91C1C;  /* Red 700 */
-  --color-status-danger-bg: #FEF2F2;    /* Red 50 */
-  --color-status-info-text: #1D4ED8;    /* Blue 700 */
-  --color-status-info-bg: #EFF6FF;      /* Blue 50 */
-  --color-status-neutral-text: #475569; /* Slate 600 */
-  --color-status-neutral-bg: #F1F5F9;   /* Slate 100 */
+  --color-status-success-text: #066649; /* brandStrong */
+  --color-status-success-bg: #E8F6EF;   /* brandSoft */
+  --color-status-warning-text: #A45A0B; /* amber */
+  --color-status-warning-bg: #FFF4E2;   /* amberSoft */
+  --color-status-danger-text: #B42332;  /* red */
+  --color-status-danger-bg: #FFF0F1;    /* redSoft */
+  --color-status-info-text: #245B99;    /* blue */
+  --color-status-info-bg: #EBF2FA;      /* blueSoft */
+  --color-status-neutral-text: #40556B; /* secondary */
+  --color-status-neutral-bg: #EDF2F6;   /* soft */
 }
 ```
 
@@ -148,20 +148,21 @@ Toàn bộ cặp màu trong Design System đều được đo kiểm dựa trên
 
 | Cặp màu Kiểm định (Foreground / Background) | Tỉ lệ Tương phản (Ratio) | Chuẩn WCAG 2.1 | Kết quả Đánh giá |
 |:---|:---:|:---:|:---:|
-| `ShuttleVN/ink` (`#0F172A`) trên `white` (`#FFFFFF`) | **14.5 : 1** | AAA | **ĐẠT XUẤT SẮC** (Chữ chính siêu nét) |
-| `ShuttleVN/ink` (`#0F172A`) trên `bg` (`#F8FAFC`) | **13.9 : 1** | AAA | **ĐẠT XUẤT SẮC** |
-| `ShuttleVN/secondary` (`#475569`) trên `white` (`#FFFFFF`) | **5.8 : 1** | AA | **ĐẠT VƯỢT CHUẨN** (Giải quyết triệt để lỗi cũ) |
-| `ShuttleVN/secondary` (`#475569`) trên `bg` (`#F8FAFC`) | **5.5 : 1** | AA | **ĐẠT VƯỢT CHUẨN** (Tiêu đề cột bảng) |
-| `ShuttleVN/muted` (`#64748B`) trên `bg` (`#F8FAFC`) | **4.6 : 1** | AA | **ĐẠT CHUẨN** (Nhãn nhóm sidebar) |
-| `white` (`#FFFFFF`) trên `brandStrong` (`#047857`) | **6.5 : 1** | AA (Gần AAA) | **ĐẠT XUẤT SẮC** (Nút bấm Primary) |
-| `brandStrong` (`#047857`) trên `brandSoft` (`#ECFDF5`) | **5.8 : 1** | AA | **ĐẠT VƯỢT CHUẨN** (Badge Đã thu tiền) |
-| `amber` (`#B45309`) trên `amberSoft` (`#FFFBEB`) | **5.1 : 1** | AA | **ĐẠT VƯỢT CHUẨN** (Badge Chờ xác nhận) |
-| `red` (`#B91C1C`) trên `redSoft` (`#FEF2F2`) | **6.5 : 1** | AA | **ĐẠT VƯỢT CHUẨN** (Thông báo lỗi) |
-| `blue` (`#1D4ED8`) trên `blueSoft` (`#EFF6FF`) | **7.5 : 1** | AAA | **ĐẠT CHUẨN CAO NHẤT** (Badge Đã xác nhận) |
-| `secondary` (`#475569`) trên `soft` (`#F1F5F9`) | **5.1 : 1** | AA | **ĐẠT VƯỢT CHUẨN** (Badge Chưa lập hóa đơn) |
+| `ShuttleVN/ink` (`#172F4D`) trên `white` (`#FFFFFF`) | **13.5 : 1** | AAA | **ĐẠT XUẤT SẮC** (Chữ chính siêu nét) |
+| `white` (`#FFFFFF`) trên `ShuttleVN/ink` (`#172F4D`) | **13.5 : 1** | AAA | **ĐẠT XUẤT SẮC** (Thanh điều hướng Khách hàng) |
+| `ShuttleVN/ink` (`#172F4D`) trên `bg` (`#FDF8F8`) | **12.9 : 1** | AAA | **ĐẠT XUẤT SẮC** |
+| `ShuttleVN/secondary` (`#40556B`) trên `white` (`#FFFFFF`) | **7.7 : 1** | AAA | **ĐẠT XUẤT SẮC** (Giải quyết triệt để lỗi cũ) |
+| `ShuttleVN/secondary` (`#40556B`) trên `bg` (`#FDF8F8`) | **7.3 : 1** | AAA | **ĐẠT XUẤT SẮC** (Tiêu đề cột bảng, nav inactive) |
+| `ShuttleVN/muted` (`#596D80`) trên `bg` (`#FDF8F8`) | **5.1 : 1** | AA | **ĐẠT VƯỢT CHUẨN** (Nhãn nhóm sidebar, placeholder) |
+| `white` (`#FFFFFF`) trên `brandStrong` (`#066649`) | **7.0 : 1** | AAA | **ĐẠT XUẤT SẮC** (Nút bấm Primary) |
+| `brandStrong` (`#066649`) trên `brandSoft` (`#E8F6EF`) | **6.3 : 1** | AA | **ĐẠT VƯỢT CHUẨN** (Badge Đã thu tiền, KPI Doanh thu) |
+| `amber` (`#A45A0B`) trên `amberSoft` (`#FFF4E2`) | **4.8 : 1** | AA | **ĐẠT CHUẨN** (Badge Chờ xác nhận, KPI Đơn chờ) |
+| `red` (`#B42332`) trên `redSoft` (`#FFF0F1`) | **5.9 : 1** | AA | **ĐẠT VƯỢT CHUẨN** (Thông báo lỗi, Badge Đã hủy) |
+| `blue` (`#245B99`) trên `blueSoft` (`#EBF2FA`) | **6.1 : 1** | AA | **ĐẠT VƯỢT CHUẨN** (Badge Đã xác nhận, KPI Lượt sân) |
+| `secondary` (`#40556B`) trên `soft` (`#EDF2F6`) | **6.8 : 1** | AA | **ĐẠT VƯỢT CHUẨN** (Badge Chưa lập hóa đơn, `Ctrl K`) |
 
 > [!IMPORTANT]
-> **Quy tắc Chống Lỗi (Anti-pattern Rule):** Nghiêm cấm hoàn toàn việc sử dụng `text-slate-400` hoặc `text-gray-400` cho bất kỳ văn bản đọc được nào trên nền sáng (vì độ tương phản chỉ đạt 2.6:1, vi phạm nặng WCAG). Mức xám tối thiểu cho phép là `text-[#475569]` (`slate-600`) cho văn bản và `text-[#64748B]` (`slate-500`) cho nhãn phụ.
+> **Quy tắc Chống Lỗi (Anti-pattern Rule):** Nghiêm cấm hoàn toàn việc sử dụng `text-slate-400` hoặc `text-gray-400` cho bất kỳ văn bản đọc được nào trên nền sáng (vì độ tương phản chỉ đạt 2.6:1, vi phạm nặng WCAG). Mức xám tối thiểu cho phép là `text-[#40556B]` (`secondary`) cho văn bản và `text-[#596D80]` (`muted`) cho nhãn phụ/placeholder.
 
 ---
 
@@ -248,11 +249,11 @@ Triệt tiêu hoàn toàn các số đo bo góc dị biệt cũ (`rounded-[7px]`
 ---
 
 ### 4.3 Hệ thống Đổ bóng & Viền (Elevation & Shadows)
-Phong cách Athletic Kinetic hướng đến bề mặt phẳng tinh khiết, sạch sẽ, dựa vào đường viền 1px sắc sảo (`#E2E8F0` / `#CBD5E1`) hơn là đổ bóng dày:
-- **Hairline Border:** `border border-[#E2E8F0]` (cho Cards, Bảng, Dividers).
-- **Control Border:** `border border-[#CBD5E1]` (cho Input, Nút Outline, Quick lookup).
+Phong cách Athletic Kinetic hướng đến bề mặt phẳng tinh khiết, sạch sẽ, dựa vào đường viền 1px sắc sảo (`#DCE5ED` / `#B9C8D6`) hơn là đổ bóng dày:
+- **Hairline Border:** `border border-[#DCE5ED]` (cho Cards, Bảng, Dividers).
+- **Control Border:** `border border-[#B9C8D6]` (`ShuttleVN/strong`, cho Input, Nút Outline, Quick lookup).
 - **Elevation Levels:**
-  - `shadow-none`: Card mặc định theo Figma (hoàn toàn phẳng với viền `#E2E8F0`).
+  - `shadow-none`: Card mặc định theo Figma (hoàn toàn phẳng với viền `#DCE5ED`).
   - `shadow-xs`: Thẻ Card tương tác nhẹ khi hover (`0 1px 2px 0 rgb(0 0 0 / 0.05)`).
   - `shadow-md`: Menu thả xuống (Dropdown), Popover bộ chọn ngày (`0 4px 6px -1px rgb(0 0 0 / 0.08)`).
   - `shadow-xl`: Hộp thoại Modal, Drawer trượt trên Mobile (`0 20px 25px -5px rgb(0 0 0 / 0.12)`).
@@ -282,30 +283,32 @@ Giải quyết dứt điểm xung đột z-index ghi nhận từ đợt kiểm �
 
 #### 1. Cổng Quản trị (`(admin)`)
 - **Desktop (>= 1024px):**
-  - **Sidebar (Trích xuất nguyên mẫu từ Figma node `3314:28`):**
-    - Chiều rộng cố định: `w-[240px]`, chiều cao `h-screen`, nền `bg-[#F8FAFC]`, viền phải `border-r border-[#E2E8F0]`.
-    - Phần đầu (Logo header): Icon vợt cầu lông (`Icon / racket` 28px) tại `left: 24px, top: 21px` + Tên thương hiệu "ShuttleVN" (font `Be Vietnam Pro` Medium 18px text `#0F172A` tại `left: 64px, top: 20px`).
-    - Nhóm 1 `TỔNG QUAN` (nhãn font `Inter` SemiBold 12px text `#64748B`):
-      * Bảng điều khiển (Active mặc định: `bg-[#ECFDF5]` text `#047857`, icon `dashboard`).
+  - **Sidebar (Trích xuất nguyên mẫu từ Figma node `3314:29`):**
+    - Chiều rộng cố định: `w-[240px]`, chiều cao `h-screen`, nền `bg-[#FDF8F8]` (`ShuttleVN/bg`), viền phải `border-r border-[#DCE5ED]`.
+    - Phần đầu (Logo header): Icon vợt cầu lông (`Icon / racket` 28px) tại `left: 24px, top: 21px` + Tên thương hiệu "ShuttleVN" (font `Be Vietnam Pro` Medium 18px text `#172F4D` tại `left: 64px, top: 20px`).
+    - Nhóm 1 `TỔNG QUAN` (nhãn font `Inter` SemiBold 12px text `#596D80`):
+      * Bảng điều khiển (Active mặc định: `bg-[#E8F6EF]` text `#066649`, icon `dashboard`).
       * Báo cáo & Thống kê (icon `chart`).
-    - Nhóm 2 `VẬN HÀNH` (nhãn font `Inter` SemiBold 12px text `#64748B`):
+    - Nhóm 2 `VẬN HÀNH` (nhãn font `Inter` SemiBold 12px text `#596D80`):
       * Lịch sân (icon `calendar`).
       * Yêu cầu đặt sân (icon `inbox`).
       * Thanh toán (icon `money`).
       * Quản lý sân (icon `court`).
-    - Nhóm 3 `QUẢN TRỊ` (nhãn font `Inter` SemiBold 12px text `#64748B`):
+    - Nhóm 3 `QUẢN TRỊ` (nhãn font `Inter` SemiBold 12px text `#596D80`):
       * Khách hàng (icon `users`).
       * Nhân viên (icon `employee`).
       * Đặt sân toàn hệ thống (icon `calendar`).
       * Nhật ký hoạt động (icon `history`).
-    - Chân trang Sidebar (Footer): Divider 1px `#E2E8F0` tại top 936px, dòng chính "ShuttleVN Admin" (font `Inter` SemiBold 14px text `#0F172A`), dòng phụ "Quản lý cơ sở cầu lông" (font `Inter` Regular 12px text `#475569`).
-  - **Header:** Chiều cao cố định `h-[56px]`, nền `bg-white`, viền dưới `border-b border-[#E2E8F0]`. Chứa tiêu đề Breadcrumb mềm bên trái ("Không gian quản trị" font `Inter` 14px text `#475569`) và Ô tra cứu nhanh `QuickLookup` (`334px` viền `#CBD5E1`) bên phải.
-  - **Workspace:** Trải rộng co giãn tự do `flex-1 overflow-y-auto p-6 lg:p-8 bg-[#F8FAFC]`. Chứa tiêu đề trang 24px `Be Vietnam Pro`, huy hiệu `Today` date badge (272px), và lưới 3 thẻ KPI.
+    - Chân trang Sidebar (Footer): Divider 1px `#DCE5ED` tại top 936px, dòng chính "ShuttleVN Admin" (font `Inter` SemiBold 14px text `#172F4D`), dòng phụ "Quản lý cơ sở cầu lông" (font `Inter` Regular 12px text `#40556B`).
+  - **Header:** Chiều cao cố định `h-[56px]`, nền `bg-white`, viền dưới `border-b border-[#DCE5ED]`. Chứa tiêu đề Breadcrumb mềm bên trái ("Không gian quản trị" font `Inter` 14px text `#40556B`) và Ô tra cứu nhanh `QuickLookup` (`334px` viền `#B9C8D6`) bên phải.
+  - **Workspace:** Trải rộng co giãn tự do `flex-1 overflow-y-auto p-6 lg:p-8 bg-[#FDF8F8]`. Chứa tiêu đề trang 24px `Be Vietnam Pro`, huy hiệu `Today` date badge (272px), và lưới 3 thẻ KPI.
 - **Mobile / Tablet (< 1024px):**
   - Sidebar ẩn khỏi luồng bố cục chính, chuyển thành **Slide-over Drawer** kích hoạt bằng nút Hamburger trên Topbar.
   - Topbar thu gọn chiều cao `h-14`, chứa nút mở Drawer và icon tìm kiếm nhanh.
 
 #### 2. Cổng Khách hàng (`(customer)`)
+- **Thanh Điều hướng (`ShuttleVN/Customer navigation`, Figma `3325:425`):** Chiều cao `h-[64px]`, nền xanh hải quân đậm `bg-[#172F4D]` (`ShuttleVN/ink`), chữ trắng `text-white`. Gồm thương hiệu "ShuttleVN" (`Be Vietnam Pro` Medium 18px), các mục điều hướng ("Đặt sân", "Lịch sử đặt sân", "Tra cứu đơn" 14px), Hotline `1900 1234` (Inter Medium 14px) và tên tài khoản (Inter SemiBold 14px).
+- **Chân trang (`ShuttleVN/Customer footer`, Figma `3325:432`):** Chiều cao `h-[64px]`, nền `bg-white`, chữ `text-[#40556B]` 12px ("© 2026 ShuttleVN" bên trái, "Giờ Việt Nam (UTC+7) · Hotline 1900 1234" bên phải).
 - Khung nội dung tối đa `max-w-7xl` (1280px), căn giữa tự nhiên `mx-auto px-4 sm:px-6 lg:px-8`.
 - Thay thế ảnh hero Unsplash tĩnh 260px bằng **Hero Tinh gọn (Slim Sports Header)**: Hiển thị trạng thái sân trực tiếp hôm nay và thanh chọn ngày tích hợp.
 - Trên điện thoại di động (< 768px), kích hoạt **Sticky Booking Bar** cố định sát mép dưới màn hình tóm tắt slot đã chọn và nút tiến hành đặt sân.
@@ -319,17 +322,17 @@ Giải quyết dứt điểm xung đột z-index ghi nhận từ đợt kiểm �
 
 #### Các Biến thể (Variants):
 1. **Primary (`variant="primary"`):** Nút hành động chính.
-   - Nền: `bg-[#047857]` (`emerald-700`), hover: `hover:bg-[#065f46]`, active: `active:bg-[#064e3b] active:scale-[0.98]`.
+   - Nền: `bg-[#066649]` (`brandStrong`), hover: `hover:bg-[#05523A]`, active: `active:bg-[#04402D] active:scale-[0.98]`.
    - Chữ: `text-white font-semibold text-[14px] leading-[20px]`.
-   - Focus ring: `focus-visible:ring-2 focus-visible:ring-[#059669] focus-visible:ring-offset-2`.
+   - Focus ring: `focus-visible:ring-2 focus-visible:ring-[#087F5B] focus-visible:ring-offset-2`.
 2. **Outline (`variant="outline"`):** Nút hành động phụ, tra cứu, xem chi tiết.
-   - Nền: `bg-white`, viền: `border border-[#CBD5E1]`.
-   - Chữ: `text-[#475569] font-semibold text-[14px] leading-[20px]`.
-   - Hover: `hover:bg-slate-50 hover:text-[#0F172A] hover:border-slate-400`.
+   - Nền: `bg-white`, viền: `border border-[#B9C8D6]` (`ShuttleVN/strong`).
+   - Chữ: `text-[#40556B] font-semibold text-[14px] leading-[20px]`.
+   - Hover: `hover:bg-[#FDF8F8] hover:text-[#172F4D] hover:border-[#596D80]`.
 3. **Ghost (`variant="ghost"`):** Nút hủy, nút lùi bước, nút thao tác nhẹ.
    - Nền: `bg-transparent`, không viền.
-   - Chữ: `text-[#475569] font-semibold text-[14px] leading-[20px]`.
-   - Hover: `hover:bg-slate-100 hover:text-[#0F172A]`.
+   - Chữ: `text-[#40556B] font-semibold text-[14px] leading-[20px]`.
+   - Hover: `hover:bg-[#EDF2F6] hover:text-[#172F4D]`.
 
 #### Kích thước Chuẩn (Sizes):
 - **Medium (Mặc định - Chuẩn Figma):** Chiều cao `h-[44px]`, padding `px-4 py-3`, bo góc `rounded-[8px]`. Đạt chuẩn vùng cảm ứng touch target >= 44px.
@@ -353,30 +356,34 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 ---
 
 ### 5.2 Huy hiệu Trạng thái (`StatusBadge`)
-Được trích xuất từ Figma Component `Status badge` (`3314:74`).
+Được trích xuất từ Figma Component `Status badge` (`3314:74`) và `Badge · Cancelled` (`3325:440`).
 - Cấu trúc chung: Chiều cao `h-[24px]`, bo tròn hoàn toàn `rounded-[999px]`, padding `px-[10px] py-[4px]`, chữ font Inter `text-[12px] font-normal leading-[16px] whitespace-nowrap`.
 
 | Trạng thái Nghiệp vụ | Nhãn Hiển thị (Display Label) | Nền Badge (Background) | Chữ Badge (Text Color) | Ngữ cảnh Sử dụng |
 |:---|:---|:---:|:---:|:---|
-| `Pending` | **Chờ xác nhận** | `bg-[#FFFBEB]` | `text-[#B45309]` | Đơn đặt sân mới tạo, chờ nhân viên kiểm duyệt. |
-| `Confirmed` | **Đã xác nhận** | `bg-[#EFF6FF]` | `text-[#1D4ED8]` | Đơn đã được duyệt, hóa đơn đã sinh. |
-| `Paid` | **Đã thu tiền** | `bg-[#ECFDF5]` | `text-[#047857]` | Hóa đơn đã thanh toán 100%. |
-| `Completed` | **Hoàn thành** | `bg-[#ECFDF5]` | `text-[#047857]` | Khách đã chơi xong tại sân. |
-| `Cancelled` | **Đã hủy** | `bg-[#FEF2F2]` | `text-[#B91C1C]` | Đơn đã bị hủy bởi khách hoặc từ chối bởi nhân viên. |
-| `NoInvoice` | **Chưa lập hóa đơn** | `bg-[#F1F5F9]` | `text-[#475569]` | Đơn `Pending` theo quy tắc bất biến D-07. |
-| `Maintenance` | **Bảo trì** | `bg-[#FFFBEB]` | `text-[#B45309]` | Trạng thái sân tạm dừng thi đấu để bảo dưỡng. |
-| `Active` | **Đang hoạt động** | `bg-[#ECFDF5]` | `text-[#047857]` | Sân sẵn sàng phục vụ hoặc tài khoản đang mở. |
-| `Disabled` | **Đã khóa** | `bg-[#FEF2F2]` | `text-[#B91C1C]` | Tài khoản khách hàng/nhân viên bị vô hiệu hóa. |
+| `Pending` | **Chờ xác nhận** | `bg-[#FFF4E2]` | `text-[#A45A0B]` | Đơn đặt sân mới tạo, chờ nhân viên kiểm duyệt. |
+| `Confirmed` | **Đã xác nhận** | `bg-[#EBF2FA]` | `text-[#245B99]` | Đơn đã được duyệt, hóa đơn đã sinh. |
+| `Paid` | **Đã thu tiền** | `bg-[#E8F6EF]` | `text-[#066649]` | Hóa đơn đã thanh toán 100%. |
+| `Completed` | **Hoàn thành** | `bg-[#E8F6EF]` | `text-[#066649]` | Khách đã chơi xong tại sân. |
+| `Cancelled` | **Đã hủy** | `bg-[#FFF0F1]` | `text-[#B42332]` | Đơn đã bị hủy bởi khách hoặc từ chối bởi nhân viên. |
+| `NoInvoice` | **Chưa lập hóa đơn** | `bg-[#EDF2F6]` | `text-[#40556B]` | Đơn `Pending` theo quy tắc bất biến D-07. |
+| `Maintenance` | **Bảo trì** | `bg-[#FFF4E2]` | `text-[#A45A0B]` | Trạng thái sân tạm dừng thi đấu để bảo dưỡng. |
+| `Active` | **Đang hoạt động** | `bg-[#E8F6EF]` | `text-[#066649]` | Sân sẵn sàng phục vụ hoặc tài khoản đang mở. |
+| `Disabled` | **Đã khóa** | `bg-[#FFF0F1]` | `text-[#B42332]` | Tài khoản khách hàng/nhân viên bị vô hiệu hóa. |
 
 ---
 
 ### 5.3 Thẻ Thống kê Chỉ số (`StatisticCard`)
-Được trích xuất từ Figma Component `Statistic card` (`3314:64`).
-- Kích thước: Rộng `368px` (hoặc co giãn theo cột grid `w-full`), cao `128px`, nền `bg-white`, viền `border border-[#E2E8F0]`, bo góc `rounded-[12px]`, padding `p-[19px]`.
+Được trích xuất từ Figma Component `Statistic card` (`3314:64`) và 3 thẻ KPI thực tế trên Dashboard (`3314:257`, `3314:261`, `3314:265`).
+- Kích thước: Rộng `368px` (hoặc co giãn theo cột grid `w-full`), cao `128px`, viền `border border-[#DCE5ED]`, bo góc `rounded-[12px]`, padding `p-[19px]`.
+- **Phân màu Ngữ nghĩa theo Từng Thẻ KPI (Figma `3314:33`):**
+  - **Thẻ 1 — Doanh thu hôm nay (`3314:257`):** Nền `bg-[#E8F6EF]` (`brandSoft`), số KPI `text-[#066649]` (`brandStrong`).
+  - **Thẻ 2 — Đơn chờ duyệt (`3314:261`):** Nền `bg-[#FFF4E2]` (`amberSoft`), số KPI `text-[#A45A0B]` (`amber`).
+  - **Thẻ 3 — Lượt sân đặt trong ngày (`3314:265`):** Nền `bg-[#EBF2FA]` (`blueSoft`), số KPI `text-[#245B99]` (`blue`).
 - Phân cấp nội dung:
-  - **Dòng 1 (Label):** Font Inter `text-[14px] leading-[20px] text-[#475569]`.
-  - **Dòng 2 (KPI Metric Value):** Font Inter `text-[32px] leading-[40px] font-semibold text-[#0F172A] tracking-normal`.
-  - **Dòng 3 (Description / Subtitle):** Font Inter `text-[12px] leading-[16px] text-[#475569]`.
+  - **Dòng 1 (Label):** Font Inter `text-[14px] leading-[20px] text-[#40556B]`.
+  - **Dòng 2 (KPI Metric Value):** Font Inter `text-[32px] leading-[40px] font-semibold tracking-normal tabular-nums` (màu theo ngữ nghĩa thẻ).
+  - **Dòng 3 (Description / Subtitle):** Font Inter `text-[12px] leading-[16px] text-[#40556B]`.
 
 ---
 
@@ -384,74 +391,76 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 Được trích xuất từ Figma Component `Navigation item` (`3314:56`).
 - Kích thước: Rộng `208px` (co giãn theo sidebar `w-full`), cao `44px`, bo góc `rounded-[8px]`, padding lề trái icon `12px`, lề chữ `44px`.
 - **Trạng thái Active (`selected={true}`):**
-  - Nền: `bg-[#ECFDF5]` (`emerald-50`).
-  - Chữ: `text-[#047857]` (`emerald-700`) font Inter `font-semibold text-[14px] leading-[20px]`.
-  - Icon: SVG icon màu xanh `#047857`.
+  - Nền: `bg-[#E8F6EF]` (`brandSoft`).
+  - Chữ: `text-[#066649]` (`brandStrong`) font Inter `font-semibold text-[14px] leading-[20px]`.
+  - Icon: SVG icon màu xanh `#066649`.
 - **Trạng thái Inactive (`selected={false}`):**
-  - Nền: `bg-[#F8FAFC]` (hoặc trong suốt).
-  - Chữ: `text-[#475569]` (`slate-600`) font Inter `font-semibold text-[14px] leading-[20px]`.
-  - Icon: SVG icon màu xám `#475569`.
-  - Hover: `hover:bg-slate-100/80 hover:text-[#0F172A]`.
+  - Nền: `bg-[#FDF8F8]` (`bg` hoặc trong suốt).
+  - Chữ: `text-[#40556B]` (`secondary`) font Inter `font-semibold text-[14px] leading-[20px]`.
+  - Icon: SVG icon màu xám xanh `#40556B`.
+  - Hover: `hover:bg-[#EDF2F6] hover:text-[#172F4D]`.
 
 ---
 
 ### 5.5 Thanh Tra Cứu Nhanh (`QuickLookup`)
 Được trích xuất từ Figma Header (`3314:243`).
-- Kích thước: Rộng `334px`, cao `40px`, bo góc `rounded-[8px]`, nền `bg-white`, viền `border border-[#CBD5E1]`, padding `px-3 flex items-center gap-2`.
-- Icon kính lúp bên trái: Kích thước 20px, màu `#475569`.
-- Placeholder / Text: Font Inter `text-[14px] text-[#0F172A] placeholder:text-[#64748B]`.
-- Phím tắt (Kbd shortcut pill): Nằm bên phải, cao `24px`, padding `px-2 py-0.5`, bo góc `rounded-[4px]`, nền `bg-[#F1F5F9]`, chữ font Inter `text-[12px] font-normal text-[#475569]` hiển thị `Ctrl K`.
+- Kích thước: Rộng `334px`, cao `40px`, bo góc `rounded-[8px]`, nền `bg-white`, viền `border border-[#B9C8D6]` (`ShuttleVN/strong`), padding `px-3 flex items-center gap-2`.
+- Icon kính lúp bên trái: Kích thước 20px, màu `#40556B`.
+- Placeholder / Text: Font Inter `text-[14px] text-[#172F4D] placeholder:text-[#596D80]`.
+- Phím tắt (Kbd shortcut pill): Nằm bên phải, kích thước `68x24px`, padding `px-3 py-1`, bo góc `rounded-[4px]`, nền `bg-[#EDF2F6]`, chữ font Inter `text-[12px] font-normal text-[#40556B]` hiển thị `Ctrl K`.
 
 ---
 
 ### 5.5b Huy hiệu Ngày Hiện tại (`TodayDateBadge`)
 Được trích xuất từ Figma Page Heading (`3314:252`).
-- Kích thước: Rộng `272px`, cao `44px`, bo góc `rounded-[8px]`, nền `bg-white`, viền `border border-[#E2E8F0]`, padding `px-3.5 py-2.5 flex items-center gap-3`.
-- Icon lịch: Material symbol `calendar` 20px, màu `#0F172A`.
-- Văn bản ngày giờ: Font Inter Medium `text-[14px] text-[#0F172A]` hiển thị ngày định dạng tiếng Việt đầy đủ (ví dụ: `Thứ Hai, 23/11/2026`).
+- Kích thước: Rộng `272px`, cao `44px`, bo góc `rounded-[8px]`, nền `bg-white`, viền `border border-[#DCE5ED]`, padding `px-3.5 py-2.5 flex items-center gap-3`.
+- Icon lịch: Material symbol `calendar` 20px, màu `#172F4D`.
+- Văn bản ngày giờ: Font Inter Medium `text-[14px] text-[#172F4D]` hiển thị ngày định dạng tiếng Việt đầy đủ (ví dụ: `Thứ Hai, 23/11/2026`).
 
 ---
 
 ### 5.6 Mẫu Bảng Dữ liệu Chuẩn mực (`DataTable`)
 Được trích xuất từ Figma Daily Court Table (`3314:37`).
-- **Container bọc ngoài:** Nền `bg-white`, viền bao `border border-[#E2E8F0]`, bo góc `rounded-[12px]`, `overflow-hidden`.
+- **Container bọc ngoài:** Nền `bg-white`, viền bao `border border-[#DCE5ED]`, bo góc `rounded-[12px]`, `overflow-hidden`.
 - **Hàng tiêu đề cột (`<thead>`):**
   - Chiều cao: `h-[40px]`.
-  - Nền: `bg-[#F8FAFC]`.
-  - Đường phân cách dưới: `border-b border-[#E2E8F0]`.
-  - Kiểu chữ: Font Inter `text-[12px] font-semibold text-[#475569]`.
+  - Nền: `bg-[#EBF2FA]` (`ShuttleVN/blueSoft`).
+  - Đường phân cách trên và dưới: `border-y border-[#DCE5ED]`.
+  - Kiểu chữ: Font Inter `text-[12px] font-semibold text-[#40556B]`.
   - Căn lề: Cột văn bản/tên căn trái (`text-left`), cột số lượng/giờ/tiền căn phải (`text-right tabular-nums`).
 - **Hàng dữ liệu (`<tbody> <tr>`):**
   - Chiều cao chuẩn: `h-[44px]`.
-  - Đường kẻ đáy: `border-b border-[#E2E8F0]`.
-  - Kiểu chữ: Font Inter `text-[14px] text-[#0F172A]`.
-  - Hiệu ứng Hover: `hover:bg-slate-50/80 transition-colors duration-100`.
+  - Đường kẻ đáy: `border-b border-[#DCE5ED]`.
+  - Kiểu chữ: Chữ tên/văn bản font Inter Regular `text-[14px] text-[#172F4D]`; số liệu bảng căn phải font Inter Medium `text-[14px] text-[#172F4D] tabular-nums`.
+  - Hiệu ứng Hover: `hover:bg-[#FDF8F8] transition-colors duration-100`.
 - **Hàng tổng kết (`<tfoot> <tr>`):**
   - Chiều cao: `h-[44px]`.
-  - Nền: `bg-[#F8FAFC]`.
-  - Đường kẻ trên và dưới: `border-t border-[#E2E8F0]`.
-  - Kiểu chữ: Font Inter `text-[14px] font-semibold text-[#0F172A]`.
+  - Nền: `bg-white`.
+  - Đường kẻ trên và dưới: `border-y border-[#DCE5ED]`.
+  - Kiểu chữ: Nhãn "Tổng" font Inter SemiBold `text-[14px] text-[#172F4D]`; giá trị tổng font Inter Medium `text-[14px] text-[#172F4D] tabular-nums`.
 
 ---
 
 ### 5.7 Thành phần Biểu mẫu & Ô nhập liệu (`Input` & `Label`)
+Được trích xuất từ Figma `Auth · Input components` (`3325:126`) và `Filter controls · Responsive` (`3325:2755`).
 - **Nhãn trường (`Label`):**
-  - Font Inter `text-[13px] font-semibold text-[#475569] mb-1.5 block`.
-  - Ký hiệu bắt buộc: Dấu sao đỏ `text-[#B91C1C] ml-1`.
+  - Font Inter `text-[12px]` (hoặc `13px`) `font-semibold text-[#40556B] mb-1.5 block`.
+  - Ký hiệu bắt buộc: Dấu sao đỏ `text-[#B42332] ml-1`.
   - *(Loại bỏ kiểu chữ in hoa mono 11px cũ gây khó đọc)*.
 - **Ô nhập liệu (`Input`):**
-  - Chiều cao: `h-[42px]` (hoặc `h-[44px]`), bo góc `rounded-[8px]`, viền `border border-[#CBD5E1]`, nền `bg-white`, padding `px-3.5 py-2.5`.
-  - Kiểu chữ: Font Inter `text-[14px] text-[#0F172A] placeholder:text-[#94A3B8]`.
-  - Focus state: `focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 focus:outline-none`.
-  - Error state: `border-[#B91C1C] focus:border-[#B91C1C] focus:ring-[#B91C1C]/20`.
-  - Icon con mắt toggle mật khẩu: Kích thước 20px màu `#64748B`, có thuộc tính `aria-label="Hiện mật khẩu"`.
-  - Thông báo lỗi bên dưới ô: Font Inter `text-[12px] text-[#B91C1C] mt-1 flex items-center gap-1`.
+  - Chiều cao: `h-[44px]` (hoặc `h-[42px]`), bo góc `rounded-[8px]`, viền `border border-[#B9C8D6]` (`ShuttleVN/strong`), nền `bg-white`, padding `px-[14px]`.
+  - Kiểu chữ: Font Inter `text-[14px] text-[#172F4D] placeholder:text-[#596D80]`.
+  - Focus state: `focus:border-[#087F5B] focus:ring-2 focus:ring-[#087F5B]/20 focus:outline-none`.
+  - Error state: `border-[#B42332] focus:border-[#B42332] focus:ring-[#B42332]/20`.
+  - Disabled state: `bg-[#EDF2F6] border-[#DCE5ED] text-[#596D80] cursor-not-allowed`.
+  - Action ẩn/hiện mật khẩu: Chữ `"Hiện"` / `"Ẩn"` font Inter `text-[12px] font-semibold text-[#066649]` (hoặc icon con mắt 20px `#596D80`, có thuộc tính `aria-label="Hiện mật khẩu"`).
+  - Thông báo lỗi bên dưới ô: Font Inter `text-[12px] text-[#B42332] mt-1 flex items-center gap-1`.
 
 ---
 
 ### 5.8 Hệ thống Hộp thoại & Hộp xác nhận (`Modal` & `ConfirmDialog`)
-- **Cấu trúc Backdrop:** Nền đen mờ `bg-slate-900/40 backdrop-blur-xs z-[100] fixed inset-0 flex items-center justify-center p-4`.
-- **Thân Modal:** Bo góc `rounded-[12px]`, nền `bg-white`, viền `border border-[#E2E8F0]`, đổ bóng `shadow-xl`, chiều rộng tối đa từ `max-w-md` (480px) đến `max-w-2xl` (672px).
+- **Cấu trúc Backdrop:** Nền tối mờ `bg-[#172F4D]/40 backdrop-blur-xs z-[100] fixed inset-0 flex items-center justify-center p-4`.
+- **Thân Modal:** Bo góc `rounded-[12px]`, nền `bg-white`, viền `border border-[#DCE5ED]`, đổ bóng `shadow-xl`, chiều rộng tối đa từ `max-w-md` (480px) đến `max-w-2xl` (672px).
 - **Yêu cầu Trợ năng Bắt buộc (A11y Invariants):**
   - Bắt buộc có thuộc tính `role="dialog"` và `aria-modal="true"`.
   - Bắt buộc có tiêu đề liên kết `aria-labelledby="dialog-title"`.
@@ -462,25 +471,27 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 ---
 
 ### 5.9 Thẻ Trạng thái Phản hồi Hệ thống (`System State Cards`)
-Được trích xuất từ Figma Component `Dashboard state` (`3314:426`).
+Được trích xuất từ Figma Component `Dashboard state` (`3314:426`) và `Filter controls · Responsive` (`3325:2755`).
 1. **Trạng thái Đang tải (`Loading State`):**
-   - Khung card `rounded-[12px] bg-white border border-[#E2E8F0] p-5`.
-   - Các khối Skeleton nền `bg-[#F8FAFC]` kết hợp các dải thanh ngang màu `bg-[#E2E8F0]` bo góc `rounded-[4px]` chạy hiệu ứng xung nhịp `animate-pulse`.
+   - Khung card `rounded-[12px] bg-white border border-[#DCE5ED] p-5`.
+   - Các khối Skeleton nền `bg-[#FDF8F8]` kết hợp các dải thanh ngang màu `bg-[#DCE5ED]` bo góc `rounded-[4px]` chạy hiệu ứng xung nhịp `animate-pulse`.
    - Giữ nguyên kích thước khung tương đương dữ liệu thật để tránh hiện tượng nhảy layout giật cục (CLS = 0).
 2. **Trạng thái Trống / Không có dữ liệu (`Empty State`):**
-   - Vòng tròn icon trung tâm: Kích thước 48px, bo góc `rounded-[12px]`, nền `bg-[#ECFDF5]`, chứa icon Material Symbol màu `#047857`.
-   - Tiêu đề: Font Be Vietnam Pro `text-[16px] font-semibold text-[#0F172A] mt-4`.
-   - Mô tả: Font Inter `text-[14px] text-[#475569] mt-1 max-w-md text-center`.
-   - Nút hành động bổ trợ: Nút Outline `h-[44px] mt-4` kêu gọi hành động tiếp theo (ví dụ: "Xem tất cả yêu cầu" hoặc "Đặt sân ngay").
+   - Vòng tròn icon trung tâm: Kích thước 48px, bo góc `rounded-[12px]`, nền `bg-[#E8F6EF]`, chứa icon Material Symbol màu `#066649`.
+   - Tiêu đề: Font Inter `text-[14px] font-semibold text-[#172F4D] mt-4`.
+   - Mô tả: Font Inter `text-[14px] text-[#40556B] mt-1 max-w-md text-center`.
+   - Nút hành động bổ trợ: Nút Outline `h-[44px] border-[#B9C8D6] mt-4` kêu gọi hành động tiếp theo (ví dụ: "Xem tất cả yêu cầu" hoặc "Xem lịch sân").
 3. **Trạng thái Báo lỗi (`Error State`):**
-   - Vòng tròn icon cảnh báo: Kích thước 40px, bo góc `rounded-[8px]`, nền `bg-[#FEF2F2]`, chứa icon lỗi màu `#B91C1C`.
-   - Tiêu đề: Font Be Vietnam Pro `text-[18px] font-medium text-[#0F172A] mt-3`.
-   - Diễn giải lỗi: Font Inter `text-[14px] text-[#475569] leading-[20px]`.
-   - Nút khắc phục: Nút Outline `h-[44px]` nhãn "Thử lại", giữ nguyên toàn bộ lựa chọn bộ lọc trước đó của người dùng.
+   - Vòng tròn icon cảnh báo: Kích thước 40px, bo góc `rounded-[8px]`, nền `bg-[#FFF0F1]`, chứa icon lỗi màu `#B42332`.
+   - Tiêu đề: Font Be Vietnam Pro `text-[18px] font-medium text-[#172F4D] mt-3`.
+   - Diễn giải lỗi: Font Inter `text-[14px] text-[#40556B] leading-[20px]`.
+   - Nút khắc phục: Nút Outline `h-[44px] border-[#B9C8D6]` nhãn "Thử lại", giữ nguyên toàn bộ lựa chọn bộ lọc trước đó của người dùng.
 4. **Trạng thái Xác nhận Thành công (`Success State / Toast`):**
-   - Khối thông báo thành công: Chiều cao 96px, bo góc `rounded-[8px]`, nền `bg-white`, viền `border border-[#E2E8F0]`, icon thành công trong ô 32px nền `#ECFDF5` (`#047857`).
-   - Tiêu đề: Font Inter `text-[14px] font-semibold text-[#0F172A]`.
-   - Chú thích: Font Inter `text-[12px] text-[#475569]`.
+   - Khối thông báo thành công: Chiều cao 96px, bo góc `rounded-[8px]`, nền `bg-white`, viền `border border-[#DCE5ED]`, icon thành công trong ô 32px bo góc `rounded-[8px]` nền `#E8F6EF` (`#066649`).
+   - Tiêu đề: Font Inter `text-[14px] font-semibold text-[#172F4D]`.
+   - Chú thích: Font Inter `text-[12px] text-[#40556B]`.
+5. **Thanh Phản hồi Thao tác Inline (`3325:2777–3325:2781`):**
+   - Chiều cao `52px`, bo góc `rounded-[8px]`, padding `px-4`: Đang lưu (`bg-[#EDF2F6] text-[#40556B]`), Hoàn tất (`bg-[#E8F6EF] text-[#066649]`), Lỗi lưu (`bg-[#FFF0F1] text-[#B42332]`).
 
 ---
 
@@ -488,19 +499,19 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 Được trích xuất từ Figma Admin Dashboard (`3314:34`).
 - **Khung chứa tổng thể (Container):**
   - Chiều rộng: `w-full` (hoặc `1136px`), chiều cao: `148px`.
-  - Nền: `bg-white`, viền bao: `border border-[#E2E8F0]`, bo góc: `rounded-[12px]`.
+  - Nền: `bg-white`, viền bao: `border border-[#DCE5ED]`, bo góc: `rounded-[12px]`.
 - **Phần Đầu Thẻ (Card Header - Chiều cao 76px):**
-  - **Tiêu đề nhóm:** Font `Be Vietnam Pro` Medium `text-[18px] leading-[26px] text-[#0F172A]` ("Đơn cần xử lý gấp").
-  - **Huy hiệu số lượng (`CountBadge`):** Kích thước `28x24px`, bo góc `rounded-[4px]`, nền `bg-[#F1F5F9]`, chữ font `Inter` Regular `text-[12px] text-[#0F172A]` căn giữa (`0`).
-  - **Dòng định hướng:** Font `Inter` Regular `text-[12px] leading-[16px] text-[#475569]` ("Ưu tiên theo giờ chơi gần nhất").
-  - **Liên kết hành động bên phải:** Font `Inter` SemiBold `text-[14px] leading-[20px] text-[#047857]` ("Xem tất cả yêu cầu") kèm icon mũi tên 20px màu `#047857` (`hover:underline`).
-  - **Đường phân cách (Divider):** Nét liền 1px màu `#E2E8F0` tại vị trí top 76px chia tách header và thân thẻ.
+  - **Tiêu đề nhóm:** Font `Be Vietnam Pro` Medium `text-[18px] leading-[26px] text-[#172F4D]` ("Đơn cần xử lý gấp").
+  - **Huy hiệu số lượng (`CountBadge`):** Kích thước `28x24px`, bo góc `rounded-[12px]`, nền `bg-[#EDF2F6]`, chữ font `Inter` Regular `text-[12px] text-[#40556B]` căn giữa (`0`).
+  - **Dòng định hướng:** Font `Inter` Regular `text-[12px] leading-[16px] text-[#40556B]` ("Ưu tiên theo giờ chơi gần nhất").
+  - **Liên kết hành động bên phải:** Font `Inter` SemiBold `text-[14px] leading-[20px] text-[#066649]` ("Xem tất cả yêu cầu") kèm icon mũi tên 20px màu `#066649` (`hover:underline`).
+  - **Đường phân cách (Divider):** Nét liền 1px màu `#DCE5ED` tại vị trí top 76px chia tách header và thân thẻ.
 - **Thân Thẻ khi Hàng Chờ Rỗng (`Empty Queue State`):**
-  - **Ô biểu tượng:** Kích thước `32x32px`, bo góc `rounded-[6px]`, nền `bg-[#ECFDF5]`, chứa icon Material Symbol màu `#047857` (kích thước 20px).
-  - **Dòng thông báo chính:** Font `Inter` SemiBold `text-[14px] leading-[20px] text-[#0F172A]` ("Không có đơn chờ xác nhận").
-  - **Dòng diễn giải phụ:** Font `Inter` Regular `text-[12px] leading-[16px] text-[#475569]` ("Các yêu cầu cần xử lý sẽ xuất hiện tại đây.").
+  - **Ô biểu tượng:** Kích thước `32x32px`, bo góc `rounded-[8px]`, nền `bg-[#E8F6EF]`, chứa icon Material Symbol màu `#066649` (kích thước 20px).
+  - **Dòng thông báo chính:** Font `Inter` SemiBold `text-[14px] leading-[20px] text-[#172F4D]` ("Không có đơn chờ xác nhận").
+  - **Dòng diễn giải phụ:** Font `Inter` Regular `text-[12px] leading-[16px] text-[#40556B]` ("Các yêu cầu cần xử lý sẽ xuất hiện tại đây.").
 - **Thân Thẻ khi Có Đơn Chờ (`Active Queue State`):**
-  - Hiển thị danh sách ngang hoặc danh sách cuộn các thẻ đơn gọn: Mỗi đơn hiển thị Mã đơn (`Inter tabular-nums`), Tên khách, Tên sân, Khung giờ chơi và 2 nút tác vụ nhanh ("Duyệt" `bg-[#047857]` và "Xem" `variant="outline"`).
+  - Hiển thị danh sách ngang hoặc danh sách cuộn các thẻ đơn gọn: Mỗi đơn hiển thị Mã đơn (`Inter tabular-nums`), Tên khách, Tên sân, Khung giờ chơi và 2 nút tác vụ nhanh ("Duyệt" `bg-[#066649]` và "Xem" `variant="outline"`).
 
 ---
 
@@ -510,11 +521,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 | Trạng thái | Nút Bấm Primary | Nút Bấm Outline | Ô Nhập Liệu (Input) | Ô Slot Lưới Sân | Hàng Bảng Dữ liệu |
 |:---|:---|:---|:---|:---|:---|
-| **Default** | `bg-[#047857] text-white` | `bg-white border-[#CBD5E1] text-[#475569]` | `bg-white border-[#CBD5E1] text-[#0F172A]` | `bg-white border-[#E2E8F0]` | `bg-white border-b-[#E2E8F0]` |
-| **Hover** | `bg-[#065F46]` (Sậm hơn) | `bg-slate-50 border-slate-400 text-[#0F172A]` | `border-slate-400` | `bg-[#ECFDF5] border-[#A7F3D0]` | `bg-slate-50/80` |
-| **Active** | `bg-[#064E3B] scale-[0.98]` | `bg-slate-100 scale-[0.98]` | `border-[#059669]` | `scale-[0.97]` | `bg-slate-100/70` |
-| **Focus-Visible** | `ring-2 ring-[#059669] ring-offset-2` | `ring-2 ring-[#059669] ring-offset-2` | `ring-2 ring-[#059669]/25 border-[#059669]` | `ring-2 ring-[#059669]` | `outline-none ring-1 ring-[#059669]` |
-| **Disabled** | `bg-slate-200 text-slate-400 cursor-not-allowed` | `border-slate-200 text-slate-300 cursor-not-allowed` | `bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed` | `bg-slate-50 opacity-40 cursor-not-allowed` | N/A |
+| **Default** | `bg-[#066649] text-white` | `bg-white border-[#B9C8D6] text-[#40556B]` | `bg-white border-[#B9C8D6] text-[#172F4D]` | `bg-white border-[#DCE5ED]` | `bg-white border-b-[#DCE5ED]` |
+| **Hover** | `bg-[#05523A]` (Sậm hơn) | `bg-[#FDF8F8] border-[#596D80] text-[#172F4D]` | `border-[#596D80]` | `bg-[#E8F6EF] border-[#087F5B]` | `bg-[#FDF8F8]` |
+| **Active** | `bg-[#04402D] scale-[0.98]` | `bg-[#EDF2F6] scale-[0.98]` | `border-[#087F5B]` | `scale-[0.97]` | `bg-[#EDF2F6]/70` |
+| **Focus-Visible** | `ring-2 ring-[#087F5B] ring-offset-2` | `ring-2 ring-[#087F5B] ring-offset-2` | `ring-2 ring-[#087F5B]/25 border-[#087F5B]` | `ring-2 ring-[#087F5B]` | `outline-none ring-1 ring-[#087F5B]` |
+| **Disabled** | `bg-[#EDF2F6] text-[#596D80] cursor-not-allowed` | `border-[#DCE5ED] text-[#596D80] cursor-not-allowed` | `bg-[#EDF2F6] text-[#596D80] border-[#DCE5ED] cursor-not-allowed` | `bg-[#EDF2F6] opacity-50 cursor-not-allowed` | N/A |
 | **Loading** | `opacity-80 pointer-events-none spinner` | `opacity-80 pointer-events-none spinner` | N/A | Skeleton pulse | `opacity-60` |
 
 ---
@@ -568,7 +579,7 @@ Tuân thủ nguyên tắc Athletic Kinetic — chuyển động nhanh nhẹn, d�
 Bảng dữ liệu nhiều cột (`AllBookings`, `InvoiceList`, `CourtTable`) áp dụng nguyên tắc thích ứng:
 1. **Desktop:** Hiển thị dạng bảng `table.w-full` hoàn chỉnh.
 2. **Mobile (< 768px):** Tự động chuyển đổi từ dạng dòng bảng sang **Danh sách Thẻ tóm tắt (Card List)**:
-   - Mỗi đơn đặt sân / hóa đơn là một thẻ card trắng bo góc 12px, có đường viền `#E2E8F0`.
+   - Mỗi đơn đặt sân / hóa đơn là một thẻ card trắng bo góc 12px, có đường viền `#DCE5ED`.
    - Góc trên: Mã đơn và Badge trạng thái.
    - Thân thẻ: Tên khách hàng, tên sân, ngày giờ chơi.
    - Chân thẻ: Tổng tiền căn phải và các nút thao tác nhanh (Chi tiết, Xác nhận).
@@ -591,20 +602,20 @@ Lưới sân là trái tim nghiệp vụ của ShuttleVN, hoạt động từ 05
 └───────────┴──────────────┴──────────────┴──────────────┴─────┴──────────────┘
 ```
 
-#### Quy chuẩn Ô Slot (`CourtSlotCell`):
+#### Quy chuẩn Ô Slot (`CourtSlotCell` — đồng bộ `3325:438`):
 1. **Slot Trống khả dụng (`Available`):**
-   - Nền: `bg-white`, viền: `border border-[#E2E8F0]`.
-   - Hover: `hover:bg-[#ECFDF5] hover:border-[#A7F3D0] cursor-pointer`.
+   - Nền: `bg-white`, viền: `border border-[#DCE5ED]`.
+   - Hover: `hover:bg-[#E8F6EF] hover:border-[#087F5B] cursor-pointer`.
 2. **Slot Đã được đặt (`Booked`):**
-   - Nền: `bg-slate-100`, viền: `border border-slate-200`.
-   - Chữ: `text-[#475569] font-medium text-[12px]` hiển thị mã đơn hoặc tên khách; con trỏ `cursor-not-allowed` (hoặc `cursor-pointer` đối với nhân viên để xem chi tiết).
+   - Nền: `bg-[#EDF2F6]`, viền: `border border-[#DCE5ED]`.
+   - Chữ: `text-[#40556B] font-medium text-[12px]` hiển thị mã đơn hoặc tên khách; con trỏ `cursor-not-allowed` (hoặc `cursor-pointer` đối với nhân viên để xem chi tiết).
 3. **Slot Đang bảo trì (`Maintenance`):**
-   - Nền: `bg-amber-50`, viền: `border border-amber-200`.
-   - Chữ: `text-amber-700 text-[11px] font-semibold` kèm hoa văn sọc chéo tinh tế.
-4. **Slot Đã qua giờ trong ngày hôm nay (`Past / Disabled`):**
-   - Nền: `bg-slate-50`, chữ `text-slate-400`, `opacity-40 cursor-not-allowed`.
+   - Nền: `bg-[#FFF4E2]`, viền: `border border-[#A45A0B]/30`.
+   - Chữ: `text-[#A45A0B] text-[12px] font-semibold` kèm hoa văn sọc chéo tinh tế.
+4. **Slot Chưa rõ / Không khả dụng (`Unknown / Past`, Figma `3325:438`):**
+   - Kích thước chuẩn `72x56px`, nền `bg-[#EDF2F6]`, viền `border border-[#DCE5ED]`, ký tự `—` font Inter Medium `text-[14px] text-[#40556B]`, `cursor-not-allowed`.
 5. **Slot Đang được người dùng chọn trong giỏ (`Selected`):**
-   - Nền: `bg-[#059669]`, viền: `border-[#047857]`, chữ: `text-white font-semibold`.
+   - Nền: `bg-[#087F5B]`, viền: `border-[#066649]`, chữ: `text-white font-semibold`.
 
 #### Quy tắc Kỹ thuật Lưới Sân:
 - **Cột Tên Sân Sticky:** Cố định bên trái với `position: sticky; left: 0; z-index: 5; background: #FFFFFF;`.
@@ -617,39 +628,39 @@ Lưới sân là trái tim nghiệp vụ của ShuttleVN, hoạt động từ 05
 Được trích xuất từ Figma Admin Dashboard (`3314:35`).
 - **Khung chứa tổng thể (Container):**
   - Kích thước chuẩn: Rộng `704px` (hoặc co giãn theo cột grid), cao `248px`.
-  - Nền: `bg-white`, viền: `border border-[#E2E8F0]`, bo góc: `rounded-[12px]`.
+  - Nền: `bg-white`, viền: `border border-[#DCE5ED]`, bo góc: `rounded-[12px]`.
 - **Phần Đầu Thẻ (Header - Chiều cao 76px):**
-  - Tiêu đề khối: Font `Be Vietnam Pro` Medium `text-[18px] leading-[26px] text-[#0F172A]` ("Doanh thu thực thu").
-  - Phụ đề: Font `Inter` Regular `text-[12px] text-[#475569]` ("Chỉ tính hóa đơn đã thu tiền").
-  - Liên kết xem báo cáo: Font `Inter` SemiBold `text-[14px] text-[#047857]` ("Xem báo cáo") kèm icon Material Symbol 20px `#047857`.
-  - Đường phân cách: Nét liền 1px màu `#E2E8F0` tại top 76px.
+  - Tiêu đề khối: Font `Be Vietnam Pro` Medium `text-[18px] leading-[26px] text-[#172F4D]` ("Doanh thu thực thu").
+  - Phụ đề: Font `Inter` Regular `text-[12px] text-[#40556B]` ("Chỉ tính hóa đơn đã thu tiền").
+  - Liên kết xem báo cáo: Font `Inter` SemiBold `text-[14px] text-[#066649]` ("Xem báo cáo") kèm icon Material Symbol 20px `#066649`.
+  - Đường phân cách: Nét liền 1px màu `#DCE5ED` tại top 76px.
 - **Thanh Chọn Khoảng Thời Gian (`ReportDateFilter`):**
-  - Khung pill kích thước `274x32px`, viền `border border-[#E2E8F0]`, bo góc `rounded-[6px]`.
-  - Hiển thị ngày: Font `Inter` Regular `text-[12px] text-[#0F172A]` (`23/11/2026`).
-  - Đường chia dọc: 1px cao 20px màu `#E2E8F0`.
-  - Dropdown chọn kiểu: Font `Inter` Regular `text-[12px] text-[#475569]` ("Theo ngày") kèm icon dropdown 16px.
+  - Khung pill kích thước `274x32px`, nền `bg-[#FDF8F8]`, viền `border border-[#DCE5ED]`, bo góc `rounded-[8px]`.
+  - Hiển thị ngày: Font `Inter` Regular `text-[12px] text-[#40556B]` (`23/11/2026`).
+  - Đường chia dọc: 1px cao 20px màu `#DCE5ED`.
+  - Dropdown chọn kiểu: Font `Inter` Regular `text-[12px] text-[#40556B]` ("Theo ngày") kèm icon dropdown 16px.
 - **Thư viện & Cấu hình Biểu đồ Recharts v2.12:**
-  - **Số liệu Doanh thu Tổng:** Font `Inter` Medium `text-[18px] text-[#0F172A]` ("0 đ").
-  - **Màu sắc Cột (Bar Fill):** Đồng bộ tuyệt đối về sắc xanh ngọc thương hiệu `#059669` (`emerald-600`), loại bỏ hoàn toàn màu xanh dương `#3b82f6` lạc điệu.
+  - **Số liệu Doanh thu Tổng:** Font `Be Vietnam Pro` Medium `text-[18px] leading-[26px] text-[#172F4D]` ("0 đ").
+  - **Màu sắc Cột (Bar Fill):** Đồng bộ tuyệt đối về sắc xanh ngọc thương hiệu `#087F5B` (`ShuttleVN/brand`), loại bỏ hoàn toàn màu xanh dương `#3b82f6` lạc điệu.
   - **Bo góc Cột:** Bo tròn 4px hai góc trên đỉnh cột: `radius={[4, 4, 0, 0]}`.
   - **Đường chuẩn tham chiếu (Grid & Baseline):**
-    * Đường lưới ngang: Nét đứt mảnh màu `#F1F5F9`.
-    * Đường trục tọa độ đáy (Baseline): Nét liền 1px màu `#E2E8F0`.
+    * Đường lưới ngang: Nét đứt mảnh màu `#EDF2F6` (`ShuttleVN/soft`).
+    * Đường trục tọa độ đáy (Baseline): Nét liền 1px màu `#DCE5ED` (`ShuttleVN/line`).
   - **Phông chữ Trục tọa độ (X/Y Axis & Tooltip):**
     * Đồng bộ dùng phông `Inter` kết hợp thuộc tính số học `tabular-nums` (`font-sans tabular-nums` / `fontFeatureSettings: "'tnum' 1"`).
-    * Màu chữ nhãn trục: `text-[#475569]` (`slate-600`), cỡ chữ `12px`.
-  - **Trạng thái Trống (Empty Chart):** Dòng chữ font `Inter` Regular `text-[14px] text-[#475569]` căn giữa biểu đồ ("Chưa có doanh thu trong ngày").
-  - **Tooltip Doanh thu:** Nền thẻ trắng bo góc 8px, viền `#E2E8F0`, đổ bóng `shadow-md`, số tiền định dạng tiền tệ Việt Nam: `Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })`.
+    * Màu chữ nhãn trục: `text-[#40556B]` (`secondary`), cỡ chữ `12px`.
+  - **Trạng thái Trống (Empty Chart):** Dòng chữ font `Inter` Regular `text-[14px] text-[#40556B]` căn giữa biểu đồ ("Chưa có doanh thu trong ngày").
+  - **Tooltip Doanh thu:** Nền thẻ trắng bo góc 8px, viền `#DCE5ED`, đổ bóng `shadow-md`, số tiền định dạng tiền tệ Việt Nam: `Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })`.
 
 ---
 
 ### 8.3 Thanh Timeline Phân bổ Bảng giá Tuần (`PricingTimeline`)
 Giải quyết vấn đề phân mảnh màu pastel cũ, đồng bộ dải 4 phân đoạn giờ về bảng màu ngữ nghĩa:
-- **Khung giờ Thấp điểm (Sáng sớm 05:00 - 08:00):** Nền `bg-[#ECFDF5]` (`emerald-50`), viền `border-[#A7F3D0]`, nhãn `text-[#047857]`.
-- **Khung giờ Tiêu chuẩn Ban ngày (08:00 - 16:00):** Nền `bg-[#EFF6FF]` (`blue-50`), viền `border-[#BFDBFE]`, nhãn `text-[#1D4ED8]`.
-- **Khung giờ Vàng Cao điểm (16:00 - 20:00):** Nền `bg-[#FFFBEB]` (`amber-50`), viền `border-[#FDE68A]`, nhãn `text-[#B45309]`.
-- **Khung giờ Tối muộn (20:00 - 22:00):** Nền `bg-[#F1F5F9]` (`slate-100`), viền `border-[#CBD5E1]`, nhãn `text-[#475569]`.
-- **Nút Kéo Mốc Giờ (Slider Thumbs):** Chiều rộng 18px, thanh kéo thẳng đứng màu `#047857`, vùng cảm ứng chạm tối thiểu 44px hỗ trợ kéo mượt mà trên iPad/máy tính bảng tại quầy.
+- **Khung giờ Thấp điểm (Sáng sớm 05:00 - 08:00):** Nền `bg-[#E8F6EF]` (`brandSoft`), viền `border-[#087F5B]/30`, nhãn `text-[#066649]`.
+- **Khung giờ Tiêu chuẩn Ban ngày (08:00 - 16:00):** Nền `bg-[#EBF2FA]` (`blueSoft`), viền `border-[#245B99]/30`, nhãn `text-[#245B99]`.
+- **Khung giờ Vàng Cao điểm (16:00 - 20:00):** Nền `bg-[#FFF4E2]` (`amberSoft`), viền `border-[#A45A0B]/30`, nhãn `text-[#A45A0B]`.
+- **Khung giờ Tối muộn (20:00 - 22:00):** Nền `bg-[#EDF2F6]` (`soft`), viền `border-[#B9C8D6]`, nhãn `text-[#40556B]`.
+- **Nút Kéo Mốc Giờ (Slider Thumbs):** Chiều rộng 18px, thanh kéo thẳng đứng màu `#066649`, vùng cảm ứng chạm tối thiểu 44px hỗ trợ kéo mượt mà trên iPad/máy tính bảng tại quầy.
 
 ---
 
@@ -657,28 +668,28 @@ Giải quyết vấn đề phân mảnh màu pastel cũ, đồng bộ dải 4 ph
 Được trích xuất từ Figma Admin Dashboard (`3314:36`).
 - **Khung chứa tổng thể (Container):**
   - Kích thước: Rộng `408px` (hoặc co giãn theo grid), cao `248px`.
-  - Nền: `bg-white`, viền bao: `border border-[#E2E8F0]`, bo góc: `rounded-[12px]`.
+  - Nền: `bg-white`, viền bao: `border border-[#DCE5ED]`, bo góc: `rounded-[12px]`.
 - **Phần Đầu Thẻ (Header - Chiều cao 76px):**
-  - **Tiêu đề khối:** Font `Be Vietnam Pro` Medium `text-[18px] leading-[26px] text-[#0F172A]` ("Giờ sử dụng sân").
-  - **Phụ đề:** Font `Inter` Regular `text-[12px] leading-[16px] text-[#475569]` ("Trong ngày 23/11/2026").
-  - **Đường phân cách (Divider):** Nét liền 1px màu `#E2E8F0` tại top 76px.
+  - **Tiêu đề khối:** Font `Be Vietnam Pro` Medium `text-[18px] leading-[26px] text-[#172F4D]` ("Giờ sử dụng sân").
+  - **Phụ đề:** Font `Inter` Regular `text-[12px] leading-[16px] text-[#40556B]` ("Trong ngày 23/11/2026").
+  - **Đường phân cách (Divider):** Nét liền 1px màu `#DCE5ED` tại top 76px.
 - **Thân Thẻ (Progress Rows):**
   - **Hàng 1 (Tên Sân & Tổng thời lượng):**
-    * Tên sân: Font `Inter` Regular `text-[14px] text-[#0F172A]` ("Sân 1").
-    * Tổng giờ: Font `Inter` Regular `text-[14px] text-[#475569]` ("0 giờ").
+    * Tên sân: Font `Inter` SemiBold `text-[14px] text-[#172F4D]` ("Sân 1").
+    * Tổng giờ: Font `Inter` Medium `text-[14px] text-[#172F4D]` ("0 giờ").
   - **Hàng 2 (Tiến độ Giờ đặt - Booked Hours):**
-    * Nhãn: Font `Inter` Regular `text-[12px] text-[#475569]` ("Giờ đặt").
-    * Thanh ray (Track bar): Rộng `224px`, cao `6px`, bo góc tròn `rounded-full`, nền `bg-[#F1F5F9]`.
-    * Điểm mốc / Tiến độ: Màu `bg-[#64748B]` (`slate-500`) (vạch chỉ báo 2x10px khi ở mốc 0, hoặc thanh tiến độ co giãn khi có giờ đặt).
-    * Giá trị số: Font `Inter` Regular `text-[14px] text-[#0F172A] tabular-nums` căn phải (`0`).
+    * Nhãn: Font `Inter` Regular `text-[12px] text-[#40556B]` ("Giờ đặt").
+    * Thanh ray (Track bar): Rộng `224px`, cao `6px`, bo góc `rounded-[3px]`, nền `bg-[#EDF2F6]`.
+    * Điểm mốc / Tiến độ: Màu `bg-[#596D80]` (`muted`) (vạch chỉ báo `2x10px` bo 1px khi ở mốc 0, hoặc thanh tiến độ co giãn khi có giờ đặt).
+    * Giá trị số: Font `Inter` Medium `text-[14px] text-[#40556B] tabular-nums` căn phải (`0`).
   - **Hàng 3 (Tiến độ Hoàn thành - Completed Hours):**
-    * Nhãn: Font `Inter` Regular `text-[12px] text-[#475569]` ("Hoàn thành").
-    * Thanh ray (Track bar): Rộng `224px`, cao `6px`, bo góc tròn `rounded-full`, nền `bg-[#F1F5F9]`.
-    * Điểm mốc / Tiến độ: Màu `bg-[#059669]` (`emerald-600`) (vạch chỉ báo 2x10px khi ở mốc 0, hoặc dải màu xanh ngọc khi hoàn thành).
-    * Giá trị số: Font `Inter` Regular `text-[14px] text-[#0F172A] tabular-nums` căn phải (`0`).
+    * Nhãn: Font `Inter` Regular `text-[12px] text-[#40556B]` ("Hoàn thành").
+    * Thanh ray (Track bar): Rộng `224px`, cao `6px`, bo góc `rounded-[3px]`, nền `bg-[#EDF2F6]`.
+    * Điểm mốc / Tiến độ: Màu `bg-[#087F5B]` (`brand`) (vạch chỉ báo `2x10px` bo 1px khi ở mốc 0, hoặc dải màu xanh ngọc khi hoàn thành).
+    * Giá trị số: Font `Inter` Medium `text-[14px] text-[#40556B] tabular-nums` căn phải (`0`).
 - **Chân Thẻ (Footer):**
-  - Đường phân cách 1px màu `#E2E8F0` tại top 202px.
-  - Ghi chú: Font `Inter` Regular `text-[12px] text-[#475569]` ("Chưa có giờ đặt hoặc giờ hoàn thành.").
+  - Đường phân cách 1px màu `#DCE5ED` tại top 202px.
+  - Ghi chú: Font `Inter` Regular `text-[12px] text-[#40556B]` ("Chưa có giờ đặt hoặc giờ hoàn thành.").
 
 ---
 
@@ -688,7 +699,7 @@ Hệ thống thiết kế ShuttleVN đã được đối soát toàn diện vớ
 
 | Ưu tiên | Danh mục (Category) | Mức độ | Trạng thái Tuân thủ & Bằng chứng Triển khai |
 |:---:|:---|:---:|:---|
-| **1** | **Accessibility** | CRITICAL | **100% ĐẠT:** Độ tương phản chữ đạt từ 5.5:1 đến 14.5:1 (vượt chuẩn 4.5:1). Tất cả nút icon có `aria-label`. 100% Modal có `role="dialog"`, focus trap và phím `Escape`. |
+| **1** | **Accessibility** | CRITICAL | **100% ĐẠT:** Độ tương phản chữ đạt từ 4.8:1 đến 13.5:1 (vượt chuẩn 4.5:1). Tất cả nút icon có `aria-label`. 100% Modal có `role="dialog"`, focus trap và phím `Escape`. |
 | **2** | **Touch & Interaction** | CRITICAL | **100% ĐẠT:** Nút bấm chuẩn `44px`. Hitbox thao tác hàng bảng >= 40px. Khoảng cách giữa các nút >= 8px. Hiệu ứng chạm `active:scale-[0.98]`. |
 | **3** | **Performance** | HIGH | **100% ĐẠT:** Thay thẻ `<img>` thô bằng `next/image` WebP/AVIF. Lưới sân dùng CSS virtualization. Listener chuột passive. Skeleton giữ chỗ CLS < 0.1. |
 | **4** | **Style Selection** | HIGH | **100% ĐẠT:** Nhất quán phong cách Athletic Kinetic trên cả 22 màn hình. 100% icon SVG Google Material Symbols, tuyệt đối không dùng emoji làm icon. |
@@ -696,8 +707,8 @@ Hệ thống thiết kế ShuttleVN đã được đối soát toàn diện vớ
 | **6** | **Typography & Color** | MEDIUM | **100% ĐẠT:** Chấm dứt hardcode hex. Chuẩn hóa 100% token ngữ nghĩa. Phông tiếng Việt bản địa Be Vietnam Pro cho tiêu đề. Không có chữ nào < 12px. |
 | **7** | **Animation** | MEDIUM | **100% ĐẠT:** Thời lượng 150-200ms ease-out. Loại bỏ bounce animation giật cục. Hỗ trợ đầy đủ `prefers-reduced-motion`. |
 | **8** | **Forms & Feedback** | MEDIUM | **100% ĐẠT:** 100% form dùng component chuẩn Base UI (chấm dứt lỗi ReservationForm). Nhãn rõ ràng, hiển thị trang trọng Tên sân. Toast Sonner góc trên. |
-| **9** | **Navigation Patterns** | HIGH | **100% ĐẠT:** Phím tắt `Ctrl+K` tra cứu nhanh. Bổ sung Breadcrumb cho các trang con chi tiết. Menu active chỉ thị bằng màu `#ECFDF5` và `#047857`. |
-| **10**| **Charts & Data** | LOW | **100% ĐẠT:** Recharts cột xanh ngọc `#059669` bo đỉnh 4px. Trục tọa độ Inter (tabular-nums) chuẩn xác. Tooltip định dạng tiền tệ VND rõ ràng. |
+| **9** | **Navigation Patterns** | HIGH | **100% ĐẠT:** Phím tắt `Ctrl+K` tra cứu nhanh. Bổ sung Breadcrumb cho các trang con chi tiết. Menu active chỉ thị bằng màu `#E8F6EF` và `#066649`. |
+| **10**| **Charts & Data** | LOW | **100% ĐẠT:** Recharts cột xanh ngọc `#087F5B` bo đỉnh 4px. Trục tọa độ Inter (tabular-nums) chuẩn xác. Tooltip định dạng tiền tệ VND rõ ràng. |
 
 ---
 
@@ -709,8 +720,8 @@ Quá trình đối soát trực tiếp giữa thiết kế Figma đã duyệt, m
 graph TD
     subgraph Discrepancies["7 MÂU THUẪN ĐỐI SOÁT GIỮA FIGMA VÀ TÀI LIỆU"]
         D1["1. Font Display: Be Vietnam Pro (Figma) vs Hanken Grotesk (Docs)"]
-        D2["2. Status Colors: Dải màu 700 đậm (Figma) vs 600 nhạt (Docs)"]
-        D3["3. Button Primary: Emerald 700 #047857 (Figma) vs Emerald 600 (Docs)"]
+        D2["2. Status Colors: Dải màu tinh chỉnh (Figma) vs 600 nhạt (Docs)"]
+        D3["3. Button Primary: BrandStrong #066649 (Figma) vs Emerald 600 (Docs)"]
         D4["4. Admin Sidebar: Rộng 240px (Figma) vs 220px (Codebase cũ)"]
         D5["5. Bo góc Controls: 8px chuẩn (Figma) vs 7px/14px dị biệt (Code cũ)"]
         D6["6. Độ rộng Button: Intrinsic Auto (Figma) vs w-full cứng (Code cũ)"]
@@ -727,19 +738,19 @@ graph TD
 - **Nguyên nhân:** Người thiết kế khi làm việc thực tế trên Figma đã nhận thấy `Be Vietnam Pro` hiển thị dấu tiếng Việt đẹp hơn rất nhiều so với `Hanken Grotesk` (vốn là phông quốc tế dễ lỗi dấu tiếng Việt khi viết hoa), nên đã chuyển sang `Be Vietnam Pro` nhưng chưa sửa dòng text ghi chú.
 - **Quyết định Kỹ thuật (Chuẩn hóa):** **Theo sát thiết kế Figma!** Cấu hình nạp `Be_Vietnam_Pro` từ `next/font/google` cho biến `--font-display` trong `layout.tsx`. Giữ `Hanken Grotesk` làm phông chữ phụ trợ dự phòng.
 
-#### 2. Dải Màu Trạng thái (Status Colors): Sắc độ 700 vs Sắc độ 600
-- **Hiện trạng mâu thuẫn:**
+#### 2. Dải Màu Trạng thái (Status Colors): Bảng Màu Tinh Chỉnh Figma vs Tailwind 600
+- **Hiện trạng mâu thuẫn:** 
   - `DESIGN_DIRECTIONS.md`: Liệt kê Red 600 (`#DC2626`), Amber 600 (`#D97706`), Blue 600 (`#2563EB`).
-  - Figma Approved Design (`3314:39` variables): Định nghĩa chính thức `ShuttleVN/red` là **`#B91C1C`** (`red-700`), `ShuttleVN/amber` là **`#B45309`** (`amber-700`), `ShuttleVN/blue` là **`#1D4ED8`** (`blue-700`).
-- **Nguyên nhân:** Sắc độ 600 khi viết chữ trên nền sáng (hoặc nền pastel soft) chỉ đạt độ tương phản mấp mé 4.5:1. Người thiết kế đã chủ động nâng lên sắc độ 700 để tăng độ tương phản lên > 5.5:1 (đạt chuẩn WCAG AA/AAA).
+  - Figma Approved Design (`oKgloxLTqAdsZG599iDolt` variables): Định nghĩa chính thức `ShuttleVN/red` là **`#B42332`** (nền `#FFF0F1`), `ShuttleVN/amber` là **`#A45A0B`** (nền `#FFF4E2`), `ShuttleVN/blue` là **`#245B99`** (nền `#EBF2FA`), đồng thời nền canvas là `#FDF8F8` và chữ chính là `#172F4D`.
+- **Nguyên nhân:** Bảng màu tùy chỉnh trên Figma giúp tăng độ tương phản đồng đều trên nền ấm `#FDF8F8` và hài hòa với sắc xanh ngọc sâu `#087F5B` / `#066649`.
 - **Quyết định Kỹ thuật:** **100% tuân thủ mã màu trong Figma Variables!**
 
-#### 3. Màu Nền Nút Bấm Primary: `#047857` (Emerald 700) vs `#059669` (Emerald 600)
+#### 3. Màu Nền Nút Bấm Primary: `#066649` (`brandStrong`) vs `#059669` (Emerald 600)
 - **Hiện trạng mâu thuẫn:**
   - `DESIGN_DIRECTIONS.md`: Đề xuất nút chính dùng `emerald-600` (`#059669`).
-  - Figma Component `Button (variant=primary)` (`3314:57`): Sử dụng nền `bg-[#047857]` (`emerald-700`) phối chữ trắng `text-white`.
-- **Nguyên nhân:** Chữ trắng trên `#059669` có độ tương phản 4.8:1 (đạt mức tối thiểu). Chữ trắng trên `#047857` có độ tương phản **6.5:1** (gần mức AAA), giúp nút bấm nổi bật và rõ nét hơn hẳn dưới ánh sáng mạnh tại quầy lễ tân.
-- **Quyết định Kỹ thuật:** **Theo sát Figma!** Nút Primary dùng `bg-[#047857]`, hover chuyển sang `bg-[#065F46]`.
+  - Figma Component `Button (variant=primary)` (`3314:57`): Sử dụng nền `bg-[#066649]` (`ShuttleVN/brandStrong`) phối chữ trắng `text-white`.
+- **Nguyên nhân:** Chữ trắng trên `#066649` đạt độ tương phản **7.0:1** (chuẩn AAA), giúp nút bấm nổi bật và rõ nét hơn hẳn dưới ánh sáng mạnh tại quầy lễ tân.
+- **Quyết định Kỹ thuật:** **Theo sát Figma!** Nút Primary dùng `bg-[#066649]`, hover chuyển sang `bg-[#05523A]`.
 
 #### 4. Chiều Rộng Sidebar Quản trị: `240px` vs `220px`
 - **Hiện trạng mâu thuẫn:**
@@ -763,7 +774,7 @@ graph TD
 #### 7. Kiểu chữ cho Ngày giờ, Số liệu và Mã đơn: `Inter (tabular-nums)` thay vì `JetBrains Mono`
 - **Hiện trạng mâu thuẫn:**
   - Codebase cũ và `DESIGN_DIRECTIONS.md` đề xuất nạp phông Monospace `JetBrains Mono` (`--font-jetbrains`) cho mã đơn và số liệu.
-  - Thiết kế Figma thực tế (`MUuo3IYucmshw5lvdIS38e`): Trong danh mục Variables, cả `ShuttleVN/data` (`150.000 đ · 18:00–19:30`) và `ShuttleVN/code` đều được thiết lập bằng **`Inter`** (`Font(family: "Inter", style: Medium/Regular)`).
+  - Thiết kế Figma thực tế (`oKgloxLTqAdsZG599iDolt`): Trong danh mục Variables, cả `ShuttleVN/data` (`150.000 đ · 18:00–19:30`) và `ShuttleVN/code` đều được thiết lập bằng **`Inter`** (`Font(family: "Inter", style: Medium/Regular)`).
 - **Quyết định Kỹ thuật (Đã được Người dùng Phê duyệt):**
   - **Chuyển toàn bộ Date, Time, Giá tiền và Mã đơn sang `Inter` kết hợp class `tabular-nums` (`font-feature-settings: "tnum" 1`)**.
   - **Lợi ích:** Đồng bộ 100% với Figma Variables, loại bỏ 1 request nạp font thừa (`JetBrains_Mono` trong `layout.tsx`), giúp tối ưu tốc độ tải trang (LCP), giao diện hiển thị tinh tế, hiện đại và số liệu vẫn căn thẳng hàng hoàn hảo.
@@ -790,25 +801,25 @@ Cập nhật file `globals.css` để nạp toàn bộ biến token chuẩn hóa
     --radius-full: 9999px;
 
     /* Semantic Colors */
-    --color-brand-primary: #059669;
-    --color-brand-strong: #047857;
-    --color-brand-subtle: #ECFDF5;
+    --color-brand-primary: #087F5B;
+    --color-brand-strong: #066649;
+    --color-brand-subtle: #E8F6EF;
     
-    --color-surface-bg: #F8FAFC;
+    --color-surface-bg: #FDF8F8;
     --color-surface-card: #FFFFFF;
-    --color-surface-soft: #F1F5F9;
+    --color-surface-soft: #EDF2F6;
 
-    --color-text-ink: #0F172A;
-    --color-text-secondary: #475569;
-    --color-text-muted: #64748B;
+    --color-text-ink: #172F4D;
+    --color-text-secondary: #40556B;
+    --color-text-muted: #596D80;
 
-    --color-border-line: #E2E8F0;
-    --color-border-input: #CBD5E1;
+    --color-border-line: #DCE5ED;
+    --color-border-strong: #B9C8D6;
 
-    --color-status-success: #047857;
-    --color-status-warning: #B45309;
-    --color-status-danger: #B91C1C;
-    --color-status-info: #1D4ED8;
+    --color-status-success: #066649;
+    --color-status-warning: #A45A0B;
+    --color-status-danger: #B42332;
+    --color-status-info: #245B99;
   }
 
   body {
@@ -849,29 +860,29 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: "#059669", // Emerald 600
-          strong: "#047857",  // Emerald 700
-          soft: "#ECFDF5",    // Emerald 50
+          DEFAULT: "#087F5B", // ShuttleVN/brand
+          strong: "#066649",  // ShuttleVN/brandStrong
+          soft: "#E8F6EF",    // ShuttleVN/brandSoft
         },
         surface: {
-          bg: "#F8FAFC",      // Slate 50
-          card: "#FFFFFF",
-          soft: "#F1F5F9",    // Slate 100
+          bg: "#FDF8F8",      // ShuttleVN/bg
+          card: "#FFFFFF",    // ShuttleVN/white
+          soft: "#EDF2F6",    // ShuttleVN/soft
         },
         ink: {
-          DEFAULT: "#0F172A", // Slate 900
-          secondary: "#475569", // Slate 600
-          muted: "#64748B",   // Slate 500
+          DEFAULT: "#172F4D", // ShuttleVN/ink
+          secondary: "#40556B", // ShuttleVN/secondary
+          muted: "#596D80",   // ShuttleVN/muted
         },
         line: {
-          DEFAULT: "#E2E8F0", // Slate 200
-          input: "#CBD5E1",   // Slate 300
+          DEFAULT: "#DCE5ED", // ShuttleVN/line
+          strong: "#B9C8D6",  // ShuttleVN/strong (input/control border)
         },
         status: {
-          success: { DEFAULT: "#047857", soft: "#ECFDF5" },
-          warning: { DEFAULT: "#B45309", soft: "#FFFBEB" },
-          danger: { DEFAULT: "#B91C1C", soft: "#FEF2F2" },
-          info: { DEFAULT: "#1D4ED8", soft: "#EFF6FF" },
+          success: { DEFAULT: "#066649", soft: "#E8F6EF" },
+          warning: { DEFAULT: "#A45A0B", soft: "#FFF4E2" },
+          danger: { DEFAULT: "#B42332", soft: "#FFF0F1" },
+          info: { DEFAULT: "#245B99", soft: "#EBF2FA" },
         },
       },
       fontFamily: {
@@ -901,14 +912,14 @@ export default config;
 | Thành phần Cần Refactor | File Mã nguồn Hiện tại | Nhiệm vụ Chuẩn hóa Cụ thể |
 |:---|:---|:---|
 | **Layout Root & Fonts** | `src/app/layout.tsx` | Nạp `Be_Vietnam_Pro` gán vào `--font-display` và `Inter` gán vào `--font-inter`. Loại bỏ nạp `JetBrains_Mono` thừa. |
-| **Admin Shell & Sidebar** | `src/components/layout/AdminSidebar.tsx` | Đổi rộng `w-[240px]`, nền `bg-[#F8FAFC]`, viền `#E2E8F0`. Bổ sung Mobile Drawer backdrop. |
-| **Admin Header & Lookup** | `src/components/layout/AdminHeader.tsx` | Tích hợp thanh `QuickLookup` 334px với phím tắt `Ctrl K` và icon kính lúp. |
-| **Base Button** | `src/components/ui/Button.tsx` | Gỡ bỏ `w-full` mặc định, chuẩn hóa bo góc `rounded-[8px]`, màu primary `#047857`. |
-| **Base Badge** | `src/components/ui/Badge.tsx` | Cập nhật 7 trạng thái chuẩn: Chiều cao 24px, bo góc 999px, chữ 12px font Inter. |
-| **Base Input & Label** | `src/components/ui/Input.tsx`, `Label.tsx` | Bo góc `rounded-[8px]`, viền `#CBD5E1`. Label đổi chữ thường 13px font Inter. |
+| **Admin Shell & Sidebar** | `src/components/layout/AdminSidebar.tsx` | Đổi rộng `w-[240px]`, nền `bg-[#FDF8F8]`, viền `#DCE5ED`. Bổ sung Mobile Drawer backdrop. |
+| **Admin Header & Lookup** | `src/components/layout/AdminHeader.tsx` | Tích hợp thanh `QuickLookup` 334px với phím tắt `Ctrl K` và icon kính lúp, viền `#B9C8D6`. |
+| **Base Button** | `src/components/ui/Button.tsx` | Gỡ bỏ `w-full` mặc định, chuẩn hóa bo góc `rounded-[8px]`, màu primary `#066649`, viền outline `#B9C8D6`. |
+| **Base Badge** | `src/components/ui/Badge.tsx` | Cập nhật trạng thái chuẩn: Chiều cao 24px, bo góc 999px, chữ 12px font Inter, bảng màu Figma mới. |
+| **Base Input & Label** | `src/components/ui/Input.tsx`, `Label.tsx` | Bo góc `rounded-[8px]`, viền `#B9C8D6`. Label đổi chữ thường 12–13px font Inter `#40556B`. |
 | **Form Xác nhận Đặt sân**| `src/components/booking/ReservationForm.tsx`| **Thay thế 100% mã HTML thô bằng Base UI**: Hiển thị trang trọng Tên sân, giá từng mốc. |
 | **Lưới sân & Popup** | `CourtGrid.tsx`, `SlotPopup.tsx` | Đổi listener chuột sang `{ passive: true }`. Popup di động chuyển sang Bottom Sheet. |
-| **Biểu đồ Doanh thu** | `src/components/admin/RevenueChart.tsx` | Đổi màu cột sang `#059669`, bo góc `[4,4,0,0]`, dùng font `Inter` với `tabular-nums`. |
+| **Biểu đồ Doanh thu** | `src/components/admin/RevenueChart.tsx` | Đổi màu cột sang `#087F5B`, bo góc `[4,4,0,0]`, dùng font `Inter` với `tabular-nums`. |
 | **Timeline Bảng giá** | `src/components/admin/PricingTimeline.tsx` | Đổi màu 4 phân đoạn giờ sang chuẩn Emerald/Amber/Blue. Tăng hitbox nút kéo lên 44px. |
 | **Trợ lý AI nổi** | `src/components/chatbot/ChatMessageItem.tsx` | Thay `animate-bounce` bằng `animate-pulse`. Thêm focus trap cho cửa sổ chat. |
 
