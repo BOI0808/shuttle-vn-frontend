@@ -4,13 +4,9 @@ export function LoginButton() {
   return (
     <Link
       href="/login"
-      className="text-[13px] font-semibold px-3.5 py-1.5 rounded-lg border transition-all duration-150 text-white"
-      style={{
-        background: 'linear-gradient(135deg,#10b981,#059669)',
-        borderColor: 'rgba(255,255,255,0.12)',
-      }}
+      className="inline-flex h-[40px] items-center justify-center rounded-[8px] bg-brand-strong px-4 font-sans text-[14px] font-semibold leading-[20px] text-white transition-colors duration-150 hover:bg-[#05523A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
     >
-      Đăng Nhập
+      Đăng nhập
     </Link>
   );
 }
