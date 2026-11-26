@@ -9,26 +9,53 @@
     --radius-lg: 0.75rem;
     --radius-full: 9999px;
 
-    /* Semantic Colors */
+    /* Brand Semantics */
     --color-brand-primary: #087F5B;
     --color-brand-strong: #066649;
+    --color-brand-hover: #066649;
+    --color-brand-active: #05523A;
     --color-brand-subtle: #E8F6EF;
+    --color-brand-ring: rgba(8, 127, 91, 0.25);
 
+    /* Surface & Canvas */
+    --color-surface-base: #FDF8F8;
     --color-surface-bg: #FDF8F8;
     --color-surface-card: #FFFFFF;
+    --color-surface-subtle: #EDF2F6;
     --color-surface-soft: #EDF2F6;
+    --color-surface-sidebar: #FDF8F8;
+    --color-surface-header: #FFFFFF;
 
+    /* Text & Typography */
+    --color-text-primary: #172F4D;
     --color-text-ink: #172F4D;
     --color-text-secondary: #40556B;
     --color-text-muted: #596D80;
+    --color-text-inverse: #FFFFFF;
 
+    /* Borders & Dividers */
+    --color-border-subtle: #DCE5ED;
     --color-border-line: #DCE5ED;
+    --color-border-input: #B9C8D6;
     --color-border-strong: #B9C8D6;
+    --color-border-focus: #087F5B;
 
+    /* Status Colors */
     --color-status-success: #066649;
+    --color-status-success-bg: #E8F6EF;
     --color-status-warning: #A45A0B;
+    --color-status-warning-bg: #FFF4E2;
     --color-status-danger: #B42332;
+    --color-status-danger-bg: #FFF0F1;
     --color-status-info: #245B99;
+    --color-status-info-bg: #EBF2FA;
+    --color-status-neutral-text: #40556B;
+    --color-status-neutral-bg: #EDF2F6;
+
+    /* Elevation */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.12);
   }
 
   body {
@@ -70,30 +97,30 @@
 @layer components {
   /* Court slot states */
   .slot-available {
-    @apply bg-white border border-gray-200 cursor-pointer transition-colors duration-100;
+    @apply bg-white border border-line cursor-pointer transition-colors duration-150 ease-out;
   }
   .slot-available:hover {
-    background: #f0fdf4;
-    border-color: #86efac;
+    background: var(--color-brand-subtle);
+    border-color: var(--color-brand-primary);
   }
   .slot-booked {
-    @apply bg-gray-200 border border-gray-300 cursor-not-allowed;
+    @apply bg-surface-soft border border-line cursor-not-allowed;
   }
   .slot-mine {
-    background: #10b981;
-    border-color: #059669;
+    background: var(--color-brand-primary);
+    border-color: var(--color-brand-strong);
     @apply border cursor-pointer;
   }
   .slot-closed {
-    background-color: #f3f4f6;
+    background-color: var(--color-surface-soft);
     background-image: repeating-linear-gradient(
       -45deg,
-      #d1d5db 0px,
-      #d1d5db 1.5px,
-      #e5e7eb 1.5px,
-      #e5e7eb 8px
+      #DCE5ED 0px,
+      #DCE5ED 1.5px,
+      #EDF2F6 1.5px,
+      #EDF2F6 8px
     );
-    @apply border border-gray-300 cursor-not-allowed;
+    @apply border border-line cursor-not-allowed;
   }
 }
 
@@ -106,11 +133,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: var(--color-border-strong);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: var(--color-text-muted);
 }
 
 input::-ms-reveal,
@@ -124,7 +151,7 @@ input::-ms-clear {
   appearance: none;
   pointer-events: auto;
   cursor: ew-resize;
-  background: linear-gradient(to right, transparent 7px, #166534 7px, #166534 11px, transparent 11px);
+  background: linear-gradient(to right, transparent 7px, #066649 7px, #066649 11px, transparent 11px);
 }
 
 .pricing-boundary::-moz-range-thumb {
@@ -133,7 +160,7 @@ input::-ms-clear {
   pointer-events: auto;
   cursor: ew-resize;
   border: 0;
-  background: #166534;
+  background: #066649;
 }
 
 @media (prefers-reduced-motion: reduce) {
