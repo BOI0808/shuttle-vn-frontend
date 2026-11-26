@@ -8,37 +8,30 @@ interface CourtUsageReportViewProps {
 }
 
 export function CourtUsageReportView({ data }: CourtUsageReportViewProps) {
-  if (data.bookingCount === 0) {
-    return (
-      <p className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
-        Không có dữ liệu trong khoảng đã chọn.
-      </p>
-    );
-  }
-
   return (
-    <>
-      <p className="text-[13px] text-slate-600">
+    <div className="flex flex-col gap-4">
+      <p className="font-sans text-[14px] text-ink-secondary">
         Tổng:{" "}
-        <span className="font-mono font-bold text-slate-900">
+        <span className="font-semibold text-ink tabular-nums">
           {data.bookingCount}
         </span>{" "}
         lượt đặt ·{" "}
-        <span className="font-mono font-bold text-slate-900">
+        <span className="font-semibold text-ink tabular-nums">
           {formatHours(data.bookedHours)}
         </span>{" "}
         giờ đặt ·{" "}
-        <span className="font-mono font-bold text-slate-900">
+        <span className="font-semibold text-ink tabular-nums">
           {data.completedCount}
         </span>{" "}
         lượt hoàn thành ·{" "}
-        <span className="font-mono font-bold text-slate-900">
+        <span className="font-semibold text-ink tabular-nums">
           {formatHours(data.completedHours)}
         </span>{" "}
         giờ hoàn thành
       </p>
 
       <CourtUsageTable
+        title={`Tần suất theo ${data.groupBy === "Month" ? "tháng" : "ngày"}`}
         labelHeader={data.groupBy === "Month" ? "Tháng" : "Ngày"}
         rows={data.periods.map((period) => ({
           key: period.periodStart,
@@ -52,6 +45,7 @@ export function CourtUsageReportView({ data }: CourtUsageReportViewProps) {
       />
 
       <CourtUsageTable
+        title="Tần suất sử dụng theo sân"
         labelHeader="Sân"
         rows={data.courts.map((court) => ({
           key: String(court.courtId),
@@ -64,17 +58,17 @@ export function CourtUsageReportView({ data }: CourtUsageReportViewProps) {
         totals={data}
       />
 
-      <div className="flex flex-col gap-1 text-xs text-slate-500">
+      <div className="flex flex-col gap-1 font-sans text-[12px] leading-[16px] text-ink-secondary">
         <p>
-          Đặt sân tính theo ngày sử dụng, gồm mọi trạng thái trừ Đã hủy.
-          Hoàn thành gồm cả chốt tự động của hệ thống, không là bằng chứng khách
-          có mặt.
+          Đặt sân tính theo ngày sử dụng, gồm mọi trạng thái trừ Đã hủy. Hoàn
+          thành gồm cả chốt tự động của hệ thống, không là bằng chứng khách có
+          mặt.
         </p>
         {data.groupBy === "Month" && (
           <p>Tháng đầu/cuối chỉ tính phần nằm trong khoảng đã chọn.</p>
         )}
       </div>
-    </>
+    </div>
   );
 }
 

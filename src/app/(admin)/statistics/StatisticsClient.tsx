@@ -9,16 +9,14 @@ import { ReportSection } from "@/components/admin/ReportSection";
 import { RevenueReportView } from "@/components/admin/RevenueReportView";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 
 import { useCourtUsageStats, useRevenueStats } from "@/hooks";
 
 import type { RevenueGroupBy, RevenueReportParams } from "@/types";
-import { getTodayVN } from "@/utils";
+import { cn, formatCurrency, formatDate, formatHours, getTodayVN } from "@/utils";
 
 const MAX_RANGE_DAYS = 366;
-const LABEL_CLASS = "grid gap-1 text-xs font-semibold text-slate-600";
-const SELECT_CLASS =
-  "rounded-[7px] border border-gray-300 px-3 py-2 text-sm outline-none focus:border-emerald-500";
 const GROUP_BY_OPTIONS: { value: RevenueGroupBy; label: string }[] = [
   { value: "Day", label: "Ngày" },
   { value: "Month", label: "Tháng" },
@@ -48,9 +46,14 @@ function isSameFilters(a: RevenueReportParams, b: RevenueReportParams): boolean 
   );
 }
 
+function formatRangeLabel(fromDate: string, toDate: string): string {
+  if (fromDate === toDate) return formatDate(fromDate);
+  return `${formatDate(fromDate)} – ${formatDate(toDate)}`;
+}
+
 export default function StatisticsClient() {
   const [draft, setDraft] = useState<RevenueReportParams>(createDefaultFilters);
-  const [applied, setApplied] = useState<RevenueReportParams | null>(null);
+  const [applied, setApplied] = useState<RevenueReportParams>(createDefaultFilters);
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const revenue = useRevenueStats(applied);
@@ -62,7 +65,7 @@ export default function StatisticsClient() {
     const message = validateRange(draft.fromDate, draft.toDate);
     setValidationError(message);
     if (message) return;
-    if (applied && isSameFilters(applied, draft)) {
+    if (isSameFilters(applied, draft)) {
       void revenue.refetch();
       void usage.refetch();
       return;
@@ -70,97 +73,148 @@ export default function StatisticsClient() {
     setApplied(draft);
   };
 
-  const handleGroupByChange = (value: string) => {
-    const option = GROUP_BY_OPTIONS.find((item) => item.value === value);
-    if (option) setDraft((current) => ({ ...current, groupBy: option.value }));
-  };
+  const rangeLabel = formatRangeLabel(applied.fromDate, applied.toDate);
 
   return (
     <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="font-display text-[24px] font-semibold leading-[32px] text-ink">
+          Báo cáo &amp; Thống kê
+        </h1>
+        <p className="mt-1 font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
+          Doanh thu thực thu và tần suất sử dụng sân · Giờ Việt Nam (UTC+7)
+        </p>
+      </div>
+
       <form
         onSubmit={handleSubmit}
-        className="flex flex-wrap items-end gap-3"
+        className="rounded-[12px] border border-line bg-white p-5"
       >
-        <label className={LABEL_CLASS}>
-          Từ ngày
-          <Input
-            type="date"
-            className="py-2"
-            min="2000-01-01"
-            max="2100-12-31"
-            value={draft.fromDate}
-            onChange={(event) =>
-              setDraft((current) => ({ ...current, fromDate: event.target.value }))
-            }
-          />
-        </label>
-        <label className={LABEL_CLASS}>
-          Đến ngày
-          <Input
-            type="date"
-            className="py-2"
-            min="2000-01-01"
-            max="2100-12-31"
-            value={draft.toDate}
-            onChange={(event) =>
-              setDraft((current) => ({ ...current, toDate: event.target.value }))
-            }
-          />
-        </label>
-        <label className={LABEL_CLASS}>
-          Nhóm theo
-          <select
-            className={SELECT_CLASS}
-            value={draft.groupBy}
-            onChange={(event) => handleGroupByChange(event.target.value)}
-          >
-            {GROUP_BY_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <Button type="submit" className="w-auto" loading={isFetching}>
-          Xem báo cáo
-        </Button>
+        <div className="flex flex-wrap items-end gap-4">
+          <div className="w-full sm:w-[240px]">
+            <Label htmlFor="stats-from-date">Từ ngày</Label>
+            <Input
+              id="stats-from-date"
+              type="date"
+              min="2000-01-01"
+              max="2100-12-31"
+              value={draft.fromDate}
+              onChange={(event) =>
+                setDraft((current) => ({ ...current, fromDate: event.target.value }))
+              }
+            />
+          </div>
+
+          <div className="w-full sm:w-[240px]">
+            <Label htmlFor="stats-to-date">Đến ngày</Label>
+            <Input
+              id="stats-to-date"
+              type="date"
+              min="2000-01-01"
+              max="2100-12-31"
+              value={draft.toDate}
+              onChange={(event) =>
+                setDraft((current) => ({ ...current, toDate: event.target.value }))
+              }
+            />
+          </div>
+
+          <div>
+            <Label>Nhóm theo</Label>
+            <div className="flex items-center gap-2">
+              {GROUP_BY_OPTIONS.map((option) => (
+                <Button
+                  key={option.value}
+                  type="button"
+                  variant={draft.groupBy === option.value ? "outline" : "ghost"}
+                  onClick={() =>
+                    setDraft((current) => ({ ...current, groupBy: option.value }))
+                  }
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <div className="sm:ml-auto">
+            <Button type="submit" variant="primary" loading={isFetching}>
+              Xem báo cáo
+            </Button>
+          </div>
+        </div>
+
+        {validationError && (
+          <p role="alert" className="mt-3 font-sans text-[12px] text-status-danger">
+            {validationError}
+          </p>
+        )}
       </form>
 
-      {validationError && (
-        <p role="alert" className="text-sm text-red-600">
-          {validationError}
-        </p>
+      {/* Summary KPI cards */}
+      {(revenue.data || usage.data) && (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="flex min-h-[128px] flex-col justify-between rounded-[12px] border border-line bg-brand-soft p-[19px]">
+            <p className="font-sans text-[14px] leading-[20px] text-ink-secondary">
+              Doanh thu thực thu
+            </p>
+            <p className="font-sans text-[32px] font-semibold leading-[40px] text-brand-strong tabular-nums">
+              {revenue.data ? formatCurrency(revenue.data.totalRevenue) : "—"}
+            </p>
+            <p className="font-sans text-[12px] leading-[16px] text-ink-secondary">
+              {rangeLabel} · Chỉ hóa đơn đã thanh toán
+            </p>
+          </div>
+
+          <div className="flex min-h-[128px] flex-col justify-between rounded-[12px] border border-line bg-status-info-soft p-[19px]">
+            <p className="font-sans text-[14px] leading-[20px] text-ink-secondary">
+              Lượt đặt sân
+            </p>
+            <p className="font-sans text-[32px] font-semibold leading-[40px] text-status-info tabular-nums">
+              {usage.data ? usage.data.bookingCount : "—"}
+            </p>
+            <p className="font-sans text-[12px] leading-[16px] text-ink-secondary">
+              {rangeLabel} · Không tính đơn hủy
+            </p>
+          </div>
+
+          <div className="flex min-h-[128px] flex-col justify-between rounded-[12px] border border-line bg-status-info-soft p-[19px]">
+            <p className="font-sans text-[14px] leading-[20px] text-ink-secondary">
+              Giờ sử dụng sân
+            </p>
+            <p
+              className={cn(
+                "font-sans text-[32px] font-semibold leading-[40px] text-status-info tabular-nums"
+              )}
+            >
+              {usage.data ? `${formatHours(usage.data.bookedHours)} giờ` : "—"}
+            </p>
+            <p className="font-sans text-[12px] leading-[16px] text-ink-secondary">
+              {rangeLabel} · Theo lịch đặt sân
+            </p>
+          </div>
+        </div>
       )}
 
-      {!applied && (
-        <p className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
-          Chọn khoảng thời gian rồi bấm Xem báo cáo.
-        </p>
-      )}
+      <ReportSection
+        title="Báo cáo doanh thu"
+        isLoading={revenue.isLoading}
+        isError={revenue.isError}
+        error={revenue.error}
+        onRetry={() => revenue.refetch()}
+      >
+        {revenue.data && <RevenueReportView data={revenue.data} />}
+      </ReportSection>
 
-      {applied && (
-        <>
-          <ReportSection
-            title="Báo cáo doanh thu"
-            isLoading={revenue.isLoading}
-            isError={revenue.isError}
-            error={revenue.error}
-            onRetry={() => revenue.refetch()}
-          >
-            {revenue.data && <RevenueReportView data={revenue.data} />}
-          </ReportSection>
-
-          <ReportSection
-            title="Thống kê tình trạng sử dụng sân"
-            isLoading={usage.isLoading}
-            isError={usage.isError}
-            error={usage.error}
-            onRetry={() => usage.refetch()}
-          >
-            {usage.data && <CourtUsageReportView data={usage.data} />}
-          </ReportSection>
-        </>
-      )}
+      <ReportSection
+        title="Thống kê tình trạng sử dụng sân"
+        isLoading={usage.isLoading}
+        isError={usage.isError}
+        error={usage.error}
+        onRetry={() => usage.refetch()}
+      >
+        {usage.data && <CourtUsageReportView data={usage.data} />}
+      </ReportSection>
     </div>
   );
 }
