@@ -1,4 +1,5 @@
 import { Court } from "@/types";
+import { cn } from "@/utils";
 
 interface CourtStatsProps {
   courts: Court[];
@@ -7,65 +8,63 @@ interface CourtStatsProps {
 export function CourtStats({ courts }: CourtStatsProps) {
   const totalCourts = courts.length;
   const activeCourts = courts.filter((c) => c.status === "Active").length;
-  const maintenanceCourts = courts.filter(
-    (c) => c.status === "Maintenance"
-  ).length;
+  const maintenanceCourts = courts.filter((c) => c.status === "Maintenance").length;
+  const closedCourts = courts.filter((c) => c.status === "Closed").length;
+  const inactiveCourts = maintenanceCourts + closedCourts;
+
+  const stats = [
+    {
+      label: "Tổng số sân",
+      value: totalCourts,
+      hint: `${totalCourts} sân trong hệ thống`,
+      cardBg: "bg-status-info-soft",
+      valueColor: "text-status-info",
+    },
+    {
+      label: "Đang hoạt động",
+      value: activeCourts,
+      hint:
+        activeCourts === 0
+          ? "Chưa có sân đang hoạt động"
+          : `${activeCourts} sân sẵn sàng phục vụ`,
+      cardBg: "bg-brand-soft",
+      valueColor: "text-brand-strong",
+    },
+    {
+      label: "Bảo trì / Đóng",
+      value: inactiveCourts,
+      hint: `${maintenanceCourts} bảo trì · ${closedCourts} đóng cửa`,
+      cardBg: "bg-status-warning-soft",
+      valueColor: "text-status-warning",
+    },
+  ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-600">
-          <span
-            className="material-symbols-outlined text-[22px]"
-            style={{ fontVariationSettings: "'FILL' 1" }}
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      {stats.map((stat) => (
+        <div
+          key={stat.label}
+          className={cn(
+            "flex min-h-[128px] flex-col justify-between rounded-[12px] border border-line p-[19px]",
+            stat.cardBg
+          )}
+        >
+          <p className="font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
+            {stat.label}
+          </p>
+          <p
+            className={cn(
+              "font-sans text-[32px] font-semibold leading-[40px] tracking-normal tabular-nums",
+              stat.valueColor
+            )}
           >
-            sports_tennis
-          </span>
-        </div>
-        <div>
-          <p className="font-mono text-[10px] text-slate-500 uppercase tracking-wider">
-            Tổng số sân
+            {stat.value}
           </p>
-          <p className="text-2xl font-bold font-display text-slate-900 leading-tight">
-            {totalCourts}
+          <p className="font-sans text-[12px] font-normal leading-[16px] text-ink-secondary">
+            {stat.hint}
           </p>
         </div>
-      </div>
-
-      <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0 text-emerald-600">
-          <span
-            className="material-symbols-outlined text-[22px]"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            check_circle
-          </span>
-        </div>
-        <div>
-          <p className="font-mono text-[10px] text-slate-500 uppercase tracking-wider">
-            Đang hoạt động
-          </p>
-          <p className="text-2xl font-bold font-display text-emerald-600 leading-tight">
-            {activeCourts}
-          </p>
-        </div>
-      </div>
-
-      <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0 text-amber-600">
-          <span className="material-symbols-outlined text-[22px]">
-            construction
-          </span>
-        </div>
-        <div>
-          <p className="font-mono text-[10px] text-slate-500 uppercase tracking-wider">
-            Đang bảo trì
-          </p>
-          <p className="text-2xl font-bold font-display text-amber-600 leading-tight">
-            {maintenanceCourts}
-          </p>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }

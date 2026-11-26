@@ -43,7 +43,7 @@ export default function BookingRequestsClient() {
           Yêu cầu đặt sân
         </h1>
         <p className="mt-1 font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
-          Các đơn chờ xác nhận · Ưu tiên yêu cầu cũ nhất
+          Các đơn chờ xác nhận
         </p>
       </div>
 
