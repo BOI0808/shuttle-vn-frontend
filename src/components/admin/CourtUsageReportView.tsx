@@ -57,17 +57,6 @@ export function CourtUsageReportView({ data }: CourtUsageReportViewProps) {
         }))}
         totals={data}
       />
-
-      <div className="flex flex-col gap-1 font-sans text-[12px] leading-[16px] text-ink-secondary">
-        <p>
-          Đặt sân tính theo ngày sử dụng, gồm mọi trạng thái trừ Đã hủy. Hoàn
-          thành gồm cả chốt tự động của hệ thống, không là bằng chứng khách có
-          mặt.
-        </p>
-        {data.groupBy === "Month" && (
-          <p>Tháng đầu/cuối chỉ tính phần nằm trong khoảng đã chọn.</p>
-        )}
-      </div>
     </div>
   );
 }

@@ -169,12 +169,13 @@ export default function BookingRequestsClient() {
                   className="transition-colors duration-100 hover:bg-surface-bg"
                 >
                   <td className="px-5 py-3.5 font-sans text-[14px] font-semibold text-brand-strong tabular-nums">
-                    <Link
-                      href={`/bookings/${booking.bookingId}`}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedId(booking.bookingId)}
                       className="hover:underline"
                     >
                       {booking.bookingCode}
-                    </Link>
+                    </button>
                   </td>
                   <td className="px-5 py-3.5 font-sans text-[12px] text-ink-secondary tabular-nums">
                     {formatDateTimeVN(booking.createdAt)}
@@ -243,11 +244,6 @@ export default function BookingRequestsClient() {
       </div>
 
       {data && <Pagination page={data} onPageChange={setPageNumber} />}
-
-      <div className="rounded-[8px] bg-surface-soft px-4 py-3 font-sans text-[12px] leading-[18px] text-ink-secondary">
-        <p>Chỉ duyệt yêu cầu sau khi kiểm tra sân, khung giờ và báo giá.</p>
-        <p>Đơn đã được xử lý sẽ không còn trong hàng đợi.</p>
-      </div>
 
       {selectedId && (
         <BookingDetailModal

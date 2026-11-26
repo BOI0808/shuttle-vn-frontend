@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useId } from "react";
-import Link from "next/link";
 
 import { BookingDetailView } from "@/components/booking/BookingDetailView";
 import { Button } from "@/components/ui/Button";
@@ -83,12 +82,6 @@ export function BookingDetailModal({
           <Button type="button" variant="outline" onClick={onClose}>
             Đóng
           </Button>
-          <Link
-            href={`/bookings/${bookingId}`}
-            className="inline-flex h-[44px] items-center justify-center rounded-[8px] bg-brand-strong px-4 font-sans text-[14px] font-semibold leading-[20px] text-white transition-colors hover:bg-[#05523A]"
-          >
-            Mở trang xử lý
-          </Link>
         </div>
       </div>
     </div>

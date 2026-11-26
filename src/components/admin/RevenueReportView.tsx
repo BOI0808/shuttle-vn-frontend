@@ -38,18 +38,6 @@ export function RevenueReportView({ data }: RevenueReportViewProps) {
         totalInvoices={data.totalInvoices}
         totalRevenue={data.totalRevenue}
       />
-
-      <div className="flex flex-col gap-1 font-sans text-[12px] leading-[16px] text-ink-secondary">
-        <p>
-          Doanh thu tính theo thời điểm thu của hóa đơn Đã thanh toán hợp lệ,
-          không gồm hóa đơn đã hủy/hoàn. Hoàn tiền hoặc hủy hóa đơn sau đó có thể
-          làm thay đổi doanh thu của kỳ cũ. Đây không phải báo cáo dòng tiền
-          thu/hoàn.
-        </p>
-        {data.groupBy === "Month" && (
-          <p>Tháng đầu/cuối chỉ tính phần nằm trong khoảng đã chọn.</p>
-        )}
-      </div>
     </div>
   );
 }

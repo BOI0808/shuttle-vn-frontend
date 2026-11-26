@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { ACTOR_TYPE_LABEL, INVOICE_STATUS_LABEL, PAYMENT_METHOD_LABEL } from "@/config/app";
 import type { InvoiceDetail } from "@/types";
 import { formatCurrency, formatDateTimeVN } from "@/utils";
@@ -65,7 +65,7 @@ function buildGroups(invoice: InvoiceDetail): Group[] {
       fields: [
         { label: "Thời điểm hủy", value: time(invoice.cancelledAt) },
         {
-          label: "Tác nhân hủy",
+          label: "Người hủy",
           value: invoice.cancellationActorType
             ? ACTOR_TYPE_LABEL[invoice.cancellationActorType]
             : undefined,
@@ -89,39 +89,46 @@ export function InvoiceEvidence({ invoice, onSelect }: { invoice: InvoiceDetail;
     <article className="space-y-5">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         {invoice.status && <Badge status={invoice.status}>{INVOICE_STATUS_LABEL[invoice.status]}</Badge>}
-        <p className="text-[13px] text-slate-600">
+        <p className="font-sans text-[14px] text-ink-secondary">
           Đặt sân:{" "}
-          {invoice.bookingId ? (
-            <Link className="font-mono text-[12px] font-bold text-emerald-700 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-800" href={`/bookings/${invoice.bookingId}`}>
+          {invoice.bookingCode ?? invoice.bookingId ? (
+            <span className="font-semibold text-ink tabular-nums">
               {invoice.bookingCode ?? invoice.bookingId}
-            </Link>
+            </span>
           ) : (
-            <span className="text-slate-400">—</span>
+            <span className="text-ink-muted">—</span>
           )}
         </p>
       </div>
       {groups.map((group) => (
         <section key={group.title} className="space-y-3">
-          <h4 className="font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-400">{group.title}</h4>
-          <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+          <h4 className="font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
+            {group.title}
+          </h4>
+          <dl className="grid gap-x-6 gap-y-3 rounded-[8px] border border-line bg-surface-bg p-4 sm:grid-cols-2">
             {group.fields.map((field) => (
               <div key={field.label} className="min-w-0">
-                <dt className="text-[11px] text-slate-500">{field.label}</dt>
-                <dd className="mt-0.5 whitespace-pre-wrap break-words text-[13px] font-medium text-slate-800">{field.value}</dd>
+                <dt className="font-sans text-[12px] leading-[16px] text-ink-secondary">
+                  {field.label}
+                </dt>
+                <dd className="mt-0.5 whitespace-pre-wrap break-words font-sans text-[14px] font-medium leading-[20px] text-ink tabular-nums">
+                  {field.value}
+                </dd>
               </div>
             ))}
           </dl>
         </section>
       ))}
       {invoice.replacesInvoiceId && (
-        <button
+        <Button
           type="button"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-mono text-[11px] font-medium text-slate-700 transition-colors hover:border-emerald-300 hover:text-emerald-700"
+          variant="outline"
+          size="sm"
+          icon="arrow_back"
           onClick={() => onSelect(invoice.replacesInvoiceId!)}
         >
-          <span className="material-symbols-outlined text-[16px]">arrow_back</span>
           Xem hóa đơn tiền nhiệm
-        </button>
+        </Button>
       )}
     </article>
   );
