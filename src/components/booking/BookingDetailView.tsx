@@ -9,15 +9,17 @@ import {
   PAYMENT_METHOD_LABEL,
 } from "@/config/app";
 import type { BookingAdminDetail, BookingStatusHistory } from "@/types";
-import { formatCurrency, formatDate, formatDateTimeVN } from "@/utils";
+import { cn, formatCurrency, formatDate, formatDateTimeVN } from "@/utils";
 
 interface BookingDetailViewProps {
   booking: BookingAdminDetail;
+  layout?: "grid" | "stack";
 }
 
 interface SectionProps {
   title: string;
   children: ReactNode;
+  bordered?: boolean;
 }
 
 interface InfoRowProps {
@@ -25,22 +27,28 @@ interface InfoRowProps {
   children: ReactNode;
 }
 
-function Section({ title, children }: SectionProps) {
+function Section({ title, children, bordered = false }: SectionProps) {
   return (
-    <section>
-      <h3 className="mb-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+    <section
+      className={cn(
+        bordered && "rounded-[12px] border border-line bg-white p-5"
+      )}
+    >
+      <h3 className="mb-3 font-display text-[18px] font-medium leading-[26px] text-ink">
         {title}
       </h3>
-      <dl className="divide-y divide-gray-100">{children}</dl>
+      <dl className="divide-y divide-line">{children}</dl>
     </section>
   );
 }
 
 function InfoRow({ label, children }: InfoRowProps) {
   return (
-    <div className="flex items-start justify-between gap-4 py-2">
-      <dt className="text-[12px] text-gray-500">{label}</dt>
-      <dd className="text-right text-[13px] font-medium text-gray-900">
+    <div className="flex items-start justify-between gap-4 py-2.5">
+      <dt className="font-sans text-[14px] leading-[20px] text-ink-secondary">
+        {label}
+      </dt>
+      <dd className="text-right font-sans text-[14px] font-medium leading-[20px] text-ink">
         {children}
       </dd>
     </div>
@@ -53,22 +61,32 @@ function formatTransition(entry: BookingStatusHistory): string {
   return `${BOOKING_STATUS_LABEL[entry.oldStatus]} → ${next}`;
 }
 
-function StatusTimeline({ history }: { history: BookingStatusHistory[] }) {
+function StatusTimeline({
+  history,
+  bordered,
+}: {
+  history: BookingStatusHistory[];
+  bordered: boolean;
+}) {
   return (
-    <Section title="Lịch sử trạng thái">
-      <ol className="space-y-3 border-l border-gray-200 pl-4 pt-2">
+    <Section title="Lịch sử trạng thái" bordered={bordered}>
+      <ol className="space-y-3 border-l-2 border-line pl-4 pt-1">
         {history.map((entry, index) => (
-          <li key={`${entry.changedAt}-${index}`}>
-            <p className="text-[13px] font-semibold text-gray-900">
+          <li key={`${entry.changedAt}-${index}`} className="relative">
+            <span
+              aria-hidden="true"
+              className="absolute -left-[21px] top-1.5 size-[8px] rounded-full bg-brand"
+            />
+            <p className="font-sans text-[14px] font-semibold leading-[20px] text-ink">
               {formatTransition(entry)}
             </p>
-            <p className="font-mono text-[11px] text-gray-500">
+            <p className="font-sans text-[12px] leading-[16px] text-ink-secondary tabular-nums">
               {formatDateTimeVN(entry.changedAt)} ·{" "}
               {ACTOR_TYPE_LABEL[entry.actorType]}
               {entry.actorName ? ` · ${entry.actorName}` : ""}
             </p>
             {entry.reason && (
-              <p className="mt-0.5 text-[12px] text-gray-600">
+              <p className="mt-1 font-sans text-[12px] leading-[16px] text-ink-secondary">
                 Lý do: {entry.reason}
               </p>
             )}
@@ -79,19 +97,30 @@ function StatusTimeline({ history }: { history: BookingStatusHistory[] }) {
   );
 }
 
-function InvoiceSection({ invoice }: { invoice: BookingAdminDetail["invoice"] }) {
+function InvoiceSection({
+  invoice,
+  bordered,
+}: {
+  invoice: BookingAdminDetail["invoice"];
+  bordered: boolean;
+}) {
   if (!invoice) {
     return (
-      <Section title="Hóa đơn">
-        <p className="py-2 text-[13px] text-gray-500">{NO_INVOICE_LABEL}</p>
+      <Section title="Hóa đơn liên quan" bordered={bordered}>
+        <div className="py-2">
+          <Badge status="NoInvoice">{NO_INVOICE_LABEL}</Badge>
+          <p className="mt-2 font-sans text-[12px] leading-[16px] text-ink-secondary">
+            Hóa đơn chỉ được hệ thống tự động lập khi đơn được xác nhận hoặc hoàn thành.
+          </p>
+        </div>
       </Section>
     );
   }
 
   return (
-    <Section title="Hóa đơn">
+    <Section title="Hóa đơn liên quan" bordered={bordered}>
       <InfoRow label="Mã hóa đơn">
-        <span className="font-mono">{invoice.invoiceCode}</span>
+        <span className="tabular-nums">{invoice.invoiceCode}</span>
       </InfoRow>
       <InfoRow label="Trạng thái">
         <Badge status={invoice.status}>
@@ -102,51 +131,66 @@ function InvoiceSection({ invoice }: { invoice: BookingAdminDetail["invoice"] })
         {invoice.paymentMethod ? PAYMENT_METHOD_LABEL[invoice.paymentMethod] : "—"}
       </InfoRow>
       <InfoRow label="Thời điểm thu">
-        {invoice.paidAt ? formatDateTimeVN(invoice.paidAt) : "—"}
+        <span className="tabular-nums">
+          {invoice.paidAt ? formatDateTimeVN(invoice.paidAt) : "—"}
+        </span>
       </InfoRow>
     </Section>
   );
 }
 
-export function BookingDetailView({ booking }: BookingDetailViewProps) {
+export function BookingDetailView({
+  booking,
+  layout = "stack",
+}: BookingDetailViewProps) {
+  const isGrid = layout === "grid";
+
   return (
-    <div className="flex flex-col gap-5">
-      <Section title="Thông tin đơn">
+    <div
+      className={cn(
+        isGrid ? "grid grid-cols-1 gap-6 lg:grid-cols-2" : "flex flex-col gap-5"
+      )}
+    >
+      <Section title="Thông tin đặt sân" bordered={isGrid}>
         <InfoRow label="Mã đơn">
-          <span className="font-mono">{booking.bookingCode}</span>
-        </InfoRow>
-        <InfoRow label="Ngày tạo">
-          <span className="font-mono">{formatDateTimeVN(booking.createdAt)}</span>
+          <span className="font-semibold tabular-nums">{booking.bookingCode}</span>
         </InfoRow>
         <InfoRow label="Trạng thái">
           <Badge status={booking.status}>
             {BOOKING_STATUS_LABEL[booking.status]}
           </Badge>
         </InfoRow>
-        <InfoRow label="Sân">{booking.courtName}</InfoRow>
+        <InfoRow label="Tên sân">{booking.courtName}</InfoRow>
         <InfoRow label="Ngày chơi">
-          <span className="font-mono">{formatDate(booking.date)}</span>
+          <span className="tabular-nums">{formatDate(booking.date)}</span>
         </InfoRow>
         <InfoRow label="Khung giờ">
-          <span className="font-mono">
-            {booking.startTime} – {booking.endTime}
+          <span className="tabular-nums">
+            {booking.startTime}–{booking.endTime}
           </span>
         </InfoRow>
         <InfoRow label="Tổng tiền">
-          <span className="font-mono">{formatCurrency(booking.totalCost)}</span>
+          <span className="font-semibold tabular-nums">
+            {formatCurrency(booking.totalCost)}
+          </span>
+        </InfoRow>
+        <InfoRow label="Ngày tạo">
+          <span className="tabular-nums">
+            {formatDateTimeVN(booking.createdAt)}
+          </span>
         </InfoRow>
       </Section>
 
-      <Section title="Khách hàng">
+      <Section title="Thông tin khách hàng" bordered={isGrid}>
         <InfoRow label="Họ tên">{booking.customerName}</InfoRow>
         <InfoRow label="Số điện thoại">
-          <span className="font-mono">{booking.customerPhone}</span>
+          <span className="tabular-nums">{booking.customerPhone}</span>
         </InfoRow>
         <InfoRow label="Email">{booking.customerEmail}</InfoRow>
       </Section>
 
-      <InvoiceSection invoice={booking.invoice} />
-      <StatusTimeline history={booking.statusHistory} />
+      <InvoiceSection invoice={booking.invoice} bordered={isGrid} />
+      <StatusTimeline history={booking.statusHistory} bordered={isGrid} />
     </div>
   );
 }

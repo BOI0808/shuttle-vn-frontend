@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { isAxiosError } from "axios";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
@@ -8,13 +8,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { PAYMENT_METHOD_LABEL } from "@/config/app";
+import { Select } from "@/components/ui/Select";
+import { BOOKING_STATUS_LABEL, PAYMENT_METHOD_LABEL } from "@/config/app";
 import { useCompleteBooking, useConfirmBooking } from "@/hooks";
 import type { BookingListItem, ConfirmBookingRequest } from "@/types";
-import { formatCurrency, getErrorMessage } from "@/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/utils";
 
 const DATETIME_LOCAL_FORMAT = "yyyy-MM-dd'T'HH:mm";
 
@@ -79,16 +81,28 @@ export function ConfirmBookingModal({
   action,
   onClose,
 }: ConfirmBookingModalProps) {
+  const titleId = useId();
   const idempotencyKey = useRef<string | null>(null);
   const confirmMutation = useConfirmBooking();
   const completeMutation = useCompleteBooking();
   const mutation = action === "confirm" ? confirmMutation : completeMutation;
   const copy = COPY[action];
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !mutation.isPending) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mutation.isPending, onClose]);
+
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -99,7 +113,8 @@ export function ConfirmBookingModal({
       note: "",
     },
   });
-  const isPaid = watch("paymentState") === "Paid";
+  const paymentState = watch("paymentState");
+  const isPaid = paymentState === "Paid";
 
   const onSubmit = (values: FormData) => {
     idempotencyKey.current ??= crypto.randomUUID();
@@ -125,53 +140,82 @@ export function ConfirmBookingModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/60 p-4 backdrop-blur-[2px]">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/40 p-4 backdrop-blur-xs"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !mutation.isPending) onClose();
+      }}
+    >
       <form
         onSubmit={handleSubmit(onSubmit)}
         role="dialog"
         aria-modal="true"
-        aria-label={copy.title}
-        className="w-full max-w-lg rounded-xl border border-gray-200 bg-white shadow-2xl"
+        aria-labelledby={titleId}
+        className="w-full max-w-lg overflow-hidden rounded-[12px] border border-line bg-white shadow-xl"
       >
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-          <h2 className="font-bold text-gray-900">{copy.title}</h2>
+        <div className="flex items-center justify-between border-b border-line px-6 py-4">
+          <div className="flex items-center gap-3">
+            <h2
+              id={titleId}
+              className="font-display text-[18px] font-medium leading-[26px] text-ink"
+            >
+              {copy.title}
+            </h2>
+            <Badge status={booking.status}>
+              {BOOKING_STATUS_LABEL[booking.status]}
+            </Badge>
+          </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Đóng"
-            className="text-gray-400 hover:text-gray-700"
+            className="flex size-[36px] items-center justify-center rounded-[8px] text-ink-muted transition-colors hover:bg-surface-soft hover:text-ink"
           >
-            <span className="material-symbols-outlined">close</span>
+            <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
+              close
+            </span>
           </button>
         </div>
 
         <div className="flex flex-col gap-4 p-6">
-          <div className="rounded-lg bg-gray-50 px-4 py-3 text-[13px] text-gray-700">
-            <p className="font-mono font-bold text-gray-900">
-              {booking.bookingCode}
-            </p>
-            <p className="mt-1">
-              Tổng tiền:{" "}
-              <span className="font-mono font-bold">
+          <div className="rounded-[8px] border border-line bg-surface-bg px-4 py-3 font-sans text-[14px] text-ink-secondary">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-semibold text-ink tabular-nums">
+                {booking.bookingCode}
+              </span>
+              <span className="font-semibold text-ink tabular-nums">
                 {formatCurrency(booking.totalCost)}
               </span>
+            </div>
+            <p className="mt-1 text-[12px] text-ink-secondary tabular-nums">
+              {booking.courtName} · {formatDate(booking.date)} ·{" "}
+              {booking.startTime}–{booking.endTime}
             </p>
           </div>
 
           <fieldset>
-            <legend className="mb-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-gray-500">
-              Trạng thái thu tiền
+            <legend className="mb-2 font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
+              Tình trạng thu tiền
             </legend>
-            <div className="flex gap-6 text-sm text-gray-800">
-              <label className="flex items-center gap-2">
-                <input type="radio" value="Unpaid" {...register("paymentState")} />
-                Chưa thu
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="radio" value="Paid" {...register("paymentState")} />
-                Đã thu đủ
-              </label>
+            <div className="flex flex-wrap gap-2.5">
+              <Button
+                type="button"
+                variant={paymentState === "Unpaid" ? "primary" : "outline"}
+                onClick={() => setValue("paymentState", "Unpaid")}
+              >
+                Chưa thu tiền
+              </Button>
+              <Button
+                type="button"
+                variant={paymentState === "Paid" ? "primary" : "outline"}
+                onClick={() => setValue("paymentState", "Paid")}
+              >
+                Đã thu đủ tiền
+              </Button>
             </div>
+            <p className="mt-2 font-sans text-[12px] leading-[16px] text-ink-secondary">
+              Hệ thống tự động tạo hóa đơn khi xác nhận. Chỉ chọn &ldquo;Đã thu đủ tiền&rdquo; sau khi nhận đủ 100%.
+            </p>
           </fieldset>
 
           {isPaid && (
@@ -180,14 +224,10 @@ export function ConfirmBookingModal({
                 <Label required htmlFor="paymentMethod">
                   Phương thức
                 </Label>
-                <select
-                  id="paymentMethod"
-                  {...register("paymentMethod")}
-                  className="w-full rounded-[7px] border border-gray-300 bg-gray-50 px-3 py-[11px] text-sm outline-none focus:border-emerald-500"
-                >
+                <Select id="paymentMethod" {...register("paymentMethod")}>
                   <option value="Cash">{PAYMENT_METHOD_LABEL.Cash}</option>
                   <option value="Bank">{PAYMENT_METHOD_LABEL.Bank}</option>
-                </select>
+                </Select>
               </div>
               <div>
                 <Label required htmlFor="paidAt">
@@ -210,21 +250,16 @@ export function ConfirmBookingModal({
               id="note"
               rows={3}
               {...register("note")}
-              className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-emerald-500"
+              className="w-full resize-none rounded-[8px] border border-line-strong bg-white px-3.5 py-2.5 font-sans text-[14px] text-ink placeholder:text-ink-muted outline-none transition-colors focus:border-brand focus:ring-2 focus:ring-brand/20"
             />
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-auto"
-            onClick={onClose}
-          >
-            Huỷ
+        <div className="flex justify-end gap-3 border-t border-line bg-surface-bg px-6 py-4">
+          <Button type="button" variant="outline" onClick={onClose}>
+            Quay lại
           </Button>
-          <Button type="submit" className="w-auto" loading={mutation.isPending}>
+          <Button type="submit" loading={mutation.isPending}>
             {copy.submit}
           </Button>
         </div>

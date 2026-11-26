@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useId } from "react";
 import Link from "next/link";
 
 import { BookingDetailView } from "@/components/booking/BookingDetailView";
@@ -16,6 +17,7 @@ export function BookingDetailModal({
   bookingId,
   onClose,
 }: BookingDetailModalProps) {
+  const titleId = useId();
   const {
     data: booking,
     isLoading,
@@ -23,52 +25,67 @@ export function BookingDetailModal({
     error,
   } = useBookingDetail(bookingId);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/60 p-4 backdrop-blur-[2px]">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/40 p-4 backdrop-blur-xs"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Chi tiết đặt sân"
-        className="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-xl border border-gray-200 bg-white shadow-2xl"
+        aria-labelledby={titleId}
+        className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-[12px] border border-line bg-white shadow-xl"
       >
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-          <h2 className="font-bold text-gray-900">Chi tiết đặt sân</h2>
+        <div className="flex items-center justify-between border-b border-line px-6 py-4">
+          <h2
+            id={titleId}
+            className="font-display text-[18px] font-medium leading-[26px] text-ink"
+          >
+            Chi tiết đặt sân
+          </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Đóng"
-            className="text-gray-400 hover:text-gray-700"
+            className="flex size-[36px] items-center justify-center rounded-[8px] text-ink-muted transition-colors hover:bg-surface-soft hover:text-ink"
           >
-            <span className="material-symbols-outlined">close</span>
+            <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
+              close
+            </span>
           </button>
         </div>
 
         <div className="overflow-y-auto p-6">
           {isLoading && (
-            <p className="py-8 text-center font-mono text-sm text-slate-500">
+            <p className="py-8 text-center font-sans text-[14px] text-ink-secondary">
               Đang tải chi tiết đơn...
             </p>
           )}
           {isError && (
-            <p className="py-8 text-center text-sm text-red-600">
+            <p className="py-8 text-center font-sans text-[14px] text-status-danger">
               {getErrorMessage(error)}
             </p>
           )}
-          {booking && <BookingDetailView booking={booking} />}
+          {booking && <BookingDetailView booking={booking} layout="stack" />}
         </div>
 
-        <div className="flex justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-auto"
-            onClick={onClose}
-          >
+        <div className="flex justify-end gap-3 border-t border-line bg-surface-bg px-6 py-4">
+          <Button type="button" variant="outline" onClick={onClose}>
             Đóng
           </Button>
           <Link
             href={`/bookings/${bookingId}`}
-            className="inline-flex items-center rounded-[7px] bg-emerald-500 px-4 py-3 font-mono text-[13px] font-medium tracking-[0.05em] text-white transition-colors hover:bg-emerald-600"
+            className="inline-flex h-[44px] items-center justify-center rounded-[8px] bg-brand-strong px-4 font-sans text-[14px] font-semibold leading-[20px] text-white transition-colors hover:bg-[#05523A]"
           >
             Mở trang xử lý
           </Link>

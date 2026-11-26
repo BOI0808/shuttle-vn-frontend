@@ -9,10 +9,18 @@ import { BookingDetailView } from "@/components/booking/BookingDetailView";
 import { ConfirmBookingModal } from "@/components/booking/ConfirmBookingModal";
 import { RejectBookingModal } from "@/components/booking/RejectBookingModal";
 import { RescheduleBookingModal } from "@/components/booking/RescheduleBookingModal";
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { BOOKING_STATUS_LABEL } from "@/config/app";
 import { useBookingDetail, useCompleteBooking } from "@/hooks";
-import { canRescheduleBooking, getErrorMessage, hasBookingEnded } from "@/utils";
+import {
+  canRescheduleBooking,
+  formatCurrency,
+  formatDate,
+  getErrorMessage,
+  hasBookingEnded,
+} from "@/utils";
 
 type ActiveModal =
   | "confirm"
@@ -54,17 +62,46 @@ export default function BookingDetailClient({ id }: BookingDetailClientProps) {
 
   if (isLoading) {
     return (
-      <p className="py-8 text-center font-mono text-sm text-slate-500">
-        Đang tải chi tiết đơn...
-      </p>
+      <div className="flex flex-col gap-6" aria-busy="true">
+        <div className="h-[88px] animate-pulse rounded-[12px] border border-line bg-white" />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {[0, 1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="h-[200px] animate-pulse rounded-[12px] border border-line bg-white"
+            />
+          ))}
+        </div>
+      </div>
     );
   }
 
   if (!booking) {
     return (
-      <p className="py-8 text-center text-sm text-red-600">
-        {getErrorMessage(error)}
-      </p>
+      <div
+        role="alert"
+        className="max-w-xl rounded-[12px] border border-line bg-white p-5"
+      >
+        <div className="flex size-[40px] items-center justify-center rounded-[8px] bg-status-danger-soft text-status-danger">
+          <span className="material-symbols-outlined text-[24px]" aria-hidden="true">
+            warning
+          </span>
+        </div>
+        <h2 className="mt-4 font-display text-[18px] font-medium leading-[26px] text-ink">
+          Không thể tải chi tiết đơn đặt sân
+        </h2>
+        <p className="mt-2 font-sans text-[14px] text-ink-secondary">
+          {getErrorMessage(error)}
+        </p>
+        <div className="mt-5">
+          <Link
+            href="/booking-requests"
+            className="inline-flex h-[44px] items-center justify-center rounded-[8px] border border-line-strong bg-white px-4 font-sans text-[14px] font-semibold text-ink-secondary hover:bg-surface-bg hover:text-ink"
+          >
+            Quay lại danh sách
+          </Link>
+        </div>
+      </div>
     );
   }
 
@@ -74,31 +111,34 @@ export default function BookingDetailClient({ id }: BookingDetailClientProps) {
     hasBookingEnded(booking.date, booking.endTime);
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
-      <div className="flex items-center justify-between gap-3">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Chi tiết đặt sân</h2>
-          <Link
-            href="/booking-requests"
-            className="text-[13px] text-emerald-700 hover:underline"
-          >
-            ← Về yêu cầu đặt sân
-          </Link>
+          <h1 className="font-display text-[24px] font-semibold leading-[32px] text-ink">
+            Chi tiết đơn đặt sân
+          </h1>
+          <p className="mt-1 font-sans text-[14px] leading-[20px] text-ink-secondary">
+            <Link
+              href="/booking-requests"
+              className="font-medium text-brand-strong hover:underline"
+            >
+              Yêu cầu đặt sân
+            </Link>{" "}
+            <span aria-hidden="true">/</span>{" "}
+            <span className="tabular-nums">{booking.bookingCode}</span>
+          </p>
         </div>
-        <div className="flex gap-2">
+
+        <div className="flex flex-wrap gap-2">
           {isPending && (
             <>
-              <Button
-                type="button"
-                className="w-auto"
-                onClick={() => setModal("confirm")}
-              >
+              <Button type="button" onClick={() => setModal("confirm")}>
                 Xác nhận
               </Button>
               <Button
                 type="button"
                 variant="outline"
-                className="w-auto border-red-300 text-red-600 hover:bg-red-50"
+                className="border-status-danger/40 text-status-danger hover:border-status-danger hover:bg-status-danger-soft hover:text-status-danger"
                 onClick={() => setModal("reject")}
               >
                 Từ chối
@@ -106,7 +146,11 @@ export default function BookingDetailClient({ id }: BookingDetailClientProps) {
             </>
           )}
           {canRescheduleBooking(booking, true) && (
-            <Button type="button" variant="outline" className="w-auto" onClick={() => setModal("reschedule")}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setModal("reschedule")}
+            >
               Đổi lịch
             </Button>
           )}
@@ -114,7 +158,6 @@ export default function BookingDetailClient({ id }: BookingDetailClientProps) {
             <Button
               type="button"
               variant="outline"
-              className="w-auto"
               onClick={() =>
                 setModal(isPending ? "completePending" : "completeConfirmed")
               }
@@ -125,9 +168,33 @@ export default function BookingDetailClient({ id }: BookingDetailClientProps) {
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <BookingDetailView booking={booking} />
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[12px] border border-line bg-white p-5">
+        <div>
+          <div className="flex items-center gap-3">
+            <span className="font-display text-[18px] font-medium leading-[26px] text-ink tabular-nums">
+              {booking.bookingCode}
+            </span>
+            <Badge status={booking.status}>
+              {BOOKING_STATUS_LABEL[booking.status]}
+            </Badge>
+          </div>
+          <p className="mt-1.5 font-sans text-[14px] leading-[20px] text-ink-secondary tabular-nums">
+            {booking.courtName} · {formatDate(booking.date)} ·{" "}
+            {booking.startTime}–{booking.endTime}
+          </p>
+        </div>
+        <p className="font-sans text-[28px] font-semibold leading-[36px] text-ink tabular-nums">
+          {formatCurrency(booking.totalCost)}
+        </p>
       </div>
+
+      <BookingDetailView booking={booking} layout="grid" />
+
+      {booking.status === "Cancelled" && (
+        <div className="rounded-[8px] bg-surface-soft px-4 py-3 font-sans text-[14px] leading-[20px] text-ink-secondary">
+          Đơn đã hủy không thể xác nhận, đổi lịch hoặc ghi nhận hoàn thành.
+        </div>
+      )}
 
       {modal === "confirm" && (
         <ConfirmBookingModal
@@ -137,7 +204,11 @@ export default function BookingDetailClient({ id }: BookingDetailClientProps) {
         />
       )}
       {modal === "reschedule" && (
-        <RescheduleBookingModal booking={booking} isStaff onClose={() => setModal(null)} />
+        <RescheduleBookingModal
+          booking={booking}
+          isStaff
+          onClose={() => setModal(null)}
+        />
       )}
       {modal === "reject" && (
         <RejectBookingModal booking={booking} onClose={() => setModal(null)} />
