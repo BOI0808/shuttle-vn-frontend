@@ -4,10 +4,49 @@
 @layer base {
   :root {
     --radius: 0.5rem;
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-full: 9999px;
+
+    /* Semantic Colors */
+    --color-brand-primary: #087F5B;
+    --color-brand-strong: #066649;
+    --color-brand-subtle: #E8F6EF;
+
+    --color-surface-bg: #FDF8F8;
+    --color-surface-card: #FFFFFF;
+    --color-surface-soft: #EDF2F6;
+
+    --color-text-ink: #172F4D;
+    --color-text-secondary: #40556B;
+    --color-text-muted: #596D80;
+
+    --color-border-line: #DCE5ED;
+    --color-border-strong: #B9C8D6;
+
+    --color-status-success: #066649;
+    --color-status-warning: #A45A0B;
+    --color-status-danger: #B42332;
+    --color-status-info: #245B99;
   }
 
   body {
+    background-color: var(--color-surface-bg);
+    color: var(--color-text-ink);
+    font-family: var(--font-inter), system-ui, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .font-display {
+    font-family: var(--font-display), var(--font-inter), sans-serif;
+  }
+
+  .font-mono-data {
+    font-family: var(--font-inter), system-ui, sans-serif;
+    font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
   }
 
   /* Tailwind v4 preflight sets buttons to cursor: default */
@@ -95,4 +134,13 @@ input::-ms-clear {
   cursor: ew-resize;
   border: 0;
   background: #166534;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

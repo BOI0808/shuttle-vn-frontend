@@ -7,7 +7,8 @@ interface DashboardStat {
   label: string;
   value: string;
   hint: string;
-  color: string;
+  cardBg: string;
+  valueColor: string;
   href?: string;
 }
 
@@ -17,51 +18,62 @@ export function DashboardStats({ summary }: { summary: DashboardSummary }) {
       label: "Doanh thu hôm nay",
       value: formatCurrency(summary.revenue),
       hint: `${summary.paidInvoiceCount} hóa đơn đã thu`,
-      color: "text-blue-600",
+      cardBg: "bg-brand-soft",
+      valueColor: "text-brand-strong",
     },
     {
       label: "Đơn chờ duyệt",
       value: summary.pendingCount.toString(),
-      hint: "Xem đơn chờ xác nhận",
-      color: "text-amber-600",
+      hint:
+        summary.pendingCount === 0
+          ? "Không có đơn chờ xác nhận"
+          : `${summary.pendingCount} đơn chờ xác nhận`,
+      cardBg: "bg-status-warning-soft",
+      valueColor: "text-status-warning",
       href: "/booking-requests",
     },
     {
       label: "Lượt sân đặt trong ngày",
       value: summary.bookingCount.toString(),
       hint: `${summary.completedCount} lượt hoàn thành`,
-      color: "text-purple-600",
+      cardBg: "bg-status-info-soft",
+      valueColor: "text-status-info",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       {stats.map((stat) => {
         const content = (
           <>
-            <p className="mb-1.5 font-mono text-[11px] uppercase tracking-wider text-slate-500">
+            <p className="font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
               {stat.label}
             </p>
             <p
               className={cn(
-                "font-mono text-2xl font-bold tracking-tight",
-                stat.color,
+                "font-sans text-[32px] font-semibold leading-[40px] tracking-normal tabular-nums",
+                stat.valueColor
               )}
             >
               {stat.value}
             </p>
-            <p className="mt-1 font-mono text-[11px] text-slate-500">
+            <p className="font-sans text-[12px] font-normal leading-[16px] text-ink-secondary">
               {stat.hint}
             </p>
           </>
         );
-        const className =
-          "block rounded-xl border border-slate-200 bg-white p-[18px] shadow-[0_1px_3px_rgba(0,0,0,0.04)]";
+        const className = cn(
+          "flex min-h-[128px] flex-col justify-between rounded-[12px] border border-line p-[19px]",
+          stat.cardBg
+        );
         return stat.href ? (
           <Link
             key={stat.label}
             href={stat.href}
-            className={cn(className, "transition-colors hover:bg-slate-50")}
+            className={cn(
+              className,
+              "transition-all duration-150 ease-out hover:border-line-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+            )}
           >
             {content}
           </Link>

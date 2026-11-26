@@ -14,33 +14,35 @@ type BadgeStatus =
   | "IN_USE"
   | "Unpaid"
   | "Paid"
-  | "Refunded";
+  | "Refunded"
+  | "NoInvoice";
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   status: BadgeStatus;
 }
 
 const STATUS_CLASSES: Record<BadgeStatus, string> = {
-  Pending: "bg-amber-50 text-amber-600 border-amber-200",
-  Confirmed: "bg-blue-50 text-blue-600 border-blue-200",
-  Completed: "bg-green-50 text-green-600 border-green-200",
-  Cancelled: "bg-red-50 text-red-600 border-red-200",
-  Active: "bg-green-50 text-green-600 border-green-200",
-  Disabled: "bg-red-50 text-red-600 border-red-200",
-  PendingActivation: "bg-amber-50 text-amber-600 border-amber-200",
-  Maintenance: "bg-amber-50 text-amber-600 border-amber-200",
-  Closed: "bg-red-50 text-red-600 border-red-200",
-  IN_USE: "bg-blue-50 text-blue-600 border-blue-200",
-  Unpaid: "bg-amber-50 text-amber-600 border-amber-200",
-  Paid: "bg-green-50 text-green-600 border-green-200",
-  Refunded: "bg-slate-50 text-slate-600 border-slate-200",
+  Pending: "bg-status-warning-soft text-status-warning",
+  Confirmed: "bg-status-info-soft text-status-info",
+  Completed: "bg-status-success-soft text-status-success",
+  Cancelled: "bg-status-danger-soft text-status-danger",
+  Active: "bg-status-success-soft text-status-success",
+  Disabled: "bg-status-danger-soft text-status-danger",
+  PendingActivation: "bg-status-warning-soft text-status-warning",
+  Maintenance: "bg-status-warning-soft text-status-warning",
+  Closed: "bg-status-danger-soft text-status-danger",
+  IN_USE: "bg-status-info-soft text-status-info",
+  Unpaid: "bg-status-warning-soft text-status-warning",
+  Paid: "bg-status-success-soft text-status-success",
+  Refunded: "bg-surface-soft text-ink-secondary",
+  NoInvoice: "bg-surface-soft text-ink-secondary",
 };
 
 export function Badge({ status, className, children, ...props }: BadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center px-2.5 py-[3px] rounded-full text-[11px] font-mono font-semibold tracking-[0.03em] border whitespace-nowrap",
+        "inline-flex h-[24px] items-center rounded-full px-[10px] py-[4px] font-sans text-[12px] font-normal leading-[16px] whitespace-nowrap",
         STATUS_CLASSES[status],
         className
       )}

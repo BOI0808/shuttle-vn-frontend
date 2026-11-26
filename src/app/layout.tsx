@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Be_Vietnam_Pro, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -7,13 +7,11 @@ const inter = Inter({
   subsets: ["latin", "vietnamese"],
   variable: "--font-inter",
 });
-const hankenGrotesk = Hanken_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-hanken",
-});
-const jetBrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains",
+
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
@@ -33,7 +31,7 @@ export default function RootLayout({
     <html
       lang="vi"
       suppressHydrationWarning
-      className={`${inter.variable} ${hankenGrotesk.variable} ${jetBrainsMono.variable}`}
+      className={`${inter.variable} ${beVietnamPro.variable}`}
     >
       <head>
         <link
@@ -41,7 +39,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0..1&display=swap"
         />
       </head>
-      <body className="font-sans bg-slate-50 text-slate-800 antialiased">
+      <body className="font-sans bg-surface-bg text-ink antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>

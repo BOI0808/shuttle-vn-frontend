@@ -4,8 +4,13 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { QuickLookupModal } from "@/components/booking/QuickLookupModal";
+import { Button } from "@/components/ui/Button";
 
-export function AdminHeader() {
+interface AdminHeaderProps {
+  onMenuClick?: () => void;
+}
+
+export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   const pathname = usePathname();
   const [isLookupOpen, setIsLookupOpen] = useState(false);
 
@@ -13,77 +18,111 @@ export function AdminHeader() {
     setIsLookupOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setIsLookupOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const getTitle = () => {
     if (pathname.startsWith("/employees") || pathname.startsWith("/staff"))
       return "Quản lý nhân viên";
     if (pathname.startsWith("/customers")) return "Quản lý khách hàng";
     if (pathname.startsWith("/manage-courts") || pathname.startsWith("/courts"))
       return "Quản lý sân";
-    if (pathname.startsWith("/dashboard")) return "Bảng điều khiển";
+    if (pathname.startsWith("/dashboard")) return null;
     if (pathname.startsWith("/schedule")) return "Lịch sân";
     if (pathname.startsWith("/payments")) return "Xác nhận thanh toán";
-
-    // --- Bổ sung thêm các dòng bên dưới ---
     if (pathname.startsWith("/booking-requests")) return "Yêu cầu đặt sân";
-    if (pathname.startsWith("/statistics")) return "Báo cáo & Thống kê"; 
+    if (pathname.startsWith("/statistics")) return "Báo cáo & Thống kê";
     if (pathname.startsWith("/all-bookings") || pathname.startsWith("/bookings"))
       return "Đặt sân toàn hệ thống";
     if (pathname.startsWith("/audits")) return "Nhật ký hoạt động";
-    // -------------------------------------
-
-    return "Admin Panel";
+    return null;
   };
 
+  const subTitle = getTitle();
   const isEmployeesPage =
     pathname.startsWith("/employees") || pathname.startsWith("/staff");
   const isCustomersPage = pathname.startsWith("/customers");
 
   return (
-    <header className="h-[52px] bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm">
-      <span className="font-bold text-[16px] text-gray-900 font-display">
-        {getTitle()}
-      </span>
+    <header className="sticky top-0 z-50 flex h-[56px] items-center justify-between gap-4 border-b border-line bg-white px-4 sm:px-6 lg:px-8">
+      <div className="flex min-w-0 items-center gap-3">
+        {onMenuClick && (
+          <button
+            type="button"
+            onClick={onMenuClick}
+            aria-label="Mở menu điều hướng"
+            className="inline-flex size-[40px] shrink-0 items-center justify-center rounded-[8px] border border-line-strong bg-white text-ink-secondary transition-colors hover:bg-surface-bg hover:text-ink lg:hidden"
+          >
+            <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
+              menu
+            </span>
+          </button>
+        )}
+        <p className="truncate font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
+          Không gian quản trị
+          {subTitle ? (
+            <span className="text-ink-muted"> / {subTitle}</span>
+          ) : null}
+        </p>
+      </div>
 
-            <div id="admin-header-actions" className="flex items-center gap-3">
+      <div id="admin-header-actions" className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => setIsLookupOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-gray-700 bg-white border border-gray-300 rounded-[8px] hover:bg-gray-50 hover:border-gray-400 shadow-sm transition-all cursor-pointer"
+          aria-label="Tra cứu nhanh (Ctrl K)"
+          className="flex h-[40px] items-center justify-between gap-3 rounded-[8px] border border-line-strong bg-white px-3 text-left transition-colors hover:border-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:w-[334px]"
         >
-          <span className="material-symbols-outlined text-[17px] text-gray-600">
-            search
+          <span className="flex items-center gap-2.5">
+            <span
+              className="material-symbols-outlined text-[20px] text-ink-secondary"
+              aria-hidden="true"
+            >
+              search
+            </span>
+            <span className="hidden font-sans text-[14px] leading-[20px] text-ink sm:inline">
+              Tra cứu nhanh
+            </span>
           </span>
-          Tra cứu nhanh
+          <kbd className="hidden h-[24px] items-center justify-center rounded-[4px] bg-surface-soft px-3 font-sans text-[12px] font-normal leading-[16px] text-ink-secondary sm:inline-flex">
+            Ctrl K
+          </kbd>
         </button>
 
         {isEmployeesPage && (
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
+            icon="person_add"
             onClick={() =>
               window.dispatchEvent(new CustomEvent("open-add-employee"))
             }
-            className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-gray-700 bg-white border border-gray-300 rounded-[8px] hover:bg-gray-50 hover:border-gray-400 shadow-sm transition-all cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[17px] text-gray-600">
-              person_add
-            </span>
             Thêm nhân viên
-          </button>
+          </Button>
         )}
 
         {isCustomersPage && (
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
+            icon="person_add"
             onClick={() =>
               window.dispatchEvent(new CustomEvent("open-add-customer"))
             }
-            className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-gray-700 bg-white border border-gray-300 rounded-[8px] hover:bg-gray-50 hover:border-gray-400 shadow-sm transition-all cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[17px] text-gray-600">
-              person_add
-            </span>
             Thêm khách hàng
-          </button>
+          </Button>
         )}
       </div>
 
