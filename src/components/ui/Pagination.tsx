@@ -20,7 +20,7 @@ export function Pagination({ page, onPageChange, disabled }: PaginationProps) {
   const to = Math.min(page.pageNumber * page.pageSize, page.totalCount);
 
   return (
-    <div className="flex items-center justify-between gap-3 px-1 pt-4 text-xs text-gray-500">
+    <div className="flex items-center justify-between gap-3 px-1 pt-4 font-sans text-[12px] leading-[16px] text-ink-secondary tabular-nums">
       <span>
         {from}–{to} / {page.totalCount}
       </span>
@@ -34,7 +34,7 @@ export function Pagination({ page, onPageChange, disabled }: PaginationProps) {
         >
           Trước
         </Button>
-        <span className="font-mono">
+        <span className="px-1 font-medium text-ink">
           {page.pageNumber}/{totalPages}
         </span>
         <Button

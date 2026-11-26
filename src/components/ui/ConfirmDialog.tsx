@@ -1,5 +1,9 @@
 "use client";
 
+import { useEffect, useId } from "react";
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/utils";
+
 interface ConfirmDialogProps {
   title: string;
   description: string;
@@ -21,42 +25,85 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  const confirmClass =
-    variant === "danger"
-      ? "bg-red-600 hover:bg-red-700"
-      : "bg-amber-500 hover:bg-amber-600";
+  const titleId = useId();
+  const descId = useId();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !isLoading) {
+        onCancel();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isLoading, onCancel]);
+
+  const isDanger = variant === "danger";
 
   return (
-    <div className="fixed inset-0 bg-gray-900/60 flex items-center justify-center z-[110]">
-      <div className="bg-white border border-gray-200 rounded-xl w-[420px] max-w-[95vw] shadow-2xl">
-        <div className="p-6">
-          <div className="flex items-start gap-3 mb-4">
-            <span className="material-symbols-outlined text-amber-500 text-[26px]">
+    <div
+      className="fixed inset-0 z-[110] flex items-center justify-center bg-ink/40 p-4 backdrop-blur-xs"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !isLoading) onCancel();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={descId}
+        className="w-[420px] max-w-[95vw] rounded-[12px] border border-line bg-white p-6 shadow-xl"
+      >
+        <div className="mb-5 flex items-start gap-3.5">
+          <div
+            className={cn(
+              "flex size-[40px] shrink-0 items-center justify-center rounded-[8px]",
+              isDanger
+                ? "bg-status-danger-soft text-status-danger"
+                : "bg-status-warning-soft text-status-warning"
+            )}
+          >
+            <span className="material-symbols-outlined text-[24px]" aria-hidden="true">
               warning
             </span>
-            <div>
-              <p className="font-bold text-[15px] text-gray-900">{title}</p>
-              <p className="text-sm text-gray-500 mt-1">{description}</p>
-            </div>
           </div>
-          <div className="flex justify-end gap-2.5">
-            <button
-              type="button"
-              onClick={onCancel}
-              disabled={isLoading}
-              className="border border-gray-300 text-gray-600 rounded-[7px] px-4 py-2 text-[13px] font-mono font-medium hover:bg-gray-50 disabled:opacity-60"
+          <div>
+            <h2
+              id={titleId}
+              className="font-display text-[18px] font-medium leading-[26px] text-ink"
             >
-              {cancelLabel}
-            </button>
-            <button
-              type="button"
-              onClick={onConfirm}
-              disabled={isLoading}
-              className={`text-white rounded-[7px] px-4 py-2 text-[13px] font-mono font-medium disabled:opacity-60 ${confirmClass}`}
+              {title}
+            </h2>
+            <p
+              id={descId}
+              className="mt-1 font-sans text-[14px] leading-[20px] text-ink-secondary"
             >
-              {isLoading ? "Đang xử lý..." : confirmLabel}
-            </button>
+              {description}
+            </p>
           </div>
+        </div>
+        <div className="flex justify-end gap-2.5">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={isLoading}
+          >
+            {cancelLabel}
+          </Button>
+          <Button
+            type="button"
+            variant={isDanger ? "danger" : "primary"}
+            onClick={onConfirm}
+            loading={isLoading}
+            className={
+              !isDanger
+                ? "bg-status-warning text-white hover:bg-[#8A4A09] active:bg-[#733D07]"
+                : undefined
+            }
+          >
+            {isLoading ? "Đang xử lý..." : confirmLabel}
+          </Button>
         </div>
       </div>
     </div>

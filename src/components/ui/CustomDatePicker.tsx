@@ -44,8 +44,17 @@ export function CustomDatePicker({
         setIsOpen(false);
       }
     }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   useEffect(() => {
@@ -115,57 +124,64 @@ export function CustomDatePicker({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-white rounded-full px-[18px] py-2 flex items-center gap-2 text-[14px] font-semibold text-[#1a1a2e] shadow-[0_2px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.22)] transition-all cursor-pointer border border-transparent hover:border-emerald-200"
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
+        className="flex h-[44px] items-center gap-2.5 rounded-[8px] border border-line bg-white px-3.5 font-sans text-[14px] font-medium leading-[20px] text-ink shadow-xs transition-colors hover:border-line-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer"
       >
-        <span className="material-symbols-outlined text-emerald-600 text-[18px]">
+        <span className="material-symbols-outlined text-[20px] text-brand-strong" aria-hidden="true">
           calendar_today
         </span>
-        <span>{formatDateDisplay(value)}</span>
+        <span className="tabular-nums">{formatDateDisplay(value)}</span>
         <span
-          className={`material-symbols-outlined text-gray-400 text-[18px] transition-transform duration-200 ${
+          className={`material-symbols-outlined text-[18px] text-ink-muted transition-transform duration-150 ${
             isOpen ? "rotate-180" : ""
           }`}
+          aria-hidden="true"
         >
           keyboard_arrow_down
         </span>
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2.5 bg-white rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.18)] border border-slate-100 p-4 w-[310px] animate-in fade-in zoom-in-95 duration-150 select-none">
-          <div className="flex items-center justify-between mb-3 px-1">
-            <span className="font-bold text-[15px] text-slate-800 font-display">
+        <div
+          role="dialog"
+          aria-label="Chọn ngày"
+          className="absolute left-0 top-full z-[110] mt-2 w-[310px] select-none rounded-[12px] border border-line bg-white p-4 shadow-md"
+        >
+          <div className="mb-3 flex items-center justify-between px-1">
+            <span className="font-display text-[15px] font-medium text-ink">
               Tháng {viewMonth + 1}, {viewYear}
             </span>
             <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={prevMonth}
-                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-600 transition-colors"
-                title="Tháng trước"
+                aria-label="Tháng trước"
+                className="flex size-[32px] items-center justify-center rounded-[8px] text-ink-secondary transition-colors hover:bg-surface-soft hover:text-ink"
               >
-                <span className="material-symbols-outlined text-[18px]">
+                <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
                   chevron_left
                 </span>
               </button>
               <button
                 type="button"
                 onClick={nextMonth}
-                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-600 transition-colors"
-                title="Tháng sau"
+                aria-label="Tháng sau"
+                className="flex size-[32px] items-center justify-center rounded-[8px] text-ink-secondary transition-colors hover:bg-surface-soft hover:text-ink"
               >
-                <span className="material-symbols-outlined text-[18px]">
+                <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
                   chevron_right
                 </span>
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-7 gap-1 text-center mb-1">
+          <div className="mb-1 grid grid-cols-7 gap-1 text-center">
             {DAYS_OF_WEEK.map((d, i) => (
               <span
                 key={d}
-                className={`text-[11px] font-bold font-mono py-1 ${
-                  i === 6 ? "text-amber-600" : "text-slate-400"
+                className={`py-1 font-sans text-[12px] font-semibold ${
+                  i === 6 ? "text-status-warning" : "text-ink-muted"
                 }`}
               >
                 {d}
@@ -177,7 +193,7 @@ export function CustomDatePicker({
             {prevDays.map((d) => (
               <span
                 key={`prev-${d}`}
-                className="h-8 flex items-center justify-center text-[12px] text-slate-300 font-mono"
+                className="flex h-8 items-center justify-center font-sans text-[12px] text-ink-muted/50 tabular-nums"
               >
                 {d}
               </span>
@@ -193,12 +209,12 @@ export function CustomDatePicker({
                   key={d}
                   type="button"
                   onClick={() => handleSelectDay(d)}
-                  className={`h-8 w-8 mx-auto rounded-xl flex items-center justify-center text-[12px] font-mono transition-all cursor-pointer ${
+                  className={`mx-auto flex size-8 items-center justify-center rounded-[8px] font-sans text-[12px] transition-colors cursor-pointer tabular-nums ${
                     isSelected
-                      ? "bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/30 scale-105"
+                      ? "bg-brand-strong font-semibold text-white"
                       : isToday
-                      ? "border border-emerald-500 font-bold text-emerald-600 hover:bg-emerald-50"
-                      : "text-slate-700 hover:bg-slate-100"
+                      ? "border border-brand font-semibold text-brand-strong hover:bg-brand-soft"
+                      : "text-ink hover:bg-surface-soft"
                   }`}
                 >
                   {d}
@@ -207,18 +223,18 @@ export function CustomDatePicker({
             })}
           </div>
 
-          <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-medium font-mono text-emerald-600">
+          <div className="mt-3 flex items-center justify-between border-t border-line pt-2.5 font-sans text-[12px] font-semibold">
             <button
               type="button"
               onClick={selectToday}
-              className="hover:text-emerald-700 hover:underline cursor-pointer"
+              className="text-brand-strong hover:underline cursor-pointer"
             >
               Hôm nay
             </button>
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="text-slate-400 hover:text-slate-600 cursor-pointer"
+              className="text-ink-secondary hover:text-ink cursor-pointer"
             >
               Đóng
             </button>
