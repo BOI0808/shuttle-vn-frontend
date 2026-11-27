@@ -8,8 +8,18 @@ import { Label } from "@/components/ui/Label";
 import { Pagination } from "@/components/ui/Pagination";
 import { Select } from "@/components/ui/Select";
 import { useAudits } from "@/hooks";
-import { ACTOR_TYPE_LABEL } from "@/config/app";
-import { formatDateTimeVN, getErrorMessage } from "@/utils";
+import {
+  ACCOUNT_STATUS_LABEL,
+  ACTOR_TYPE_LABEL,
+  BOOKING_STATUS_LABEL,
+  COURT_STATUS_LABEL,
+  INVOICE_STATUS_LABEL,
+} from "@/config/app";
+import {
+  formatCurrency,
+  formatDateTimeVN,
+  getErrorMessage,
+} from "@/utils";
 import type { ActorType, Audit } from "@/types";
 
 const PAGE_SIZE = 20;
@@ -68,6 +78,259 @@ const ACTION_OPTIONS: { value: string; label: string }[] = [
   { value: "Deleted", label: "Xóa" },
 ];
 
+const ENTITY_LABEL: Record<string, string> = {
+  UserAccount: "Tài khoản người dùng",
+  Customer: "Khách hàng",
+  Employee: "Nhân viên",
+  BadmintonCourt: "Sân cầu lông",
+  Court: "Sân cầu lông",
+  CourtSchedule: "Lịch hoạt động sân",
+  PricingRule: "Bảng giá sân",
+  Booking: "Đơn đặt sân",
+  BookingSlot: "Khung giờ đặt sân",
+  BookingPriceSegment: "Chi tiết khung giá đơn",
+  BookingStatusHistory: "Lịch sử trạng thái đơn",
+  Invoice: "Hóa đơn",
+  InvoiceDailyCounter: "Bộ đếm hóa đơn ngày",
+  Payment: "Thanh toán",
+  PaymentTransaction: "Giao dịch thanh toán",
+  VerificationCode: "Mã xác minh",
+  Notification: "Thông báo",
+  IdempotencyRequest: "Yêu cầu chống trùng lặp",
+  Audit: "Nhật ký hệ thống",
+};
+
+const FIELD_LABEL: Record<string, string> = {
+  Id: "Mã bản ghi",
+  Status: "Trạng thái",
+  OldStatus: "Trạng thái cũ",
+  NewStatus: "Trạng thái mới",
+  UpdatedAt: "Cập nhật lúc",
+  CreatedAt: "Tạo lúc",
+  ChangedAt: "Thời điểm thay đổi",
+  PaidAt: "Thanh toán lúc",
+  ConfirmedAt: "Xác nhận lúc",
+  CompletedAt: "Hoàn thành lúc",
+  CancelledAt: "Hủy lúc",
+  FullName: "Họ và tên",
+  Name: "Tên",
+  Phone: "Số điện thoại",
+  Email: "Email",
+  Description: "Mô tả",
+  PricePerHour: "Đơn giá / giờ",
+  TotalCost: "Tổng tiền",
+  TotalAmount: "Tổng tiền",
+  Subtotal: "Tạm tính",
+  Amount: "Số tiền",
+  OpenTime: "Giờ mở cửa",
+  CloseTime: "Giờ đóng cửa",
+  StartTime: "Giờ bắt đầu",
+  EndTime: "Giờ kết thúc",
+  IsAvailable: "Mở cửa",
+  IsAdmin: "Quản trị viên",
+  Reason: "Lý do",
+  CancellationReason: "Lý do hủy",
+  RejectReason: "Lý do từ chối",
+  CancelReason: "Lý do hủy",
+  CancellationActorType: "Tác nhân hủy",
+  CancelledByEmployee: "Nhân viên hủy",
+  CancelledByCustomer: "Khách hàng hủy",
+  ConfirmedByEmployee: "Nhân viên xác nhận",
+  CompletedByEmployee: "Nhân viên hoàn thành",
+  PaidByEmployee: "Nhân viên thu tiền",
+  PaymentMethod: "Phương thức thanh toán",
+  FailedLoginCount: "Số lần đăng nhập sai",
+  LockedUntil: "Khóa đến",
+  DayOfWeek: "Thứ trong tuần",
+  Date: "Ngày chơi",
+  ActorType: "Tác nhân",
+  BookingId: "Mã đơn đặt sân",
+  BookingCode: "Mã đơn",
+  CustomerId: "Mã khách hàng",
+  EmployeeId: "Mã nhân viên",
+  ChangedByEmployee: "Nhân viên thực hiện",
+  ChangedByEmployeeId: "Mã nhân viên thực hiện",
+  CourtId: "Mã sân",
+  InvoiceId: "Mã hóa đơn",
+  InvoiceNumber: "Số hóa đơn",
+  InvoiceCode: "Mã hóa đơn",
+  ReplacedInvoiceId: "Hóa đơn thay thế",
+  UserAccountId: "Mã tài khoản",
+  AccountId: "Mã tài khoản",
+  QuoteFingerprint: "Chữ ký báo giá",
+};
+
+const ACTOR_TYPE_BY_INDEX = ["Hệ thống", "Nhân viên", "Khách hàng"];
+const REASON_LABEL: Record<string, string> = {
+  "Automatically settled after the booking end time passed.":
+    "Tự động tất toán sau khi quá giờ kết thúc chơi.",
+  "Booking created": "Tạo đơn đặt sân",
+  "Booking confirmed": "Xác nhận đơn đặt sân",
+  "Booking rejected": "Từ chối đơn đặt sân",
+  "Booking cancelled": "Hủy đơn đặt sân",
+  "Booking completed": "Hoàn thành lượt chơi",
+  "Booking rescheduled": "Đổi lịch đặt sân",
+  "Payment completed": "Thanh toán hóa đơn",
+  "Invoice paid": "Đã thanh toán hóa đơn",
+  "Account locked": "Khóa tài khoản",
+  "Account unlocked": "Mở khóa tài khoản",
+  "Cancelled by customer": "Khách hàng tự hủy",
+  "Cancelled by employee": "Nhân viên hủy",
+};
+
+const ACCOUNT_STATUS_BY_INDEX = ["Hoạt động", "Đã khóa", "Chờ kích hoạt"];
+const BOOKING_STATUS_BY_INDEX = [
+  "Chờ xác nhận",
+  "Đã xác nhận",
+  "Hoàn thành",
+  "Đã hủy",
+];
+const COURT_STATUS_BY_INDEX = ["Đang hoạt động", "Bảo trì", "Đóng cửa"];
+const INVOICE_STATUS_BY_INDEX = [
+  "Chưa thanh toán",
+  "Đã thanh toán",
+  "Đã hủy",
+  "Đã hoàn tiền",
+];
+
+function formatEntityLabel(entityName?: string | null): string {
+  if (!entityName) return "—";
+  return ENTITY_LABEL[entityName] ?? entityName;
+}
+
+function formatAuditFieldValue(
+  key: string,
+  value: unknown,
+  entityName?: string | null
+): string {
+  if (value === null || value === undefined || value === "") return "—";
+  if (typeof value === "boolean") return value ? "Có" : "Không";
+
+  if (key === "ActorType" || key === "CancellationActorType") {
+    if (typeof value === "number") {
+      return ACTOR_TYPE_BY_INDEX[value] ?? String(value);
+    }
+    if (typeof value === "string" && value in ACTOR_TYPE_LABEL) {
+      return ACTOR_TYPE_LABEL[value as ActorType];
+    }
+  }
+
+  if (key === "Status" || key === "OldStatus" || key === "NewStatus") {
+    if (typeof value === "number") {
+      if (entityName === "UserAccount")
+        return ACCOUNT_STATUS_BY_INDEX[value] ?? String(value);
+      if (entityName === "Booking" || entityName === "BookingStatusHistory")
+        return BOOKING_STATUS_BY_INDEX[value] ?? String(value);
+      if (entityName === "Court" || entityName === "BadmintonCourt")
+        return COURT_STATUS_BY_INDEX[value] ?? String(value);
+      if (entityName === "Invoice")
+        return INVOICE_STATUS_BY_INDEX[value] ?? String(value);
+    }
+    if (typeof value === "string") {
+      return (
+        ACCOUNT_STATUS_LABEL[value] ??
+        BOOKING_STATUS_LABEL[value] ??
+        COURT_STATUS_LABEL[value] ??
+        INVOICE_STATUS_LABEL[value] ??
+        value
+      );
+    }
+  }
+
+  if (
+    (key === "Reason" ||
+      key === "CancellationReason" ||
+      key === "RejectReason" ||
+      key === "CancelReason") &&
+    typeof value === "string"
+  ) {
+    return REASON_LABEL[value] ?? value;
+  }
+
+  if (key === "PaymentMethod") {
+    if (value === 0 || value === "Cash") return "Tiền mặt";
+    if (value === 1 || value === "Bank") return "Chuyển khoản";
+  }
+
+  if (
+    typeof value === "number" &&
+    (key === "PricePerHour" || key === "TotalCost" || key === "Amount")
+  ) {
+    return formatCurrency(value);
+  }
+
+  if (
+    typeof value === "string" &&
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value)
+  ) {
+    return formatDateTimeVN(value);
+  }
+
+  if (typeof value === "object") {
+    return JSON.stringify(value);
+  }
+
+  return String(value);
+}
+
+function AuditValuePanel({
+  title,
+  rawValue,
+  entityName,
+}: {
+  title: string;
+  rawValue?: string | null;
+  entityName?: string | null;
+}) {
+  let entries: { label: string; value: string }[] | null = null;
+  if (rawValue) {
+    try {
+      const parsed = JSON.parse(rawValue);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        entries = Object.entries(parsed).map(([key, val]) => ({
+          label: FIELD_LABEL[key] ?? key,
+          value: formatAuditFieldValue(key, val, entityName),
+        }));
+      }
+    } catch {
+      entries = null;
+    }
+  }
+
+  return (
+    <div className="rounded-[8px] border border-line bg-surface-bg p-4">
+      <p className="font-sans text-[12px] font-semibold uppercase tracking-wide text-ink-secondary">
+        {title}
+      </p>
+      {!rawValue ? (
+        <p className="mt-3 font-sans text-[14px] text-ink-secondary">
+          Không có dữ liệu
+        </p>
+      ) : entries && entries.length > 0 ? (
+        <dl className="mt-3 space-y-2">
+          {entries.map((item) => (
+            <div
+              key={item.label}
+              className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 border-b border-line/60 pb-1.5 last:border-b-0 last:pb-0"
+            >
+              <dt className="font-sans text-[12px] font-medium text-ink-secondary">
+                {item.label}
+              </dt>
+              <dd className="font-sans text-[13px] font-medium text-ink tabular-nums">
+                {item.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <p className="mt-3 whitespace-pre-wrap break-words font-sans text-[13px] leading-[20px] text-ink">
+          {rawValue}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function AuditDetailDialog({
   audit,
   onClose,
@@ -106,7 +369,7 @@ function AuditDetailDialog({
               id={titleId}
               className="font-display text-[18px] font-medium leading-[26px] text-ink"
             >
-              Chi tiết thay đổi · Chỉ đọc
+              Chi tiết thay đổi 
             </h2>
             <p className="mt-1 font-sans text-[12px] leading-[16px] text-ink-secondary">
               Nội dung bất biến được ghi nhận bởi hệ thống kiểm toán.
@@ -181,35 +444,26 @@ function AuditDetailDialog({
                 Đối tượng
               </p>
               <p className="mt-1 font-sans text-[14px] font-medium text-ink">
-                {audit.entityName ?? "—"}
+                {formatEntityLabel(audit.entityName)}
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-[8px] border border-line bg-surface-bg p-4">
-              <p className="font-sans text-[12px] font-semibold uppercase tracking-wide text-ink-secondary">
-                TRƯỚC · BEFORE
-              </p>
-              <pre className="mt-3 max-h-[260px] overflow-auto whitespace-pre-wrap break-words font-sans text-[13px] leading-[20px] text-ink tabular-nums">
-                {audit.oldValue || "(chưa có)"}
-              </pre>
-            </div>
-            <div className="rounded-[8px] border border-line bg-surface-bg p-4">
-              <p className="font-sans text-[12px] font-semibold uppercase tracking-wide text-ink-secondary">
-                SAU · AFTER
-              </p>
-              <pre className="mt-3 max-h-[260px] overflow-auto whitespace-pre-wrap break-words font-sans text-[13px] leading-[20px] text-ink tabular-nums">
-                {audit.newValue || "(chưa có)"}
-              </pre>
-            </div>
+            <AuditValuePanel
+              title="TRƯỚC"
+              rawValue={audit.oldValue}
+              entityName={audit.entityName}
+            />
+            <AuditValuePanel
+              title="SAU"
+              rawValue={audit.newValue}
+              entityName={audit.entityName}
+            />
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line bg-surface-bg px-6 py-4">
-          <p className="font-sans text-[12px] leading-[16px] text-ink-secondary">
-            Nội dung dài: vùng đọc độc lập; không có thao tác sửa hoặc xóa.
-          </p>
+        <div className="flex items-center justify-end gap-3 border-t border-line bg-surface-bg px-6 py-4">
           <Button type="button" variant="outline" onClick={onClose}>
             Đóng
           </Button>
@@ -489,7 +743,16 @@ export default function AuditsClient() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line">
-                  {items.map((audit) => (
+                  {items.map((audit) => {
+                    const isUnidentifiedActor =
+                      !audit.actorName || audit.actorName === "System";
+                    const isCustomerAnonymous =
+                      audit.actorType === "Customer" && isUnidentifiedActor;
+                    const isSystemDisplayName =
+                      audit.actorType !== "System" &&
+                      audit.actorType !== "Customer" &&
+                      isUnidentifiedActor;
+                    return (
                     <tr
                       key={audit.id}
                       className="transition-colors duration-100 hover:bg-surface-bg"
@@ -515,8 +778,11 @@ export default function AuditsClient() {
                           <span className="font-sans text-[14px] text-ink-secondary">
                             —
                           </span>
-                        ) : !audit.actorName ||
-                          audit.actorName === "System" ? (
+                        ) : isCustomerAnonymous ? (
+                          <span className="font-sans text-[14px] text-ink-secondary">
+                            Khách vãng lai / Chưa đăng nhập
+                          </span>
+                        ) : isSystemDisplayName ? (
                           <span className="font-sans text-[14px] font-semibold text-status-danger">
                             Hệ thống
                           </span>
@@ -542,7 +808,9 @@ export default function AuditsClient() {
                         )}
                       </td>
                       <td className="px-5 py-4 align-middle font-sans text-[14px] text-ink">
-                        {audit.entityName ?? "—"}
+                        {isSystemDisplayName
+                          ? "—"
+                          : formatEntityLabel(audit.entityName)}
                       </td>
                       <td className="px-5 py-4 text-right align-middle">
                         {audit.oldValue || audit.newValue ? (
@@ -561,7 +829,8 @@ export default function AuditsClient() {
                         )}
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -572,7 +841,7 @@ export default function AuditsClient() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="font-sans text-[14px] font-semibold text-ink">
-                        {audit.entityName ?? "—"}
+                        {formatEntityLabel(audit.entityName)}
                       </p>
                       <p className="mt-0.5 font-sans text-[12px] text-ink-secondary tabular-nums">
                         {audit.createdAt
