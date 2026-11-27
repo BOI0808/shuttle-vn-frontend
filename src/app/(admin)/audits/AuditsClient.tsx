@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 import { Pagination } from "@/components/ui/Pagination";
+import { Select } from "@/components/ui/Select";
 import { useAudits } from "@/hooks";
 import { ACTOR_TYPE_LABEL } from "@/config/app";
-import { formatDateTimeVN, getErrorMessage, cn } from "@/utils";
-import type { ActorType } from "@/types";
+import { formatDateTimeVN, getErrorMessage } from "@/utils";
+import type { ActorType, Audit } from "@/types";
 
 const PAGE_SIZE = 20;
-const COLUMN_COUNT = 5;
 
 interface Filters {
   fromDate: string;
@@ -28,64 +30,201 @@ const EMPTY_FILTERS: Filters = {
   action: "",
 };
 
-const ACTOR_BADGE: Record<ActorType, string> = {
-  System: "bg-[#EDF3EC] text-[#346538] border-[#d7e3d6]",
-  Employee: "bg-[#E1F3FE] text-[#1F6C9F] border-[#cde6f5]",
-  Customer: "bg-[#FBF3DB] text-[#956400] border-[#f0e4bd]",
+const ACTOR_BADGE_STATUS: Record<
+  ActorType,
+  "Completed" | "Confirmed" | "Pending"
+> = {
+  System: "Completed",
+  Employee: "Confirmed",
+  Customer: "Pending",
 };
 
 const ACTOR_OPTIONS: { value: "" | ActorType; label: string }[] = [
-  { value: "", label: "Tất cả" },
+  { value: "", label: "Tất cả tác nhân" },
   { value: "System", label: "Hệ thống" },
   { value: "Employee", label: "Nhân viên" },
   { value: "Customer", label: "Khách hàng" },
 ];
 
-// Backend AuditInterceptor lưu Action = EntityState.ToString()
 const ACTION_LABEL: Record<string, string> = {
   Added: "Tạo mới",
   Modified: "Cập nhật",
-  Deleted: "Xoá",
+  Deleted: "Xóa",
 };
 
-const ACTION_BADGE: Record<string, string> = {
-  Added: "bg-[#EDF3EC] text-[#346538] border-[#d7e3d6]",
-  Modified: "bg-[#E1F3FE] text-[#1F6C9F] border-[#cde6f5]",
-  Deleted: "bg-[#FBE4E4] text-[#9F2F2D] border-[#f2d3d3]",
+const ACTION_BADGE_STATUS: Record<
+  string,
+  "Completed" | "Confirmed" | "Cancelled"
+> = {
+  Added: "Completed",
+  Modified: "Confirmed",
+  Deleted: "Cancelled",
 };
 
 const ACTION_OPTIONS: { value: string; label: string }[] = [
-  { value: "", label: "Tất cả" },
+  { value: "", label: "Tất cả thao tác" },
   { value: "Added", label: "Tạo mới" },
   { value: "Modified", label: "Cập nhật" },
-  { value: "Deleted", label: "Xoá" },
+  { value: "Deleted", label: "Xóa" },
 ];
 
-function Field({
-  label,
-  children,
+function AuditDetailDialog({
+  audit,
+  onClose,
 }: {
-  label: string;
-  children: React.ReactNode;
+  audit: Audit;
+  onClose: () => void;
 }) {
+  const titleId = useId();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
   return (
-    <label className="flex flex-col gap-1.5">
-      <span className="text-[11px] font-mono uppercase tracking-[0.05em] text-[#787774]">
-        {label}
-      </span>
-      {children}
-    </label>
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/40 p-4 backdrop-blur-xs"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-[12px] border border-line bg-white shadow-xl"
+      >
+        <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-5">
+          <div>
+            <h2
+              id={titleId}
+              className="font-display text-[18px] font-medium leading-[26px] text-ink"
+            >
+              Chi tiết thay đổi · Chỉ đọc
+            </h2>
+            <p className="mt-1 font-sans text-[12px] leading-[16px] text-ink-secondary">
+              Nội dung bất biến được ghi nhận bởi hệ thống kiểm toán.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Đóng"
+            className="inline-flex size-[36px] shrink-0 items-center justify-center rounded-[8px] text-ink-muted transition-colors hover:bg-surface-soft hover:text-ink"
+          >
+            <span
+              className="material-symbols-outlined text-[20px]"
+              aria-hidden="true"
+            >
+              close
+            </span>
+          </button>
+        </div>
+
+        <div className="space-y-5 p-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <p className="font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
+                Thời gian (UTC+7)
+              </p>
+              <p className="mt-1 font-sans text-[14px] text-ink tabular-nums">
+                {audit.createdAt ? formatDateTimeVN(audit.createdAt) : "—"}
+              </p>
+            </div>
+            <div>
+              <p className="font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
+                Tác nhân
+              </p>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
+                {audit.actorType ? (
+                  <Badge status={ACTOR_BADGE_STATUS[audit.actorType]}>
+                    {ACTOR_TYPE_LABEL[audit.actorType]}
+                  </Badge>
+                ) : (
+                  <span className="font-sans text-[14px] text-ink-secondary">
+                    —
+                  </span>
+                )}
+                {audit.actorName && audit.actorType !== "System" && (
+                  <span className="font-sans text-[13px] text-ink">
+                    {audit.actorName}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div>
+              <p className="font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
+                Thao tác
+              </p>
+              <div className="mt-1">
+                {audit.action ? (
+                  <Badge
+                    status={ACTION_BADGE_STATUS[audit.action] ?? "NoInvoice"}
+                  >
+                    {ACTION_LABEL[audit.action] ?? audit.action}
+                  </Badge>
+                ) : (
+                  <span className="font-sans text-[14px] text-ink-secondary">
+                    —
+                  </span>
+                )}
+              </div>
+            </div>
+            <div>
+              <p className="font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
+                Đối tượng
+              </p>
+              <p className="mt-1 font-sans text-[14px] font-medium text-ink">
+                {audit.entityName ?? "—"}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-[8px] border border-line bg-surface-bg p-4">
+              <p className="font-sans text-[12px] font-semibold uppercase tracking-wide text-ink-secondary">
+                TRƯỚC · BEFORE
+              </p>
+              <pre className="mt-3 max-h-[260px] overflow-auto whitespace-pre-wrap break-words font-sans text-[13px] leading-[20px] text-ink tabular-nums">
+                {audit.oldValue || "(chưa có)"}
+              </pre>
+            </div>
+            <div className="rounded-[8px] border border-line bg-surface-bg p-4">
+              <p className="font-sans text-[12px] font-semibold uppercase tracking-wide text-ink-secondary">
+                SAU · AFTER
+              </p>
+              <pre className="mt-3 max-h-[260px] overflow-auto whitespace-pre-wrap break-words font-sans text-[13px] leading-[20px] text-ink tabular-nums">
+                {audit.newValue || "(chưa có)"}
+              </pre>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line bg-surface-bg px-6 py-4">
+          <p className="font-sans text-[12px] leading-[16px] text-ink-secondary">
+            Nội dung dài: vùng đọc độc lập; không có thao tác sửa hoặc xóa.
+          </p>
+          <Button type="button" variant="outline" onClick={onClose}>
+            Đóng
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
-
-const inputClass =
-  "h-9 rounded-[7px] border border-[#e4e4e1] bg-white px-3 text-[13px] text-[#111111] outline-none transition-[border-color] focus:border-[#111111] placeholder:text-[#b5b3ae]";
 
 export default function AuditsClient() {
   const [draft, setDraft] = useState<Filters>(EMPTY_FILTERS);
   const [applied, setApplied] = useState<Filters>(EMPTY_FILTERS);
   const [pageNumber, setPageNumber] = useState(1);
   const [dateError, setDateError] = useState<string | null>(null);
+  const [selectedAudit, setSelectedAudit] = useState<Audit | null>(null);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useAudits({
     ActorType: applied.actorType || undefined,
@@ -124,31 +263,43 @@ export default function AuditsClient() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="rounded-xl border border-[#e4e4e1] bg-white p-5">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
-          <Field label="Từ ngày">
-            <input
+      <div>
+        <h1 className="font-display text-[24px] font-semibold leading-[32px] text-ink">
+          Nhật ký hoạt động
+        </h1>
+        <p className="mt-1 font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
+          Nhật ký kiểm toán hệ thống · Chỉ đọc, không thể sửa hoặc xóa
+        </p>
+      </div>
+
+      <section className="rounded-[12px] border border-line bg-white p-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <Label htmlFor="audit-from-date">Từ ngày</Label>
+            <Input
+              id="audit-from-date"
               type="date"
-              className={inputClass}
               value={draft.fromDate}
               onChange={(e) =>
                 setDraft((d) => ({ ...d, fromDate: e.target.value }))
               }
             />
-          </Field>
-          <Field label="Đến ngày">
-            <input
+          </div>
+          <div>
+            <Label htmlFor="audit-to-date">Đến ngày</Label>
+            <Input
+              id="audit-to-date"
               type="date"
-              className={inputClass}
               value={draft.toDate}
               onChange={(e) =>
                 setDraft((d) => ({ ...d, toDate: e.target.value }))
               }
             />
-          </Field>
-          <Field label="Tác nhân">
-            <select
-              className={inputClass}
+          </div>
+          <div>
+            <Label htmlFor="audit-actor">Tác nhân</Label>
+            <Select
+              id="audit-actor"
               value={draft.actorType}
               onChange={(e) =>
                 setDraft((d) => ({
@@ -162,11 +313,12 @@ export default function AuditsClient() {
                   {o.label}
                 </option>
               ))}
-            </select>
-          </Field>
-          <Field label="Thao tác">
-            <select
-              className={inputClass}
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="audit-action">Thao tác</Label>
+            <Select
+              id="audit-action"
               value={draft.action}
               onChange={(e) =>
                 setDraft((d) => ({ ...d, action: e.target.value }))
@@ -177,173 +329,292 @@ export default function AuditsClient() {
                   {o.label}
                 </option>
               ))}
-            </select>
-          </Field>
-          <Field label="Đối tượng">
-            <input
-              className={inputClass}
-              placeholder="Tên đối tượng"
+            </Select>
+          </div>
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-end gap-3">
+          <div className="min-w-[240px] flex-1">
+            <Label htmlFor="audit-entity">Đối tượng</Label>
+            <Input
+              id="audit-entity"
+              icon={
+                <span
+                  className="material-symbols-outlined text-[20px]"
+                  aria-hidden="true"
+                >
+                  search
+                </span>
+              }
+              placeholder="Tìm theo tên đối tượng"
               value={draft.entityName}
               onChange={(e) =>
                 setDraft((d) => ({ ...d, entityName: e.target.value }))
               }
             />
-          </Field>
+          </div>
+          <Button type="button" variant="outline" onClick={clearFilters}>
+            Đặt lại
+          </Button>
+          <Button type="button" variant="primary" onClick={applyFilters}>
+            Lọc nhật ký
+          </Button>
         </div>
 
         {dateError && (
-          <p role="alert" className="mt-3 text-xs text-[#9F2F2D]">
+          <p
+            role="alert"
+            className="mt-3 font-sans text-[12px] leading-[16px] text-status-danger"
+          >
             {dateError}
           </p>
         )}
+      </section>
 
-        <div className="mt-4 flex items-center gap-2">
-          <Button
-            type="button"
-            variant="primary"
-            size="sm"
-            className="w-auto inline-flex"
-            onClick={applyFilters}
-          >
-            Lọc
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="w-auto inline-flex"
-            onClick={clearFilters}
-          >
-            Xóa lọc
-          </Button>
+      <section className="overflow-hidden rounded-[12px] border border-line bg-white">
+        <div className="px-5 py-4">
+          <h2 className="font-display text-[18px] font-medium leading-[26px] text-ink">
+            Hoạt động hệ thống
+          </h2>
+          <p className="mt-1 font-sans text-[12px] leading-[16px] text-ink-secondary">
+            {loading
+              ? "Đang tải nhật ký…"
+              : "Chọn Chi tiết để xem đầy đủ giá trị Trước và Sau cạnh nhau."}
+          </p>
         </div>
-      </div>
 
-      <div className="rounded-xl border border-[#e4e4e1] bg-white overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-[#fafaf8] text-[10px] font-mono uppercase tracking-wider text-[#787774]">
-                <th scope="col" className="px-5 py-3 border-b border-[#e4e4e1] font-semibold">
-                  Thời điểm (UTC+7)
-                </th>
-                <th scope="col" className="px-5 py-3 border-b border-[#e4e4e1] font-semibold">
-                  Tác nhân
-                </th>
-                <th scope="col" className="px-5 py-3 border-b border-[#e4e4e1] font-semibold">
-                  Tên người thực hiện
-                </th>
-                <th scope="col" className="px-5 py-3 border-b border-[#e4e4e1] font-semibold">
-                  Thao tác
-                </th>
-                <th scope="col" className="px-5 py-3 border-b border-[#e4e4e1] font-semibold">
-                  Đối tượng
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#f0f0ed]">
-              {loading && (
-                <AuditRowSkeleton />
-              )}
-              {!loading && isError && (
-                <tr>
-                  <td colSpan={COLUMN_COUNT} className="px-5 py-10 text-center">
-                    <p role="alert" className="text-[13px] text-[#9F2F2D]">
-                      {getErrorMessage(error)}
-                    </p>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="w-auto inline-flex mt-3"
-                      onClick={() => refetch()}
+        {loading ? (
+          <div aria-busy="true">
+            <div className="hidden h-[44px] grid-cols-5 items-center border-y border-line bg-surface-bg px-5 font-sans text-[12px] font-semibold text-ink-secondary md:grid">
+              <span>Thời gian</span>
+              <span>Tác nhân</span>
+              <span>Thao tác</span>
+              <span>Đối tượng</span>
+              <span>Chi tiết</span>
+            </div>
+            <div className="space-y-4 p-5">
+              {[0, 1, 2, 3].map((row) => (
+                <div
+                  key={row}
+                  className="grid grid-cols-1 gap-3 py-1.5 animate-pulse md:grid-cols-5"
+                >
+                  <div className="h-[16px] w-36 rounded-[8px] bg-surface-soft" />
+                  <div className="h-[16px] w-44 rounded-[8px] bg-surface-soft" />
+                  <div className="h-[16px] w-28 rounded-[8px] bg-surface-soft" />
+                  <div className="h-[16px] w-44 rounded-[8px] bg-surface-soft" />
+                  <div className="h-[16px] w-24 rounded-[8px] bg-surface-soft" />
+                </div>
+              ))}
+              <p className="border-t border-line pt-4 font-sans text-[12px] leading-[16px] text-ink-secondary">
+                Chọn một bản ghi sau khi tải để xem giá trị Trước và Sau cạnh
+                nhau.
+              </p>
+            </div>
+          </div>
+        ) : isError ? (
+          <div role="alert" className="border-t border-line p-6">
+            <div className="flex size-[40px] items-center justify-center rounded-[8px] bg-status-danger-soft text-status-danger">
+              <span
+                className="material-symbols-outlined text-[24px]"
+                aria-hidden="true"
+              >
+                warning
+              </span>
+            </div>
+            <h3 className="mt-4 font-display text-[18px] font-medium leading-[26px] text-ink">
+              Không tải được nhật ký
+            </h3>
+            <p className="mt-1 font-sans text-[14px] leading-[20px] text-ink-secondary">
+              {getErrorMessage(error)} Các bộ lọc hiện tại được giữ nguyên.
+            </p>
+            <div className="mt-4">
+              <Button
+                type="button"
+                variant="primary"
+                onClick={() => refetch()}
+              >
+                Thử lại
+              </Button>
+            </div>
+          </div>
+        ) : items.length === 0 ? (
+          <div className="flex flex-col items-center border-t border-line px-6 py-12 text-center">
+            <div className="flex size-[48px] items-center justify-center rounded-[12px] bg-brand-soft text-brand-strong">
+              <span
+                className="material-symbols-outlined text-[24px]"
+                aria-hidden="true"
+              >
+                history
+              </span>
+            </div>
+            <p className="mt-4 font-sans text-[14px] font-semibold text-ink">
+              Không có nhật ký phù hợp
+            </p>
+            <p className="mt-1 max-w-md font-sans text-[14px] text-ink-secondary">
+              Thử đổi thời gian hoặc đặt lại bộ lọc.
+            </p>
+            <div className="mt-4">
+              <Button type="button" variant="outline" onClick={clearFilters}>
+                Đặt lại bộ lọc
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="hidden overflow-x-auto md:block">
+              <table className="w-full border-collapse text-left">
+                <thead>
+                  <tr className="h-[44px] border-y border-line bg-status-info-soft font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
+                    <th scope="col" className="px-5 py-3 font-semibold">
+                      Thời điểm (UTC+7)
+                    </th>
+                    <th scope="col" className="px-5 py-3 font-semibold">
+                      Tác nhân
+                    </th>
+                    <th scope="col" className="px-5 py-3 font-semibold">
+                      Tên người thực hiện
+                    </th>
+                    <th scope="col" className="px-5 py-3 font-semibold">
+                      Thao tác
+                    </th>
+                    <th scope="col" className="px-5 py-3 font-semibold">
+                      Đối tượng
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-5 py-3 text-right font-semibold"
                     >
-                      Thử lại
-                    </Button>
-                  </td>
-                </tr>
-              )}
-              {!loading && !isError && items.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={COLUMN_COUNT}
-                    className="px-5 py-10 text-center text-[13px] text-[#787774]"
-                  >
-                    Không có bản ghi nào khớp bộ lọc.
-                  </td>
-                </tr>
-              )}
-              {!loading &&
-                items.map((audit) => (
-                  <tr
-                    key={audit.id}
-                    className="hover:bg-[#fafaf8] transition-colors"
-                  >
-                    <td className="px-5 py-4 align-top">
-                      <p className="text-[11px] font-mono text-[#787774]">
+                      Chi tiết
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line">
+                  {items.map((audit) => (
+                    <tr
+                      key={audit.id}
+                      className="transition-colors duration-100 hover:bg-surface-bg"
+                    >
+                      <td className="px-5 py-4 align-middle font-sans text-[12px] leading-[16px] text-ink-secondary tabular-nums">
+                        {audit.createdAt
+                          ? formatDateTimeVN(audit.createdAt)
+                          : "—"}
+                      </td>
+                      <td className="px-5 py-4 align-middle">
+                        {audit.actorType ? (
+                          <Badge status={ACTOR_BADGE_STATUS[audit.actorType]}>
+                            {ACTOR_TYPE_LABEL[audit.actorType]}
+                          </Badge>
+                        ) : (
+                          <span className="font-sans text-[14px] text-ink-secondary">
+                            —
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-5 py-4 align-middle">
+                        {audit.actorType === "System" ? (
+                          <span className="font-sans text-[14px] text-ink-secondary">
+                            —
+                          </span>
+                        ) : !audit.actorName ||
+                          audit.actorName === "System" ? (
+                          <span className="font-sans text-[14px] font-semibold text-status-danger">
+                            Hệ thống
+                          </span>
+                        ) : (
+                          <span className="font-sans text-[14px] text-ink">
+                            {audit.actorName}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-5 py-4 align-middle">
+                        {audit.action ? (
+                          <Badge
+                            status={
+                              ACTION_BADGE_STATUS[audit.action] ?? "NoInvoice"
+                            }
+                          >
+                            {ACTION_LABEL[audit.action] ?? audit.action}
+                          </Badge>
+                        ) : (
+                          <span className="font-sans text-[14px] text-ink-secondary">
+                            —
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-5 py-4 align-middle font-sans text-[14px] text-ink">
+                        {audit.entityName ?? "—"}
+                      </td>
+                      <td className="px-5 py-4 text-right align-middle">
+                        {audit.oldValue || audit.newValue ? (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setSelectedAudit(audit)}
+                          >
+                            Chi tiết
+                          </Button>
+                        ) : (
+                          <span className="font-sans text-[12px] text-ink-secondary">
+                            —
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="divide-y divide-line border-t border-line md:hidden">
+              {items.map((audit) => (
+                <div key={audit.id} className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-sans text-[14px] font-semibold text-ink">
+                        {audit.entityName ?? "—"}
+                      </p>
+                      <p className="mt-0.5 font-sans text-[12px] text-ink-secondary tabular-nums">
                         {audit.createdAt
                           ? formatDateTimeVN(audit.createdAt)
                           : "—"}
                       </p>
-                    </td>
-                    <td className="px-5 py-4 align-top">
-                      {audit.actorType ? (
-                        <Badge
-                          status="Completed"
-                          className={cn("font-mono", ACTOR_BADGE[audit.actorType])}
-                        >
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                      {audit.actorType && (
+                        <Badge status={ACTOR_BADGE_STATUS[audit.actorType]}>
                           {ACTOR_TYPE_LABEL[audit.actorType]}
                         </Badge>
-                      ) : (
-                        <span className="text-[13px] text-[#787774]">—</span>
                       )}
-                    </td>
-                    <td className="px-5 py-4 align-top">
-                      {audit.actorType === "System" ? (
-                        <span className="text-[13px] text-[#787774]">—</span>
-                      ) : !audit.actorName || audit.actorName === "System" ? (
-                        <span className="text-[13px] font-semibold text-[#9F2F2D]">
-                          Hệ thống
-                        </span>
-                      ) : (
-                        <span className="text-[13px] text-[#111111]">
-                          {audit.actorName}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-5 py-4 align-top">
-                      {audit.action ? (
-                        <span
-                          className={cn(
-                            "inline-flex items-center px-2.5 py-[3px] rounded-full text-[11px] font-mono font-semibold tracking-[0.03em] border whitespace-nowrap",
-                            ACTION_BADGE[audit.action] ??
-                              "bg-[#f4f4f2] text-[#111111] border-[#e4e4e1]"
-                          )}
+                      {audit.action && (
+                        <Badge
+                          status={
+                            ACTION_BADGE_STATUS[audit.action] ?? "NoInvoice"
+                          }
                         >
                           {ACTION_LABEL[audit.action] ?? audit.action}
-                        </span>
-                      ) : (
-                        <span className="text-[13px] text-[#787774]">—</span>
+                        </Badge>
                       )}
-                    </td>
-                    <td className="px-5 py-4 align-top">
-                      <p className="text-[13px] text-[#111111]">
-                        {audit.entityName ?? "—"}
-                      </p>
-                      {(audit.oldValue || audit.newValue) && (
-                        <p className="mt-1 text-[11px] font-mono text-[#787774] leading-relaxed">
-                          Trước: {audit.oldValue ?? "(chưa có)"}
-                          <br />
-                          Sau: {audit.newValue ?? "(chưa có)"}
-                        </p>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                    </div>
+                  </div>
+                  {(audit.oldValue || audit.newValue) && (
+                    <div className="mt-3 flex justify-end">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedAudit(audit)}
+                      >
+                        Chi tiết
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </section>
 
       {data && (
         <Pagination
@@ -357,27 +628,12 @@ export default function AuditsClient() {
           disabled={loading}
         />
       )}
-
-      <p className="text-[11px] font-mono text-[#b5b3ae]">
-        Bảng chỉ đọc, bất biến. Không có thao tác thêm, sửa hoặc xóa.
-      </p>
+      {selectedAudit && (
+        <AuditDetailDialog
+          audit={selectedAudit}
+          onClose={() => setSelectedAudit(null)}
+        />
+      )}
     </div>
-  );
-}
-
-function AuditRowSkeleton() {
-  return (
-    <>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <tr key={i}>
-          {Array.from({ length: COLUMN_COUNT }).map((_, j) => (
-            <td key={j} className="px-5 py-4">
-              <div className="h-3 animate-pulse rounded-md bg-[#eceaea] w-full max-w-[160px]" />
-              <div className="mt-2 h-3 animate-pulse rounded-md bg-[#f0efed] w-full max-w-[120px]" />
-            </td>
-          ))}
-        </tr>
-      ))}
-    </>
   );
 }
