@@ -33,7 +33,9 @@ export function CustomerAccountCard({ customer }: CustomerAccountCardProps) {
       { accountId: customer.accountId, customerId: customer.customerId },
       {
         onSuccess: () => {
-          toast.success(isActive ? "Đã khóa tài khoản" : "Đã mở khóa tài khoản");
+          toast.success(
+            isActive ? "Đã khóa tài khoản" : "Đã mở khóa tài khoản"
+          );
           setIsConfirmOpen(false);
         },
         onError: (error) => {
@@ -45,45 +47,58 @@ export function CustomerAccountCard({ customer }: CustomerAccountCardProps) {
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-      <h3 className="mb-3 text-[15px] font-bold text-slate-900">Tài khoản</h3>
-      {customer.hasAccount && customer.accountStatus ? (
-        <>
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="text-[13px] text-slate-500">Trạng thái:</span>
-              <Badge status={customer.accountStatus}>
-                {ACCOUNT_STATUS_LABEL[customer.accountStatus]}
-              </Badge>
+    <div className="flex h-full flex-col justify-between rounded-[12px] border border-line bg-white p-5">
+      <div>
+        <h2 className="font-display text-[18px] font-medium leading-[26px] text-ink">
+          Tài khoản
+        </h2>
+
+        {customer.hasAccount && customer.accountStatus ? (
+          <div className="mt-5 space-y-4">
+            <div>
+              <p className="font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
+                Trạng thái tài khoản
+              </p>
+              <div className="mt-2">
+                <Badge status={customer.accountStatus}>
+                  {ACCOUNT_STATUS_LABEL[customer.accountStatus]}
+                </Badge>
+              </div>
             </div>
-            {!isPending && (
-              <Button
-                type="button"
-                variant="outline"
-                className={
-                  isActive
-                    ? "w-auto border-red-300 text-red-600 hover:bg-red-50"
-                    : "w-auto"
-                }
-                onClick={() => setIsConfirmOpen(true)}
-              >
-                {isActive ? "Khóa tài khoản" : "Mở khóa tài khoản"}
-              </Button>
+
+            {isPending ? (
+              <p className="font-sans text-[14px] leading-[20px] text-ink-secondary">
+                Khách chưa đặt mật khẩu nên chưa thể khóa hoặc mở khóa. Liên kết
+                thiết lập có hiệu lực 24 giờ; khi hết hạn, khách tự yêu cầu gửi
+                lại liên kết mới.
+              </p>
+            ) : (
+              <div className="pt-1">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className={
+                    isActive
+                      ? "border-status-danger/40 text-status-danger hover:border-status-danger hover:bg-status-danger-soft hover:text-status-danger"
+                      : undefined
+                  }
+                  onClick={() => setIsConfirmOpen(true)}
+                >
+                  {isActive ? "Khóa tài khoản" : "Mở khóa tài khoản"}
+                </Button>
+              </div>
             )}
           </div>
-          {isPending && (
-            <p className="mt-3 text-[13px] text-slate-500">
-              Khách chưa đặt mật khẩu nên chưa thể khóa hoặc mở khóa. Liên kết
-              thiết lập có hiệu lực 24 giờ; khi hết hạn, khách tự yêu cầu gửi
-              lại liên kết mới.
-            </p>
-          )}
-        </>
-      ) : (
-        <p className="text-[13px] text-slate-500">
-          Khách vãng lai, chưa có tài khoản đăng nhập.
-        </p>
-      )}
+        ) : (
+          <p className="mt-5 font-sans text-[14px] leading-[20px] text-ink-secondary">
+            Khách vãng lai, chưa có tài khoản đăng nhập.
+          </p>
+        )}
+      </div>
+
+      <p className="mt-6 font-sans text-[12px] leading-[16px] text-ink-secondary">
+        Thao tác theo trạng thái thực tế Active / Disabled.
+      </p>
 
       {isConfirmOpen && (
         <ConfirmDialog

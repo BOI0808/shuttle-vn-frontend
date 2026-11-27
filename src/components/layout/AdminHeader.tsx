@@ -49,7 +49,6 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   const subTitle = getTitle();
   const isEmployeesPage =
     pathname.startsWith("/employees") || pathname.startsWith("/staff");
-  const isCustomersPage = pathname.startsWith("/customers");
 
   return (
     <header className="sticky top-0 z-50 flex h-[56px] items-center justify-between gap-4 border-b border-line bg-white px-4 sm:px-6 lg:px-8">
@@ -108,20 +107,6 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             }
           >
             Thêm nhân viên
-          </Button>
-        )}
-
-        {isCustomersPage && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            icon="person_add"
-            onClick={() =>
-              window.dispatchEvent(new CustomEvent("open-add-customer"))
-            }
-          >
-            Thêm khách hàng
           </Button>
         )}
       </div>

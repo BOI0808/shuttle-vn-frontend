@@ -64,34 +64,58 @@ export function CustomerProfileForm({ customer }: CustomerProfileFormProps) {
   return (
     <form
       onSubmit={handleSubmit(handleSave)}
-      className="rounded-xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+      className="flex h-full flex-col justify-between rounded-[12px] border border-line bg-white p-5"
     >
-      <h3 className="mb-4 text-[15px] font-bold text-slate-900">
-        Thông tin khách hàng
-      </h3>
-      <div className="flex flex-col gap-[18px]">
-        <div>
-          <Label required>Họ và tên</Label>
-          <Input error={errors.fullName?.message} {...register("fullName")} />
-        </div>
-        <div>
-          <Label required>Số điện thoại</Label>
-          <Input
-            type="tel"
-            error={errors.phone?.message}
-            {...register("phone")}
-          />
-        </div>
-        <div>
-          <Label>Email</Label>
-          <Input type="email" value={customer.email} readOnly disabled />
-          <p className="mt-1 text-xs text-slate-500">Email không thể thay đổi.</p>
+      <div>
+        <h2 className="font-display text-[18px] font-medium leading-[26px] text-ink">
+          Thông tin cá nhân
+        </h2>
+        <div className="mt-5 flex flex-col gap-4">
+          <div>
+            <Label htmlFor="profile-fullName" required>
+              Họ và tên
+            </Label>
+            <Input
+              id="profile-fullName"
+              error={errors.fullName?.message}
+              {...register("fullName")}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="profile-email">Email</Label>
+              <Input
+                id="profile-email"
+                type="email"
+                value={customer.email}
+                readOnly
+                disabled
+              />
+              <p className="mt-1 font-sans text-[12px] leading-[16px] text-ink-secondary">
+                Email không thể thay đổi.
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="profile-phone" required>
+                Số điện thoại
+              </Label>
+              <Input
+                id="profile-phone"
+                type="tel"
+                error={errors.phone?.message}
+                {...register("phone")}
+              />
+            </div>
+          </div>
         </div>
       </div>
-      <div className="mt-5 flex gap-2.5">
+
+      <div className="mt-6 flex flex-wrap items-center gap-3">
         <Button
           type="submit"
-          className="w-auto"
+          variant="primary"
           loading={updateMutation.isPending}
           disabled={!isDirty}
         >
@@ -100,7 +124,6 @@ export function CustomerProfileForm({ customer }: CustomerProfileFormProps) {
         <Button
           type="button"
           variant="outline"
-          className="w-auto"
           disabled={!isDirty || updateMutation.isPending}
           onClick={() => reset(toFormValues(customer))}
         >

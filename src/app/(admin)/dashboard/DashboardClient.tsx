@@ -143,9 +143,6 @@ export default function DashboardClient() {
               <h2 className="font-display text-[18px] font-medium leading-[26px] text-ink">
                 Đơn cần xử lý gấp
               </h2>
-              <span className="inline-flex h-[24px] min-w-[28px] items-center justify-center rounded-[12px] bg-surface-soft px-2 font-sans text-[12px] font-normal leading-[16px] text-ink-secondary tabular-nums">
-                {summary.pendingCount}
-              </span>
             </div>
             <p className="mt-0.5 font-sans text-[12px] font-normal leading-[16px] text-ink-secondary">
               Ưu tiên theo giờ chơi gần nhất
