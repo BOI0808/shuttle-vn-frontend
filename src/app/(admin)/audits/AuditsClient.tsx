@@ -574,7 +574,7 @@ export default function AuditsClient() {
           Nhật ký hoạt động
         </h1>
         <p className="mt-1 font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
-          Nhật ký kiểm toán hệ thống · Chỉ đọc, không thể sửa hoặc xóa
+          Nhật ký kiểm toán hệ thống
         </p>
       </div>
 
