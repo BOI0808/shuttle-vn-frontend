@@ -3,6 +3,7 @@
 import { useEffect, useId, useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { CustomDatePicker } from "@/components/ui/CustomDatePicker";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Pagination } from "@/components/ui/Pagination";
@@ -192,6 +193,42 @@ const INVOICE_STATUS_BY_INDEX = [
   "Đã hủy",
   "Đã hoàn tiền",
 ];
+
+function resolveEntityFilter(rawInput: string): {
+  EntityName?: string;
+  SearchTerm?: string;
+} {
+  const trimmed = rawInput.trim();
+  if (!trimmed) return {};
+  const normalized = trimmed.toLowerCase();
+
+  // Exact or case-insensitive match against backend entity keys
+  const keyMatch = Object.keys(ENTITY_LABEL).find(
+    (key) => key.toLowerCase() === normalized
+  );
+  if (keyMatch) {
+    return { EntityName: keyMatch };
+  }
+
+  // Exact match against Vietnamese label
+  const exactLabelMatches = Object.entries(ENTITY_LABEL).filter(
+    ([, label]) => label.toLowerCase() === normalized
+  );
+  if (exactLabelMatches.length === 1) {
+    return { EntityName: exactLabelMatches[0][0] };
+  }
+
+  // Substring match against Vietnamese label (when unique)
+  const partialLabelMatches = Object.entries(ENTITY_LABEL).filter(([, label]) =>
+    label.toLowerCase().includes(normalized)
+  );
+  if (partialLabelMatches.length === 1) {
+    return { EntityName: partialLabelMatches[0][0] };
+  }
+
+  // Fallback to backend ILike SearchTerm (searches EntityName, EntityId, actor name)
+  return { SearchTerm: trimmed };
+}
 
 function formatEntityLabel(entityName?: string | null): string {
   if (!entityName) return "—";
@@ -480,12 +517,18 @@ export default function AuditsClient() {
   const [dateError, setDateError] = useState<string | null>(null);
   const [selectedAudit, setSelectedAudit] = useState<Audit | null>(null);
 
+  const entityFilter = resolveEntityFilter(applied.entityName);
+
   const { data, isLoading, isFetching, isError, error, refetch } = useAudits({
     ActorType: applied.actorType || undefined,
-    EntityName: applied.entityName || undefined,
+    ...entityFilter,
     Action: applied.action || undefined,
-    FromDate: applied.fromDate || undefined,
-    ToDate: applied.toDate ? `${applied.toDate}T23:59:59.999Z` : undefined,
+    FromDate: applied.fromDate
+      ? new Date(`${applied.fromDate}T00:00:00+07:00`).toISOString()
+      : undefined,
+    ToDate: applied.toDate
+      ? new Date(`${applied.toDate}T23:59:59.999+07:00`).toISOString()
+      : undefined,
     PageNumber: pageNumber,
     PageSize: PAGE_SIZE,
   });
@@ -504,8 +547,17 @@ export default function AuditsClient() {
       return;
     }
     setDateError(null);
+    const isSame =
+      draft.fromDate === applied.fromDate &&
+      draft.toDate === applied.toDate &&
+      draft.actorType === applied.actorType &&
+      draft.entityName === applied.entityName &&
+      draft.action === applied.action;
     setApplied(draft);
     setPageNumber(1);
+    if (isSame) {
+      void refetch();
+    }
   };
 
   const clearFilters = () => {
@@ -526,27 +578,39 @@ export default function AuditsClient() {
         </p>
       </div>
 
-      <section className="rounded-[12px] border border-line bg-white p-5">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          applyFilters();
+        }}
+        className="rounded-[12px] border border-line bg-white p-5"
+      >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Label htmlFor="audit-from-date">Từ ngày</Label>
-            <Input
+            <CustomDatePicker
               id="audit-from-date"
-              type="date"
+              className="relative"
+              fullWidth
+              allowClear
+              placeholder="Chọn ngày"
               value={draft.fromDate}
-              onChange={(e) =>
-                setDraft((d) => ({ ...d, fromDate: e.target.value }))
+              onChange={(dateStr) =>
+                setDraft((d) => ({ ...d, fromDate: dateStr }))
               }
             />
           </div>
           <div>
             <Label htmlFor="audit-to-date">Đến ngày</Label>
-            <Input
+            <CustomDatePicker
               id="audit-to-date"
-              type="date"
+              className="relative"
+              fullWidth
+              allowClear
+              placeholder="Chọn ngày"
               value={draft.toDate}
-              onChange={(e) =>
-                setDraft((d) => ({ ...d, toDate: e.target.value }))
+              onChange={(dateStr) =>
+                setDraft((d) => ({ ...d, toDate: dateStr }))
               }
             />
           </div>
@@ -608,10 +672,10 @@ export default function AuditsClient() {
             />
           </div>
           <Button type="button" variant="outline" onClick={clearFilters}>
-            Đặt lại
+            Xóa lọc
           </Button>
-          <Button type="button" variant="primary" onClick={applyFilters}>
-            Lọc nhật ký
+          <Button type="submit" variant="primary">
+            Tìm kiếm
           </Button>
         </div>
 
@@ -623,7 +687,7 @@ export default function AuditsClient() {
             {dateError}
           </p>
         )}
-      </section>
+      </form>
 
       <section className="overflow-hidden rounded-[12px] border border-line bg-white">
         <div className="px-5 py-4">

@@ -5,6 +5,7 @@ import { isAxiosError } from "axios";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/Button";
+import { CustomDatePicker } from "@/components/ui/CustomDatePicker";
 import { useRescheduleBooking } from "@/hooks/useBooking";
 import { useCourts } from "@/hooks/useCourt";
 import { bookingService } from "@/services";
@@ -134,7 +135,7 @@ export function RescheduleBookingModal({ booking, isStaff = false, onClose }: Re
         <form className="mt-5 space-y-4" onSubmit={preview ? submit : getPreview}>
           <fieldset disabled={busy || !!preview || !eligible} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="space-y-1 text-sm sm:col-span-2"><span>Sân</span><select required value={courtId} onChange={(event) => setCourtId(Number(event.target.value))} className={fieldClass}>{courts.filter((court) => court.status === "Active").map((court) => <option key={court.courtId} value={court.courtId}>{court.name}</option>)}</select></label>
-            <label className="space-y-1 text-sm sm:col-span-2"><span>Ngày chơi</span><input required type="date" value={date} onChange={(event) => setDate(event.target.value)} className={fieldClass} /></label>
+            <label className="space-y-1 text-sm sm:col-span-2"><span>Ngày chơi</span><CustomDatePicker className="relative" fullWidth value={date} onChange={setDate} disabled={busy || !!preview || !eligible} /></label>
             <label className="space-y-1 text-sm"><span>Giờ bắt đầu</span><input required type="time" step="1800" value={startTime} onChange={(event) => setStartTime(event.target.value)} className={fieldClass} /></label>
             <label className="space-y-1 text-sm"><span>Giờ kết thúc</span><input required type="time" step="1800" value={endTime} onChange={(event) => setEndTime(event.target.value)} className={fieldClass} /></label>
             <label className="space-y-1 text-sm sm:col-span-2"><span>Lý do đổi lịch</span><textarea value={reason} onChange={(event) => setReason(event.target.value)} className={fieldClass} /></label>

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { BookingDetailModal } from "@/components/booking/BookingDetailModal";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { CustomDatePicker } from "@/components/ui/CustomDatePicker";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Pagination } from "@/components/ui/Pagination";
@@ -20,13 +21,13 @@ import type { BookingListItem } from "@/types";
 import { formatCurrency, formatDate, getErrorMessage } from "@/utils";
 
 const PAGE_SIZE = 20;
-const SEARCH_DEBOUNCE_MS = 400;
 
 interface Filters {
   fromDate: string;
   toDate: string;
   courtId: string;
   status: string;
+  keyword: string;
 }
 
 const EMPTY_FILTERS: Filters = {
@@ -34,6 +35,7 @@ const EMPTY_FILTERS: Filters = {
   toDate: "",
   courtId: "",
   status: "",
+  keyword: "",
 };
 
 interface AllBookingsClientProps {
@@ -300,46 +302,53 @@ function AllBookingsTable({
 export default function AllBookingsClient({
   initialCustomerId,
 }: AllBookingsClientProps) {
-  const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
+  const [draft, setDraft] = useState<Filters>(EMPTY_FILTERS);
+  const [applied, setApplied] = useState<Filters>(EMPTY_FILTERS);
   const [customerId, setCustomerId] = useState(initialCustomerId);
-  const [searchInput, setSearchInput] = useState("");
-  const [keyword, setKeyword] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
+  const [dateError, setDateError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setKeyword(searchInput.trim());
-      setPageNumber(1);
-    }, SEARCH_DEBOUNCE_MS);
-    return () => clearTimeout(timer);
-  }, [searchInput]);
-
-  const isRangeInvalid =
-    filters.fromDate !== "" &&
-    filters.toDate !== "" &&
-    filters.fromDate > filters.toDate;
-
   const params: BookingAdminQueryParams = {
-    fromDate: filters.fromDate || undefined,
-    toDate: filters.toDate || undefined,
-    courtId: filters.courtId ? Number(filters.courtId) : undefined,
-    status: filters.status || undefined,
+    fromDate: applied.fromDate || undefined,
+    toDate: applied.toDate || undefined,
+    courtId: applied.courtId ? Number(applied.courtId) : undefined,
+    status: applied.status || undefined,
     customerId,
-    keyword: keyword || undefined,
+    keyword: applied.keyword.trim() || undefined,
     pageNumber,
     pageSize: PAGE_SIZE,
   };
 
   const { data, isLoading, isError, error, refetch } = useAllBookings(
     params,
-    !isRangeInvalid
+    true
   );
   const { data: courts } = useCourts();
 
-  const handleFilterChange = (key: keyof Filters, value: string) => {
-    setFilters((current) => ({ ...current, [key]: value }));
+  const handleDraftChange = (key: keyof Filters, value: string) => {
+    setDraft((current) => ({ ...current, [key]: value }));
+  };
+
+  const applyFilters = () => {
+    if (draft.fromDate !== "" && draft.toDate !== "" && draft.fromDate > draft.toDate) {
+      setDateError("Từ ngày không được lớn hơn Đến ngày.");
+      return;
+    }
+    setDateError(null);
+    const isSame =
+      draft.fromDate === applied.fromDate &&
+      draft.toDate === applied.toDate &&
+      draft.courtId === applied.courtId &&
+      draft.status === applied.status &&
+      draft.keyword.trim() === applied.keyword.trim() &&
+      pageNumber === 1;
+    const normalized: Filters = { ...draft, keyword: draft.keyword.trim() };
+    setApplied(normalized);
     setPageNumber(1);
+    if (isSame) {
+      void refetch();
+    }
   };
 
   const handleClearCustomer = () => {
@@ -348,10 +357,10 @@ export default function AllBookingsClient({
   };
 
   const handleClearFilters = () => {
-    setFilters(EMPTY_FILTERS);
+    setDraft(EMPTY_FILTERS);
+    setApplied(EMPTY_FILTERS);
     setCustomerId(undefined);
-    setSearchInput("");
-    setKeyword("");
+    setDateError(null);
     setPageNumber(1);
   };
 
@@ -366,29 +375,37 @@ export default function AllBookingsClient({
         </p>
       </div>
 
-      <section className="rounded-[12px] border border-line bg-white p-5">
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          applyFilters();
+        }}
+        className="rounded-[12px] border border-line bg-white p-5"
+      >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Label htmlFor="filter-from-date">Từ ngày</Label>
-            <Input
+            <CustomDatePicker
               id="filter-from-date"
-              type="date"
-              value={filters.fromDate}
-              onChange={(event) =>
-                handleFilterChange("fromDate", event.target.value)
-              }
+              className="relative"
+              fullWidth
+              allowClear
+              placeholder="Chọn ngày"
+              value={draft.fromDate}
+              onChange={(dateStr) => handleDraftChange("fromDate", dateStr)}
             />
           </div>
 
           <div>
             <Label htmlFor="filter-to-date">Đến ngày</Label>
-            <Input
+            <CustomDatePicker
               id="filter-to-date"
-              type="date"
-              value={filters.toDate}
-              onChange={(event) =>
-                handleFilterChange("toDate", event.target.value)
-              }
+              className="relative"
+              fullWidth
+              allowClear
+              placeholder="Chọn ngày"
+              value={draft.toDate}
+              onChange={(dateStr) => handleDraftChange("toDate", dateStr)}
             />
           </div>
 
@@ -396,9 +413,9 @@ export default function AllBookingsClient({
             <Label htmlFor="filter-court">Sân</Label>
             <Select
               id="filter-court"
-              value={filters.courtId}
+              value={draft.courtId}
               onChange={(event) =>
-                handleFilterChange("courtId", event.target.value)
+                handleDraftChange("courtId", event.target.value)
               }
             >
               <option value="">Tất cả sân</option>
@@ -414,9 +431,9 @@ export default function AllBookingsClient({
             <Label htmlFor="filter-status">Trạng thái</Label>
             <Select
               id="filter-status"
-              value={filters.status}
+              value={draft.status}
               onChange={(event) =>
-                handleFilterChange("status", event.target.value)
+                handleDraftChange("status", event.target.value)
               }
             >
               <option value="">Tất cả</option>
@@ -443,19 +460,35 @@ export default function AllBookingsClient({
                 </span>
               }
               placeholder="Mã đơn, tên, SĐT, email khách..."
-              value={searchInput}
-              onChange={(event) => setSearchInput(event.target.value)}
+              value={draft.keyword}
+              onChange={(event) =>
+                handleDraftChange("keyword", event.target.value)
+              }
             />
           </div>
 
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleClearFilters}
-          >
-            Xóa lọc
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClearFilters}
+            >
+              Xóa lọc
+            </Button>
+            <Button type="submit" variant="primary">
+              Tìm kiếm
+            </Button>
+          </div>
         </div>
+
+        {dateError && (
+          <p
+            role="alert"
+            className="mt-3 font-sans text-[12px] leading-[16px] text-status-danger"
+          >
+            {dateError}
+          </p>
+        )}
 
         {customerId && (
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-line bg-surface-soft px-4 py-2.5">
@@ -472,29 +505,18 @@ export default function AllBookingsClient({
             </Button>
           </div>
         )}
-      </section>
+      </form>
 
-      {isRangeInvalid ? (
-        <div
-          role="alert"
-          className="rounded-[12px] border border-status-danger/30 bg-status-danger-soft px-5 py-4 font-sans text-[14px] text-status-danger"
-        >
-          Từ ngày không được lớn hơn Đến ngày.
-        </div>
-      ) : (
-        <>
-          <AllBookingsTable
-            items={data?.items ?? []}
-            isLoading={isLoading}
-            isError={isError}
-            error={error}
-            onRetry={() => refetch()}
-            onClearFilters={handleClearFilters}
-            onSelect={setSelectedId}
-          />
-          {data && <Pagination page={data} onPageChange={setPageNumber} />}
-        </>
-      )}
+      <AllBookingsTable
+        items={data?.items ?? []}
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => refetch()}
+        onClearFilters={handleClearFilters}
+        onSelect={setSelectedId}
+      />
+      {data && <Pagination page={data} onPageChange={setPageNumber} />}
 
       {selectedId && (
         <BookingDetailModal

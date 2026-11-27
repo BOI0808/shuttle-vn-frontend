@@ -71,11 +71,29 @@ function ErrorBanner({ message, onRetry }: { message: string; onRetry?: () => vo
 export function InvoiceList() {
   const [query, setQuery] = useState<InvoiceQuery>({ pageNumber: 1, pageSize: 20 });
   const [code, setCode] = useState("");
+  const [draftStatus, setDraftStatus] = useState("");
   const [selected, setSelected] = useState("");
   const [payingId, setPayingId] = useState("");
   const list = useInvoices(query);
   const loading = list.isPending || list.isFetching;
   const items = list.data?.items ?? [];
+
+  const applyFilters = () => {
+    const nextQuery: InvoiceQuery = {
+      code: code.trim() || undefined,
+      status: (draftStatus || undefined) as InvoiceQuery["status"],
+      pageNumber: 1,
+      pageSize: PAGE_SIZE,
+    };
+    const isSame =
+      nextQuery.code === query.code &&
+      nextQuery.status === query.status &&
+      nextQuery.pageNumber === query.pageNumber;
+    setQuery(nextQuery);
+    if (isSame) {
+      void list.refetch();
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -92,7 +110,7 @@ export function InvoiceList() {
         className="grid gap-4 rounded-[12px] border border-line bg-white p-5 md:grid-cols-[minmax(0,1fr)_220px_auto] md:items-end"
         onSubmit={(event) => {
           event.preventDefault();
-          setQuery({ ...query, code: code.trim() || undefined, pageNumber: 1 });
+          applyFilters();
         }}
       >
         <div>
@@ -108,14 +126,8 @@ export function InvoiceList() {
           <Label htmlFor="invoice-status-filter">Trạng thái</Label>
           <Select
             id="invoice-status-filter"
-            value={query.status ?? ""}
-            onChange={(event) =>
-              setQuery({
-                ...query,
-                status: (event.target.value || undefined) as InvoiceQuery["status"],
-                pageNumber: 1,
-              })
-            }
+            value={draftStatus}
+            onChange={(event) => setDraftStatus(event.target.value)}
           >
             <option value="">Tất cả trạng thái</option>
             {Object.entries(INVOICE_STATUS_LABEL).map(([value, label]) => (
@@ -126,18 +138,19 @@ export function InvoiceList() {
           </Select>
         </div>
         <div className="flex gap-2">
-          <Button type="submit" loading={loading}>
-            Tìm kiếm
-          </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => {
               setCode("");
+              setDraftStatus("");
               setQuery({ pageNumber: 1, pageSize: PAGE_SIZE });
             }}
           >
             Xóa lọc
+          </Button>
+          <Button type="submit" loading={loading}>
+            Tìm kiếm
           </Button>
         </div>
       </form>

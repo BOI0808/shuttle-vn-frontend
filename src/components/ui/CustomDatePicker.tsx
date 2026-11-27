@@ -3,9 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 
 interface CustomDatePickerProps {
+  id?: string;
   value: string;
   onChange: (dateStr: string) => void;
   className?: string;
+  placeholder?: string;
+  allowClear?: boolean;
+  disabled?: boolean;
+  fullWidth?: boolean;
 }
 
 const DAYS_OF_WEEK = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
@@ -16,7 +21,9 @@ function pad(n: number) {
 }
 
 function formatDateDisplay(dateStr: string) {
+  if (!dateStr) return "";
   const d = new Date(dateStr + "T00:00:00");
+  if (Number.isNaN(d.getTime())) return "";
   const dayName = DAYS_OF_WEEK_FULL[d.getDay()];
   return `${dayName}, ${pad(d.getDate())}/${pad(
     d.getMonth() + 1
@@ -24,9 +31,14 @@ function formatDateDisplay(dateStr: string) {
 }
 
 export function CustomDatePicker({
+  id,
   value,
   onChange,
   className = "absolute bottom-5 left-7 z-20",
+  placeholder = "Chọn ngày",
+  allowClear = false,
+  disabled = false,
+  fullWidth = false,
 }: CustomDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -119,21 +131,35 @@ export function CustomDatePicker({
     return `${t.getFullYear()}-${pad(t.getMonth() + 1)}-${pad(t.getDate())}`;
   })();
 
+  const displayText = formatDateDisplay(value);
+
   return (
     <div ref={containerRef} className={className}>
       <button
+        id={id}
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        disabled={disabled}
+        onClick={() => {
+          if (!disabled) setIsOpen(!isOpen);
+        }}
         aria-expanded={isOpen}
         aria-haspopup="dialog"
-        className="flex h-[44px] items-center gap-2.5 rounded-[8px] border border-line bg-white px-3.5 font-sans text-[14px] font-medium leading-[20px] text-ink shadow-xs transition-colors hover:border-line-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer"
+        className={`flex h-[44px] items-center gap-2.5 rounded-[8px] border border-line bg-white px-3.5 font-sans text-[14px] font-medium leading-[20px] text-ink shadow-xs transition-colors hover:border-line-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-not-allowed disabled:bg-surface-soft disabled:text-ink-muted cursor-pointer ${
+          fullWidth ? "w-full justify-between" : ""
+        }`}
       >
-        <span className="material-symbols-outlined text-[20px] text-brand-strong" aria-hidden="true">
-          calendar_today
+        <span className="flex min-w-0 items-center gap-2.5">
+          <span className="material-symbols-outlined text-[20px] text-brand-strong shrink-0" aria-hidden="true">
+            calendar_today
+          </span>
+          {displayText ? (
+            <span className="truncate tabular-nums">{displayText}</span>
+          ) : (
+            <span className="truncate text-ink-muted font-normal">{placeholder}</span>
+          )}
         </span>
-        <span className="tabular-nums">{formatDateDisplay(value)}</span>
         <span
-          className={`material-symbols-outlined text-[18px] text-ink-muted transition-transform duration-150 ${
+          className={`material-symbols-outlined text-[18px] text-ink-muted shrink-0 transition-transform duration-150 ${
             isOpen ? "rotate-180" : ""
           }`}
           aria-hidden="true"
@@ -231,13 +257,27 @@ export function CustomDatePicker({
             >
               Hôm nay
             </button>
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="text-ink-secondary hover:text-ink cursor-pointer"
-            >
-              Đóng
-            </button>
+            <div className="flex items-center gap-3">
+              {allowClear && value ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onChange("");
+                    setIsOpen(false);
+                  }}
+                  className="text-ink-secondary hover:text-ink cursor-pointer"
+                >
+                  Xóa
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="text-ink-secondary hover:text-ink cursor-pointer"
+              >
+                Đóng
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -116,9 +116,6 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
         </div>
 
         <div className="mb-4 flex items-center justify-between px-2">
-          <span className="font-sans text-[12px] font-semibold leading-[16px] text-ink-muted">
-            QUẢN TRỊ
-          </span>
           {onClose && (
             <button
               type="button"

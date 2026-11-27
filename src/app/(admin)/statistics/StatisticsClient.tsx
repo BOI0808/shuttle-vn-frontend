@@ -8,7 +8,7 @@ import { CourtUsageReportView } from "@/components/admin/CourtUsageReportView";
 import { ReportSection } from "@/components/admin/ReportSection";
 import { RevenueReportView } from "@/components/admin/RevenueReportView";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { CustomDatePicker } from "@/components/ui/CustomDatePicker";
 import { Label } from "@/components/ui/Label";
 
 import { useCourtUsageStats, useRevenueStats } from "@/hooks";
@@ -93,28 +93,26 @@ export default function StatisticsClient() {
         <div className="flex flex-wrap items-end gap-4">
           <div className="w-full sm:w-[240px]">
             <Label htmlFor="stats-from-date">Từ ngày</Label>
-            <Input
+            <CustomDatePicker
               id="stats-from-date"
-              type="date"
-              min="2000-01-01"
-              max="2100-12-31"
+              className="relative"
+              fullWidth
               value={draft.fromDate}
-              onChange={(event) =>
-                setDraft((current) => ({ ...current, fromDate: event.target.value }))
+              onChange={(dateStr) =>
+                setDraft((current) => ({ ...current, fromDate: dateStr }))
               }
             />
           </div>
 
           <div className="w-full sm:w-[240px]">
             <Label htmlFor="stats-to-date">Đến ngày</Label>
-            <Input
+            <CustomDatePicker
               id="stats-to-date"
-              type="date"
-              min="2000-01-01"
-              max="2100-12-31"
+              className="relative"
+              fullWidth
               value={draft.toDate}
-              onChange={(event) =>
-                setDraft((current) => ({ ...current, toDate: event.target.value }))
+              onChange={(dateStr) =>
+                setDraft((current) => ({ ...current, toDate: dateStr }))
               }
             />
           </div>
