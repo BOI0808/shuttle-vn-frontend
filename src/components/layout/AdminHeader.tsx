@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { QuickLookupModal } from "@/components/booking/QuickLookupModal";
-import { Button } from "@/components/ui/Button";
 
 interface AdminHeaderProps {
   onMenuClick?: () => void;
@@ -29,25 +28,6 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const getTitle = () => {
-    if (pathname.startsWith("/employees") || pathname.startsWith("/staff"))
-      return "Quản lý nhân viên";
-    if (pathname.startsWith("/customers")) return "Quản lý khách hàng";
-    if (pathname.startsWith("/manage-courts") || pathname.startsWith("/courts"))
-      return "Quản lý sân";
-    if (pathname.startsWith("/dashboard")) return null;
-    if (pathname.startsWith("/schedule")) return "Lịch sân";
-    if (pathname.startsWith("/payments")) return "Xác nhận thanh toán";
-    if (pathname.startsWith("/booking-requests")) return "Yêu cầu đặt sân";
-    if (pathname.startsWith("/statistics")) return "Báo cáo & Thống kê";
-    if (pathname.startsWith("/all-bookings") || pathname.startsWith("/bookings"))
-      return "Đặt sân toàn hệ thống";
-    if (pathname.startsWith("/audits")) return "Nhật ký hoạt động";
-    return null;
-  };
-
-  const subTitle = getTitle();
-
   return (
     <header className="sticky top-0 z-50 flex h-[56px] items-center justify-between gap-4 border-b border-line bg-white px-4 sm:px-6 lg:px-8">
       <div className="flex min-w-0 items-center gap-3">
@@ -65,9 +45,6 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
         )}
         <p className="truncate font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
           Không gian quản trị
-          {subTitle ? (
-            <span className="text-ink-muted"> / {subTitle}</span>
-          ) : null}
         </p>
       </div>
 
