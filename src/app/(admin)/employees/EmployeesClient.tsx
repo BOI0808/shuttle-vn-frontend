@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   useEmployees,
@@ -9,24 +9,21 @@ import {
   useDeleteEmployee,
 } from "@/hooks/useEmployee";
 import { EmployeeFormModal } from "@/components/admin/EmployeeFormModal";
-import { UserAccount } from "@/types";
-import { getErrorMessage } from "@/utils";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { UserAccount } from "@/types";
+import { cn, getErrorMessage } from "@/utils";
 
 const STATUS_LABEL: Record<string, string> = {
   Active: "Hoạt động",
-  Disabled: "Đã khoá",
+  Disabled: "Đã khóa",
 };
-const STATUS_CLASS: Record<string, string> = {
-  Active: "bg-green-50 text-green-600 border-green-200",
-  Disabled: "bg-red-50 text-red-600 border-red-200",
-};
+
 const ROLE_LABEL = (isAdmin: boolean) =>
   isAdmin ? "Quản trị viên" : "Nhân viên";
-const ROLE_CLASS = (isAdmin: boolean) =>
-  isAdmin
-    ? "bg-purple-50 text-purple-600 border-purple-200"
-    : "bg-blue-50 text-blue-600 border-blue-200";
 
 export default function EmployeesClient() {
   const [search, setSearch] = useState("");
@@ -35,18 +32,10 @@ export default function EmployeesClient() {
   const [editingEmployee, setEditingEmployee] = useState<
     UserAccount | null | undefined
   >(undefined);
+  const [lockTarget, setLockTarget] = useState<UserAccount | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<UserAccount | null>(null);
-  const deleteMutation = useDeleteEmployee();
 
-  // Lắng nghe sự kiện click "Thêm nhân viên" từ AdminHeader
-  useEffect(() => {
-    const handleOpenModal = () => setEditingEmployee(null);
-    window.addEventListener("open-add-employee", handleOpenModal);
-    return () =>
-      window.removeEventListener("open-add-employee", handleOpenModal);
-  }, []);
-
-  const { data, isLoading, isError, error } = useEmployees({
+  const { data, isLoading, isError, error, refetch } = useEmployees({
     pageNumber: 1,
     pageSize: 100,
   });
@@ -54,6 +43,7 @@ export default function EmployeesClient() {
 
   const lockMutation = useLockEmployee();
   const unlockMutation = useUnlockEmployee();
+  const deleteMutation = useDeleteEmployee();
 
   const filtered = useMemo(() => {
     return employees.filter((e) => {
@@ -79,222 +69,445 @@ export default function EmployeesClient() {
     [employees]
   );
 
-  function handleToggleLock(account: UserAccount) {
-    const mutation =
-      account.status === "Active" ? lockMutation : unlockMutation;
-    mutation.mutate(account.employee!.employeeId, {
-      onSuccess: () =>
-        toast.success(
-          account.status === "Active"
-            ? "Đã khoá tài khoản"
-            : "Đã mở khoá tài khoản"
-        ),
-      onError: (error) => toast.error(getErrorMessage(error)),
-    });
-  }
+  const hasActiveFilters = Boolean(search || roleFilter || statusFilter);
+  const isLockPending = lockMutation.isPending || unlockMutation.isPending;
 
-  function handleDelete(account: UserAccount) {
-    if (!deleteMutation.isPending) setDeleteTarget(account);
+  function confirmToggleLock() {
+    if (!lockTarget?.employee) return;
+    const isActive = lockTarget.status === "Active";
+    const mutation = isActive ? lockMutation : unlockMutation;
+    mutation.mutate(lockTarget.employee.employeeId, {
+      onSuccess: () => {
+        toast.success(
+          isActive ? "Đã khóa tài khoản" : "Đã mở khóa tài khoản"
+        );
+        setLockTarget(null);
+      },
+      onError: (err) => {
+        toast.error(getErrorMessage(err));
+        setLockTarget(null);
+      },
+    });
   }
 
   function confirmDelete() {
     if (!deleteTarget?.employee) return;
     deleteMutation.mutate(deleteTarget.employee.employeeId, {
       onSuccess: () => {
-        toast.success("Đã xoá nhân viên");
+        toast.success("Đã xóa nhân viên");
         setDeleteTarget(null);
       },
-      onError: (error) => {
-        toast.error(getErrorMessage(error));
+      onError: (err) => {
+        toast.error(getErrorMessage(err));
         setDeleteTarget(null);
       },
     });
   }
 
+  const statCards = [
+    {
+      label: "Tổng nhân viên",
+      value: isLoading ? "—" : String(stats.total),
+      hint: isLoading
+        ? "Đang tải thống kê nhân viên"
+        : `${stats.total} nhân viên trong hệ thống`,
+      cardBg: "bg-status-info-soft",
+      valueColor: "text-status-info",
+    },
+    {
+      label: "Đang hoạt động",
+      value: isLoading ? "—" : String(stats.active),
+      hint: isLoading
+        ? "Đang tải thống kê nhân viên"
+        : `${stats.active} tài khoản đang hoạt động`,
+      cardBg: "bg-brand-soft",
+      valueColor: "text-brand-strong",
+    },
+    {
+      label: "Quản trị viên",
+      value: isLoading ? "—" : String(stats.admin),
+      hint: isLoading
+        ? "Đang tải thống kê nhân viên"
+        : `${stats.admin} tài khoản quản trị`,
+      cardBg: "bg-status-info-soft",
+      valueColor: "text-status-info",
+    },
+  ];
+
   return (
-    <div className="p-6">
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-3.5 mb-[22px]">
-        <StatCard
-          label="Tổng nhân viên"
-          value={stats.total}
-          color="text-blue-600"
-          icon="badge"
-          iconBg="bg-blue-50"
-        />
-        <StatCard
-          label="Đang hoạt động"
-          value={stats.active}
-          color="text-green-600"
-          icon="check_circle"
-          iconBg="bg-green-50"
-        />
-        <StatCard
-          label="Quản trị viên"
-          value={stats.admin}
-          color="text-purple-500"
-          icon="admin_panel_settings"
-          iconBg="bg-purple-50"
-        />
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-[24px] font-semibold leading-[32px] text-ink">
+            Nhân viên
+          </h1>
+          <p className="mt-1 font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
+            Tài khoản nhân viên, vai trò và quyền truy cập
+          </p>
+        </div>
+
+        <Button
+          type="button"
+          variant="primary"
+          icon="person_add"
+          onClick={() => setEditingEmployee(null)}
+        >
+          Thêm nhân viên
+        </Button>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-2.5 mb-4">
-        <input
-          className="flex-1 max-w-[320px] border border-gray-300 rounded-[7px] px-3 py-2 text-sm outline-none focus:border-emerald-500"
-          placeholder="Tìm theo tên, email, SĐT..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select
-          className="border border-gray-300 rounded-[7px] px-3 py-2 text-xs font-mono w-40"
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-        >
-          <option value="">Tất cả vai trò</option>
-          <option value="Admin">Quản trị viên</option>
-          <option value="Employee">Nhân viên</option>
-        </select>
-        <select
-          className="border border-gray-300 rounded-[7px] px-3 py-2 text-xs font-mono w-40"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="">Tất cả trạng thái</option>
-          <option value="Active">Hoạt động</option>
-          <option value="Disabled">Đã khoá</option>
-        </select>
-        <span className="ml-auto font-mono text-xs text-gray-500">
-          {filtered.length} nhân viên
-        </span>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {statCards.map((stat) => (
+          <div
+            key={stat.label}
+            className={cn(
+              "flex min-h-[128px] flex-col justify-between rounded-[12px] border border-line p-[19px]",
+              stat.cardBg
+            )}
+          >
+            <p className="font-sans text-[14px] font-normal leading-[20px] text-ink-secondary">
+              {stat.label}
+            </p>
+            <p
+              className={cn(
+                "font-sans text-[32px] font-semibold leading-[40px] tracking-normal tabular-nums",
+                stat.valueColor
+              )}
+            >
+              {stat.value}
+            </p>
+            <p className="font-sans text-[12px] font-normal leading-[16px] text-ink-secondary">
+              {stat.hint}
+            </p>
+          </div>
+        ))}
       </div>
 
-      {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50 text-[11px] font-mono text-gray-500 uppercase tracking-wider">
-              <th className="px-4 py-2.5 font-medium">Nhân viên</th>
-              <th className="px-4 py-2.5 font-medium">Vai trò</th>
-              <th className="px-4 py-2.5 font-medium">Liên hệ</th>
-              <th className="px-4 py-2.5 font-medium">Trạng thái</th>
-              <th className="px-4 py-2.5 font-medium text-center">Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading && (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="text-center py-8 text-gray-400 text-sm"
-                >
-                  Đang tải...
-                </td>
-              </tr>
-            )}
-            {isError && (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="text-center py-8 text-red-500 text-sm"
-                >
-                  {getErrorMessage(error)}
-                </td>
-              </tr>
-            )}
-            {!isLoading && !isError && filtered.length === 0 && (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="text-center py-8 text-gray-400 text-sm"
-                >
-                  Không tìm thấy nhân viên
-                </td>
-              </tr>
-            )}
-            {filtered.map((e) => (
-              <tr
-                key={e.employee!.employeeId}
-                className="border-b border-gray-100 hover:bg-gray-50"
+      <section className="overflow-hidden rounded-[12px] border border-line bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-5 pt-4 pb-3">
+          <div>
+            <h2 className="font-display text-[18px] font-medium leading-[26px] text-ink">
+              Danh sách nhân viên
+            </h2>
+            <p className="mt-0.5 font-sans text-[12px] leading-[16px] text-ink-secondary tabular-nums">
+              {isLoading
+                ? "Đang tải dữ liệu nhân viên…"
+                : `${filtered.length} nhân viên`}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3 px-5 pb-4">
+          <Input
+            icon={
+              <span
+                className="material-symbols-outlined text-[20px]"
+                aria-hidden="true"
               >
-                <td className="px-4 py-2.5">
-                  <p className="text-sm font-medium text-gray-900">
-                    {e.employee!.fullName}
-                  </p>
-                  <p className="font-mono text-[11px] text-gray-400">
-                    {e.employee!.employeeId}
-                  </p>
-                </td>
-                <td className="px-4 py-2.5">
-                  <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border ${ROLE_CLASS(
-                      e.employee!.isAdmin
-                    )}`}
-                  >
-                    {ROLE_LABEL(e.employee!.isAdmin)}
-                  </span>
-                </td>
-                <td className="px-4 py-2.5">
-                  <p className="font-mono text-[11px] text-gray-900">
-                    {e.employee!.phone}
-                  </p>
-                  <p className="text-[11px] text-gray-500">
-                    {e.employee!.email}
-                  </p>
-                </td>
-                <td className="px-4 py-2.5">
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border ${
-                      STATUS_CLASS[e.status]
-                    }`}
-                  >
-                    {STATUS_LABEL[e.status]}
-                  </span>
-                </td>
-                <td className="px-4 py-2.5">
-                  <div className="flex gap-1.5 justify-center">
-                    <button
-                      title="Chỉnh sửa"
-                      className="border border-gray-300 rounded-[6px] p-1.5 text-gray-500 hover:border-emerald-500 hover:text-emerald-600"
-                      onClick={() => setEditingEmployee(e)}
+                search
+              </span>
+            }
+            placeholder="Tìm theo tên, email, SĐT..."
+            aria-label="Tìm nhân viên"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            containerClassName="min-w-[220px] flex-1 max-w-[360px]"
+          />
+          <Select
+            aria-label="Lọc theo vai trò"
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            containerClassName="w-full sm:w-[180px]"
+          >
+            <option value="">Tất cả vai trò</option>
+            <option value="Admin">Quản trị viên</option>
+            <option value="Employee">Nhân viên</option>
+          </Select>
+          <Select
+            aria-label="Lọc theo trạng thái"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            containerClassName="w-full sm:w-[180px]"
+          >
+            <option value="">Tất cả trạng thái</option>
+            <option value="Active">Hoạt động</option>
+            <option value="Disabled">Đã khóa</option>
+          </Select>
+        </div>
+
+        {isLoading ? (
+          <div aria-busy="true">
+            <div className="hidden h-[44px] grid-cols-5 items-center border-y border-line bg-status-info-soft px-5 font-sans text-[12px] font-semibold text-ink-secondary md:grid">
+              <span>Nhân viên</span>
+              <span>Liên hệ</span>
+              <span>Vai trò</span>
+              <span>Trạng thái</span>
+              <span>Thao tác</span>
+            </div>
+            <div className="space-y-4 p-5">
+              {[0, 1, 2, 3].map((row) => (
+                <div
+                  key={row}
+                  className="grid grid-cols-1 gap-3 py-1.5 animate-pulse md:grid-cols-5"
+                >
+                  <div className="h-[16px] w-44 rounded-[8px] bg-surface-soft" />
+                  <div className="h-[16px] w-48 rounded-[8px] bg-surface-soft" />
+                  <div className="h-[16px] w-28 rounded-[8px] bg-surface-soft" />
+                  <div className="h-[16px] w-28 rounded-[8px] bg-surface-soft" />
+                  <div className="h-[16px] w-36 rounded-[8px] bg-surface-soft" />
+                </div>
+              ))}
+              <p className="border-t border-line pt-4 font-sans text-[12px] leading-[16px] text-ink-secondary">
+                Chưa nhận dữ liệu, không hiển thị thông tin hay số lượng giả lập.
+              </p>
+            </div>
+          </div>
+        ) : isError ? (
+          <div role="alert" className="border-t border-line p-6">
+            <div className="flex size-[40px] items-center justify-center rounded-[8px] bg-status-danger-soft text-status-danger">
+              <span
+                className="material-symbols-outlined text-[24px]"
+                aria-hidden="true"
+              >
+                warning
+              </span>
+            </div>
+            <h3 className="mt-4 font-display text-[18px] font-medium leading-[26px] text-ink">
+              Không tải được nhân viên
+            </h3>
+            <p className="mt-1 font-sans text-[14px] leading-[20px] text-ink-secondary">
+              {getErrorMessage(error)}
+            </p>
+            <div className="mt-4">
+              <Button type="button" variant="primary" onClick={() => refetch()}>
+                Thử lại
+              </Button>
+            </div>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="flex flex-col items-center border-t border-line px-6 py-12 text-center">
+            <div className="flex size-[48px] items-center justify-center rounded-[12px] bg-brand-soft text-brand-strong">
+              <span
+                className="material-symbols-outlined text-[24px]"
+                aria-hidden="true"
+              >
+                badge
+              </span>
+            </div>
+            <p className="mt-4 font-sans text-[14px] font-semibold text-ink">
+              {hasActiveFilters
+                ? "Không tìm thấy nhân viên"
+                : "Chưa có nhân viên để hiển thị"}
+            </p>
+            <p className="mt-1 max-w-md font-sans text-[12px] text-ink-secondary">
+              {hasActiveFilters
+                ? "Không có nhân viên phù hợp với bộ lọc hiện tại."
+                : "Thêm nhân viên đầu tiên để phân quyền vận hành hệ thống."}
+            </p>
+            <div className="mt-4">
+              {hasActiveFilters ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setSearch("");
+                    setRoleFilter("");
+                    setStatusFilter("");
+                  }}
+                >
+                  Xóa bộ lọc
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="primary"
+                  icon="person_add"
+                  onClick={() => setEditingEmployee(null)}
+                >
+                  Thêm nhân viên
+                </Button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="hidden overflow-x-auto md:block">
+              <table className="w-full border-collapse text-left">
+                <thead>
+                  <tr className="h-[44px] border-y border-line bg-status-info-soft font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
+                    <th scope="col" className="px-5 py-3 font-semibold">
+                      Nhân viên
+                    </th>
+                    <th scope="col" className="px-5 py-3 font-semibold">
+                      Liên hệ
+                    </th>
+                    <th scope="col" className="px-5 py-3 font-semibold">
+                      Vai trò
+                    </th>
+                    <th scope="col" className="px-5 py-3 font-semibold">
+                      Trạng thái
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-5 py-3 text-right font-semibold"
                     >
-                      <span className="material-symbols-outlined text-[14px]">
-                        edit
-                      </span>
-                    </button>
-                    <button
-                      title={
-                        e.status === "Active" ? "Khoá tài khoản" : "Mở khoá"
-                      }
-                      className={`border rounded-[6px] p-1.5 ${
-                        e.status === "Active"
-                          ? "border-red-200 text-red-500 hover:bg-red-50"
-                          : "border-green-200 text-green-500 hover:bg-green-50"
-                      }`}
-                      onClick={() => handleToggleLock(e)}
-                    >
-                      <span className="material-symbols-outlined text-[14px]">
-                        {e.status === "Active" ? "lock" : "lock_open"}
-                      </span>
-                    </button>
-                    {!e.employee!.isAdmin && (
-                      <button
-                        title="Xoá nhân viên"
-                        className="border border-red-200 rounded-[6px] p-1.5 text-red-500 hover:bg-red-50"
-                        onClick={() => handleDelete(e)}
+                      Thao tác
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line">
+                  {filtered.map((e) => {
+                    const emp = e.employee!;
+                    const isActive = e.status === "Active";
+                    return (
+                      <tr
+                        key={emp.employeeId}
+                        className="transition-colors duration-100 hover:bg-surface-bg"
                       >
-                        <span className="material-symbols-outlined text-[14px]">
-                          delete
-                        </span>
-                      </button>
-                    )}
+                        <td className="px-5 py-4 align-middle">
+                          <p className="font-sans text-[14px] font-semibold leading-[20px] text-ink">
+                            {emp.fullName}
+                          </p>
+                          <p className="font-sans text-[12px] leading-[16px] text-ink-secondary tabular-nums">
+                            {emp.employeeId}
+                          </p>
+                        </td>
+                        <td className="px-5 py-4 align-middle">
+                          <p className="font-sans text-[14px] leading-[20px] text-ink tabular-nums">
+                            {emp.phone}
+                          </p>
+                          <p className="font-sans text-[12px] leading-[16px] text-ink-secondary">
+                            {emp.email}
+                          </p>
+                        </td>
+                        <td className="px-5 py-4 align-middle">
+                          <Badge status={emp.isAdmin ? "Confirmed" : "NoInvoice"}>
+                            {ROLE_LABEL(emp.isAdmin)}
+                          </Badge>
+                        </td>
+                        <td className="px-5 py-4 align-middle">
+                          <Badge status={isActive ? "Active" : "Disabled"}>
+                            {STATUS_LABEL[e.status] || e.status}
+                          </Badge>
+                        </td>
+                        <td className="px-5 py-4 text-right align-middle">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              aria-label={`Chỉnh sửa ${emp.fullName}`}
+                              onClick={() => setEditingEmployee(e)}
+                            >
+                              Chỉnh sửa
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              aria-label={
+                                isActive
+                                  ? `Khóa tài khoản ${emp.fullName}`
+                                  : `Mở khóa tài khoản ${emp.fullName}`
+                              }
+                              className={
+                                isActive
+                                  ? "border-status-danger/40 text-status-danger hover:border-status-danger hover:bg-status-danger-soft hover:text-status-danger"
+                                  : undefined
+                              }
+                              onClick={() => setLockTarget(e)}
+                            >
+                              {isActive ? "Khóa" : "Mở khóa"}
+                            </Button>
+                            {!emp.isAdmin && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                aria-label={`Xóa nhân viên ${emp.fullName}`}
+                                className="border-status-danger/40 text-status-danger hover:border-status-danger hover:bg-status-danger-soft hover:text-status-danger"
+                                onClick={() => setDeleteTarget(e)}
+                              >
+                                Xóa
+                              </Button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="divide-y divide-line border-t border-line md:hidden">
+              {filtered.map((e) => {
+                const emp = e.employee!;
+                const isActive = e.status === "Active";
+                return (
+                  <div key={emp.employeeId} className="p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate font-sans text-[14px] font-semibold text-ink">
+                          {emp.fullName}
+                        </p>
+                        <p className="mt-0.5 font-sans text-[14px] text-ink-secondary tabular-nums">
+                          {emp.phone}
+                        </p>
+                        <p className="truncate font-sans text-[12px] text-ink-secondary">
+                          {emp.email}
+                        </p>
+                      </div>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <Badge status={emp.isAdmin ? "Confirmed" : "NoInvoice"}>
+                          {ROLE_LABEL(emp.isAdmin)}
+                        </Badge>
+                        <Badge status={isActive ? "Active" : "Disabled"}>
+                          {STATUS_LABEL[e.status] || e.status}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditingEmployee(e)}
+                      >
+                        Chỉnh sửa
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className={
+                          isActive
+                            ? "border-status-danger/40 text-status-danger hover:border-status-danger hover:bg-status-danger-soft hover:text-status-danger"
+                            : undefined
+                        }
+                        onClick={() => setLockTarget(e)}
+                      >
+                        {isActive ? "Khóa" : "Mở khóa"}
+                      </Button>
+                      {!emp.isAdmin && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="border-status-danger/40 text-status-danger hover:border-status-danger hover:bg-status-danger-soft hover:text-status-danger"
+                          onClick={() => setDeleteTarget(e)}
+                        >
+                          Xóa
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </section>
 
       {editingEmployee !== undefined && (
         <EmployeeFormModal
@@ -303,54 +516,39 @@ export default function EmployeesClient() {
         />
       )}
 
+      {lockTarget && (
+        <ConfirmDialog
+          title={
+            lockTarget.status === "Active"
+              ? "Khóa tài khoản nhân viên?"
+              : "Mở khóa tài khoản nhân viên?"
+          }
+          description={
+            lockTarget.status === "Active"
+              ? `Nhân viên "${lockTarget.employee?.fullName}" sẽ không thể truy cập khi tài khoản bị khóa. Hãy chắc chắn rằng bạn muốn khóa tài khoản này.`
+              : `Cho phép tài khoản "${lockTarget.employee?.fullName}" truy cập lại sau khi xác nhận.`
+          }
+          confirmLabel={
+            lockTarget.status === "Active" ? "Xác nhận khóa" : "Mở khóa"
+          }
+          variant={lockTarget.status === "Active" ? "danger" : "warning"}
+          isLoading={isLockPending}
+          onConfirm={confirmToggleLock}
+          onCancel={() => setLockTarget(null)}
+        />
+      )}
+
       {deleteTarget && (
         <ConfirmDialog
-          title="Xoá nhân viên"
-          description={`Bạn sắp xoá "${deleteTarget.employee?.fullName}". Hành động này không thể hoàn tác.`}
-          confirmLabel="Xoá nhân viên"
+          title="Xóa nhân viên?"
+          description={`Thao tác xóa tài khoản "${deleteTarget.employee?.fullName}" không thể hoàn tác. Hãy chắc chắn rằng bạn muốn xóa nhân viên này khỏi hệ thống.`}
+          confirmLabel="Xác nhận xóa"
           variant="danger"
           isLoading={deleteMutation.isPending}
           onConfirm={confirmDelete}
           onCancel={() => setDeleteTarget(null)}
         />
       )}
-    </div>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  color,
-  icon,
-  iconBg,
-}: {
-  label: string;
-  value: number;
-  color: string;
-  icon: string;
-  iconBg: string;
-}) {
-  return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex items-center gap-3.5">
-      <div
-        className={`w-10 h-10 rounded-[9px] flex items-center justify-center flex-shrink-0 ${iconBg}`}
-      >
-        <span
-          className={`material-symbols-outlined text-[20px] ${color}`}
-          style={{ fontVariationSettings: "'FILL' 1" }}
-        >
-          {icon}
-        </span>
-      </div>
-      <div>
-        <p className="font-mono text-[10px] uppercase text-gray-500 mb-0.5 tracking-wider">
-          {label}
-        </p>
-        <p className={`font-bold text-[22px] leading-tight ${color}`}>
-          {value}
-        </p>
-      </div>
     </div>
   );
 }

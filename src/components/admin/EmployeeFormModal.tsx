@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/Button";
 import { useCreateEmployee, useUpdateEmployee } from "@/hooks/useEmployee";
 import { Employee, UserAccount } from "@/types";
 import { getErrorMessage } from "@/utils";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const createSchema = z.object({
   fullName: z.string().min(2, "Họ tên tối thiểu 2 ký tự"),
@@ -27,7 +26,7 @@ type CreateFormData = z.infer<typeof createSchema>;
 type EditFormData = z.infer<typeof editSchema>;
 
 interface EmployeeFormModalProps {
-  userAccount: UserAccount | null; // null = tạo mới
+  userAccount: UserAccount | null;
   onClose: () => void;
 }
 
@@ -46,6 +45,7 @@ export function EmployeeFormModal({
   userAccount,
   onClose,
 }: EmployeeFormModalProps) {
+  const titleId = useId();
   const employee = userAccount?.employee ?? null;
   const isEditing = employee !== null;
   const schema = isEditing ? editSchema : createSchema;
@@ -67,6 +67,16 @@ export function EmployeeFormModal({
   const createMutation = useCreateEmployee();
   const updateMutation = useUpdateEmployee();
   const isPending = createMutation.isPending || updateMutation.isPending;
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !isPending) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isPending, onClose]);
 
   const onSubmit = (data: CreateFormData) => {
     if (isEditing) {
@@ -96,61 +106,96 @@ export function EmployeeFormModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-[2px] flex items-center justify-center z-[100]">
-      <div className="bg-white border border-gray-200 rounded-xl w-[540px] max-w-[95vw] max-h-[90vh] overflow-y-auto shadow-2xl">
-        <div className="flex items-start justify-between px-6 py-[18px] border-b border-gray-200">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/40 p-4 backdrop-blur-xs"
+      onClick={(event) => {
+        if (event.target === event.currentTarget && !isPending) {
+          onClose();
+        }
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className="max-h-[90vh] w-full max-w-[500px] overflow-y-auto rounded-[12px] border border-line bg-white shadow-xl"
+      >
+        <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-5">
           <div>
-            <p className="font-bold text-[16px] text-gray-900">
-              {isEditing ? "Chỉnh sửa hồ sơ nhân viên" : "Thêm nhân viên mới"}
+            <h2
+              id={titleId}
+              className="font-display text-[18px] font-medium leading-[26px] text-ink"
+            >
+              {isEditing ? "Chỉnh sửa nhân viên" : "Thêm nhân viên"}
+            </h2>
+            <p className="mt-1 font-sans text-[12px] leading-[16px] text-ink-secondary">
+              {isEditing && employee
+                ? `Mã nhân viên: ${employee.employeeId}`
+                : "Tạo tài khoản và mật khẩu trực tiếp."}
             </p>
-            {isEditing && employee && (
-              <p className="font-mono text-[11px] text-gray-500 mt-0.5">
-                {employee.employeeId}
-              </p>
-            )}
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            disabled={isPending}
+            aria-label="Đóng"
+            className="inline-flex size-[36px] shrink-0 items-center justify-center rounded-[8px] text-ink-muted transition-colors hover:bg-surface-soft hover:text-ink disabled:opacity-50"
           >
-            <span className="material-symbols-outlined">close</span>
+            <span
+              className="material-symbols-outlined text-[20px]"
+              aria-hidden="true"
+            >
+              close
+            </span>
           </button>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="p-6 flex flex-col gap-[18px]">
+          <div className="flex flex-col gap-4 p-6">
             <div>
-              <Label required>Họ và tên</Label>
+              <Label htmlFor="employee-fullName" required>
+                Họ và tên
+              </Label>
               <Input
-                placeholder="Nguyễn Văn A"
+                id="employee-fullName"
+                placeholder="Nhập họ và tên"
                 error={errors.fullName?.message}
                 {...register("fullName")}
               />
             </div>
             <div>
-              <Label required>Số điện thoại</Label>
+              <Label htmlFor="employee-email" required>
+                Email
+              </Label>
               <Input
-                placeholder="0911000001"
-                error={errors.phone?.message}
-                {...register("phone")}
-              />
-            </div>
-            <div>
-              <Label required>Email</Label>
-              <Input
+                id="employee-email"
                 type="email"
-                placeholder="nhanvien@shuttlevn.com"
+                placeholder="Nhập email"
                 disabled={isEditing}
                 error={errors.email?.message}
                 {...register("email")}
               />
             </div>
+            <div>
+              <Label htmlFor="employee-phone" required>
+                Số điện thoại
+              </Label>
+              <Input
+                id="employee-phone"
+                placeholder="Nhập số điện thoại"
+                error={errors.phone?.message}
+                {...register("phone")}
+              />
+            </div>
             {!isEditing && (
               <div>
-                <Label required>Mật khẩu</Label>
+                <Label htmlFor="employee-password" required>
+                  Mật khẩu
+                </Label>
                 <Input
+                  id="employee-password"
                   type="password"
-                  placeholder="Tối thiểu 8 ký tự"
+                  placeholder="Nhập mật khẩu (tối thiểu 8 ký tự)"
                   error={
                     (
                       errors as typeof errors & {
@@ -164,20 +209,16 @@ export function EmployeeFormModal({
             )}
           </div>
 
-          <div className="px-6 py-[14px] border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+          <div className="flex items-center justify-between gap-3 border-t border-line bg-surface-bg px-6 py-4">
             <Button
               type="button"
               variant="outline"
+              disabled={isPending}
               onClick={onClose}
-              className="w-36 whitespace-nowrap"
             >
-              Huỷ
+              Hủy
             </Button>
-            <Button
-              type="submit"
-              loading={isPending}
-              className="w-36 whitespace-nowrap"
-            >
+            <Button type="submit" variant="primary" loading={isPending}>
               {isEditing ? "Lưu thay đổi" : "Thêm nhân viên"}
             </Button>
           </div>
