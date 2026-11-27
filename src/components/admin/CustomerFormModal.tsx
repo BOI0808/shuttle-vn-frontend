@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useId } from "react";
+import { useEffect, useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/Badge";
 import { Label } from "@/components/ui/Label";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -28,6 +29,7 @@ interface CustomerFormModalProps {
 
 export function CustomerFormModal({ onClose }: CustomerFormModalProps) {
   const titleId = useId();
+  const [createdEmail, setCreatedEmail] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -54,7 +56,7 @@ export function CustomerFormModal({ onClose }: CustomerFormModalProps) {
         toast.success(
           "Đã tạo tài khoản và gửi email thiết lập mật khẩu cho khách hàng"
         );
-        onClose();
+        setCreatedEmail(data.email);
       },
       onError: (error) => {
         toast.error(getErrorMessage(error));
@@ -71,111 +73,143 @@ export function CustomerFormModal({ onClose }: CustomerFormModalProps) {
         }
       }}
     >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        className="w-full max-w-[520px] overflow-hidden rounded-[12px] border border-line bg-white shadow-xl"
-      >
-        <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-5">
-          <div>
-            <h2
-              id={titleId}
-              className="font-display text-[18px] font-medium leading-[26px] text-ink"
-            >
-              Thêm khách hàng mới
-            </h2>
-            <p className="mt-1 font-sans text-[12px] leading-[16px] text-ink-secondary">
-              Tạo hồ sơ và gửi liên kết kích hoạt tài khoản qua email.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={createMutation.isPending}
-            aria-label="Đóng"
-            className="inline-flex size-[36px] shrink-0 items-center justify-center rounded-[8px] text-ink-muted transition-colors hover:bg-surface-soft hover:text-ink disabled:opacity-50"
-          >
-            <span
-              className="material-symbols-outlined text-[20px]"
-              aria-hidden="true"
-            >
-              close
-            </span>
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-4 p-6">
-            <div>
-              <Label htmlFor="customer-fullName" required>
-                Họ và tên
-              </Label>
-              <Input
-                id="customer-fullName"
-                placeholder="Nguyễn Văn A"
-                error={errors.fullName?.message}
-                {...register("fullName")}
-              />
-            </div>
-            <div>
-              <Label htmlFor="customer-phone" required>
-                Số điện thoại
-              </Label>
-              <Input
-                id="customer-phone"
-                type="tel"
-                placeholder="0912345678"
-                error={errors.phone?.message}
-                {...register("phone")}
-              />
-            </div>
-            <div>
-              <Label htmlFor="customer-email" required>
-                Email
-              </Label>
-              <Input
-                id="customer-email"
-                type="email"
-                placeholder="khachhang@gmail.com"
-                error={errors.email?.message}
-                {...register("email")}
-              />
-            </div>
-            <div className="flex items-start gap-2.5 rounded-[8px] border border-status-info/30 bg-status-info-soft px-4 py-3 font-sans text-[12px] leading-[18px] text-status-info">
+      {createdEmail ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          className="w-full max-w-[448px] rounded-[12px] border border-line bg-brand-soft p-6 shadow-xl"
+        >
+          <div className="flex items-start gap-3">
+            <div className="flex size-[40px] shrink-0 items-center justify-center rounded-[8px] bg-white text-brand-strong">
               <span
-                className="material-symbols-outlined mt-0.5 text-[18px]"
+                className="material-symbols-outlined text-[22px]"
                 aria-hidden="true"
               >
-                mail
+                mark_email_read
               </span>
-              <p>
-                Hệ thống gửi email thiết lập mật khẩu (liên kết hiệu lực 24 giờ)
-                tới khách hàng. Tài khoản ở trạng thái &quot;Chờ kích hoạt&quot;
-                cho đến khi khách đặt mật khẩu.
+            </div>
+            <div>
+              <h2
+                id={titleId}
+                className="font-display text-[18px] font-medium leading-[26px] text-brand-strong"
+              >
+                Đã tạo tài khoản
+              </h2>
+              <p className="mt-2 font-sans text-[14px] leading-[20px] text-ink-secondary">
+                Email kích hoạt đã được gửi tới{" "}
+                <span className="font-semibold text-ink">{createdEmail}</span>.
+                Tài khoản chờ khách hàng kích hoạt.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-3 border-t border-line bg-surface-bg px-6 py-4">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={createMutation.isPending}
-              onClick={onClose}
-            >
-              Hủy
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              loading={createMutation.isPending}
-            >
-              Tạo khách hàng
+          <div className="mt-6 flex justify-end">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Đóng
             </Button>
           </div>
-        </form>
-      </div>
+        </div>
+      ) : (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          className="w-full max-w-[480px] overflow-hidden rounded-[12px] border border-line bg-white shadow-xl"
+        >
+          <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-5">
+            <div>
+              <h2
+                id={titleId}
+                className="font-display text-[18px] font-medium leading-[26px] text-ink"
+              >
+                Thêm khách hàng
+              </h2>
+              <p className="mt-1 font-sans text-[12px] leading-[16px] text-ink-secondary">
+                Tạo tài khoản và gửi email kích hoạt.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={createMutation.isPending}
+              aria-label="Đóng"
+              className="inline-flex size-[36px] shrink-0 items-center justify-center rounded-[8px] text-ink-muted transition-colors hover:bg-surface-soft hover:text-ink disabled:opacity-50"
+            >
+              <span
+                className="material-symbols-outlined text-[20px]"
+                aria-hidden="true"
+              >
+                close
+              </span>
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-4 p-6">
+              <div>
+                <Label htmlFor="customer-fullName" required>
+                  Họ và tên
+                </Label>
+                <Input
+                  id="customer-fullName"
+                  placeholder="Nhập họ và tên"
+                  error={errors.fullName?.message}
+                  {...register("fullName")}
+                />
+              </div>
+              <div>
+                <Label htmlFor="customer-email" required>
+                  Email
+                </Label>
+                <Input
+                  id="customer-email"
+                  type="email"
+                  placeholder="Nhập email"
+                  error={errors.email?.message}
+                  {...register("email")}
+                />
+              </div>
+              <div>
+                <Label htmlFor="customer-phone" required>
+                  Số điện thoại
+                </Label>
+                <Input
+                  id="customer-phone"
+                  type="tel"
+                  placeholder="Nhập số điện thoại"
+                  error={errors.phone?.message}
+                  {...register("phone")}
+                />
+              </div>
+              <div className="flex items-center justify-between gap-3 pt-1">
+                <Badge status="PendingActivation">Chờ kích hoạt</Badge>
+                <span className="font-sans text-[12px] leading-[16px] text-ink-secondary">
+                  Liên kết kích hoạt hiệu lực 24 giờ
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-3 border-t border-line bg-surface-bg px-6 py-4">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={createMutation.isPending}
+                onClick={onClose}
+              >
+                Hủy
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                loading={createMutation.isPending}
+              >
+                Tạo &amp; gửi email
+              </Button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

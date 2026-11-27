@@ -129,15 +129,25 @@ export default function CustomerDetailClient({
             </span>
           </div>
           <h2 className="mt-4 font-display text-[18px] font-medium leading-[26px] text-ink">
-            Không thể tải hồ sơ khách hàng
+            {isError ? "Không thể tải hồ sơ khách hàng" : "Không tìm thấy khách hàng"}
           </h2>
           <p className="mt-1 font-sans text-[14px] leading-[20px] text-ink-secondary">
-            {getErrorMessage(error)}
+            {isError
+              ? getErrorMessage(error)
+              : "Hồ sơ không tồn tại hoặc bạn không có quyền truy cập."}
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
-            <Button type="button" variant="primary" onClick={() => refetch()}>
-              Thử lại
-            </Button>
+            {isError && (
+              <Button type="button" variant="primary" onClick={() => refetch()}>
+                Thử lại
+              </Button>
+            )}
+            <Link
+              href="/customers"
+              className="inline-flex h-[44px] items-center justify-center rounded-[8px] border border-line-strong bg-white px-4 py-3 font-sans text-[14px] font-semibold leading-[20px] text-ink-secondary transition-colors hover:bg-surface-bg hover:text-ink"
+            >
+              Về danh sách
+            </Link>
           </div>
         </div>
       ) : (

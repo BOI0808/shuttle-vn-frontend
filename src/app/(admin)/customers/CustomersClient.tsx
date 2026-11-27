@@ -155,11 +155,30 @@ export default function CustomersClient() {
               </span>
             </div>
             <p className="mt-4 font-sans text-[14px] font-semibold text-ink">
-              Không tìm thấy khách hàng nào
+              {searchInput.trim()
+                ? "Không tìm thấy kết quả"
+                : "Chưa có khách hàng nào"}
             </p>
             <p className="mt-1 max-w-md font-sans text-[14px] text-ink-secondary">
-              Thử thay đổi từ khóa tìm kiếm hoặc thêm khách hàng mới.
+              {searchInput.trim()
+                ? "Không có khách hàng phù hợp với từ khóa sau khi tải thành công."
+                : "Thêm khách hàng mới để bắt đầu quản lý hồ sơ và lịch sử đặt sân."}
             </p>
+            {searchInput.trim() && (
+              <div className="mt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setSearchInput("");
+                    setKeyword("");
+                    setPageNumber(1);
+                  }}
+                >
+                  Xóa tìm kiếm
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
           <>

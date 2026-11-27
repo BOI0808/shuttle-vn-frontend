@@ -102,13 +102,17 @@ export function CustomerAccountCard({ customer }: CustomerAccountCardProps) {
 
       {isConfirmOpen && (
         <ConfirmDialog
-          title={isActive ? "Khóa tài khoản" : "Mở khóa tài khoản"}
+          title={
+            isActive
+              ? "Khóa tài khoản khách hàng?"
+              : "Mở khóa tài khoản khách hàng?"
+          }
           description={
             isActive
-              ? `Khách "${customer.fullName}" sẽ không thể đăng nhập sau khi bị khóa.`
-              : `Mở khóa tài khoản của "${customer.fullName}" và đặt lại số lần đăng nhập sai về 0.`
+              ? `Tài khoản "${customer.fullName}" sẽ bị vô hiệu hóa quyền truy cập. Hãy kiểm tra đúng hồ sơ trước khi tiếp tục.`
+              : `Tài khoản của "${customer.fullName}" được phép truy cập lại và đặt lại số lần đăng nhập sai về 0.`
           }
-          confirmLabel={isActive ? "Khóa tài khoản" : "Mở khóa"}
+          confirmLabel={isActive ? "Xác nhận khóa" : "Mở khóa"}
           variant={isActive ? "danger" : "warning"}
           isLoading={mutation.isPending}
           onConfirm={handleConfirm}
