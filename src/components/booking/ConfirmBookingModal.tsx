@@ -66,11 +66,12 @@ interface ConfirmBookingModalProps {
   onClose: () => void;
 }
 
-function toPayload(values: FormData): ConfirmBookingRequest {
+function toPayload(values: FormData, totalCost: number): ConfirmBookingRequest {
   const note = values.note || undefined;
   if (values.paymentState === "Unpaid") return { isPaid: false, note };
   return {
     isPaid: true,
+    amount: totalCost,
     paymentMethod: values.paymentMethod,
     paidAt: new Date(values.paidAt).toISOString(),
     note,
@@ -124,7 +125,7 @@ export function ConfirmBookingModal({
     mutation.mutate(
       {
         id: booking.bookingId,
-        payload: toPayload(values),
+        payload: toPayload(values, booking.totalCost),
         idempotencyKey: idempotencyKey.current,
       },
       {
