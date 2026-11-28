@@ -257,6 +257,15 @@ export function InvoiceList() {
         </section>
       )}
 
+      {loading && !list.data && (
+        <Pagination
+          loading
+          onPageChange={(pageNumber) => {
+            setQuery({ ...query, pageNumber });
+          }}
+        />
+      )}
+
       {selected && (
         <InvoiceDetailModal
           key={selected}

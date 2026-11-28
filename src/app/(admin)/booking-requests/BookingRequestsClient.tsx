@@ -207,7 +207,11 @@ export default function BookingRequestsClient() {
         </div>
       )}
 
-      {data && <Pagination page={data} onPageChange={setPageNumber} />}
+      <Pagination
+        page={data}
+        loading={isLoading}
+        onPageChange={setPageNumber}
+      />
 
       {selectedId && (
         <BookingDetailModal

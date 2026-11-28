@@ -223,3 +223,45 @@ export function OperationsErrorCard({
   );
 }
 
+type ActionBannerStatus = "saving" | "success" | "error";
+
+interface OperationsActionBannerProps {
+  status: ActionBannerStatus;
+  message?: string;
+  className?: string;
+}
+
+const ACTION_BANNER_STYLES: Record<ActionBannerStatus, string> = {
+  saving: "bg-surface-soft text-ink-secondary",
+  success: "bg-brand-soft text-brand-strong",
+  error: "bg-status-danger-soft text-status-danger",
+};
+
+const ACTION_BANNER_DEFAULT_MESSAGE: Record<ActionBannerStatus, string> = {
+  saving: "Đang lưu…",
+  success: "Thao tác đã hoàn tất.",
+  error: "Không thể lưu. Dữ liệu nhập vẫn được giữ lại.",
+};
+
+/**
+ * Inline operation status bar matching Figma "Filter controls · Responsive" (3325:2777-3325:2781).
+ */
+export function OperationsActionBanner({
+  status,
+  message,
+  className,
+}: OperationsActionBannerProps) {
+  return (
+    <div
+      role={status === "error" ? "alert" : "status"}
+      className={cn(
+        "flex min-h-[52px] items-center rounded-[8px] px-4 font-sans text-[14px] leading-[20px]",
+        ACTION_BANNER_STYLES[status],
+        className
+      )}
+    >
+      {message ?? ACTION_BANNER_DEFAULT_MESSAGE[status]}
+    </div>
+  );
+}
+
