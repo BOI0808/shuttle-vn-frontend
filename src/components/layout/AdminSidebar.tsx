@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 import { useAuthStore } from "@/stores/auth.store";
 import type { UserRole } from "@/types";
 import { cn } from "@/utils";
@@ -57,7 +58,39 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
-  const role = useAuthStore((state) => state.user?.role);
+  const user = useAuthStore((state) => state.user);
+  const role = user?.role;
+  const { logout, isLoggingOut } = useAuth();
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  const displayName = user?.fullName?.trim() || "ShuttleVN Admin";
+  const initials = displayName.split(" ").pop()?.charAt(0).toUpperCase() ?? "S";
+  const subtitle =
+    user?.email || (role === "Employee" ? "Nhân viên" : "Quản trị viên");
+
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setUserMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [userMenuOpen]);
 
   useEffect(() => {
     if (!isOpen || !onClose) return;
@@ -176,13 +209,71 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
           ))}
         </nav>
 
-        <div className="mt-4 border-t border-line px-2 pt-4">
-          <p className="font-sans text-[14px] font-semibold leading-[20px] text-ink">
-            ShuttleVN Admin
-          </p>
-          <p className="font-sans text-[12px] font-normal leading-[16px] text-ink-secondary">
-            Quản lý cơ sở cầu lông
-          </p>
+        <div ref={userMenuRef} className="relative mt-4 border-t border-line pt-3">
+          {userMenuOpen && (
+            <div
+              role="menu"
+              className="absolute bottom-full left-0 right-0 z-60 mb-2 rounded-[12px] border border-line bg-white p-1.5 shadow-md"
+            >
+              <Link
+                href="/profile"
+                role="menuitem"
+                onClick={() => {
+                  setUserMenuOpen(false);
+                  onClose?.();
+                }}
+                className="flex items-center gap-2.5 rounded-[8px] px-3 py-2.5 font-sans text-[14px] font-medium text-brand-strong transition-colors hover:bg-surface-bg"
+              >
+                <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
+                  person
+                </span>
+                Hồ sơ cá nhân
+              </Link>
+              <div className="my-1 border-t border-line" />
+              <button
+                type="button"
+                role="menuitem"
+                disabled={isLoggingOut}
+                onClick={() => {
+                  setUserMenuOpen(false);
+                  logout();
+                }}
+                className="flex w-full items-center gap-2.5 rounded-[8px] px-3 py-2.5 font-sans text-[14px] font-medium text-status-danger transition-colors hover:bg-status-danger-soft disabled:opacity-50 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
+                  logout
+                </span>
+                {isLoggingOut ? "Đang đăng xuất..." : "Đăng xuất"}
+              </button>
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setUserMenuOpen((prev) => !prev)}
+            aria-expanded={userMenuOpen}
+            aria-haspopup="menu"
+            aria-label="Tùy chọn tài khoản"
+            className="flex w-full items-center gap-3 rounded-[8px] px-2 py-2 text-left transition-colors hover:bg-surface-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer"
+          >
+            <div className="flex size-[36px] shrink-0 items-center justify-center rounded-full bg-brand font-sans text-[13px] font-semibold text-white">
+              {initials}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-sans text-[14px] font-semibold leading-[20px] text-ink">
+                {displayName}
+              </p>
+              <p className="truncate font-sans text-[12px] font-normal leading-[16px] text-ink-secondary">
+                {subtitle}
+              </p>
+            </div>
+            <span
+              className="material-symbols-outlined shrink-0 text-[20px] text-ink-muted"
+              aria-hidden="true"
+            >
+              more_horiz
+            </span>
+          </button>
         </div>
       </aside>
     </>
