@@ -10,6 +10,7 @@ import { z } from "zod";
 
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { CustomDatePicker } from "@/components/ui/CustomDatePicker";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Select } from "@/components/ui/Select";
@@ -114,6 +115,8 @@ export function ConfirmBookingModal({
     },
   });
   const paymentState = watch("paymentState");
+  const paidAtValue = watch("paidAt");
+  const [paidDate = "", paidTime = "00:00"] = paidAtValue.split("T");
   const isPaid = paymentState === "Paid";
 
   const onSubmit = (values: FormData) => {
@@ -148,7 +151,7 @@ export function ConfirmBookingModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/40 p-4 backdrop-blur-xs"
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-ink/40 p-4 backdrop-blur-xs"
       onClick={(e) => {
         if (e.target === e.currentTarget && !mutation.isPending) onClose();
       }}
@@ -158,7 +161,7 @@ export function ConfirmBookingModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="w-full max-w-lg overflow-hidden rounded-[12px] border border-line bg-white shadow-xl"
+        className="my-auto w-full max-w-lg rounded-[12px] border border-line bg-white shadow-xl"
       >
         <div className="flex items-center justify-between border-b border-line px-6 py-4">
           <div className="flex items-center gap-3">
@@ -240,13 +243,52 @@ export function ConfirmBookingModal({
                 <Label required htmlFor="paidAt">
                   Thời điểm thu
                 </Label>
-                <Input
-                  id="paidAt"
-                  type="datetime-local"
-                  max={format(new Date(), DATETIME_LOCAL_FORMAT)}
-                  error={errors.paidAt?.message}
-                  {...register("paidAt")}
-                />
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
+                  <div className="flex-1">
+                    <CustomDatePicker
+                      id="paidAt"
+                      value={paidDate}
+                      fullWidth
+                      placement="top"
+                      className="relative"
+                      onChange={(nextDate) =>
+                        setValue(
+                          "paidAt",
+                          `${nextDate}T${paidTime || "00:00"}`,
+                          { shouldValidate: true }
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="w-full sm:w-[136px]">
+                    <Input
+                      id="paidAtTime"
+                      type="time"
+                      aria-label="Giờ thu tiền"
+                      value={paidTime}
+                      onChange={(event) =>
+                        setValue(
+                          "paidAt",
+                          `${paidDate || format(new Date(), "yyyy-MM-dd")}T${
+                            event.target.value || "00:00"
+                          }`,
+                          { shouldValidate: true }
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+                {errors.paidAt?.message && (
+                  <p className="mt-1 flex items-center gap-1 font-sans text-[12px] text-status-danger">
+                    <span
+                      className="material-symbols-outlined text-[14px]"
+                      aria-hidden="true"
+                    >
+                      error
+                    </span>
+                    {errors.paidAt.message}
+                  </p>
+                )}
               </div>
             </>
           )}
@@ -262,7 +304,7 @@ export function ConfirmBookingModal({
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 border-t border-line bg-surface-bg px-6 py-4">
+        <div className="flex justify-end gap-3 rounded-b-[12px] border-t border-line bg-surface-bg px-6 py-4">
           <Button type="button" variant="outline" onClick={onClose}>
             Quay lại
           </Button>

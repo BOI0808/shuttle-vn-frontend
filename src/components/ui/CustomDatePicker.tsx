@@ -11,6 +11,7 @@ interface CustomDatePickerProps {
   allowClear?: boolean;
   disabled?: boolean;
   fullWidth?: boolean;
+  placement?: "bottom" | "top";
 }
 
 const DAYS_OF_WEEK = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
@@ -39,6 +40,7 @@ export function CustomDatePicker({
   allowClear = false,
   disabled = false,
   fullWidth = false,
+  placement = "bottom",
 }: CustomDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -172,7 +174,9 @@ export function CustomDatePicker({
         <div
           role="dialog"
           aria-label="Chọn ngày"
-          className="absolute left-0 top-full z-[110] mt-2 w-[310px] select-none rounded-[12px] border border-line bg-white p-4 shadow-md"
+          className={`absolute left-0 z-[110] w-[310px] select-none rounded-[12px] border border-line bg-white p-4 shadow-md ${
+            placement === "top" ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
         >
           <div className="mb-3 flex items-center justify-between px-1">
             <span className="font-display text-[15px] font-medium text-ink">
