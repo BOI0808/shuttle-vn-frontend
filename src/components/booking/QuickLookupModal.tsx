@@ -10,6 +10,12 @@ import { BookingDetailModal } from "@/components/booking/BookingDetailModal";
 import { QuickLookupResults } from "@/components/booking/QuickLookupResults";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import {
+  OperationsEmptyCard,
+  OperationsErrorCard,
+  OperationsLoadingCard,
+} from "@/components/ui/OperationsState";
 
 import { useQuickLookup } from "@/hooks";
 
@@ -49,6 +55,7 @@ export function QuickLookupModal({ onClose }: QuickLookupModalProps) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<LookupFormData>({
     resolver: zodResolver(lookupSchema),
@@ -86,94 +93,118 @@ export function QuickLookupModal({ onClose }: QuickLookupModalProps) {
 
   return (
     <>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/60 p-4 backdrop-blur-[2px]">
+      <div
+        className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-ink/40 p-4 backdrop-blur-xs"
+        onClick={(event) => {
+          if (event.target === event.currentTarget && !selectedBookingId) {
+            onClose();
+          }
+        }}
+      >
         <div
           role="dialog"
           aria-modal="true"
           aria-labelledby="quick-lookup-title"
-          className="flex max-h-[90vh] w-full max-w-3xl flex-col rounded-xl border border-gray-200 bg-white shadow-2xl"
+          className="my-auto flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-[12px] border border-line bg-white shadow-xl"
         >
-          <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between border-b border-line px-6 py-4">
             <h2
               id="quick-lookup-title"
-              className="font-display text-[15px] font-bold text-gray-900"
+              className="font-display text-[18px] font-medium leading-[26px] text-ink"
             >
-              Tra cứu nhanh
+              Tra cứu nhanh đơn đặt sân
             </h2>
             <button
               type="button"
               onClick={onClose}
               aria-label="Đóng"
-              className="text-gray-400 hover:text-gray-700"
+              className="flex size-[36px] items-center justify-center rounded-[8px] text-ink-muted transition-colors hover:bg-surface-soft hover:text-ink"
             >
-              <span className="material-symbols-outlined">close</span>
+              <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
+                close
+              </span>
             </button>
           </div>
 
           <div className="flex flex-col gap-5 overflow-y-auto p-6">
-            <form
-              onSubmit={handleSubmit(handleLookup)}
-              className="flex items-start gap-3"
-            >
-              <Input
-                aria-label="Từ khóa tra cứu"
-                placeholder="Số điện thoại, email hoặc mã đặt sân (DS-…)"
-                icon={
-                  <span className="material-symbols-outlined text-[18px]">
-                    search
-                  </span>
-                }
-                error={errors.keyword?.message}
-                {...register("keyword")}
-              />
-              <Button
-                type="submit"
-                className="w-auto h-11 shrink-0"
-                loading={isFetching}
-              >
-                Tra cứu
-              </Button>
+            <form onSubmit={handleSubmit(handleLookup)} className="space-y-2">
+              <Label htmlFor="quick-lookup-keyword">
+                Mã đặt sân hoặc số điện thoại
+              </Label>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                <div className="flex-1">
+                  <Input
+                    id="quick-lookup-keyword"
+                    placeholder="Số điện thoại, email hoặc mã đặt sân (DS-…)"
+                    icon={
+                      <span
+                        className="material-symbols-outlined text-[18px]"
+                        aria-hidden="true"
+                      >
+                        search
+                      </span>
+                    }
+                    error={errors.keyword?.message}
+                    {...register("keyword")}
+                  />
+                </div>
+                <Button type="submit" loading={isFetching}>
+                  Tra cứu
+                </Button>
+              </div>
             </form>
 
             {!submittedKeyword && (
-              <p className="py-6 text-center text-sm text-slate-500">
+              <p className="border-t border-line py-6 text-center font-sans text-[14px] leading-[20px] text-ink-secondary">
                 Nhập số điện thoại, email hoặc mã đặt sân rồi bấm Tra cứu.
               </p>
             )}
 
             {isLoading && (
-              <p className="py-6 text-center font-mono text-sm text-slate-500">
-                Đang tra cứu...
-              </p>
+              <div className="border-t border-line pt-5">
+                <OperationsLoadingCard embedded rows={3} />
+              </div>
             )}
 
             {isError && (
-              <div role="alert" className="py-6 text-center text-sm text-red-600">
-                <p>{getErrorMessage(error)}</p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="mx-auto mt-3 inline-flex w-auto"
-                  onClick={() => void refetch()}
-                >
-                  Thử lại
-                </Button>
+              <div className="border-t border-line pt-5">
+                <OperationsErrorCard
+                  embedded
+                  title="Chưa thể tra cứu"
+                  message={getErrorMessage(error)}
+                  secondaryMessage="Giữ nguyên từ khóa để thử lại."
+                  retryLabel="Thử lại"
+                  onRetry={() => void refetch()}
+                  footerNote=""
+                />
               </div>
             )}
 
             {isEmpty && (
-              <p className="py-6 text-center text-sm text-slate-500">
-                Không tìm thấy khách hàng hoặc đặt sân phù hợp.
-              </p>
+              <div className="border-t border-line pt-2">
+                <OperationsEmptyCard
+                  embedded
+                  icon="search_off"
+                  title="Không tìm thấy đơn phù hợp"
+                  description="Kiểm tra lại mã đơn hoặc số điện thoại. Không hiển thị thông tin người khác khi không khớp."
+                  actionLabel="Tra cứu lại"
+                  onAction={() => {
+                    reset();
+                    setSubmittedKeyword("");
+                    setPageNumber(1);
+                  }}
+                />
+              </div>
             )}
 
             {data && !isEmpty && !isError && (
-              <QuickLookupResults
-                result={data}
-                onSelectBooking={setSelectedBookingId}
-                onPageChange={setPageNumber}
-              />
+              <div className="border-t border-line pt-5">
+                <QuickLookupResults
+                  result={data}
+                  onSelectBooking={setSelectedBookingId}
+                  onPageChange={setPageNumber}
+                />
+              </div>
             )}
           </div>
         </div>

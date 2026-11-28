@@ -28,18 +28,24 @@ interface QuickLookupResultsProps {
 
 function CustomerCard({ customer }: { customer: CustomerListItem }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-line bg-white px-5 py-4">
       <div>
-        <p className="text-[13px] font-bold text-slate-900">{customer.fullName}</p>
-        <p className="font-mono text-[11px] text-slate-500">{customer.phone}</p>
-        <p className="text-[11px] text-slate-500">{customer.email}</p>
+        <p className="font-sans text-[14px] font-semibold leading-[20px] text-ink">
+          {customer.fullName}
+        </p>
+        <p className="font-sans text-[12px] leading-[16px] text-ink-secondary tabular-nums">
+          {customer.phone}
+        </p>
+        <p className="font-sans text-[12px] leading-[16px] text-ink-secondary">
+          {customer.email}
+        </p>
       </div>
       {customer.accountStatus ? (
         <Badge status={customer.accountStatus}>
           {ACCOUNT_STATUS_LABEL[customer.accountStatus] ?? "—"}
         </Badge>
       ) : (
-        <span className="text-[13px] text-slate-500">—</span>
+        <span className="font-sans text-[14px] text-ink-secondary">—</span>
       )}
     </div>
   );
@@ -47,7 +53,7 @@ function CustomerCard({ customer }: { customer: CustomerListItem }) {
 
 function PaymentCell({ status }: { status: BookingListItem["paymentStatus"] }) {
   if (!status) {
-    return <span className="text-[12px] text-slate-500">{NO_INVOICE_LABEL}</span>;
+    return <Badge status="NoInvoice">{NO_INVOICE_LABEL}</Badge>;
   }
   return <Badge status={status}>{INVOICE_STATUS_LABEL[status] ?? "—"}</Badge>;
 }
@@ -63,7 +69,7 @@ export function QuickLookupResults({
     <div className="flex flex-col gap-5">
       {customers.length > 0 && (
         <section className="flex flex-col gap-2">
-          <h3 className="font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+          <h3 className="font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
             Khách hàng
           </h3>
           {customers.map((customer) => (
@@ -73,69 +79,71 @@ export function QuickLookupResults({
       )}
 
       <section className="flex flex-col gap-2">
-        <h3 className="font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+        <h3 className="font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
           Đặt sân
         </h3>
         {bookings.items.length === 0 ? (
-          <p className="rounded-xl border border-slate-200 bg-white px-5 py-6 text-center text-sm text-slate-500">
+          <p className="rounded-[12px] border border-line bg-white px-5 py-6 text-center font-sans text-[14px] text-ink-secondary">
             Chưa có đặt sân nào.
           </p>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <div className="overflow-hidden rounded-[12px] border border-line bg-white">
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-left">
+              <table className="w-full min-w-[760px] border-collapse text-left">
                 <thead>
-                  <tr className="bg-slate-50/50 font-mono text-[10px] uppercase tracking-wider text-slate-500">
+                  <tr className="h-[40px] border-b border-line bg-status-info-soft font-sans text-[12px] font-semibold leading-[16px] text-ink-secondary">
                     {HEADERS.map((header) => (
                       <th
                         key={header}
                         scope="col"
-                        className="border-b border-slate-100 px-4 py-3 font-semibold"
+                        className={
+                          header === "Tổng tiền"
+                            ? "whitespace-nowrap px-4 text-right"
+                            : "whitespace-nowrap px-4"
+                        }
                       >
                         {header}
                       </th>
                     ))}
-                    <th
-                      scope="col"
-                      className="border-b border-slate-100 px-4 py-3 text-right font-semibold"
-                    >
+                    <th scope="col" className="whitespace-nowrap px-4 text-right">
                       Thao tác
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-line">
                   {bookings.items.map((booking) => (
                     <tr
                       key={booking.bookingId}
-                      className="transition-colors hover:bg-slate-50"
+                      className="transition-colors duration-100 hover:bg-surface-bg"
                     >
-                      <td className="px-4 py-3 font-mono text-[12px] font-bold text-blue-600">
+                      <td className="whitespace-nowrap px-4 py-3 font-sans text-[14px] font-semibold text-brand-strong tabular-nums">
                         {booking.bookingCode}
                       </td>
-                      <td className="px-4 py-3 text-[13px] text-slate-700">
+                      <td className="whitespace-nowrap px-4 py-3 font-sans text-[14px] text-ink">
                         {booking.courtName}
                       </td>
-                      <td className="px-4 py-3 font-mono text-[11px] text-slate-500">
-                        {formatDate(booking.date)} · {booking.startTime} –{" "}
+                      <td className="whitespace-nowrap px-4 py-3 font-sans text-[14px] text-ink-secondary tabular-nums">
+                        {formatDate(booking.date)} · {booking.startTime}–
                         {booking.endTime}
                       </td>
-                      <td className="px-4 py-3 font-mono text-[12px] font-bold text-slate-900">
+                      <td className="whitespace-nowrap px-4 py-3 text-right font-sans text-[14px] font-semibold text-ink tabular-nums">
                         {formatCurrency(booking.totalCost)}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="whitespace-nowrap px-4 py-3">
                         <Badge status={booking.status}>
                           {BOOKING_STATUS_LABEL[booking.status] ?? "—"}
                         </Badge>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="whitespace-nowrap px-4 py-3">
                         <PaymentCell status={booking.paymentStatus} />
                       </td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="whitespace-nowrap px-4 py-3 text-right">
                         <Button
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="inline-flex w-auto"
+                          aria-label={`Xem chi tiết đơn ${booking.bookingCode}`}
+                          className="whitespace-nowrap"
                           onClick={() => onSelectBooking(booking.bookingId)}
                         >
                           Chi tiết
