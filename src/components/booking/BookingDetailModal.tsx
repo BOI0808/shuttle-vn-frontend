@@ -4,6 +4,10 @@ import { useEffect, useId } from "react";
 
 import { BookingDetailView } from "@/components/booking/BookingDetailView";
 import { Button } from "@/components/ui/Button";
+import {
+  OperationsErrorCard,
+  OperationsLoadingCard,
+} from "@/components/ui/OperationsState";
 import { useBookingDetail } from "@/hooks";
 import { getErrorMessage } from "@/utils";
 
@@ -22,6 +26,7 @@ export function BookingDetailModal({
     isLoading,
     isError,
     error,
+    refetch,
   } = useBookingDetail(bookingId);
 
   useEffect(() => {
@@ -65,15 +70,14 @@ export function BookingDetailModal({
         </div>
 
         <div className="overflow-y-auto p-6">
-          {isLoading && (
-            <p className="py-8 text-center font-sans text-[14px] text-ink-secondary">
-              Đang tải chi tiết đơn...
-            </p>
-          )}
+          {isLoading && <OperationsLoadingCard embedded rows={3} />}
           {isError && (
-            <p className="py-8 text-center font-sans text-[14px] text-status-danger">
-              {getErrorMessage(error)}
-            </p>
+            <OperationsErrorCard
+              embedded
+              title="Không thể tải chi tiết đơn"
+              message={getErrorMessage(error)}
+              onRetry={() => void refetch()}
+            />
           )}
           {booking && <BookingDetailView booking={booking} layout="stack" />}
         </div>

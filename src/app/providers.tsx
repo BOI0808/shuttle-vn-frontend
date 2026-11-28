@@ -14,7 +14,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
         position="top-right"
         richColors
         closeButton
-        toastOptions={{ duration: 3000 }}
+        toastOptions={{
+          duration: 3000,
+          classNames: {
+            toast:
+              "rounded-[8px] border border-line bg-white font-sans text-ink shadow-md",
+            title: "font-sans text-[14px] font-semibold leading-[20px] text-ink",
+            description: "font-sans text-[12px] leading-[16px] text-ink-secondary",
+          },
+        }}
       />
       {process.env.NODE_ENV === "development" && (
         <ReactQueryDevtools initialIsOpen={false} />

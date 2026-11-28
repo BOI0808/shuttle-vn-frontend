@@ -4,26 +4,17 @@ import { useEffect, useId } from "react";
 
 import { InvoiceEvidence } from "@/components/payment/InvoiceEvidence";
 import { Button } from "@/components/ui/Button";
+import {
+  OperationsErrorCard,
+  OperationsLoadingCard,
+} from "@/components/ui/OperationsState";
 import { useInvoice } from "@/hooks";
-import { cn, getErrorMessage } from "@/utils";
+import { getErrorMessage } from "@/utils";
 
 interface InvoiceDetailModalProps {
   id: string;
   onSelect: (id: string) => void;
   onClose: () => void;
-}
-
-function DetailSkeleton() {
-  return (
-    <div role="status" aria-label="Đang tải chi tiết hóa đơn" className="space-y-3">
-      {["w-full", "w-3/4", "w-2/3"].map((width) => (
-        <div
-          key={width}
-          className={cn("h-3.5 animate-pulse rounded-[4px] bg-surface-soft", width)}
-        />
-      ))}
-    </div>
-  );
 }
 
 export function InvoiceDetailModal({
@@ -75,27 +66,14 @@ export function InvoiceDetailModal({
         </div>
 
         <div className="space-y-5 overflow-y-auto p-6">
-          {detail.isPending && <DetailSkeleton />}
+          {detail.isPending && <OperationsLoadingCard embedded rows={3} />}
           {detail.isError && (
-            <div
-              role="alert"
-              className="flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-line bg-status-danger-soft px-4 py-3 font-sans text-[14px] text-status-danger"
-            >
-              <div className="flex items-center gap-2.5">
-                <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
-                  error
-                </span>
-                <p>{getErrorMessage(detail.error)}</p>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => void detail.refetch()}
-              >
-                Thử lại
-              </Button>
-            </div>
+            <OperationsErrorCard
+              embedded
+              title="Không thể tải chi tiết hóa đơn"
+              message={getErrorMessage(detail.error)}
+              onRetry={() => void detail.refetch()}
+            />
           )}
           {detail.data && (
             <InvoiceEvidence invoice={detail.data} onSelect={onSelect} />

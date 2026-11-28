@@ -9,6 +9,11 @@ import { DAY_OF_WEEK_LABEL } from "@/config/app";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth.store";
 import { getErrorMessage } from "@/utils";
+import {
+  OperationsEmptyCard,
+  OperationsErrorCard,
+  OperationsLoadingCard,
+} from "@/components/ui/OperationsState";
 import { toast } from "sonner";
 
 const START_HOUR = 5;
@@ -36,11 +41,12 @@ interface CourtGridProps {
 export function CourtGrid({ date, showBookingDetails = false, readOnly = false }: CourtGridProps) {
   const router = useRouter();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const { data, isLoading, isError, error } = useCourtGrid(date) as {
+  const { data, isLoading, isError, error, refetch } = useCourtGrid(date) as {
     data: CourtGridResponse | undefined;
     isLoading: boolean;
     isError: boolean;
     error: unknown;
+    refetch: () => unknown;
   };
 
   const [popup, setPopup] = useState<SlotPopupState | null>(null);
@@ -125,62 +131,37 @@ export function CourtGrid({ date, showBookingDetails = false, readOnly = false }
 
   if (isLoading) {
     return (
-      <div
-        aria-busy="true"
-        className="overflow-hidden rounded-[12px] border border-line bg-white"
-      >
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
-          <div>
-            <p className="font-display text-[18px] font-medium leading-[26px] text-ink">
-              Lịch sân theo ngày
-            </p>
-            <p className="font-sans text-[12px] leading-[16px] text-ink-secondary">
-              Đang tải lịch sân…
-            </p>
-          </div>
-          <p className="font-sans text-[12px] leading-[16px] text-ink-secondary tabular-nums">
-            34 khung giờ · 05:00–22:00
-          </p>
-        </div>
-        <div className="flex items-center gap-3 p-5">
-          <div className="w-[120px] shrink-0 space-y-2">
-            <div className="h-[16px] w-16 animate-pulse rounded-[4px] bg-line" />
-            <div className="h-[12px] w-24 animate-pulse rounded-[4px] bg-surface-soft" />
-          </div>
-          <div className="grid flex-1 grid-cols-6 gap-2 sm:grid-cols-10">
-            {Array.from({ length: 10 }, (_, idx) => (
-              <div
-                key={idx}
-                className="flex h-[56px] items-center justify-center rounded-[6px] border border-line bg-surface-soft font-sans text-[14px] font-medium text-ink-secondary"
-              >
-                —
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <OperationsLoadingCard
+        title="Lịch sân theo ngày"
+        subtitle="Đang tải dữ liệu…"
+        rows={4}
+      />
     );
   }
 
   if (isError || !data) {
     return (
-      <div
-        role="alert"
-        className="flex items-center gap-3 rounded-[12px] border border-line bg-white p-5"
-      >
-        <div className="flex size-[40px] shrink-0 items-center justify-center rounded-[8px] bg-status-danger-soft text-status-danger">
-          <span className="material-symbols-outlined text-[22px]" aria-hidden="true">
-            warning
-          </span>
-        </div>
-        <p className="font-sans text-[14px] text-ink-secondary">
-          {getErrorMessage(error)}
-        </p>
-      </div>
+      <OperationsErrorCard
+        title="Không thể tải lịch sân"
+        message={getErrorMessage(error)}
+        onRetry={() => void refetch()}
+      />
     );
   }
 
   const courts = data.courts;
+
+  if (courts.length === 0) {
+    return (
+      <OperationsEmptyCard
+        headerTitle={`${dayLabel} · ${dateLabel}`}
+        headerSubtitle="34 khung giờ · 05:00–22:00"
+        icon="calendar_month"
+        title="Chưa có dữ liệu sân"
+        description="Không tìm thấy sân hoạt động cho ngày đã chọn."
+      />
+    );
+  }
 
   return (
     <>

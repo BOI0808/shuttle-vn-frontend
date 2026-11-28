@@ -126,7 +126,14 @@ export function ConfirmBookingModal({
       },
       {
         onSuccess: () => {
-          toast.success(`${copy.success} ${booking.bookingCode}`);
+          toast.success(
+            action === "confirm"
+              ? `Đã xác nhận đơn đặt sân ${booking.bookingCode}.`
+              : `${copy.success} ${booking.bookingCode}`,
+            action === "confirm"
+              ? { description: "Hóa đơn được hệ thống tự động tạo." }
+              : undefined
+          );
           onClose();
         },
         onError: (error) => {
