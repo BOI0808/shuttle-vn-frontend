@@ -97,10 +97,14 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
       >
         <div className="mb-5 flex items-center gap-3 px-2">
           <Link
-            href="/dashboard"
+            href={role === "Employee" ? "/schedule" : "/dashboard"}
             onClick={onClose}
             className="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-[8px]"
-            aria-label="ShuttleVN Admin - Bảng điều khiển"
+            aria-label={
+              role === "Employee"
+                ? "ShuttleVN - Lịch sân"
+                : "ShuttleVN Admin - Bảng điều khiển"
+            }
           >
             <span
               className="material-symbols-outlined text-[28px] text-brand"

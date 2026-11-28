@@ -31,10 +31,12 @@ export function useAuth() {
     onSuccess: (authUser) => {
       setUser(authUser);
 
-      if (authUser.role === "Customer") {
-        router.push("/courts");
-      } else {
+      if (authUser.role === "Admin") {
         router.push("/dashboard");
+      } else if (authUser.role === "Employee") {
+        router.push("/schedule");
+      } else {
+        router.push("/courts");
       }
     },
   });
