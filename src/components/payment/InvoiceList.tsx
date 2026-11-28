@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -20,6 +20,7 @@ import { InvoiceDetailModal } from "./InvoiceDetailModal";
 import { InvoicePaymentModal } from "./InvoicePaymentModal";
 
 const PAGE_SIZE = 20;
+const SEARCH_DEBOUNCE_MS = 400;
 const HEADERS = [
   { label: "Mã hóa đơn", align: "left" },
   { label: "Đơn đặt sân", align: "left" },
@@ -38,22 +39,25 @@ export function InvoiceList() {
   const loading = list.isPending || list.isFetching;
   const items = list.data?.items ?? [];
 
-  const applyFilters = () => {
-    const nextQuery: InvoiceQuery = {
-      code: code.trim() || undefined,
-      status: (draftStatus || undefined) as InvoiceQuery["status"],
-      pageNumber: 1,
-      pageSize: PAGE_SIZE,
-    };
-    const isSame =
-      nextQuery.code === query.code &&
-      nextQuery.status === query.status &&
-      nextQuery.pageNumber === query.pageNumber;
-    setQuery(nextQuery);
-    if (isSame) {
-      void list.refetch();
+  useEffect(() => {
+    const trimmedCode = code.trim() || undefined;
+    const nextStatus = (draftStatus || undefined) as InvoiceQuery["status"];
+
+    if (trimmedCode === query.code && nextStatus === query.status) {
+      return;
     }
-  };
+
+    const timer = setTimeout(() => {
+      setQuery({
+        code: trimmedCode,
+        status: nextStatus,
+        pageNumber: 1,
+        pageSize: PAGE_SIZE,
+      });
+    }, trimmedCode !== query.code ? SEARCH_DEBOUNCE_MS : 0);
+
+    return () => clearTimeout(timer);
+  }, [code, draftStatus, query.code, query.status]);
 
   const hasActiveFilters = Boolean(
     code.trim() || draftStatus || query.code || query.status
@@ -80,13 +84,20 @@ export function InvoiceList() {
         className="grid gap-4 rounded-[12px] border border-line bg-white p-5 md:grid-cols-[minmax(0,1fr)_220px_auto] md:items-end"
         onSubmit={(event) => {
           event.preventDefault();
-          applyFilters();
         }}
       >
         <div>
           <Label htmlFor="invoice-code-filter">Tra cứu hóa đơn</Label>
           <Input
             id="invoice-code-filter"
+            icon={
+              <span
+                className="material-symbols-outlined text-[20px]"
+                aria-hidden="true"
+              >
+                search
+              </span>
+            }
             value={code}
             onChange={(event) => setCode(event.target.value)}
             placeholder="Nhập mã hóa đơn (VD: HD-20260814-002)"
@@ -114,9 +125,6 @@ export function InvoiceList() {
             onClick={resetFilters}
           >
             Xóa lọc
-          </Button>
-          <Button type="submit" loading={loading}>
-            Tìm kiếm
           </Button>
         </div>
       </form>

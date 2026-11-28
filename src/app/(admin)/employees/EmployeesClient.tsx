@@ -233,6 +233,17 @@ export default function EmployeesClient() {
             <option value="Active">Hoạt động</option>
             <option value="Disabled">Đã khóa</option>
           </Select>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setSearch("");
+              setRoleFilter("");
+              setStatusFilter("");
+            }}
+          >
+            Xóa lọc
+          </Button>
         </div>
 
         {isLoading ? (

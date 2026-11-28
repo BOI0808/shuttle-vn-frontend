@@ -69,24 +69,34 @@ export default function CustomersClient() {
           >
             Tìm khách hàng
           </Label>
-          <Input
-            id="customer-search"
-            icon={
-              <span
-                className="material-symbols-outlined text-[20px]"
-                aria-hidden="true"
-              >
-                search
-              </span>
-            }
-            placeholder="Tìm theo tên, số điện thoại hoặc email"
-            value={searchInput}
-            onChange={(event) => setSearchInput(event.target.value)}
-            containerClassName="max-w-[736px]"
-          />
-          <p className="mt-2 font-sans text-[12px] leading-[16px] text-ink-secondary">
-            Kết quả cập nhật sau khi ngừng nhập.
-          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Input
+              id="customer-search"
+              icon={
+                <span
+                  className="material-symbols-outlined text-[20px]"
+                  aria-hidden="true"
+                >
+                  search
+                </span>
+              }
+              placeholder="Tìm theo tên, số điện thoại hoặc email"
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+              containerClassName="min-w-[240px] flex-1 max-w-[736px]"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setSearchInput("");
+                setKeyword("");
+                setPageNumber(1);
+              }}
+            >
+              Xóa lọc
+            </Button>
+          </div>
         </div>
 
         {isLoading ? (
@@ -318,16 +328,6 @@ export default function CustomersClient() {
       </section>
 
       {data && <Pagination page={data} onPageChange={setPageNumber} />}
-
-      <div className="rounded-[12px] border border-line bg-brand-soft p-5">
-        <p className="font-sans text-[14px] font-semibold leading-[20px] text-brand-strong">
-          Tạo tài khoản và gửi email kích hoạt
-        </p>
-        <p className="mt-1 font-sans text-[14px] leading-[20px] text-ink-secondary">
-          Khách hàng mới ở trạng thái Chờ kích hoạt (PendingActivation) cho đến
-          khi hoàn tất kích hoạt qua email.
-        </p>
-      </div>
 
       {isAddModalOpen && (
         <CustomerFormModal onClose={() => setIsAddModalOpen(false)} />

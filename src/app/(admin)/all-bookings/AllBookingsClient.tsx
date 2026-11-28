@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { BookingDetailModal } from "@/components/booking/BookingDetailModal";
 import { Badge } from "@/components/ui/Badge";
@@ -21,6 +21,7 @@ import type { BookingListItem } from "@/types";
 import { formatCurrency, formatDate, getErrorMessage } from "@/utils";
 
 const PAGE_SIZE = 20;
+const SEARCH_DEBOUNCE_MS = 400;
 
 interface Filters {
   fromDate: string;

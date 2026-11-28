@@ -24,6 +24,7 @@ import {
 import type { ActorType, Audit } from "@/types";
 
 const PAGE_SIZE = 20;
+const SEARCH_DEBOUNCE_MS = 400;
 
 interface Filters {
   fromDate: string;
@@ -541,24 +542,31 @@ export default function AuditsClient() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const applyFilters = () => {
+  useEffect(() => {
     if (draft.fromDate && draft.toDate && draft.fromDate > draft.toDate) {
       setDateError("Từ ngày không được lớn hơn Đến ngày.");
       return;
     }
     setDateError(null);
-    const isSame =
-      draft.fromDate === applied.fromDate &&
-      draft.toDate === applied.toDate &&
-      draft.actorType === applied.actorType &&
-      draft.entityName === applied.entityName &&
-      draft.action === applied.action;
-    setApplied(draft);
-    setPageNumber(1);
-    if (isSame) {
-      void refetch();
+
+    const isEntityChanged = draft.entityName !== applied.entityName;
+    const isOtherChanged =
+      draft.fromDate !== applied.fromDate ||
+      draft.toDate !== applied.toDate ||
+      draft.actorType !== applied.actorType ||
+      draft.action !== applied.action;
+
+    if (!isEntityChanged && !isOtherChanged) {
+      return;
     }
-  };
+
+    const timer = setTimeout(() => {
+      setApplied(draft);
+      setPageNumber(1);
+    }, isEntityChanged && !isOtherChanged ? SEARCH_DEBOUNCE_MS : 0);
+
+    return () => clearTimeout(timer);
+  }, [draft, applied]);
 
   const clearFilters = () => {
     setDraft(EMPTY_FILTERS);
@@ -581,7 +589,6 @@ export default function AuditsClient() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          applyFilters();
         }}
         className="rounded-[12px] border border-line bg-white p-5"
       >
@@ -673,9 +680,6 @@ export default function AuditsClient() {
           </div>
           <Button type="button" variant="outline" onClick={clearFilters}>
             Xóa lọc
-          </Button>
-          <Button type="submit" variant="primary">
-            Tìm kiếm
           </Button>
         </div>
 
